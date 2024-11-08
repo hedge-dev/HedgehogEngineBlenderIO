@@ -1,0 +1,3 @@
+[submodule "dotnet/SharpNeedle"]
+	path = dotnet/SharpNeedle
+	url = https://github.com/hedge-dev/SharpNeedle

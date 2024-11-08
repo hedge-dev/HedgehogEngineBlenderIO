@@ -1,0 +1,43 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.10.35027.167
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HEIO.NET", "HEIO.NET.csproj", "{4B03B889-16A5-4260-A925-CF483C10BE39}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpNeedle", "..\SharpNeedle\Source\SharpNeedle\SharpNeedle.csproj", "{DFD8C358-705B-42D3-81D1-CB888C1C6B7D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Amicitia.IO", "..\SharpNeedle\Source\Dependencies\Amicitia.IO\src\Amicitia.IO\Amicitia.IO.csproj", "{997EB31B-8ECB-4A78-9681-06FDE74B91F5}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "SharpNeedle.Shared", "..\SharpNeedle\Source\SharpNeedle.Shared\SharpNeedle.Shared.shproj", "{925BC477-9B22-47FB-B0B1-95EA381B3B9E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4B03B889-16A5-4260-A925-CF483C10BE39}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4B03B889-16A5-4260-A925-CF483C10BE39}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4B03B889-16A5-4260-A925-CF483C10BE39}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4B03B889-16A5-4260-A925-CF483C10BE39}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DFD8C358-705B-42D3-81D1-CB888C1C6B7D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DFD8C358-705B-42D3-81D1-CB888C1C6B7D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DFD8C358-705B-42D3-81D1-CB888C1C6B7D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DFD8C358-705B-42D3-81D1-CB888C1C6B7D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{997EB31B-8ECB-4A78-9681-06FDE74B91F5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{997EB31B-8ECB-4A78-9681-06FDE74B91F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{997EB31B-8ECB-4A78-9681-06FDE74B91F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{997EB31B-8ECB-4A78-9681-06FDE74B91F5}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5655657A-C800-4DF4-A58D-90DBB16E09F1}
+	EndGlobalSection
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		..\SharpNeedle\Source\SharpNeedle.Shared\SharpNeedle.Shared.projitems*{925bc477-9b22-47fb-b0b1-95ea381b3b9e}*SharedItemsImports = 13
+		..\SharpNeedle\Source\SharpNeedle.Shared\SharpNeedle.Shared.projitems*{dfd8c358-705b-42d3-81d1-cb888c1c6b7d}*SharedItemsImports = 5
+	EndGlobalSection
+EndGlobal

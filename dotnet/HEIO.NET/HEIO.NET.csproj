@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+	  <TargetFramework>net8.0</TargetFramework>
+	  <Nullable>enable</Nullable>
+	  <RootNamespace>HEIO.NET</RootNamespace>
+	  <AssemblyName>HEIO.NET</AssemblyName>
+	  <DebugType>embedded</DebugType>
+	  <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
+	  <Platforms>AnyCPU</Platforms>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SharpNeedle\Source\SharpNeedle\SharpNeedle.csproj" />
+  </ItemGroup>
+
+</Project>
