@@ -39,7 +39,7 @@ def draw_list(
         ui_list: bpy.types.UIList,
         context_menu: bpy.types.Menu | None,
         target_list,
-        tools: list[TOOL_PROPERTY],
+        tools: list[TOOL_PROPERTY] | None,
         per_op: Callable[[bpy.types.Operator, int], None] | None):
 
     row = layout.row()
@@ -51,23 +51,27 @@ def draw_list(
         target_list,
         "active_index")
 
+    if tools is None and context_menu is None:
+        return
+
     column = row.column()
 
-    for i, tool in enumerate(tools):
-        if tool is None:
-            column.separator()
-            continue
+    if tools is not None:
+        for i, tool in enumerate(tools):
+            if tool is None:
+                column.separator()
+                continue
 
-        operator = column.operator(
-            tool[0],
-            icon=tool[1],
-            text="")
+            operator = column.operator(
+                tool[0],
+                icon=tool[1],
+                text="")
 
-        for k, v in tool[2].items():
-            setattr(operator, k, v)
+            for k, v in tool[2].items():
+                setattr(operator, k, v)
 
-        if per_op is not None:
-            per_op(operator, i)
+            if per_op is not None:
+                per_op(operator, i)
 
     if context_menu is not None:
         column.menu(

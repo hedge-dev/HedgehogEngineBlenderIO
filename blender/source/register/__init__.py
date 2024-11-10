@@ -5,6 +5,7 @@ from . import (
     property_groups,
     operators,
     ui,
+    definitions,
     manual
 )
 
@@ -16,6 +17,8 @@ classes.extend(ui.to_register)
 
 def register():
     """Loading API classes into blender"""
+
+    definitions.load_definitions()
 
     for cls in classes:
         bpy.utils.register_class(cls)
