@@ -75,7 +75,7 @@ class BaseList(bpy.types.PropertyGroup):
 
         self.elements.remove(index)
 
-        if self.active_index == index:
+        if self.active_index >= index:
             self.active_index -= 1
 
         if len(self) == 0:

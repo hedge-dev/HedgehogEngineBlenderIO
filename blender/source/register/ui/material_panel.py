@@ -4,8 +4,11 @@ from bpy.types import Context
 from .base_panel import PropertiesPanel
 
 from ..operators import material_parameter_operators as mpop
+from ..operators.material_operators import HEIO_OT_Material_UpdateActiveProperties
+
 from ..property_groups.material_properties import HEIO_Material
 from ..property_groups.scene_properties import HEIO_Scene
+
 
 from ...utility.draw import draw_list, TOOL_PROPERTY
 
@@ -189,6 +192,7 @@ class HEIO_PT_Material(PropertiesPanel):
     @staticmethod
     def draw_texture_editor(
             layout: bpy.types.UILayout,
+            material: bpy.types.Material,
             material_properties: HEIO_Material):
 
         header, menu = layout.panel("heio_mat_tex", default_closed=True)
@@ -227,7 +231,23 @@ class HEIO_PT_Material(PropertiesPanel):
             split.alignment = "LEFT"
             split.label(text="  " + texture.name, icon=name_icon)
 
-        # menu.prop_search(texture, "image", bpy.data, "images")
+        try:
+            texture_name = texture.name
+
+            texture_index = texture.type_index
+            if texture_index > 0:
+                texture_name += str(texture_index)
+
+            texture_node = material.node_tree.nodes["Texture " + texture_name]
+            menu.prop_search(texture_node, "image", bpy.data, "images")
+
+        except:
+            split: bpy.types.UILayout = menu.row().split(factor=0.4)
+            split.alignment = "RIGHT"
+            split.label(text="Image")
+            split.alignment = "LEFT"
+            split.label(text="  Material nodes not correctly set up", icon="ERROR")
+
         menu.prop(texture, "texcoord_index")
         menu.prop(texture, "wrapmode_u")
         menu.prop(texture, "wrapmode_v")
@@ -235,6 +255,7 @@ class HEIO_PT_Material(PropertiesPanel):
     @staticmethod
     def draw_general_properties(
             layout: bpy.types.UILayout,
+            material: bpy.types.Material,
             material_properties: HEIO_Material):
 
         header, menu = layout.panel("heio_mat_general", default_closed=True)
@@ -246,15 +267,18 @@ class HEIO_PT_Material(PropertiesPanel):
         menu.use_property_decorate = False
 
         menu.prop(material_properties, "layer")
-        menu.prop(material_properties, "alpha_threshold", slider=True)
-        menu.prop(material_properties, "no_backface_culling")
+        menu.prop(material, "alpha_threshold", slider=True)
+        menu.prop(material, "use_backface_culling")
         menu.prop(material_properties, "use_additive_blending")
 
     @staticmethod
     def draw_material_properties(
             layout: bpy.types.UILayout,
             scene_properties: HEIO_Scene,
+            material: bpy.types.Material,
             material_properties: HEIO_Material):
+
+        layout.operator(HEIO_OT_Material_UpdateActiveProperties.bl_idname)
 
         row = layout.row(align=True)
 
@@ -282,6 +306,7 @@ class HEIO_PT_Material(PropertiesPanel):
 
         HEIO_PT_Material.draw_general_properties(
             layout,
+            material,
             material_properties
         )
 
@@ -305,6 +330,7 @@ class HEIO_PT_Material(PropertiesPanel):
 
         HEIO_PT_Material.draw_texture_editor(
             layout,
+            material,
             material_properties
         )
 
@@ -333,4 +359,5 @@ class HEIO_PT_Material(PropertiesPanel):
         HEIO_PT_Material.draw_material_properties(
             self.layout,
             context.scene.heio_scene,
+            context.active_object.active_material,
             context.active_object.active_material.heio_material)

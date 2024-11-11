@@ -53,13 +53,16 @@ class ShaderDefinition:
             name, all_items_index, visible_items_index)
 
         if base is not None:
+            result.layer = base.layer
+            result.hide = base.hide
             result.parameters.update(base.parameters)
             result.textures.extend(base.textures)
 
         if "Hide" in data:
             result.hide = data["Hide"]
-            if result.hide:
-                result.visible_items_index = -1
+
+        if result.hide:
+            result.visible_items_index = -1
 
         if "Layer" in data:
             layer = data["Layer"]
@@ -122,10 +125,10 @@ def load_shader_definitions():
     global SHADER_DEFINITIONS
     SHADER_DEFINITIONS = {}
 
-    definitions_path = os.path.join(general.get_path(), "ShaderDefinitions")
-    for root, _, files in os.walk(definitions_path):
-        for filename in files:
-            filepath = os.path.join(root, filename)
+    definitions_path = os.path.join(general.get_path(), "Definitions")
+    for root, directories, _ in os.walk(definitions_path):
+        for directory in directories:
+            filepath = os.path.join(root, directory, "Shaders.json")
             with open(filepath, "r") as file:
                 definition_json: dict = json.load(file)
 
@@ -134,9 +137,7 @@ def load_shader_definitions():
                 base_definition = ShaderDefinition.from_json_data(
                     "", -1, -1, definition_json[""], None)
 
-            definitions_name, _ = os.path.splitext(filename)
-            definition_collection = ShaderDefinitionCollection(
-                definitions_name)
+            definition_collection = ShaderDefinitionCollection(directory)
 
             for key, value in definition_json.items():
                 if key == "":
@@ -159,4 +160,4 @@ def load_shader_definitions():
                     definition_collection.items_visible.append(item)
                     definition_collection.items_visible_fallback.append(item)
 
-            SHADER_DEFINITIONS[definitions_name] = definition_collection
+            SHADER_DEFINITIONS[directory] = definition_collection
