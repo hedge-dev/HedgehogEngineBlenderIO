@@ -11,10 +11,16 @@ class HEIO_Scene(bpy.types.PropertyGroup):
         name="Target Game",
         description="Which game to target when exporting and setting up models/materials",
         items=(
-            ("SHADOW_GENS", "Shadow Generations", ""),
-            ("FRONTIERS", "Sonic Frontiers", "")
+            ("UNLEASHED", "Sonic Unleashed", ""),
+            ("COLORS", "Sonic Colors", ""),
+            ("GENERATIONS", "Sonic Generations", ""),
+            ("LOST_WORLD", "Sonic Lost World", ""),
+            ("FORCES", "Sonic Forces", ""),
+            ("ORIGINS", "Sonic Origins", ""),
+            ("FRONTIERS", "Sonic Frontiers", ""),
+            ("SHADOW_GENERATIONS", "Shadow Generations", ""),
         ),
-        default="SHADOW_GENS"
+        default="SHADOW_GENERATIONS"
     )
 
     show_all_shaders: BoolProperty(

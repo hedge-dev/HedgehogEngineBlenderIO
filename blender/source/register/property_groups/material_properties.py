@@ -1,207 +1,26 @@
-import re
 import bpy
+from bpy.types import Material
 from bpy.props import (
     BoolProperty,
-    IntProperty,
-    FloatVectorProperty,
-
     StringProperty,
     EnumProperty,
-
     PointerProperty,
-    CollectionProperty
 )
 
 from .base_list import BaseList
+from .material_parameter_properties import (
+    HEIO_MaterialParameterBooleanList,
+    HEIO_MaterialParameterFloatList
+)
+from .material_texture_properties import (
+    HEIO_MaterialTextureList
+)
 
 from ..definitions import shader_definitions
 
-from ...utility.material_setup import (
-    update_material_boolean_parameter,
-    update_material_float_parameter,
-    update_material_texture,
-    update_material_blending
-)
-
-MATERIAL_PATH_REGEX = re.compile("bpy\.data\.materials\['(.*)'\]\.heio_material.*")
-
-
-def _get_material_from_propertygroup(property_group):
-    path = repr(property_group)
-    regex_result = MATERIAL_PATH_REGEX.findall(path)
-    if len(regex_result) == 0:
-        return None
-    return bpy.data.materials[regex_result[0]]
-
-
-def _update_is_color(parameter, context):
-    if parameter.is_color:
-        parameter.color_value = parameter.value
-    else:
-        parameter.value = parameter.color_value
-
-
-def _update_float_parameter(parameter, context):
-    material = _get_material_from_propertygroup(parameter)
-    if material is not None:
-        update_material_float_parameter(material, parameter)
-
-
-def _update_boolean_parameter(parameter, context):
-    material = _get_material_from_propertygroup(parameter)
-    if material is not None:
-        update_material_boolean_parameter(material, parameter)
-
-
-def _update_texture(texture, context):
-    material = _get_material_from_propertygroup(texture)
-    if material is not None:
-        update_material_texture(material, texture)
-
 
 def _update_blending(heio_material, context):
-    material = _get_material_from_propertygroup(heio_material)
-    if material is not None:
-        update_material_blending(material)
-
-
-class HEIO_MaterialParameterFloat(bpy.types.PropertyGroup):
-
-    name: StringProperty(
-        name="Name",
-        update=_update_float_parameter
-    )
-
-    value: FloatVectorProperty(
-        name="Value",
-        size=4,
-        precision=3,
-        update=_update_float_parameter
-    )
-
-    color_value: FloatVectorProperty(
-        name="Value",
-        subtype="COLOR",
-        size=4,
-        soft_min=0,
-        soft_max=1,
-        default=(1, 1, 1, 1),
-        update=_update_float_parameter
-    )
-
-    is_color: BoolProperty(
-        name="Is Color",
-        description="Whether the parameter is a color",
-        default=False,
-        update=_update_is_color
-    )
-
-    @property
-    def display_value(self) -> str:
-        return f"{{{self.value[0]:.3f}, {self.value[1]:.3f}, {self.value[2]:.3f}, {self.value[3]:.3f}}}"
-
-
-class HEIO_MaterialParameterFloatList(BaseList):
-
-    elements: CollectionProperty(
-        type=HEIO_MaterialParameterFloat
-    )
-
-
-class HEIO_MaterialParameterBoolean(bpy.types.PropertyGroup):
-
-    name: StringProperty(
-        name="Name",
-        update=_update_boolean_parameter
-    )
-
-    value: BoolProperty(
-        name="Value",
-        update=_update_boolean_parameter
-    )
-
-    @property
-    def display_value(self) -> str:
-        t = "X"
-        f = "-"
-        return f"{{{t if self.value[0] else f}, {t if self.value[1] else f}, {t if self.value[2] else f}, {t if self.value[3] else f}}}"
-
-
-class HEIO_MaterialParameterBooleanList(BaseList):
-
-    elements: CollectionProperty(
-        type=HEIO_MaterialParameterBoolean
-    )
-
-
-class HEIO_MaterialTexture(bpy.types.PropertyGroup):
-
-    name: StringProperty(
-        name="Type Name",
-        description=(
-            "Texture slot of the shader to place this texture into."
-            " Common types are \"diffuse\", \"specular\", \"normal\", \"emission\" and \"transparency\""
-        ),
-        update=_update_texture
-    )
-
-    texcoord_index: IntProperty(
-        name="Texture coordinate index",
-        min=0,
-        max=255,
-        update=_update_texture
-    )
-
-    wrapmode_u: EnumProperty(
-        name="Wrapmode U",
-        items=(
-            ("REPEAT", "Repeat", ""),
-            ("MIRROR", "Mirror", ""),
-            ("CLAMP", "Clamp", ""),
-            ("MIRRORONCE", "Mirror Once", ""),
-            ("BORDER", "Border", ""),
-        ),
-        description="Wrapmode along the horizontal axis of the texture coordinates",
-        default="REPEAT",
-        update=_update_texture
-    )
-
-    wrapmode_v: EnumProperty(
-        name="Wrapmode V",
-        items=(
-            ("REPEAT", "Repeat", ""),
-            ("MIRROR", "Mirror", ""),
-            ("CLAMP", "Clamp", ""),
-            ("MIRRORONCE", "Mirror Once", ""),
-            ("BORDER", "Border", ""),
-        ),
-        description="Wrapmode along the vertical axis of the texture coordinates",
-        default="REPEAT",
-        update=_update_texture
-    )
-
-    @property
-    def type_index(self):
-        material = _get_material_from_propertygroup(self)
-        if material is None:
-            return 0
-
-        result = 0
-
-        for texture in material.heio_material.textures:
-            if texture == self:
-                return result
-            elif texture.name == self.name:
-                result += 1
-
-        return None
-
-
-class HEIO_MaterialTextureList(BaseList):
-
-    elements: CollectionProperty(
-        type=HEIO_MaterialTexture
-    )
+    heio_material.update_material_properties()
 
 
 def _get_shader_enum_params(context: bpy.types.Context) -> tuple[bool, shader_definitions.ShaderDefinitionCollection]:
@@ -213,7 +32,8 @@ def _get_shader_enum_params(context: bpy.types.Context) -> tuple[bool, shader_de
 
 
 def _get_shader_definition_items(material_properties, context: bpy.types.Context):
-    show_all, sdc = _get_shader_enum_params(context)
+    show_all, sdc = _get_shader_enum_params(
+        context)
 
     if material_properties.shader_name in sdc.definitions:
 
@@ -234,7 +54,8 @@ def _get_shader_definition_items(material_properties, context: bpy.types.Context
 
 
 def _get_shader_definition(material_properties):
-    show_all, sdc = _get_shader_enum_params(bpy.context)
+    show_all, sdc = _get_shader_enum_params(
+        bpy.context)
 
     if material_properties.shader_name in sdc.definitions:
         definition = sdc.definitions[material_properties.shader_name]
@@ -252,7 +73,8 @@ def _set_shader_definition(material_properties, value):
     if material_properties.custom_shader:
         return
 
-    show_all, sdc = _get_shader_enum_params(bpy.context)
+    show_all, sdc = _get_shader_enum_params(
+        bpy.context)
     fallback = False
 
     if material_properties.shader_name in sdc.definitions:
@@ -359,11 +181,11 @@ class HEIO_Material(bpy.types.PropertyGroup):
 
             return current_index + 1
 
-        def after_setup_float(item: HEIO_MaterialParameterFloat, created):
+        def after_setup_float(item, created):
             if item.is_color:
                 item.is_color = False
 
-        def after_setup_color(item: HEIO_MaterialParameterFloat, created):
+        def after_setup_color(item, created):
             if item.is_color:
                 return
 
@@ -393,19 +215,38 @@ class HEIO_Material(bpy.types.PropertyGroup):
 
         # Removing irrelevant items
 
-        material = _get_material_from_propertygroup(self)
-
-        def remove_above(list: BaseList, end_index: int, update):
+        def remove_above(list: BaseList, end_index: int):
             index = len(list) - 1
             while index >= end_index:
-                update(material, list[index], True)
+                list[index].reset_nodes()
                 list.remove(index)
                 index = len(list) - 1
 
-        remove_above(self.float_parameters, current_float_index, update_material_float_parameter)
-        remove_above(self.boolean_parameters, current_boolean_index, update_material_boolean_parameter)
-        remove_above(self.textures, current_texture_index, update_material_texture)
+        remove_above(self.float_parameters, current_float_index)
+        remove_above(self.boolean_parameters, current_boolean_index)
+        remove_above(self.textures, current_texture_index)
+
+    def update_material_properties(self):
+        if self.layer == 'TRANSPARENT':
+            self.id_data.surface_render_method = 'BLENDED'
+        else:
+            self.id_data.surface_render_method = 'DITHERED'
+
+    def update_material_nodes(self):
+
+        for float_parameter in self.float_parameters:
+            float_parameter.update_nodes()
+
+        for boolean_parameter in self.boolean_parameters:
+            boolean_parameter.update_nodes()
+
+        for texture in self.textures:
+            texture.update_nodes()
+
+    def update_material_all(self):
+        self.update_material_nodes()
+        self.update_material_properties()
 
     @classmethod
     def register(cls):
-        bpy.types.Material.heio_material = PointerProperty(type=cls)
+        Material.heio_material = PointerProperty(type=cls)

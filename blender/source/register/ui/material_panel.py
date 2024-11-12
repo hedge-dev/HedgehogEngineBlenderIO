@@ -101,8 +101,8 @@ class BaseTextureList:
 
         if len(item.name) == 0:
             icon = "ERROR"
-        # elif item.image is None:
-        #     icon = "MESH_PLANE"
+        elif item.image is None:
+            icon = "MESH_PLANE"
         else:
             icon = "OUTLINER_OB_IMAGE"
 
@@ -192,7 +192,6 @@ class HEIO_PT_Material(PropertiesPanel):
     @staticmethod
     def draw_texture_editor(
             layout: bpy.types.UILayout,
-            material: bpy.types.Material,
             material_properties: HEIO_Material):
 
         header, menu = layout.panel("heio_mat_tex", default_closed=True)
@@ -231,22 +230,7 @@ class HEIO_PT_Material(PropertiesPanel):
             split.alignment = "LEFT"
             split.label(text="  " + texture.name, icon=name_icon)
 
-        try:
-            texture_name = texture.name
-
-            texture_index = texture.type_index
-            if texture_index > 0:
-                texture_name += str(texture_index)
-
-            texture_node = material.node_tree.nodes["Texture " + texture_name]
-            menu.prop_search(texture_node, "image", bpy.data, "images")
-
-        except:
-            split: bpy.types.UILayout = menu.row().split(factor=0.4)
-            split.alignment = "RIGHT"
-            split.label(text="Image")
-            split.alignment = "LEFT"
-            split.label(text="  Material nodes not correctly set up", icon="ERROR")
+        menu.prop_search(texture, "image", bpy.data, "images")
 
         menu.prop(texture, "texcoord_index")
         menu.prop(texture, "wrapmode_u")
@@ -330,7 +314,6 @@ class HEIO_PT_Material(PropertiesPanel):
 
         HEIO_PT_Material.draw_texture_editor(
             layout,
-            material,
             material_properties
         )
 

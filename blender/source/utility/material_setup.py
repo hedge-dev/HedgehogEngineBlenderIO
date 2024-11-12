@@ -1,5 +1,6 @@
 import os
 import bpy
+from typing import Iterable
 
 from ..utility import general
 
@@ -63,19 +64,23 @@ def _setup_material(
         to_socket = mapping[tlink.to_socket]
         node_tree.links.new(from_socket, to_socket)
 
+
 ##################################################
 
-TEXTURE_WRAP_MAPPING = {
-    "REPEAT": (False, False),
-    "MIRROR": (True, False),
-    "CLAMP": (False, True),
-    "MIRRORONCE": (True, True),
-    "BORDER": (False, True),
-}
-"""[Mode] = (Mirror, Clamp)"""
+
+def get_node_of_type(material: bpy.types.Material, name: str, type) -> bpy.types.ShaderNode | None:
+    try:
+        node = material.node_tree.nodes[name]
+    except:
+        return None
+
+    if isinstance(node, type):
+        return node
+
+    return None
 
 
-def _get_first_connected_socket(socket: bpy.types.NodeSocket):
+def get_first_connected_socket(socket: bpy.types.NodeSocket):
     if not socket.is_linked:
         return None
 
@@ -101,168 +106,16 @@ def _get_first_connected_socket(socket: bpy.types.NodeSocket):
     return None
 
 
-def _reset_output_socket(socket: bpy.types.NodeSocket):
-    connected = _get_first_connected_socket(socket)
+def reset_output_socket(socket: bpy.types.NodeSocket):
+    connected = get_first_connected_socket(socket)
     if connected is None:
         return
 
     socket.default_value = connected.default_value
 
 
-def update_material_float_parameter(material: bpy.types.Material, parameter, reset: bool = False):
-    node_tree = material.node_tree
-
-    value = parameter.value
-    if parameter.is_color:
-        value = parameter.color_value
-
-    if parameter.name in node_tree.nodes:
-        node = node_tree.nodes[parameter.name]
-
-        if isinstance(node, bpy.types.ShaderNodeRGB):
-            if reset:
-                _reset_output_socket(node.outputs[0])
-            else:
-                node.outputs[0].default_value = value
-
-        if isinstance(node, bpy.types.ShaderNodeCombineRGB) or isinstance(node, bpy.types.ShaderNodeCombineXYZ):
-            if reset:
-                connected = _get_first_connected_socket(node.outputs[0])
-                if connected is not None:
-                    node.inputs[0].default_value = connected.default_value[0]
-                    node.inputs[1].default_value = connected.default_value[1]
-                    node.inputs[2].default_value = connected.default_value[2]
-
-            else:
-                node.inputs[0].default_value = value[0]
-                node.inputs[1].default_value = value[1]
-                node.inputs[2].default_value = value[2]
-
-    w_channel = parameter.name + ".w"
-    if w_channel in node_tree.nodes:
-        node = node_tree.nodes[w_channel]
-
-        if isinstance(node, bpy.types.ShaderNodeValue):
-            if reset:
-                _reset_output_socket(node.outputs[0])
-            else:
-                node.outputs[0].default_value = value[4]
-
-    a_channel = parameter.name + ".a"
-    if a_channel in node_tree.nodes:
-        node = node_tree.nodes[a_channel]
-
-        if isinstance(node, bpy.types.ShaderNodeValue):
-            if reset:
-                _reset_output_socket(node.outputs[0])
-            else:
-                node.outputs[0].default_value = value[4]
-
-
-def update_material_boolean_parameter(material: bpy.types.Material, parameter, reset: bool = False):
-    node_tree = material.node_tree
-
-    if parameter.name in node_tree.nodes:
-        node = node_tree.nodes[parameter.name]
-
-        if isinstance(node, bpy.types.ShaderNodeValue):
-            if reset:
-                _reset_output_socket(node.outputs[0])
-            else:
-                node.outputs[0].default_value = 1 if parameter.value else 0
-
-
-def update_material_texture(material: bpy.types.Material, texture, reset: bool = False):
-    node_tree = material.node_tree
-
-    texture_name = texture.name
-
-    texture_index = texture.type_index
-    if texture_index > 0:
-        texture_name += str(texture_index)
-
-    texture_node_name = "Texture " + texture_name
-    image = None
-    if texture_node_name in node_tree.nodes:
-        node = node_tree.nodes[texture_node_name]
-        if reset:
-            node.image = None
-        else:
-            image = node.image
-
-
-    # Has Texture node
-
-    has_texture = "Has " + texture_node_name
-    if has_texture in node_tree.nodes:
-        node = node_tree.nodes[has_texture]
-
-        if isinstance(node, bpy.types.ShaderNodeValue):
-            node.outputs[0].default_value = 0 if image is None else 1
-
-    if reset:
-        return
-
-    # UV Tiling node
-
-    tiling = "Tiling " + texture_name
-    if tiling not in node_tree.nodes:
-        return
-
-    node = node_tree.nodes[has_texture]
-
-    if (not isinstance(node, bpy.types.ShaderNodeGroup)
-            or node.node_tree.name != "HEIO UV Tiling"):
-        return
-
-    node.inputs[1].default_value, node.inputs[3].default_value = TEXTURE_WRAP_MAPPING[texture.wrapmode_u]
-    node.inputs[2].default_value, node.inputs[4].default_value = TEXTURE_WRAP_MAPPING[texture.wrapmode_v]
-
-    # Connecting to UV node
-
-    uv_name = "UV" + texture.texcoord_index
-    if uv_name not in node_tree.nodes:
-        return
-
-    uv_node = node_tree.nodes[uv_name]
-
-    try:
-        link: bpy.types.NodeLink = node.inputs[0].links[0]
-
-        if link.from_node == uv_node:
-            return
-
-        node_tree.links.remove(link)
-    except Exception:
-        pass
-
-    node_tree.links.new(uv_node.outputs[0], node.inputs[0])
-
-
-def update_material_blending(material: bpy.types.Material):
-    if material.heio_material.layer == 'TRANSPARENT':
-        material.surface_render_method = 'BLENDED'
-    else:
-        material.surface_render_method = 'DITHERED'
-
-
-def update_all_material_values(material: bpy.types.Material):
-
-    if not material.use_nodes:
-        return
-
-    for float_parameter in material.heio_material.float_parameters:
-        update_material_float_parameter(material, float_parameter)
-
-    for boolean_parameter in material.heio_material.boolean_parameters:
-        update_material_boolean_parameter(material, boolean_parameter)
-
-    for texture in material.heio_material.textures:
-        update_material_texture(material, texture)
-
-    update_material_blending(material)
-
 ##################################################
+
 
 def _predict_material_name(name):
     if name not in bpy.data.materials:
@@ -309,7 +162,7 @@ def _get_templates(context: bpy.types.Context, shader_names: set[str]):
 
 def setup_and_update_materials(
         context: bpy.types.Context,
-        materials: list[bpy.types.Material]):
+        materials: Iterable[bpy.types.Material]):
 
     shader_names = set([x.heio_material.shader_name for x in materials])
     templates = _get_templates(context, shader_names)
@@ -318,7 +171,7 @@ def setup_and_update_materials(
         material.use_nodes = True
         _setup_material(
             material, templates[material.heio_material.shader_name])
-        update_all_material_values(material)
+        material.heio_material.update_material_all()
 
     for template in templates.values():
         bpy.data.materials.remove(template)

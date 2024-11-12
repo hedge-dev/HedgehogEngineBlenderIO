@@ -1,5 +1,5 @@
 import bpy
-from bpy.props import EnumProperty, BoolProperty, IntProperty
+from bpy.props import EnumProperty
 from bpy.types import Context
 
 from .base import HEIOBaseOperator, HEIOBasePopupOperator
