@@ -138,6 +138,19 @@ class HEIO_MaterialParameterFloatList(BaseList):
         type=HEIO_MaterialParameterFloat
     )
 
+    def find_next_index(self, name: str, index: int):
+        for i, parameter in enumerate(self.elements[index:]):
+            if parameter.name == name:
+                return index + i
+
+        return -1
+
+    def find_next(self, name: str, index: int):
+        index = self.find_next_index(name, index)
+        if index == -1:
+            return None
+        return self[index]
+
 
 class HEIO_MaterialParameterBoolean(bpy.types.PropertyGroup):
 
@@ -184,3 +197,16 @@ class HEIO_MaterialParameterBooleanList(BaseList):
     elements: CollectionProperty(
         type=HEIO_MaterialParameterBoolean
     )
+
+    def find_next_index(self, name: str, index: int):
+        for i, parameter in enumerate(self.elements[index:]):
+            if parameter.name == name:
+                return index + i
+
+        return -1
+
+    def find_next(self, name: str, index: int):
+        index = self.find_next_index(name, index)
+        if index == -1:
+            return None
+        return self[index]

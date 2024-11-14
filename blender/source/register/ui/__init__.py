@@ -1,6 +1,7 @@
 from . import (
 	scene_panel,
     material_panel,
+	menus,
     viewport_toolbar
 )
 
@@ -12,6 +13,10 @@ to_register = [
 	material_panel.HEIO_UL_TextureList,
     material_panel.HEIO_UL_CustomTextureList,
     material_panel.HEIO_PT_Material,
+
+    menus.TOPBAR_MT_HEIO_Export,
+	menus.TOPBAR_MT_HEIO_Import,
+	menus.NativeHooks,
 
     viewport_toolbar.HEIO_PT_VTP_Info
 ]

@@ -180,3 +180,16 @@ class HEIO_MaterialTextureList(BaseList):
     elements: CollectionProperty(
         type=HEIO_MaterialTexture
     )
+
+    def find_next_index(self, name: str, index: int):
+        for i, texture in enumerate(self.elements[index:]):
+            if texture.name == name:
+                return index + i
+
+        return -1
+
+    def find_next(self, name: str, index: int):
+        index = self.find_next_index(name, index)
+        if index == -1:
+            return None
+        return self[index]

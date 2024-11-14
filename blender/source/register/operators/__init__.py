@@ -1,10 +1,13 @@
 from . import (
+	import_operators,
 	material_operators,
 	material_parameter_operators,
 	info_operators
 )
 
 to_register = [
+	import_operators.HEIO_OT_Import_Material,
+
 	material_operators.HEIO_OT_Material_UpdateProperties,
 	material_operators.HEIO_OT_Material_UpdateActiveProperties,
 

@@ -107,7 +107,7 @@ class HEIO_Material(bpy.types.PropertyGroup):
     custom_shader: BoolProperty(
         name="Custom Shader",
         description="Whether to create a custom shader setup, instead of using a preset.",
-        default=False
+        default=True
     )
 
     shader_name: StringProperty(
@@ -163,8 +163,9 @@ class HEIO_Material(bpy.types.PropertyGroup):
         current_texture_index = 0
 
         def setup_item(list: BaseList, name: str, current_index: str, after_setup):
-            if name in list.elements[current_index:]:
-                item = list.elements[current_index:][name]
+            index = list.find_next_index(name, current_index)
+            if index >= 0:
+                item = list[index]
                 old_index = list.get_index(item)
                 created = False
             else:
