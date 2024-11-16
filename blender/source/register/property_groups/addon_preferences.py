@@ -48,7 +48,6 @@ class HEIO_AddonPreferences(bpy.types.AddonPreferences):
 
     def draw(self, context):
         self.layout.prop(self, "ntsp_dir_unleashed")
-        self.layout.prop(self, "ntsp_dir_colors")
         self.layout.prop(self, "ntsp_dir_generations")
         self.layout.prop(self, "ntsp_dir_lost_world")
         self.layout.prop(self, "ntsp_dir_forces")
