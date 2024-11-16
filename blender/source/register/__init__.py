@@ -21,12 +21,9 @@ def register():
     definitions.load_definitions()
 
     for cls in classes:
-        if hasattr(cls, "DONT_REGISTER_CLASS"):
-            continue
-        bpy.utils.register_class(cls)
-
-    for cls in classes:
-        if hasattr(cls, "register"):
+        if not hasattr(cls, "DONT_REGISTER_CLASS"):
+            bpy.utils.register_class(cls)
+        elif hasattr(cls, "register"):
             cls.register()
 
     bpy.utils.register_manual_map(manual.add_manual_map)
@@ -37,13 +34,10 @@ def unregister():
     bpy.utils.unregister_manual_map(manual.add_manual_map)
 
     for cls in classes:
-        if hasattr(cls, "unregister"):
-            cls.register()
-
-    for cls in classes:
-        if hasattr(cls, "DONT_REGISTER_CLASS"):
-            continue
-        bpy.utils.unregister_class(cls)
+        if not hasattr(cls, "DONT_REGISTER_CLASS"):
+            bpy.utils.unregister_class(cls)
+        elif hasattr(cls, "unregister"):
+            cls.unregister()
 
 
 def reload_package(module_dict_main):
