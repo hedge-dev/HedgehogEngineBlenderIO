@@ -84,8 +84,8 @@ class HEIO_OT_Import_Material(HEIOBaseFileLoadOperator):
         from ...importing import i_material
 
         materials = i_material.convert_sharpneedle_materials(
-            sn_materials,
             context,
+            sn_materials,
             self.create_undefined_parameters,
             self.use_existing_images,
             directory if self.import_images else None,)

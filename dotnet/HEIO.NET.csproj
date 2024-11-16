@@ -10,12 +10,13 @@
 	  <Platforms>AnyCPU</Platforms>
   </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\SharpNeedle\Source\SharpNeedle\SharpNeedle.csproj" />
-  </ItemGroup>
-
 	<ItemGroup>
 		<PackageReference Include="BCnEncoder.Net" Version="2.1.0" />
+		<!--<PackageReference Include="SharpNeedle" Version="0.1.14" />-->
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\SharpNeedle\Source\SharpNeedle\SharpNeedle.csproj"/>
 	</ItemGroup>
 
 </Project>

@@ -16,6 +16,8 @@ from ..utility.material_setup import (
     get_first_connected_socket
 )
 
+from ..utility.general import get_addon_preferences
+
 
 def _get_placeholder_image_color(node: bpy.types.ShaderNodeTexImage):
     if node is None:
@@ -44,24 +46,40 @@ def _get_placeholder_image_color(node: bpy.types.ShaderNodeTexImage):
     return (red, green, blue, alpha)
 
 
-def _load_image(texture, image_name: str, textures_path: str):
+def _load_image(
+        texture,
+        image_name: str,
+        net_images: dict[str, any],):
+
     image = None
+    streamed_data = None
+    node: bpy.types.ShaderNodeTexImage = texture.image_node
 
-    if textures_path is not None:
-        image_file_path = os.path.join(
-            textures_path, image_name + ".dds")
+    colorspace = "sRGB"
+    if node is not None:
+        label_colorspace = node.label.split(";")[0]
+        if label_colorspace in ["sRGB", "Non-Color"]:
+            colorspace = label_colorspace
 
-        image_data = HEIO_NET.IMAGE.LoadDDS(image_file_path)
-        if image_data is not None:
+    if image_name in net_images:
+        net_image = net_images[image_name]
+
+        if net_image.StreamedData is not None:
+            streamed_data = net_image.StreamedData
             image = bpy.data.images.new(
                 image_name,
-                image_data.Item1,
-                image_data.Item2,
-                alpha=image_data.Item4,
-                float_buffer=image_data.Item5
+                streamed_data.Width,
+                streamed_data.Height,
+                alpha=streamed_data.HasAlpha,
+                float_buffer=streamed_data.IsHDR,
+                is_data=colorspace == 'Non-Color'
             )
 
-            image.pixels = image_data.Item3
+            image.pixels = list(streamed_data.Colors)
+        else:
+            image = bpy.data.images.load(net_image.Filepath, check_existing=True)
+            image.name = image_name
+            image.colorspace_settings.name = colorspace
 
     if image is None:
         # placeholder texture
@@ -72,10 +90,12 @@ def _load_image(texture, image_name: str, textures_path: str):
             alpha=True)
 
         image.source = 'GENERATED'
-        image.generated_color = _get_placeholder_image_color(texture.image_node)
+        image.generated_color = _get_placeholder_image_color(node)
 
     image.update()
-    image.pack()
+
+    if streamed_data is not None:
+        image.pack()
 
     return image
 
@@ -85,7 +105,7 @@ def _convert_textures(
         output: HEIO_MaterialTextureList,
         create_missing: bool,
         use_existing_images: bool,
-        textures_path: str | None,
+        images: dict[str, any],
         loaded_images: dict[str, bpy.types.Image]):
 
     name_indices = {}
@@ -121,7 +141,10 @@ def _convert_textures(
                 texture.image = bpy.data.images[sn_texture.PictureName]
             else:
                 image = _load_image(
-                    texture, sn_texture.PictureName, textures_path)
+                    texture,
+                    sn_texture.PictureName,
+                    images)
+
                 loaded_images[sn_texture.PictureName] = image
                 texture.image = image
 
@@ -150,8 +173,8 @@ def _convert_parameters(sn_parameters: any, output, create_missing: bool, conv):
 
 
 def convert_sharpneedle_materials(
-        sn_materials: Iterable[any],
         context: bpy.types.Context,
+        sn_materials: Iterable[any],
         create_undefined_parameters: bool,
         use_existing_images: bool,
         textures_path: str | None):
@@ -183,6 +206,10 @@ def convert_sharpneedle_materials(
 
     setup_and_update_materials(context, materials.values())
 
+    pref = get_addon_preferences(context)
+    ntsp_dir = getattr(pref, "ntsp_dir_" + context.scene.heio_scene.target_game.lower())
+    images = HEIO_NET.IMAGE.LoadMaterialImages(sn_materials, textures_path, ntsp_dir)
+
     loaded_textures = {}
 
     for sn_material, material in materials.items():
@@ -208,7 +235,7 @@ def convert_sharpneedle_materials(
             material_properties.textures,
             create_missing,
             use_existing_images,
-            textures_path,
+            images,
             loaded_textures
         )
 

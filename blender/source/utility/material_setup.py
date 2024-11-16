@@ -173,5 +173,6 @@ def setup_and_update_materials(
             material, templates[material.heio_material.shader_name])
         material.heio_material.update_material_all()
 
-    for template in templates.values():
+    template_materials = set(templates.values())
+    for template in template_materials:
         bpy.data.materials.remove(template)

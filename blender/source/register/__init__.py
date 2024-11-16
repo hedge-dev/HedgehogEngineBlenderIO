@@ -34,8 +34,6 @@ def register():
 def unregister():
     """Unloading classes loaded in register(), as well as various cleanup"""
 
-    # unload_dotnet()
-
     bpy.utils.unregister_manual_map(manual.add_manual_map)
 
     for cls in classes:

@@ -1,4 +1,5 @@
 from . import (
+	addon_preferences,
 	scene_properties,
 	material_parameter_properties,
 	material_texture_properties,
@@ -6,6 +7,8 @@ from . import (
 )
 
 to_register = [
+	addon_preferences.HEIO_AddonPreferences,
+
     scene_properties.HEIO_Scene,
 
     material_parameter_properties.HEIO_MaterialParameterFloat,

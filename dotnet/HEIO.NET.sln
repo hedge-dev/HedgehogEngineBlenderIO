@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.10.35027.167
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HEIO.NET", "HEIO.NET.csproj", "{4B03B889-16A5-4260-A925-CF483C10BE39}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpNeedle", "..\..\SharpNeedle\Source\SharpNeedle\SharpNeedle.csproj", "{C147236F-2B3F-48F4-A0E6-477D15F60CBC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4B03B889-16A5-4260-A925-CF483C10BE39}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4B03B889-16A5-4260-A925-CF483C10BE39}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4B03B889-16A5-4260-A925-CF483C10BE39}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4B03B889-16A5-4260-A925-CF483C10BE39}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C147236F-2B3F-48F4-A0E6-477D15F60CBC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C147236F-2B3F-48F4-A0E6-477D15F60CBC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C147236F-2B3F-48F4-A0E6-477D15F60CBC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C147236F-2B3F-48F4-A0E6-477D15F60CBC}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5655657A-C800-4DF4-A58D-90DBB16E09F1}
+	EndGlobalSection
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		..\..\SharpNeedle\Source\SharpNeedle.Shared\SharpNeedle.Shared.projitems*{c147236f-2b3f-48f4-a0e6-477d15f60cbc}*SharedItemsImports = 5
+	EndGlobalSection
+EndGlobal
