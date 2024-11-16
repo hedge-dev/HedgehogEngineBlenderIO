@@ -1,4 +1,3 @@
-import bpy
 from bpy.props import EnumProperty
 
 from .base import (
@@ -25,7 +24,7 @@ class MaterialParameterOperator(HEIOBaseOperator):
         options={'HIDDEN'},
     )
 
-    def get_parameter_collection(self, context):
+    def get_parameter_list(self, context):
         material: HEIO_Material = context.active_object.active_material.heio_material
 
         if self.mode == "FLOAT":
@@ -38,7 +37,7 @@ class MaterialParameterOperator(HEIOBaseOperator):
             raise HEIOException("Invalid parameter operator mode!")
 
     def _execute(self, context):
-        parameter_list = self.get_parameter_collection(context)
+        parameter_list = self.get_parameter_list(context)
         self.list_execute(context, parameter_list)
         return {'FINISHED'}
 

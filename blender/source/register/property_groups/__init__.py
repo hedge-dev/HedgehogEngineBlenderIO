@@ -1,5 +1,6 @@
 from . import (
 	addon_preferences,
+	sca_parameter_properties,
 	scene_properties,
 	material_parameter_properties,
 	material_texture_properties,
@@ -8,6 +9,9 @@ from . import (
 
 to_register = [
 	addon_preferences.HEIO_AddonPreferences,
+
+    sca_parameter_properties.HEIO_SCA_Parameter,
+	sca_parameter_properties.HEIO_SCA_Parameters,
 
     scene_properties.HEIO_Scene,
 

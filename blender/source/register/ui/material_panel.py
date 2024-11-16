@@ -9,6 +9,7 @@ from ..operators.material_operators import HEIO_OT_Material_UpdateActiveProperti
 from ..property_groups.material_properties import HEIO_Material
 from ..property_groups.scene_properties import HEIO_Scene
 
+from .sca_parameter_panel import draw_sca_editor_menu
 
 from ...utility.draw import draw_list, TOOL_PROPERTY
 
@@ -315,6 +316,12 @@ class HEIO_PT_Material(PropertiesPanel):
         HEIO_PT_Material.draw_texture_editor(
             layout,
             material_properties
+        )
+
+        draw_sca_editor_menu(
+            layout,
+            material_properties.sca_parameters,
+            "MATERIAL"
         )
 
     # === overriden methods === #

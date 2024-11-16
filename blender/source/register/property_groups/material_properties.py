@@ -15,6 +15,9 @@ from .material_parameter_properties import (
 from .material_texture_properties import (
     HEIO_MaterialTextureList
 )
+from .sca_parameter_properties import (
+    HEIO_SCA_Parameters
+)
 
 from ..definitions import shader_definitions
 
@@ -155,6 +158,10 @@ class HEIO_Material(bpy.types.PropertyGroup):
 
     textures: PointerProperty(
         type=HEIO_MaterialTextureList
+    )
+
+    sca_parameters: PointerProperty(
+        type=HEIO_SCA_Parameters
     )
 
     def setup_definition_parameters_and_textures(self, definition: shader_definitions.ShaderDefinition):
