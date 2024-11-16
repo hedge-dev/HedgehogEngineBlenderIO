@@ -12,7 +12,6 @@ class HEIO_Scene(bpy.types.PropertyGroup):
         description="Which game to target when exporting and setting up models/materials",
         items=(
             ("UNLEASHED", "Sonic Unleashed", ""),
-            ("COLORS", "Sonic Colors", ""),
             ("GENERATIONS", "Sonic Generations", ""),
             ("LOST_WORLD", "Sonic Lost World", ""),
             ("FORCES", "Sonic Forces", ""),
