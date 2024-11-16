@@ -10,12 +10,6 @@ class HEIO_AddonPreferences(bpy.types.AddonPreferences):
         subtype='DIR_PATH',
     )
 
-    ntsp_dir_colors: StringProperty(
-        name="NTSP directory: Colors",
-        description="Game Directory with .NTSP files for texture streaming. Needed for importing streamed textures.",
-        subtype='DIR_PATH',
-    )
-
     ntsp_dir_generations: StringProperty(
         name="NTSP directory: Generations",
         description="Game Directory with .NTSP files for texture streaming. Needed for importing streamed textures.",
