@@ -2,7 +2,7 @@ from typing import Iterable
 import os
 import bpy
 
-from . import i_enum
+from . import i_enum, i_sca_parameters
 
 from ..dotnet import HEIO_NET
 from ..register.definitions.shader_definitions import SHADER_DEFINITIONS
@@ -238,6 +238,12 @@ def convert_sharpneedle_materials(
             images,
             loaded_textures
         )
+
+        i_sca_parameters.convert_from_data(
+            sn_material,
+            material_properties.sca_parameters,
+            context,
+            "material")
 
         if created_missing_floats or created_missing_booleans or created_missing_textures:
             material_properties.custom_shader = True

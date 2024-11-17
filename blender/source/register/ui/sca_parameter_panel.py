@@ -91,7 +91,7 @@ def draw_sca_editor(layout: bpy.types.UILayout, sca_parameters: HEIO_SCA_Paramet
     if len(sca_parameter.name) == 0:
         icon = "ERROR"
     else:
-        icon = "BLANK1"
+        icon = "NONE"
 
     layout.prop(sca_parameter, "name", icon=icon)
     layout.prop(sca_parameter, "value_type")

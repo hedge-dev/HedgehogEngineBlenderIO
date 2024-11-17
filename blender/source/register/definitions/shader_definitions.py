@@ -12,7 +12,6 @@ class ShaderParameterType(Enum):
     BOOLEAN = 3
 
 
-
 class ShaderLayer(Enum):
     OPAQUE = 1
     TRANSPARENT = 2
@@ -117,6 +116,38 @@ class ShaderDefinitionCollection:
         self.items_all = []
         self.items_all_fallback = [("ERROR_FALLBACK", "", "")]
 
+    @staticmethod
+    def from_json_data(name, data):
+        result = ShaderDefinitionCollection(name)
+
+        base_definition = None
+        if "" in data:
+            base_definition = ShaderDefinition.from_json_data(
+                "", -1, -1, data[""], None)
+
+        for key, value in data.items():
+            if key == "":
+                continue
+
+            definition = ShaderDefinition.from_json_data(
+                key,
+                len(result.items_all),
+                len(result.items_visible),
+                value,
+                base_definition)
+
+            item = (key, key, "")
+
+            result.definitions[key] = definition
+            result.items_all.append(item)
+            result.items_all_fallback.append(item)
+
+            if not definition.hide:
+                result.items_visible.append(item)
+                result.items_visible_fallback.append(item)
+
+        return result
+
 
 SHADER_DEFINITIONS: dict[str, ShaderDefinitionCollection] = None
 
@@ -132,32 +163,5 @@ def load_shader_definitions():
             with open(filepath, "r") as file:
                 definition_json: dict = json.load(file)
 
-            base_definition = None
-            if "" in definition_json:
-                base_definition = ShaderDefinition.from_json_data(
-                    "", -1, -1, definition_json[""], None)
-
-            definition_collection = ShaderDefinitionCollection(directory)
-
-            for key, value in definition_json.items():
-                if key == "":
-                    continue
-
-                definition = ShaderDefinition.from_json_data(
-                    key,
-                    len(definition_collection.items_all),
-                    len(definition_collection.items_visible),
-                    value,
-                    base_definition)
-
-                item = (key, key, "")
-
-                definition_collection.definitions[key] = definition
-                definition_collection.items_all.append(item)
-                definition_collection.items_all_fallback.append(item)
-
-                if not definition.hide:
-                    definition_collection.items_visible.append(item)
-                    definition_collection.items_visible_fallback.append(item)
-
-            SHADER_DEFINITIONS[directory] = definition_collection
+            SHADER_DEFINITIONS[directory] = ShaderDefinitionCollection.from_json_data(
+                directory, definition_json)
