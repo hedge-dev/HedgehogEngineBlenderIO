@@ -8,7 +8,8 @@ from ..dotnet import HEIO_NET
 from ..register import definitions
 from ..register.property_groups.material_properties import (
     HEIO_Material,
-    HEIO_MaterialTextureList
+    HEIO_MaterialTextureList,
+    HEIO_MaterialParameterList
 )
 
 from ..utility.material_setup import (
@@ -151,23 +152,26 @@ def _convert_textures(
     return created_missing
 
 
-def _convert_parameters(sn_parameters: any, output, create_missing: bool, conv):
+def _convert_parameters(sn_parameters: any, output: HEIO_MaterialParameterList, types: list[str], create_missing: bool, conv):
     created_missing = False
 
     for sn_key_parameter in sn_parameters:
-        if sn_key_parameter.Key in output:
-            parameter = output[sn_key_parameter.Key]
-        elif create_missing:
-            parameter = output.new()
-            parameter.name = sn_key_parameter.Key
-            created_missing = True
-        else:
-            continue
+        parameter = output.find_next(sn_key_parameter.Key, 0, types)
 
+        if parameter is None:
+            if create_missing:
+                parameter = output.new()
+                parameter.name = sn_key_parameter.Key
+                parameter.value_type = types[0]
+                created_missing = True
+            else:
+                continue
+
+        value = sn_key_parameter.Value.Value
         if conv is not None:
-            parameter.value = conv(sn_key_parameter.Value.Value)
-        else:
-            parameter.value = sn_key_parameter.Value.Value
+            value = conv(value)
+
+        setattr(parameter, parameter.value_type.lower() + "_value", value)
 
     return created_missing
 
@@ -198,7 +202,7 @@ def convert_sharpneedle_materials(
 
         if shader_definitions is not None and material_properties.shader_name in shader_definitions.definitions:
             material_properties.custom_shader = False
-            material_properties.setup_definition_parameters_and_textures(
+            material_properties.setup_definition(
                 shader_definitions.definitions[material_properties.shader_name]
             )
         else:
@@ -216,21 +220,23 @@ def convert_sharpneedle_materials(
         material_properties: HEIO_Material = material.heio_material
         create_missing = create_undefined_parameters or material_properties.custom_shader
 
-        created_missing_floats = _convert_parameters(
+        created_missing = _convert_parameters(
             sn_material.FloatParameters,
-            material_properties.float_parameters,
+            material_properties.parameters,
+            ['FLOAT', 'COLOR'],
             create_missing,
             lambda x: (x.X, x.Y, x.Z, x.W)
         )
 
-        created_missing_booleans = _convert_parameters(
+        created_missing |= _convert_parameters(
             sn_material.BoolParameters,
-            material_properties.boolean_parameters,
+            material_properties.parameters,
+            ['BOOLEAN'],
             create_missing,
             None
         )
 
-        created_missing_textures = _convert_textures(
+        created_missing |= _convert_textures(
             sn_material.Texset,
             material_properties.textures,
             create_missing,
@@ -245,7 +251,7 @@ def convert_sharpneedle_materials(
             context,
             "material")
 
-        if created_missing_floats or created_missing_booleans or created_missing_textures:
+        if created_missing:
             material_properties.custom_shader = True
 
     return materials

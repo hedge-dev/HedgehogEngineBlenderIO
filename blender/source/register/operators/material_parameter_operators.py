@@ -17,8 +17,7 @@ class MaterialParameterOperator(HEIOBaseOperator):
     mode: EnumProperty(
         name="Mode",
         items=(
-            ("FLOAT", "Float", ""),
-            ("BOOLEAN", "Boolean", ""),
+            ("PARAMETER", "Parameters", ""),
             ("TEXTURE", "Textures", ""),
         ),
         options={'HIDDEN'},
@@ -27,10 +26,8 @@ class MaterialParameterOperator(HEIOBaseOperator):
     def get_parameter_list(self, context):
         material: HEIO_Material = context.active_object.active_material.heio_material
 
-        if self.mode == "FLOAT":
-            return material.float_parameters
-        elif self.mode == "BOOLEAN":
-            return material.boolean_parameters
+        if self.mode == "PARAMETER":
+            return material.parameters
         elif self.mode == "TEXTURE":
             return material.textures
         else:

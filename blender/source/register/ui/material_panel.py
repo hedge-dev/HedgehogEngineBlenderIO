@@ -65,13 +65,9 @@ class BaseParameterList:
         if len(item.name) == 0:
             icon = "ERROR"
 
-        value_name = "value"
-        if hasattr(item, "is_color") and item.is_color:
-            value_name = "color_value"
-
         split = layout.split(factor=0.4, align=True)
         self.draw_item_name(split, item, icon)
-        split.row(align=True).prop(item, value_name, text="")
+        split.row(align=True).prop(item, item.value_type.lower() + "_value", text="")
 
 
 class HEIO_UL_ParameterList(bpy.types.UIList, BaseParameterList):
@@ -137,32 +133,28 @@ class HEIO_PT_Material(PropertiesPanel):
     @staticmethod
     def draw_parameter_editor(
             layout: bpy.types.UILayout,
-            label: str,
-            panel_identifier: str,
-            mode: str,
-            is_custom_shader: bool,
-            parameter_collection: any):
+            material_properties: HEIO_Material):
 
-        header, menu = layout.panel(panel_identifier, default_closed=True)
-        header.label(text=label)
+        header, menu = layout.panel("heio_mat_param", default_closed=True)
+        header.label(text="Parameters")
         if not menu:
             return
 
-        tools = MATERIAL_PARAMETER_TOOLS if is_custom_shader else None
+        tools = MATERIAL_PARAMETER_TOOLS if material_properties.custom_shader else None
 
         def set_op_mode(operator, i):
-            operator.mode = mode
+            operator.mode = "PARAMETER"
 
         draw_list(
             menu,
-            HEIO_UL_CustomParameterList if is_custom_shader else HEIO_UL_ParameterList,
+            HEIO_UL_CustomParameterList if material_properties.custom_shader else HEIO_UL_ParameterList,
             None,
-            parameter_collection,
+            material_properties.parameters,
             tools,
             set_op_mode
         )
 
-        parameter = parameter_collection.active_element
+        parameter = material_properties.parameters.active_element
         if parameter is None:
             return
 
@@ -170,7 +162,7 @@ class HEIO_PT_Material(PropertiesPanel):
         menu.use_property_decorate = False
 
         name_icon = "ERROR" if len(parameter.name) == 0 else "NONE"
-        if is_custom_shader:
+        if material_properties.custom_shader:
             menu.prop(parameter, "name", icon=name_icon)
         else:
             split: bpy.types.UILayout = menu.split(factor=0.4)
@@ -179,16 +171,10 @@ class HEIO_PT_Material(PropertiesPanel):
             split.alignment = "LEFT"
             split.label(text="  " + parameter.name, icon=name_icon)
 
-        value_name = "value"
+        if material_properties.custom_shader:
+            menu.prop(parameter, "value_type")
 
-        if hasattr(parameter, "is_color"):
-            if is_custom_shader:
-                menu.prop(parameter, "is_color")
-
-            if parameter.is_color:
-                value_name = "color_value"
-
-        menu.row(align=True).prop(parameter, value_name)
+        menu.row(align=True).prop(parameter, parameter.value_type.lower() + "_value")
 
     @staticmethod
     def draw_texture_editor(
@@ -297,20 +283,7 @@ class HEIO_PT_Material(PropertiesPanel):
 
         HEIO_PT_Material.draw_parameter_editor(
             layout,
-            "Float Parameters",
-            "heio_mat_param_float",
-            "FLOAT",
-            material_properties.custom_shader,
-            material_properties.float_parameters
-        )
-
-        HEIO_PT_Material.draw_parameter_editor(
-            layout,
-            "Boolean Parameters",
-            "heio_mat_param_boolean",
-            "BOOLEAN",
-            material_properties.custom_shader,
-            material_properties.boolean_parameters
+            material_properties
         )
 
         HEIO_PT_Material.draw_texture_editor(

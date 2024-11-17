@@ -65,10 +65,8 @@ class HEIO_UL_SCAParameterList(bpy.types.UIList):
         split.prop(item, "value_type", text="")
 
         property = "value"
-        if item.value_type == 'FLOAT':
-            property = "float_value"
-        elif item.value_type == 'BOOLEAN':
-            property = "boolean_value"
+        if item.value_type != 'INTEGER':
+            property = item.value_type.lower() + "_value"
 
         split.prop(item, property, text="")
 

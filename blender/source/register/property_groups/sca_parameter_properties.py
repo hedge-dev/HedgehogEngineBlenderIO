@@ -34,6 +34,7 @@ class HEIO_SCA_Parameter(bpy.types.PropertyGroup):
 
 	name: StringProperty(
 		name="Name",
+		maxlen=8
 	)
 
 	value_type: EnumProperty(
