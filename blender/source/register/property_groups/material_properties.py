@@ -19,17 +19,17 @@ from .sca_parameter_properties import (
     HEIO_SCA_Parameters
 )
 
-from ..definitions import shader_definitions
+from .. import definitions
+from ..definitions.shader_definitions import ShaderParameterType
 
 
 def _update_blending(heio_material, context):
     heio_material.update_material_properties()
 
 
-def _get_shader_enum_params(context: bpy.types.Context) -> tuple[bool, shader_definitions.ShaderDefinitionCollection]:
-    target_game: str = context.scene.heio_scene.target_game
+def _get_shader_enum_params(context: bpy.types.Context):
     show_all: bool = context.scene.heio_scene.show_all_shaders
-    shader_definition_collection = shader_definitions.SHADER_DEFINITIONS[target_game]
+    shader_definition_collection = definitions.get_shader_definitions(context)
 
     return show_all, shader_definition_collection
 
@@ -164,7 +164,7 @@ class HEIO_Material(bpy.types.PropertyGroup):
         type=HEIO_SCA_Parameters
     )
 
-    def setup_definition_parameters_and_textures(self, definition: shader_definitions.ShaderDefinition):
+    def setup_definition_parameters_and_textures(self, definition: definitions.shader.ShaderDefinition):
         current_boolean_index = 0
         current_float_index = 0
         current_texture_index = 0
@@ -205,11 +205,11 @@ class HEIO_Material(bpy.types.PropertyGroup):
 
         for parameter_name, parameter_type in definition.parameters.items():
 
-            if parameter_type == shader_definitions.ShaderParameterType.FLOAT:
+            if parameter_type == ShaderParameterType.FLOAT:
                 current_float_index = setup_item(
                     self.float_parameters, parameter_name, current_float_index, after_setup_float)
 
-            elif parameter_type == shader_definitions.ShaderParameterType.COLOR:
+            elif parameter_type == ShaderParameterType.COLOR:
                 current_float_index = setup_item(
                     self.float_parameters, parameter_name, current_float_index, after_setup_color)
 

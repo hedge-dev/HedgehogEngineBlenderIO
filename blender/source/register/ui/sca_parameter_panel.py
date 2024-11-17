@@ -25,6 +25,12 @@ SCA_PARAMETER_TOOLS: list[TOOL_PROPERTY] = [
         scapop.HEIO_OT_SCAParameters_Move.bl_idname,
         "TRIA_DOWN",
         {"direction": "DOWN"}
+    ),
+    None,
+    (
+        scapop.HEIO_OT_SCAParameters_NewFromPreset.bl_idname,
+        "PRESET",
+        {}
     )
 ]
 
@@ -109,5 +115,6 @@ def draw_sca_editor_menu(layout: bpy.types.UILayout, sca_parameters: HEIO_SCA_Pa
     header, menu = layout.panel(
         "heio_sca_param_" + mode.lower(), default_closed=True)
     header.label(text="SCA Parameters")
+
     if menu:
         draw_sca_editor(menu, sca_parameters, mode)

@@ -5,7 +5,7 @@ import bpy
 from . import i_enum, i_sca_parameters
 
 from ..dotnet import HEIO_NET
-from ..register.definitions.shader_definitions import SHADER_DEFINITIONS
+from ..register import definitions
 from ..register.property_groups.material_properties import (
     HEIO_Material,
     HEIO_MaterialTextureList
@@ -180,6 +180,7 @@ def convert_sharpneedle_materials(
         textures_path: str | None):
 
     materials: dict[any, bpy.types.Material] = {}
+    shader_definitions = definitions.get_shader_definitions(context)
 
     for sn_material in sn_materials:
         if sn_material in materials:
@@ -195,8 +196,7 @@ def convert_sharpneedle_materials(
         material.alpha_threshold = sn_material.AlphaThreshold
         material.use_backface_culling = not sn_material.NoBackFaceCulling
 
-        shader_definitions = SHADER_DEFINITIONS[context.scene.heio_scene.target_game]
-        if material_properties.shader_name in shader_definitions.definitions:
+        if shader_definitions is not None and material_properties.shader_name in shader_definitions.definitions:
             material_properties.custom_shader = False
             material_properties.setup_definition_parameters_and_textures(
                 shader_definitions.definitions[material_properties.shader_name]

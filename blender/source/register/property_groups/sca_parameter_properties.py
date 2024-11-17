@@ -12,10 +12,10 @@ from .base_list import BaseList
 
 from ctypes import(
 	c_int32,
+	c_float,
 	cast,
 	pointer,
 	POINTER,
-	c_float
 )
 
 def _get_float_value(self):
@@ -39,9 +39,9 @@ class HEIO_SCA_Parameter(bpy.types.PropertyGroup):
 	value_type: EnumProperty(
 		name="Type",
 		items=(
-			('INTEGER', "Number", "A signed integer"),
-			('FLOAT', "Float Number", "A floating point number"),
-			('BOOLEAN', "Boolean", "A boolean"),
+			('INTEGER', "Integer", ""),
+			('FLOAT', "Float", ""),
+			('BOOLEAN', "Boolean", ""),
 		),
 		default='INTEGER'
 	)

@@ -1,8 +1,5 @@
 from enum import Enum
-import json
-import os
 
-from ...utility import general
 from ...exceptions import HEIOException
 
 
@@ -147,21 +144,3 @@ class ShaderDefinitionCollection:
                 result.items_visible_fallback.append(item)
 
         return result
-
-
-SHADER_DEFINITIONS: dict[str, ShaderDefinitionCollection] = None
-
-
-def load_shader_definitions():
-    global SHADER_DEFINITIONS
-    SHADER_DEFINITIONS = {}
-
-    definitions_path = os.path.join(general.get_path(), "Definitions")
-    for root, directories, _ in os.walk(definitions_path):
-        for directory in directories:
-            filepath = os.path.join(root, directory, "Shaders.json")
-            with open(filepath, "r") as file:
-                definition_json: dict = json.load(file)
-
-            SHADER_DEFINITIONS[directory] = ShaderDefinitionCollection.from_json_data(
-                directory, definition_json)

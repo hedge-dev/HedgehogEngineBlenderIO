@@ -1,17 +1,14 @@
 import bpy
 from ctypes import c_int32
 
-from ..register.definitions.sca_parameter_definitions import SCA_PARAMETER_DEFINITIONS
+from ..register import definitions
 
 def convert_from_node(node: any, sca_parameter_list, context: bpy.types.Context, data_type: str):
 
 	if context is None:
 		context = bpy.context
 
-	parameter_definitions = None
-	if context.scene.heio_scene.target_game in SCA_PARAMETER_DEFINITIONS:
-		definition_collection = SCA_PARAMETER_DEFINITIONS[context.scene.heio_scene.target_game]
-		parameter_definitions = getattr(definition_collection, data_type)
+	parameter_definitions = definitions.get_sca_parameter_definitions(context, data_type)
 
 	for parameter in node:
 		sca_parameter = sca_parameter_list.new()
