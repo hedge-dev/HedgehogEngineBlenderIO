@@ -9,7 +9,7 @@ from .source.register import register, unregister
 bl_info = {
     "name": "Hedgehog Engine I/O",
     "author": "Justin113D, hedge-dev",
-    "description": "Import/Exporter for Hedgehog Engine Model-, Animation- and other Formats.",
+    "description": "Import/Exporter for Hedgehog Engine 3D related formats",
     "version": (0, 0, 1),
     "blender": (4, 2, 3),
     "doc_url": "https://hedge-dev.github.io/HedgehogEngineBlenderIO/",

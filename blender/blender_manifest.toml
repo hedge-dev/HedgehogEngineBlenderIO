@@ -3,7 +3,7 @@ schema_version = "1.0.0"
 id = "hedgehog_engine_io"
 version = "0.0.1"
 name = "Hedgehog Engine I/O"
-tagline = "Import/Exporter for Hedgehog Engine Model-, Animation- and other Formats."
+tagline = "Import/Exporter for Hedgehog Engine 3D related formats"
 maintainer = "Justin113D, hedge-dev"
 type = "add-on"
 
