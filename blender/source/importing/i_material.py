@@ -1,5 +1,4 @@
 from typing import Iterable
-import os
 import bpy
 
 from . import i_enum, i_sca_parameters
@@ -46,6 +45,44 @@ def _get_placeholder_image_color(node: bpy.types.ShaderNodeTexImage):
 
     return (red, green, blue, alpha)
 
+def _import_image_dds_addon(image_name: str, net_image):
+    from blender_dds_addon.ui.import_dds import load_dds
+    import os
+
+    if net_image.StreamedData is not None:
+        from tempfile import TemporaryDirectory
+
+        byte_data = bytes(net_image.StreamedData)
+
+        with TemporaryDirectory() as temp_dir:
+            temp = os.path.join(temp_dir, image_name + ".dds")
+
+            with open(temp, "wb") as temp_file:
+                temp_file.write(byte_data)
+
+            image = load_dds(temp)
+
+    else:
+        image = load_dds(net_image.Filepath)
+
+    image.name = image_name
+    image.filepath = os.path.splitext(net_image.Filepath)[0] + ".tga"
+
+    return image
+
+def _import_image_native(image_name: str, net_image):
+    if net_image.StreamedData is not None:
+        image = bpy.data.images.new(image_name, 1, 1)
+        image.source = 'FILE'
+        image.filepath = net_image.Filepath
+        byte_data = bytes(net_image.StreamedData)
+        image.pack(data=byte_data, data_len=len(byte_data))
+
+    else:
+        image = bpy.data.images.load(net_image.Filepath, check_existing=True)
+        image.name = image_name
+
+    return image
 
 def _load_image(
         texture,
@@ -53,34 +90,15 @@ def _load_image(
         net_images: dict[str, any],):
 
     image = None
-    streamed_data = None
     node: bpy.types.ShaderNodeTexImage = texture.image_node
-
-    colorspace = "sRGB"
-    if node is not None:
-        label_colorspace = node.label.split(";")[0]
-        if label_colorspace in ["sRGB", "Non-Color"]:
-            colorspace = label_colorspace
 
     if image_name in net_images:
         net_image = net_images[image_name]
 
-        if net_image.StreamedData is not None:
-            streamed_data = net_image.StreamedData
-            image = bpy.data.images.new(
-                image_name,
-                streamed_data.Width,
-                streamed_data.Height,
-                alpha=streamed_data.HasAlpha,
-                float_buffer=streamed_data.IsHDR,
-                is_data=colorspace == 'Non-Color'
-            )
-
-            image.pixels = list(streamed_data.Colors)
+        if "blender_dds_addon" in bpy.context.preferences.addons.keys():
+            image = _import_image_dds_addon(image_name, net_image)
         else:
-            image = bpy.data.images.load(net_image.Filepath, check_existing=True)
-            image.name = image_name
-            image.colorspace_settings.name = colorspace
+            image = _import_image_native(image_name, net_image)
 
     if image is None:
         # placeholder texture
@@ -93,10 +111,12 @@ def _load_image(
         image.source = 'GENERATED'
         image.generated_color = _get_placeholder_image_color(node)
 
-    image.update()
+    if node is not None:
+        label_colorspace = node.label.split(";")[0]
+        if label_colorspace in ["sRGB", "Non-Color"]:
+            image.colorspace_settings.name = label_colorspace
 
-    if streamed_data is not None:
-        image.pack()
+    image.update()
 
     return image
 
@@ -183,21 +203,21 @@ def convert_sharpneedle_materials(
         use_existing_images: bool,
         textures_path: str | None):
 
-    materials: dict[any, bpy.types.Material] = {}
+    converted: dict[any, bpy.types.Material] = {}
     shader_definitions = definitions.get_shader_definitions(context)
 
     for sn_material in sn_materials:
-        if sn_material in materials:
+        if sn_material in converted:
             continue
 
         material = bpy.data.materials.new(sn_material.Name)
-        materials[sn_material] = material
+        converted[sn_material] = material
 
         material_properties: HEIO_Material = material.heio_material
 
         material_properties.shader_name = sn_material.ShaderName
         material_properties.use_additive_blending = sn_material.UseAdditiveBlending
-        material.alpha_threshold = sn_material.AlphaThreshold
+        material.alpha_threshold = sn_material.AlphaThreshold / 255.0
         material.use_backface_culling = not sn_material.NoBackFaceCulling
 
         if shader_definitions is not None and material_properties.shader_name in shader_definitions.definitions:
@@ -208,7 +228,7 @@ def convert_sharpneedle_materials(
         else:
             material_properties.custom_shader = True
 
-    setup_and_update_materials(context, materials.values())
+    setup_and_update_materials(context, converted.values())
 
     pref = get_addon_preferences(context)
     ntsp_dir = getattr(pref, "ntsp_dir_" + context.scene.heio_scene.target_game.lower())
@@ -216,7 +236,7 @@ def convert_sharpneedle_materials(
 
     loaded_textures = {}
 
-    for sn_material, material in materials.items():
+    for sn_material, material in converted.items():
         material_properties: HEIO_Material = material.heio_material
         create_missing = create_undefined_parameters or material_properties.custom_shader
 
@@ -254,4 +274,4 @@ def convert_sharpneedle_materials(
         if created_missing:
             material_properties.custom_shader = True
 
-    return materials
+    return converted

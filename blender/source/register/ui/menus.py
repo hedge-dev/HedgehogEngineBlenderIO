@@ -1,6 +1,6 @@
 import bpy
 
-from ..operators.import_operators import HEIO_OT_Import_Material
+from ..operators import import_operators, export_operators
 
 class TOPBAR_MT_HEIO_Export(bpy.types.Menu):
     '''The heio submenu in the export menu'''
@@ -10,6 +10,7 @@ class TOPBAR_MT_HEIO_Export(bpy.types.Menu):
         layout = self.layout
 
         layout.label(text="Export as...")
+        layout.operator(export_operators.HEIO_OT_Export_Material.bl_idname)
 
     @staticmethod
     def menu_func(self, context):
@@ -32,7 +33,7 @@ class TOPBAR_MT_HEIO_Import(bpy.types.Menu):
         layout = self.layout
 
         layout.label(text="Import...")
-        layout.operator(HEIO_OT_Import_Material.bl_idname)
+        layout.operator(import_operators.HEIO_OT_Import_Material.bl_idname)
 
     @staticmethod
     def menu_func(self, context):
@@ -53,8 +54,8 @@ class NativeHooks:
     @staticmethod
     def material_context_menu_func(self, context):
         self.layout.separator(type='LINE')
-        operator = self.layout.operator(HEIO_OT_Import_Material.bl_idname, icon='IMPORT')
-        operator.add_to_active = True
+        self.layout.operator(import_operators.HEIO_OT_Import_Material_Active.bl_idname, icon='IMPORT')
+        self.layout.operator(export_operators.HEIO_OT_Export_Material_Active.bl_idname, icon='EXPORT')
 
     @classmethod
     def register(cls):

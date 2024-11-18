@@ -102,6 +102,24 @@ class HEIOBaseFileSaveOperator(HEIOBaseOperator):
         layout.use_property_split = True
         layout.use_property_decorate = False  # No animation.
 
+class HEIOBaseDirectorySaveOperator(HEIOBaseOperator):
+
+    directory: StringProperty(
+        name="Directory Path",
+        description="Directory path used for exporting the file(s)",
+        maxlen=1024,
+        subtype='DIR_PATH',
+        options={'HIDDEN'},
+    )
+
+    def _invoke(self, context, event):
+        context.window_manager.fileselect_add(self)
+        return {'RUNNING_MODAL'}
+
+    def draw(self, context: Context):
+        layout = self.layout
+        layout.use_property_split = True
+        layout.use_property_decorate = False  # No animation.
 
 class ListAdd:
 

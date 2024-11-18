@@ -1,14 +1,16 @@
 import os
 from .sharp_needle import SharpNeedle
 from .heio_net import HEIO_NET
+from .system import System
 
 from ..utility.general import get_path
 
 _LOADED = False
 
 LIBRARIES = [
+    System,
     SharpNeedle,
-    HEIO_NET
+    HEIO_NET,
 ]
 
 def load_dotnet():

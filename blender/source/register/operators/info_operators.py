@@ -22,3 +22,14 @@ class HEIO_OT_Info_Discord(HEIOBaseOperator):
         import webbrowser
         webbrowser.open("https://dc.railgun.works/hems")
         return {'FINISHED'}
+
+
+class HEIO_OT_Info_DDS_Addon(HEIOBaseOperator):
+    bl_idname = "heio.info_dds_addon"
+    bl_label = "Open DDS Addon repository website"
+    bl_description = "Opens the DDS addon github repository"
+
+    def _execute(self, context: bpy.types.Context):
+        import webbrowser
+        webbrowser.open("https://github.com/matyalatte/Blender-DDS-Addon")
+        return {'FINISHED'}

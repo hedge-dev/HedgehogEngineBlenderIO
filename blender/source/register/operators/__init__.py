@@ -1,5 +1,6 @@
 from . import (
 	import_operators,
+	export_operators,
 	sca_parameter_operators,
 	material_operators,
 	material_parameter_operators,
@@ -8,6 +9,10 @@ from . import (
 
 to_register = [
 	import_operators.HEIO_OT_Import_Material,
+	import_operators.HEIO_OT_Import_Material_Active,
+
+	export_operators.HEIO_OT_Export_Material,
+	export_operators.HEIO_OT_Export_Material_Active,
 
 	sca_parameter_operators.HEIO_OT_SCAParameters_Add,
 	sca_parameter_operators.HEIO_OT_SCAParameters_Remove,
@@ -23,4 +28,5 @@ to_register = [
 
 	info_operators.HEIO_OT_Info_Manual,
     info_operators.HEIO_OT_Info_Discord,
+	info_operators.HEIO_OT_Info_DDS_Addon,
 ]

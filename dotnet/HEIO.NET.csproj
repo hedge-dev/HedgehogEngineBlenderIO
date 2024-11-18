@@ -11,7 +11,6 @@
   </PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="BCnEncoder.Net" Version="2.1.0" />
 		<!--<PackageReference Include="SharpNeedle" Version="0.1.14" />-->
 	</ItemGroup>
 

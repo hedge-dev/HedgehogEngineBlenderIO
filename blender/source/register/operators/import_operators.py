@@ -2,20 +2,19 @@ import os
 import bpy
 from bpy.props import (
     StringProperty,
-    BoolProperty,
     CollectionProperty,
 )
-from bpy.types import Context
 
-from .base import HEIOBaseFileLoadOperator
+from .base_import_operators import (
+    ImportMaterialOperator
+)
 
 from ...dotnet import load_dotnet, SharpNeedle
 
 
-class HEIO_OT_Import_Material(HEIOBaseFileLoadOperator):
+class HEIO_OT_Import_Material(ImportMaterialOperator):
     bl_idname = "heio.import_material"
     bl_label = "HE Material (*.material)"
-    bl_options = {'PRESET', 'UNDO'}
 
     filter_glob: StringProperty(
         default="*.material",
@@ -27,43 +26,7 @@ class HEIO_OT_Import_Material(HEIOBaseFileLoadOperator):
         type=bpy.types.OperatorFileListElement
     )
 
-    create_undefined_parameters: BoolProperty(
-        name="Create undefined parameters/textures",
-        description="If the shader of a material is defined, create parameters inside the material that are not part of the definition, otherwise ignore them.",
-        default=False
-    )
-
-    import_images: BoolProperty(
-        name="Import Images",
-        description="Import images if found, otherwise use placeholders",
-        default=True
-    )
-
-    use_existing_images: BoolProperty(
-        name="Use existing images",
-        description="When the active file contains a image with a matching image file name, use that instead of importing an image file",
-        default=False
-    )
-
-    add_to_active: BoolProperty(
-        options={'HIDDEN'}
-    )
-
-    @classmethod
-    def poll(cls, context: Context):
-        return context.mode in ['OBJECT', 'MESH']
-
-    def draw(self, context):
-        header, body = self.layout.panel(
-            "SAIO_import_material_general")
-        header.label(text="General")
-
-        if body:
-            body.prop(self, "create_undefined_parameters")
-            body.prop(self, "import_images")
-            body.prop(self, "use_existing_images")
-
-    def _execute(self, context):
+    def import_materials(self, context):
         load_dotnet()
 
         directory = os.path.dirname(self.filepath)
@@ -74,7 +37,8 @@ class HEIO_OT_Import_Material(HEIOBaseFileLoadOperator):
             filepath = os.path.join(directory, file.name)
 
             try:
-                material = SharpNeedle.RESOURCE_EXTENSIONS.Open[SharpNeedle.MATERIAL](resource_manager, filepath, True)
+                material = SharpNeedle.RESOURCE_EXTENSIONS.Open[SharpNeedle.MATERIAL](
+                    resource_manager, filepath, True)
             except Exception as error:
                 print(f"An error occured while importing {file.name}")
                 raise error
@@ -83,16 +47,35 @@ class HEIO_OT_Import_Material(HEIOBaseFileLoadOperator):
 
         from ...importing import i_material
 
-        materials = i_material.convert_sharpneedle_materials(
+        return i_material.convert_sharpneedle_materials(
             context,
             sn_materials,
             self.create_undefined_parameters,
             self.use_existing_images,
-            directory if self.import_images else None,)
+            directory if self.import_images else None)
 
-        if self.add_to_active:
-            object = context.active_object
-            for material in materials.values():
-                object.data.materials.append(material)
+    def _execute(self, context):
+        self.import_materials(context)
+        return {'FINISHED'}
+
+
+class HEIO_OT_Import_Material_Active(HEIO_OT_Import_Material):
+    bl_idname = "heio.import_material_active"
+    bl_label = "Import HE Material (*.material)"
+
+    @classmethod
+    def poll(cls, context):
+        return (
+            context.mode in ['OBJECT', 'MESH']
+            and context.active_object is not None
+            and context.active_object.type == 'MESH'
+        )
+
+    def _execute(self, context):
+        materials = self.import_materials(context)
+
+        object = context.active_object
+        for material in materials.values():
+            object.data.materials.append(material)
 
         return {'FINISHED'}
