@@ -112,7 +112,7 @@ class ExportObjectSelectionOperator(ExportOperator):
         # Are we inside the File browser
         is_file_browser = context.space_data.type == 'FILE_BROWSER'
 
-        self.draw_panel_include(self.layout, is_file_browser)
+        self.draw_panel_include(is_file_browser)
 
 
 class ExportMaterialOperator(ExportObjectSelectionOperator):
@@ -169,7 +169,7 @@ class ExportMaterialOperator(ExportObjectSelectionOperator):
 
         return result
 
-    def export_materials(self, context, materials):
+    def export_materials(self, context: bpy.types.Context, materials):
         from ...exporting import o_material
         sn_materials = o_material.convert_to_sharpneedle_materials(
             context, materials)
@@ -181,8 +181,9 @@ class ExportMaterialOperator(ExportObjectSelectionOperator):
             SharpNeedle.RESOURCE_EXTENSIONS.Write(sn_material, filepath)
 
         if self.image_mode != 'NONE' and "blender_dds_addon" in context.preferences.addons.keys():
-            from blender_dds_addon.ui.export_dds import export_as_dds
+            from blender_dds_addon.ui.export_dds import export_as_dds # type: ignore
             context.scene.dds_options.allow_slow_codec = True
+            depsgraph = context.evaluated_depsgraph_get()
 
             images = set()
             for material in materials:
@@ -194,7 +195,8 @@ class ExportMaterialOperator(ExportObjectSelectionOperator):
                 filepath = os.path.join(self.directory, image.name + ".dds")
 
                 if self.image_mode == 'OVERWRITE' or not os.path.isfile(filepath):
-                    export_as_dds(context, image, filepath)
+                    export_image = image.evaluated_get(depsgraph)
+                    export_as_dds(context, export_image, filepath)
 
 
         return {'FINISHED'}

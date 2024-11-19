@@ -3,6 +3,12 @@
     "Hide": true,
     "Layer": "Opaque",
     "Parameters": {
+      "diffuse": "Color",
+      "ambient": "Color",
+      "specular": "Color",
+      "emissive": "Color",
+      "power_gloss_level": "Float",
+      "opacity_reflection_refraction_spectype": "Float",
       "enable_multi_tangent_space": "Boolean",
       "enable_max_bone_influences_8": "Boolean"
     }
