@@ -1,0 +1,10 @@
+{
+  "Name": "Sonic Forces",
+  "Description": "Sonic Forces",
+  "ReleaseYear": 2017,
+  "HedgehogEngine": 2,
+  "DataVersions": {
+    "Material": 3,
+    "MaterialSampleChunk": 2
+  }
+}

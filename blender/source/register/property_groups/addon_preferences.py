@@ -1,56 +1,32 @@
 import bpy
 from bpy.props import StringProperty
+from .. import definitions
 
 class HEIO_AddonPreferences(bpy.types.AddonPreferences):
     bl_idname = '.'.join(__package__.split('.')[:3])
 
-    ntsp_dir_unleashed: StringProperty(
-        name="NTSP directory: Unleashed",
-        description="Game Directory with .NTSP files for texture streaming. Needed for importing streamed textures.",
-        subtype='DIR_PATH',
-    )
+    @classmethod
+    def register(cls):
+        for definition in definitions.TARGET_DEFINITIONS.keys():
+            keyword = definition.lower()
+            def add_property(name, property):
+                cls.__annotations__[name + "_" + keyword] = property
 
-    ntsp_dir_generations: StringProperty(
-        name="NTSP directory: Generations",
-        description="Game Directory with .NTSP files for texture streaming. Needed for importing streamed textures.",
-        subtype='DIR_PATH',
-    )
+            add_property("ntsp_dir", StringProperty(
+                name="NTSP directory",
+                description="Game Directory with .NTSP files for texture streaming. Needed for importing streamed textures.",
+                subtype='DIR_PATH',
+            ))
 
-    ntsp_dir_lost_world: StringProperty(
-        name="NTSP directory: Lost World",
-        description="Game Directory with .NTSP files for texture streaming. Needed for importing streamed textures.",
-        subtype='DIR_PATH',
-    )
+    def draw_menu(self, keyword: str, label: str):
+        header, menu = self.layout.panel("heio_pref_" + keyword, default_closed=True)
+        header.label(text=label)
 
-    ntsp_dir_forces: StringProperty(
-        name="NTSP directory: Forces",
-        description="Game Directory with .NTSP files for texture streaming. Needed for importing streamed textures.",
-        subtype='DIR_PATH',
-    )
+        if not menu:
+            return
 
-    ntsp_dir_origins: StringProperty(
-        name="NTSP directory: Origins",
-        description="Game Directory with .NTSP files for texture streaming. Needed for importing streamed textures.",
-        subtype='DIR_PATH',
-    )
-
-    ntsp_dir_frontiers: StringProperty(
-        name="NTSP directory: Frontiers",
-        description="Game Directory with .NTSP files for texture streaming. Needed for importing streamed textures.",
-        subtype='DIR_PATH',
-    )
-
-    ntsp_dir_shadow_generations: StringProperty(
-        name="NTSP directory: Shadow Generations",
-        description="Game Directory with .NTSP files for texture streaming. Needed for importing streamed textures.",
-        subtype='DIR_PATH',
-    )
+        menu.prop(self, "ntsp_dir_" + keyword)
 
     def draw(self, context):
-        self.layout.prop(self, "ntsp_dir_unleashed")
-        self.layout.prop(self, "ntsp_dir_generations")
-        self.layout.prop(self, "ntsp_dir_lost_world")
-        self.layout.prop(self, "ntsp_dir_forces")
-        self.layout.prop(self, "ntsp_dir_origins")
-        self.layout.prop(self, "ntsp_dir_frontiers")
-        self.layout.prop(self, "ntsp_dir_shadow_generations")
+        for definition in definitions.TARGET_DEFINITIONS.values():
+            self.draw_menu(definition.identifier.lower(), definition.name)

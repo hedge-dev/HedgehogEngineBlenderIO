@@ -1,0 +1,10 @@
+{
+  "Name": "Sonic Unleashed",
+  "Description": "Sonic Unleashed",
+  "ReleaseYear": 2008,
+  "HedgehogEngine": 1,
+  "DataVersions": {
+    "Material": 1,
+    "MaterialSampleChunk": 1
+  }
+}

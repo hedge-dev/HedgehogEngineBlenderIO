@@ -1,73 +1,51 @@
 import os
-import json
 import bpy
 
-from . import (
-    shader_definitions as shader,
-    sca_parameter_definitions as scap
-)
-
+from . import target_info
 from ...utility import general
+from ...exceptions import HEIOException
 
-SHADER_DEFINITIONS: dict[str, shader.ShaderDefinitionCollection] = None
-SCA_PARAMETER_DEFINITIONS: dict[str, scap.SCAParameterDefinitionCollection] = None
+TARGET_DEFINITIONS: dict[str, target_info.TargetDefinition] = None
+TARGET_ENUM_ITEMS: list[tuple[str, str, str]] = None
+TARGET_ENUM_ITEMS_INVALID: list[tuple[str, str, str]] = None
 
 
-def _load_definitions_of_type(filename, json_converter):
-    result = {}
+def register_definition(directory: str, identifier: str | None = None):
+    target_definition = target_info.TargetDefinition.from_directory(
+        directory, identifier)
+    TARGET_DEFINITIONS[target_definition.identifier] = target_definition
+
+    target_item = (
+        target_definition.identifier,
+        target_definition.name,
+        target_definition.description
+    )
+
+    TARGET_ENUM_ITEMS.append(target_item)
+    TARGET_ENUM_ITEMS_INVALID.append(target_item)
+
+
+def load_definitions():
+    global TARGET_DEFINITIONS
+    global TARGET_ENUM_ITEMS
+    global TARGET_ENUM_ITEMS_INVALID
+
+    TARGET_DEFINITIONS = {}
+    TARGET_ENUM_ITEMS = []
+    TARGET_ENUM_ITEMS_INVALID = [("ERROR_FALLBACK", "", "")]
 
     definitions_path = os.path.join(general.get_path(), "Definitions")
     for root, directories, _ in os.walk(definitions_path):
         for directory in directories:
-            filepath = os.path.join(root, directory, filename)
-            with open(filepath, "r") as file:
-                definition_json: dict = json.load(file)
-
-            result[directory] = json_converter(
-                directory, definition_json)
-
-    return result
+            register_definition(os.path.join(root, directory))
 
 
-def load_definitions():
-    global SHADER_DEFINITIONS
-    global SCA_PARAMETER_DEFINITIONS
-
-    SHADER_DEFINITIONS = _load_definitions_of_type(
-        "Shaders.json", shader.ShaderDefinitionCollection.from_json_data)
-    SCA_PARAMETER_DEFINITIONS = _load_definitions_of_type(
-        "SCAParameters.json", scap.SCAParameterDefinitionCollection.from_json_data)
-
-
-def _get_target_game(context: bpy.types.Context) -> str:
+def get_target_definition(context: bpy.types.Context | None):
     if context is None:
         context = bpy.context
 
-    return context.scene.heio_scene.target_game
+    target_game = context.scene.heio_scene.target_game
+    if target_game not in TARGET_DEFINITIONS:
+        raise HEIOException(f"Target game \"{target_game}\" is not defined")
 
-
-def get_shader_definitions(context: bpy.types.Context) -> shader.ShaderDefinitionCollection | None:
-    target = _get_target_game(context)
-
-    if target not in SHADER_DEFINITIONS:
-        return None
-
-    return SHADER_DEFINITIONS[target]
-
-
-def get_sca_parameter_definitions(context: bpy.types.Context | None, data_type: str) -> dict[str, scap.SCAParameterDefinition]:
-    target = _get_target_game(context)
-
-    if target not in SCA_PARAMETER_DEFINITIONS:
-        return {}
-
-    return getattr(SCA_PARAMETER_DEFINITIONS[target], data_type)
-
-
-def get_sca_parameter_definition_items(context: bpy.types.Context | None, data_type: str) -> list[tuple[str, str, str]]:
-    target = _get_target_game(context)
-
-    if target not in SCA_PARAMETER_DEFINITIONS:
-        return []
-
-    return getattr(SCA_PARAMETER_DEFINITIONS[target], data_type + "_items")
+    return TARGET_DEFINITIONS[target_game]

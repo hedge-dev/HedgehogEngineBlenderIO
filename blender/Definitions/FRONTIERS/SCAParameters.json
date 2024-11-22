@@ -4,10 +4,6 @@
       "Type": "Integer",
       "Description": "Maximum anisotropy filtering level"
     },
-    "VatVolum": {
-      "Type": "Boolean",
-      "Description": "Whether the material is affected by VAT volumes"
-    },
     "TrnsType": {
       "Type": "Boolean",
       "Description": "Transparency type (?)"

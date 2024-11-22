@@ -4,10 +4,6 @@
       "Type": "Integer",
       "Description": "Maximum anisotropy filtering level"
     },
-    "VatVolum": {
-      "Type": "Boolean",
-      "Description": "Whether the material is affected by VAT volumes"
-    },
     "TrnsType": {
       "Type": "Boolean",
       "Description": "Transparency type (?)"
@@ -19,14 +15,6 @@
     "MipBias": {
       "Type": "Float",
       "Description": "Mipmap selection bias"
-    },
-    "UsePrior": {
-      "Type": "Boolean",
-      "Description": "Use Prior (?)"
-    },
-    "VertSnap": {
-      "Type": "Boolean",
-      "Description": "Vertex snapping (?)"
     }
   }
 }

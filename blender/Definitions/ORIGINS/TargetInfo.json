@@ -1,0 +1,10 @@
+{
+  "Name": "Sonic Origins",
+  "Description": "Sonic Origins (Applicable to the 3D title menu)",
+  "ReleaseYear": 2022,
+  "HedgehogEngine": 2,
+  "DataVersions": {
+    "Material": 3,
+    "MaterialSampleChunk": 2
+  }
+}

@@ -4,10 +4,6 @@
       "Type": "Integer",
       "Description": "Maximum anisotropy filtering level"
     },
-    "VatVolum": {
-      "Type": "Boolean",
-      "Description": "Whether the material is affected by VAT volumes"
-    },
     "TrnsType": {
       "Type": "Boolean",
       "Description": "Transparency type (?)"
@@ -24,9 +20,9 @@
       "Type": "Boolean",
       "Description": "Use Prior (?)"
     },
-    "VertSnap": {
-      "Type": "Boolean",
-      "Description": "Vertex snapping (?)"
+    "UseGrass": {
+      "Type": "Integer",
+      "Description": "Render grass on material (?)"
     }
   }
 }

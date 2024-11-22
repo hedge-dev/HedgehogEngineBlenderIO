@@ -1,12 +1,6 @@
 from enum import Enum
-
+from .json_util import HEIOJSONException, JSONWrapper
 from ...exceptions import HEIOException
-
-
-class ShaderParameterType(Enum):
-    FLOAT = 1
-    COLOR = 2
-    BOOLEAN = 3
 
 
 class ShaderLayer(Enum):
@@ -14,6 +8,62 @@ class ShaderLayer(Enum):
     TRANSPARENT = 2
     PUNCHTHROUGH = 3
     SPECIAL = 4
+
+    @staticmethod
+    def parse_json_data(data: str):
+        if data == 'Opaque':
+            return ShaderLayer.OPAQUE
+        elif data == 'Transparent':
+            return ShaderLayer.TRANSPARENT
+        elif data == 'PunchThrough':
+            return ShaderLayer.PUNCHTHROUGH
+        elif data == 'Special':
+            return ShaderLayer.SPECIAL
+        else:
+            raise HEIOJSONException(
+                f"Invalid shader layer \"{data}\"")
+
+
+class ShaderParameterType(Enum):
+    FLOAT = 1
+    COLOR = 2
+    BOOLEAN = 3
+
+    @staticmethod
+    def parse_json_data(data: str):
+        if data == 'Color':
+            return ShaderParameterType.COLOR
+        elif data == 'Float':
+            return ShaderParameterType.FLOAT
+        elif data == 'Boolean':
+            return ShaderParameterType.BOOLEAN
+        else:
+            raise HEIOJSONException(
+                f"Invalid shader parameter type \"{data}\"")
+
+
+class ShaderParameter:
+
+    name: str
+    type: ShaderParameterType
+    default: any
+
+    def __init__(self, name: str, type: ShaderParameterType, default: any):
+        self.name = name
+        self.type = type
+        self.default = default
+
+    @staticmethod
+    def parse_json_data(data: JSONWrapper):
+        type = data.parse_property("Type", ShaderParameterType)
+
+        default = data["Default"]
+        if type in [ShaderParameterType.FLOAT, ShaderParameterType.COLOR]:
+            default = (default[0], default[1], default[2], default[3])
+        elif type == ShaderParameterType.BOOLEAN:
+            pass
+
+        return ShaderParameter(data.identifier, type, default)
 
 
 class ShaderDefinition:
@@ -24,7 +74,8 @@ class ShaderDefinition:
 
     hide: bool
     layer: ShaderLayer
-    parameters: dict[str, ShaderParameterType]
+    variants: list[str]
+    parameters: dict[str, ShaderParameter]
     textures: list[str]
 
     def __init__(self, name: str, all_items_index: int, visible_items_index: int):
@@ -34,70 +85,46 @@ class ShaderDefinition:
 
         self.hide = False
         self.layer = ShaderLayer.OPAQUE
+        self.variants = []
         self.parameters = {}
         self.textures = []
 
     @staticmethod
-    def from_json_data(
-            name: str,
-            all_items_index: int,
-            visible_items_index: int,
-            data: dict,
-            base: 'ShaderDefinition | None') -> 'ShaderDefinition':
+    def parse_json_data(
+            data: JSONWrapper,
+            all_items_index: int = -1,
+            visible_items_index: int = -1,
+            base: 'ShaderDefinition | None' = None) -> 'ShaderDefinition':
 
         result = ShaderDefinition(
-            name, all_items_index, visible_items_index)
+            data.identifier, all_items_index, visible_items_index)
 
         if base is not None:
             result.layer = base.layer
             result.hide = base.hide
+            result.variants.extend(base.variants)
             result.parameters.update(base.parameters)
             result.textures.extend(base.textures)
 
-        if "Hide" in data:
-            result.hide = data["Hide"]
+        result.hide = data.get_item_fallback("Hide", result.hide)
+        result.variants.extend(data.get_item_fallback("Variants", []))
+        result.textures.extend(data.get_item_fallback("Textures", []))
 
         if result.hide:
             result.visible_items_index = -1
 
         if "Layer" in data:
-            layer = data["Layer"]
-            if layer == "Opaque":
-                result.layer = ShaderLayer.OPAQUE
-            elif layer == "Transparent":
-                result.layer = ShaderLayer.TRANSPARENT
-            elif layer == "PunchThrough":
-                result.layer = ShaderLayer.PUNCHTHROUGH
-            elif layer == "Special":
-                result.layer = ShaderLayer.SPECIAL
-            else:
-                raise HEIOException(
-                    f"Invalid shader layer \"{layer}\" for shader \"{name}\"")
+            result.layer = data.parse_property("Layer", ShaderLayer)
 
         if "Parameters" in data:
-            parameters: dict[str, str] = data["Parameters"]
-            for key, value in parameters.items():
-                if value == 'Float':
-                    parameter_type = ShaderParameterType.FLOAT
-                elif value == 'Color':
-                    parameter_type = ShaderParameterType.COLOR
-                elif value == 'Boolean':
-                    parameter_type = ShaderParameterType.BOOLEAN
-                else:
-                    raise HEIOException(
-                        f"Invalid shader definition parameter type \"{value}\" for shader \"{name}\"")
-
-                result.parameters[key] = parameter_type
-
-        if "Textures" in data:
-            result.textures.extend(data["Textures"])
+            for key, value in data["Parameters"]:
+                result.parameters[key] = value.parse(ShaderParameter)
 
         return result
 
 
 class ShaderDefinitionCollection:
 
-    name: str
     definitions: dict[str, ShaderDefinition]
 
     items_visible: list[tuple[str, str, str]]
@@ -105,8 +132,7 @@ class ShaderDefinitionCollection:
     items_all: list[tuple[str, str, str]]
     items_all_fallback: list[tuple[str, str, str]]
 
-    def __init__(self, name):
-        self.name = name
+    def __init__(self):
         self.definitions = {}
         self.items_visible = []
         self.items_visible_fallback = [("ERROR_FALLBACK", "", "")]
@@ -114,24 +140,22 @@ class ShaderDefinitionCollection:
         self.items_all_fallback = [("ERROR_FALLBACK", "", "")]
 
     @staticmethod
-    def from_json_data(name, data):
-        result = ShaderDefinitionCollection(name)
+    def parse_json_data(data: JSONWrapper):
+        result = ShaderDefinitionCollection()
 
         base_definition = None
         if "" in data:
-            base_definition = ShaderDefinition.from_json_data(
-                "", -1, -1, data[""], None)
+            base_definition = data.parse_property("", ShaderDefinition)
 
-        for key, value in data.items():
+        for key, value in data:
             if key == "":
                 continue
 
-            definition = ShaderDefinition.from_json_data(
-                key,
-                len(result.items_all),
-                len(result.items_visible),
-                value,
-                base_definition)
+            definition = value.parse(
+                ShaderDefinition,
+                all_items_index=len(result.items_all),
+                visible_items_index=len(result.items_visible),
+                base=base_definition)
 
             item = (key, key, "")
 

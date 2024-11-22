@@ -1,0 +1,10 @@
+{
+  "Name": "Shadow Generations",
+  "Description": "The Shadow expansion of Sonic X Shadow Generations",
+  "ReleaseYear": 2024,
+  "HedgehogEngine": 2,
+  "DataVersions": {
+    "Material": 3,
+    "MaterialSampleChunk": 2
+  }
+}

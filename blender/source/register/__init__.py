@@ -15,6 +15,7 @@ classes.extend(property_groups.to_register)
 classes.extend(operators.to_register)
 classes.extend(ui.to_register)
 
+
 def register():
     """Loading API classes into blender"""
 
@@ -27,6 +28,7 @@ def register():
             cls.register()
 
     bpy.utils.register_manual_map(manual.add_manual_map)
+
 
 def unregister():
     """Unloading classes loaded in register(), as well as various cleanup"""

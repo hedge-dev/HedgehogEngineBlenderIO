@@ -1,0 +1,10 @@
+{
+  "Name": "Sonic Lost World",
+  "Description": "Sonic Lost World",
+  "ReleaseYear": 2013,
+  "HedgehogEngine": 1,
+  "DataVersions": {
+    "Material": 3,
+    "MaterialSampleChunk": 2
+  }
+}

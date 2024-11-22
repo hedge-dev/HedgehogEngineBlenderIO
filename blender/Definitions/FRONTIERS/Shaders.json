@@ -67,39 +67,7 @@
       }
     }
   },
-  "Amoeba_dopnfE": {
-    "Parameters": {
-      "Luminance": {
-        "Type": "Float",
-        "Default": [
-          8,
-          0,
-          0,
-          0
-        ]
-      },
-      "Offset": {
-        "Type": "Float",
-        "Default": [
-          0.1,
-          0.1,
-          0,
-          0
-        ]
-      },
-      "WaterFlowParam": {
-        "Type": "Float",
-        "Default": [
-          0.5,
-          2,
-          0.1,
-          50
-        ]
-      }
-    }
-  },
   "Blend_dpnbdpn": {
-    "Hide": false,
     "Textures": [
       "diffuse",
       "specular",
@@ -111,6 +79,7 @@
     ]
   },
   "Blend_dpndpn": {
+    "Hide": false,
     "Textures": [
       "diffuse",
       "specular",
@@ -118,6 +87,44 @@
       "diffuse",
       "specular",
       "normal"
+    ]
+  },
+  "BlendDetail_dndnd": {
+    "Parameters": {
+      "DetailFactor": {
+        "Type": "Float",
+        "Default": [
+          40,
+          0,
+          0,
+          0
+        ]
+      },
+      "PBRFactor": {
+        "Type": "Float",
+        "Default": [
+          0.04,
+          0.04,
+          0,
+          0
+        ]
+      },
+      "PBRFactor2": {
+        "Type": "Float",
+        "Default": [
+          0.04,
+          0.04,
+          0,
+          0
+        ]
+      }
+    },
+    "Textures": [
+      "diffuse",
+      "normal",
+      "diffuse",
+      "normal",
+      "diffuse"
     ]
   },
   "BlendDetail_dpndpnn": {
@@ -125,7 +132,7 @@
       "DetailFactor": {
         "Type": "Float",
         "Default": [
-          15,
+          25,
           0,
           0,
           0
@@ -142,69 +149,63 @@
       "normal"
     ]
   },
-  "Bubbles_dpnE": {
+  "BossCable_dpnEEa": {
     "Parameters": {
-      "BubblesParam": {
+      "ChaosWaveParamEx": {
         "Type": "Float",
         "Default": [
-          0.5,
-          0.6,
-          1.5,
-          4
-        ]
-      },
-      "FalloffColor": {
-        "Type": "Color",
-        "Default": [
-          0.2,
+          80,
           0,
-          0.25,
-          0
+          4.5,
+          5
         ]
       },
-      "FalloffColor2": {
-        "Type": "Color",
-        "Default": [
-          0.8,
-          0.3,
-          1,
-          0.5
-        ]
-      },
-      "FalloffFactor": {
+      "ChaosWaveParamY": {
         "Type": "Float",
         "Default": [
-          3,
-          1,
-          0.01,
-          3
+          50,
+          2,
+          0.15,
+          7
+        ]
+      },
+      "ChaosWaveParamZX": {
+        "Type": "Float",
+        "Default": [
+          300,
+          4,
+          0.15,
+          6
         ]
       },
       "Luminance": {
         "Type": "Float",
         "Default": [
           1,
-          0,
+          1,
           0,
           0
         ]
       },
-      "Refraction2": {
+      "TilingDistance": {
         "Type": "Float",
         "Default": [
-          5,
-          0.05,
-          0.05,
-          0
+          20,
+          0,
+          1,
+          -10
+        ]
+      },
+      "UVscrollParam": {
+        "Type": "Float",
+        "Default": [
+          0.8,
+          -50,
+          -0.5,
+          -20
         ]
       }
-    },
-    "Textures": [
-      "diffuse",
-      "specular",
-      "normal",
-      "emission"
-    ]
+    }
   },
   "Chaos_dpnnE": {
     "Parameters": {
@@ -213,7 +214,7 @@
         "Default": [
           10,
           0.25,
-          5,
+          2.5,
           5
         ]
       },
@@ -238,8 +239,8 @@
       "FalloffFactor": {
         "Type": "Float",
         "Default": [
-          1,
-          2,
+          1.1,
+          0.9,
           0.05,
           0
         ]
@@ -247,7 +248,7 @@
       "Luminance": {
         "Type": "Float",
         "Default": [
-          0,
+          1,
           0,
           0,
           0
@@ -255,33 +256,92 @@
       }
     }
   },
-  "ChrAlbedoFalloff_dither_dpn": {
+  "ChaosShadow_dpnnE": {
     "Parameters": {
-      "FalloffColor": {
-        "Type": "Color",
+      "ChaosWaveParamEx": {
+        "Type": "Float",
+        "Default": [
+          10,
+          0.25,
+          2.5,
+          5
+        ]
+      },
+      "ChaosWaveParamY": {
+        "Type": "Float",
         "Default": [
           1,
+          2,
+          -0.01,
+          2.5
+        ]
+      },
+      "ChaosWaveParamZX": {
+        "Type": "Float",
+        "Default": [
           1,
-          1,
-          0
+          2,
+          -0.01,
+          7
         ]
       },
       "FalloffFactor": {
         "Type": "Float",
         "Default": [
-          2,
-          6,
-          0,
-          1
+          1.1,
+          0.9,
+          0.05,
+          0
         ]
       },
       "Luminance": {
         "Type": "Float",
         "Default": [
           1,
-          0.5,
+          0,
           0,
           0
+        ]
+      }
+    }
+  },
+  "ChrEyeCDRF": {
+    "Hide": false,
+    "Parameters": {
+      "CDRFParam": {
+        "Type": "Float",
+        "Default": [
+          1,
+          0,
+          0,
+          0
+        ]
+      },
+      "ChrEye1": {
+        "Type": "Float",
+        "Default": [
+          0.05,
+          0.12,
+          0.02,
+          0.06
+        ]
+      },
+      "ChrEye2": {
+        "Type": "Float",
+        "Default": [
+          0.04,
+          0.18,
+          0.24,
+          0.14
+        ]
+      },
+      "ChrEye3": {
+        "Type": "Float",
+        "Default": [
+          0.5,
+          10,
+          0.2,
+          0.2
         ]
       }
     },
@@ -291,69 +351,89 @@
       "normal"
     ]
   },
-  "ChrAlbedoFalloff_dpn": {
-    "Hide": false,
+  "ChrEyeSuper": {
     "Parameters": {
-      "FalloffColor": {
-        "Type": "Color",
+      "Blend": {
+        "Type": "Float",
         "Default": [
-          1,
-          1,
-          1,
+          0.65,
+          0,
+          0,
           0
         ]
       },
-      "FalloffFactor": {
+      "ChrEye1": {
         "Type": "Float",
         "Default": [
-          3,
-          6,
-          0,
-          1
+          0.06,
+          -0.1,
+          0.02,
+          0.06
         ]
       },
-      "Luminance": {
+      "ChrEye2": {
         "Type": "Float",
         "Default": [
-          1,
+          0.02,
+          0.05,
+          0.12,
+          0.07
+        ]
+      },
+      "ChrEye3": {
+        "Type": "Float",
+        "Default": [
           0.5,
-          0,
-          0
+          10,
+          0.2,
+          0.2
         ]
       }
-    },
-    "Textures": [
-      "diffuse",
-      "specular",
-      "normal"
-    ]
+    }
   },
-  "ChrAlbedoFalloff_dpnE": {
-    "Hide": false,
+  "ChrEyeSuperE": {
     "Parameters": {
-      "FalloffColor": {
-        "Type": "Color",
+      "Blend": {
+        "Type": "Float",
         "Default": [
-          1,
-          1,
-          1,
+          0.65,
+          0,
+          0,
           0
         ]
       },
-      "FalloffFactor": {
+      "ChrEye1": {
         "Type": "Float",
         "Default": [
-          2,
-          5,
-          0,
-          1
+          0.06,
+          -0.1,
+          0.02,
+          0.06
+        ]
+      },
+      "ChrEye2": {
+        "Type": "Float",
+        "Default": [
+          0.02,
+          0.05,
+          0.12,
+          0.07
+        ]
+      },
+      "ChrEye3": {
+        "Type": "Float",
+        "Default": [
+          0.5,
+          10,
+          0.2,
+          0.2
         ]
       },
       "Luminance": {
         "Type": "Float",
         "Default": [
           1,
-          0.5,
+          0,
           0,
           0
         ]
@@ -364,402 +444,6 @@
       "specular",
       "normal",
       "emission"
-    ]
-  },
-  "ChrAlbedoFalloff_dpnn": {
-    "Parameters": {
-      "DetailFactor": {
-        "Type": "Float",
-        "Default": [
-          3,
-          30,
-          20,
-          0
-        ]
-      },
-      "FalloffColor": {
-        "Type": "Color",
-        "Default": [
-          1,
-          0.6,
-          2,
-          0
-        ]
-      },
-      "FalloffFactor": {
-        "Type": "Float",
-        "Default": [
-          10,
-          8,
-          0,
-          1
-        ]
-      },
-      "Luminance": {
-        "Type": "Float",
-        "Default": [
-          1,
-          0.5,
-          0,
-          0.2
-        ]
-      }
-    },
-    "Textures": [
-      "diffuse",
-      "specular",
-      "normal",
-      "normal"
-    ]
-  },
-  "ChrEyeE_dpn": {
-    "Hide": false,
-    "Parameters": {
-      "CDRFParam": {
-        "Type": "Float",
-        "Default": [
-          0,
-          0.2,
-          0,
-          0
-        ]
-      },
-      "ChrEye1": {
-        "Type": "Float",
-        "Default": [
-          0.06,
-          -0.1,
-          0.02,
-          0.06
-        ]
-      },
-      "ChrEye2": {
-        "Type": "Float",
-        "Default": [
-          0.04,
-          0.18,
-          0.24,
-          0.14
-        ]
-      },
-      "ChrEye3": {
-        "Type": "Float",
-        "Default": [
-          0.5,
-          10,
-          0.2,
-          0.2
-        ]
-      },
-      "Luminance": {
-        "Type": "Float",
-        "Default": [
-          1,
-          0,
-          0,
-          1
-        ]
-      }
-    },
-    "Textures": [
-      "diffuse",
-      "specular",
-      "normal"
-    ]
-  },
-  "ChrEyeE_dpna": {
-    "Layer": "Transparent",
-    "Parameters": {
-      "CDRFParam": {
-        "Type": "Float",
-        "Default": [
-          1,
-          0,
-          0,
-          0
-        ]
-      },
-      "ChrEye1": {
-        "Type": "Float",
-        "Default": [
-          0.06,
-          -0.1,
-          0.02,
-          0.06
-        ]
-      },
-      "ChrEye2": {
-        "Type": "Float",
-        "Default": [
-          0.04,
-          0.18,
-          0.24,
-          0.14
-        ]
-      },
-      "ChrEye3": {
-        "Type": "Float",
-        "Default": [
-          0.5,
-          10,
-          0.2,
-          0.2
-        ]
-      },
-      "Luminance": {
-        "Type": "Float",
-        "Default": [
-          1,
-          1,
-          1,
-          0
-        ]
-      }
-    },
-    "Textures": [
-      "diffuse",
-      "specular",
-      "normal",
-      "transparency"
-    ]
-  },
-  "ChrFalloffVanish_dpna": {
-    "Hide": false,
-    "Layer": "Transparent",
-    "Parameters": {
-      "FalloffColor": {
-        "Type": "Color",
-        "Default": [
-          1.5,
-          1,
-          1.5,
-          0
-        ]
-      },
-      "FalloffFactor": {
-        "Type": "Float",
-        "Default": [
-          1.5,
-          5,
-          0,
-          0.5
-        ]
-      },
-      "Luminance": {
-        "Type": "Float",
-        "Default": [
-          1,
-          0.5,
-          20,
-          0
-        ]
-      },
-      "VanishParam": {
-        "Type": "Float",
-        "Default": [
-          0.75,
-          0.1,
-          1,
-          0.08
-        ]
-      },
-      "VanishUVParam": {
-        "Type": "Float",
-        "Default": [
-          1,
-          1,
-          1,
-          0
-        ]
-      }
-    },
-    "Textures": [
-      "diffuse",
-      "specular",
-      "normal",
-      "transparency"
-    ]
-  },
-  "ChrFalloffVanish_dpnEa": {
-    "Hide": false,
-    "Layer": "Transparent",
-    "Parameters": {
-      "FalloffColor": {
-        "Type": "Color",
-        "Default": [
-          1,
-          1,
-          1,
-          0
-        ]
-      },
-      "FalloffFactor": {
-        "Type": "Float",
-        "Default": [
-          2,
-          6,
-          0,
-          0.5
-        ]
-      },
-      "Luminance": {
-        "Type": "Float",
-        "Default": [
-          1,
-          0.5,
-          10,
-          0
-        ]
-      },
-      "VanishParam": {
-        "Type": "Float",
-        "Default": [
-          0.02,
-          0.1,
-          0.2,
-          0.2
-        ]
-      },
-      "VanishUVParam": {
-        "Type": "Float",
-        "Default": [
-          1,
-          1,
-          1,
-          0
-        ]
-      }
-    },
-    "Textures": [
-      "diffuse",
-      "specular",
-      "normal",
-      "emission",
-      "transparency"
-    ]
-  },
-  "ChrFalloffVanishCyber_dpnEa": {
-    "Hide": false,
-    "Layer": "Transparent",
-    "Parameters": {
-      "Blend": {
-        "Type": "Float",
-        "Default": [
-          0.05,
-          0,
-          1,
-          1
-        ]
-      },
-      "FalloffFactor": {
-        "Type": "Float",
-        "Default": [
-          1,
-          6,
-          0,
-          1
-        ]
-      },
-      "Luminance": {
-        "Type": "Float",
-        "Default": [
-          30,
-          0.5,
-          20,
-          0
-        ]
-      },
-      "NoiseParam": {
-        "Type": "Float",
-        "Default": [
-          5000,
-          0.2,
-          100,
-          100
-        ]
-      },
-      "VanishParam": {
-        "Type": "Float",
-        "Default": [
-          10,
-          0.04,
-          0.1,
-          0.08
-        ]
-      },
-      "VanishUVParam": {
-        "Type": "Float",
-        "Default": [
-          8,
-          6,
-          3,
-          2
-        ]
-      }
-    },
-    "Textures": [
-      "diffuse",
-      "specular",
-      "normal",
-      "emission",
-      "transparency"
-    ]
-  },
-  "ChrFalloffVanishEff_dpnEa": {
-    "Layer": "Transparent",
-    "Parameters": {
-      "FalloffColor": {
-        "Type": "Color",
-        "Default": [
-          1,
-          1,
-          1,
-          0
-        ]
-      },
-      "FalloffFactor": {
-        "Type": "Float",
-        "Default": [
-          2,
-          10,
-          0,
-          0.5
-        ]
-      },
-      "Luminance": {
-        "Type": "Float",
-        "Default": [
-          2,
-          0.5,
-          10,
-          1
-        ]
-      },
-      "VanishParam": {
-        "Type": "Float",
-        "Default": [
-          0.5,
-          0.1,
-          0.5,
-          0.03
-        ]
-      },
-      "VanishUVParam": {
-        "Type": "Float",
-        "Default": [
-          10,
-          10,
-          10,
-          4
-        ]
-      }
-    },
-    "Textures": [
-      "diffuse",
-      "specular",
-      "normal",
-      "emission",
-      "transparency"
     ]
   },
   "ChrMouthFlip_dpncf": {
@@ -778,7 +462,7 @@
         "Type": "Float",
         "Default": [
           1,
-          4.5,
+          5,
           0.1,
           1
         ]
@@ -800,12 +484,12 @@
       "diffuse"
     ]
   },
-  "ChrSkinCDRF_dither_dpncf": {
+  "ChrMouthFlipSuper_ddpnf": {
     "Parameters": {
-      "CDRFParam": {
+      "Blend": {
         "Type": "Float",
         "Default": [
-          0,
+          0.65,
           0,
           0,
           0
@@ -815,9 +499,18 @@
         "Type": "Float",
         "Default": [
           1,
-          1,
-          0.5,
+          1.5,
+          0.3,
           1
+        ]
+      },
+      "MirrorPlane": {
+        "Type": "Float",
+        "Default": [
+          0,
+          0,
+          0,
+          0
         ]
       }
     },
@@ -825,6 +518,7 @@
       "diffuse",
       "specular",
       "normal",
+      "diffuse",
       "diffuse"
     ]
   },
@@ -862,9 +556,31 @@
       "FlowParam": {
         "Type": "Float",
         "Default": [
-          0.05,
-          7.5,
+          0.025,
+          5,
+          1,
+          1
+        ]
+      }
+    }
+  },
+  "Cloud_nfe": {
+    "Parameters": {
+      "FalloffParams": {
+        "Type": "Float",
+        "Default": [
+          6,
+          2,
+          0.6,
+          0.8
+        ]
+      },
+      "PBRFactor": {
+        "Type": "Float",
+        "Default": [
+          0.03,
           0.1,
+          0,
           0
         ]
       }
@@ -911,8 +627,8 @@
       "PBRFactor": {
         "Type": "Float",
         "Default": [
-          0,
-          0,
+          0.05,
+          0.9,
           0,
           0
         ]
@@ -922,21 +638,14 @@
       "diffuse"
     ]
   },
-  "Common_dither_dpn": {
-    "Textures": [
-      "diffuse",
-      "specular",
-      "normal"
-    ]
-  },
   "Common_dn": {
     "Hide": false,
     "Parameters": {
       "PBRFactor": {
         "Type": "Float",
         "Default": [
-          0,
-          0,
+          0.04,
+          0.2,
           0,
           0
         ]
@@ -949,6 +658,17 @@
   },
   "Common_dp": {
     "Hide": false,
+    "Parameters": {
+      "PBRFactor": {
+        "Type": "Float",
+        "Default": [
+          0.15,
+          0.7,
+          0,
+          0
+        ]
+      }
+    },
     "Textures": [
       "diffuse",
       "specular"
@@ -957,46 +677,37 @@
   "Common_dpn": {
     "Hide": false,
     "Parameters": {
-      "FalloffColor": {
-        "Type": "Color",
-        "Default": [
-          1,
-          1,
-          1,
-          0
-        ]
-      },
       "FalloffFactor": {
         "Type": "Float",
         "Default": [
-          2,
-          8,
-          0,
-          1
+          1,
+          4,
+          0.05,
+          0
         ]
       },
       "Luminance": {
         "Type": "Float",
         "Default": [
+          8,
           0,
           0,
-          0,
-          0.4
+          0
         ]
       },
       "PBRFactor": {
         "Type": "Float",
         "Default": [
-          0.04,
-          0.3,
+          0.1,
+          0.2,
           0,
           0
         ]
       },
-      "WhiteSpaceParam": {
+      "Refraction": {
         "Type": "Float",
         "Default": [
-          0,
+          0.3,
           0,
           0,
           0
@@ -1019,18 +730,45 @@
       "transparency"
     ]
   },
+  "Common_dpnm": {
+    "Hide": false,
+    "Textures": [
+      "diffuse",
+      "specular",
+      "normal",
+      "diffuse"
+    ]
+  },
   "cyber": {
     "Parameters": {
       "Blend": {
         "Type": "Float",
         "Default": [
-          1,
-          1,
-          1,
-          1
+          0.3,
+          0.7,
+          0,
+          0
         ]
       },
       "highNoiseParam": {
+        "Type": "Float",
+        "Default": [
+          0.7,
+          0.8,
+          2,
+          0.1
+        ]
+      },
+      "lowNoiseParam": {
+        "Type": "Float",
+        "Default": [
+          0.1,
+          0.8,
+          1,
+          0.1
+        ]
+      },
+      "MirrorPlane": {
         "Type": "Float",
         "Default": [
           0,
@@ -1039,10 +777,99 @@
           0
         ]
       },
-      "lowNoiseParam": {
+      "NoiseParam": {
+        "Type": "Float",
+        "Default": [
+          300,
+          0.2,
+          0.25,
+          70
+        ]
+      }
+    }
+  },
+  "cyber_eye": {
+    "Parameters": {
+      "Blend": {
+        "Type": "Float",
+        "Default": [
+          0.3,
+          0.7,
+          0,
+          0
+        ]
+      },
+      "ChrEye1": {
+        "Type": "Float",
+        "Default": [
+          0.055,
+          0.14,
+          0.04,
+          0.06
+        ]
+      },
+      "ChrEye2": {
+        "Type": "Float",
+        "Default": [
+          0.04,
+          0.18,
+          0.24,
+          0.14
+        ]
+      },
+      "ChrEye3": {
+        "Type": "Float",
+        "Default": [
+          0.5,
+          10,
+          0.2,
+          0.2
+        ]
+      },
+      "MirrorPlane": {
         "Type": "Float",
         "Default": [
           0,
+          0,
+          0,
+          0
+        ]
+      },
+      "NoiseParam": {
+        "Type": "Float",
+        "Default": [
+          300,
+          0.2,
+          0.25,
+          70
+        ]
+      }
+    }
+  },
+  "cyber_outline": {
+    "Parameters": {
+      "highNoiseParam": {
+        "Type": "Float",
+        "Default": [
+          0.5,
+          0.8,
+          2,
+          0.1
+        ]
+      },
+      "lowNoiseParam": {
+        "Type": "Float",
+        "Default": [
+          0.05,
+          0.8,
+          1,
+          0.1
+        ]
+      },
+      "Luminance": {
+        "Type": "Float",
+        "Default": [
+          1,
           0,
           0,
           0
@@ -1060,10 +887,19 @@
       "NoiseParam": {
         "Type": "Float",
         "Default": [
-          100,
-          2,
-          5,
-          100
+          300,
+          0.2,
+          0.23,
+          70
+        ]
+      },
+      "Offset": {
+        "Type": "Float",
+        "Default": [
+          0.002,
+          0,
+          0,
+          0
         ]
       }
     }
@@ -1083,7 +919,7 @@
         "Type": "Float",
         "Default": [
           5,
-          180,
+          10,
           0,
           0
         ]
@@ -1094,17 +930,82 @@
           1,
           1,
           1,
-          0
+          3
         ]
       }
     }
   },
-  "DecalModel_dna": {
+  "CyberSpaceNoise_dp": {
+    "Hide": false,
+    "Textures": [
+      "diffuse",
+      "specular"
+    ]
+  },
+  "CyberSpaceNoise_dpa": {
+    "Hide": false,
     "Layer": "Transparent",
     "Textures": [
       "diffuse",
-      "normal",
+      "specular",
       "transparency"
+    ]
+  },
+  "CyberSpaceNoise_dpn": {
+    "Hide": false,
+    "Parameters": {
+      "0": {
+        "Type": "Float",
+        "Default": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "Luminance": {
+        "Type": "Float",
+        "Default": [
+          1,
+          0,
+          0,
+          0
+        ]
+      },
+      "PBRFactor": {
+        "Type": "Float",
+        "Default": [
+          0.03,
+          0.2,
+          0,
+          0
+        ]
+      }
+    },
+    "Textures": [
+      "diffuse",
+      "specular",
+      "normal"
+    ]
+  },
+  "CyberSpaceNoise_dpnE": {
+    "Hide": false,
+    "Parameters": {
+      "Luminance": {
+        "Type": "Float",
+        "Default": [
+          1,
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    "Textures": [
+      "diffuse",
+      "specular",
+      "normal",
+      "emission"
     ]
   },
   "DecalModel_dpn": {
@@ -1114,12 +1015,19 @@
       "normal"
     ]
   },
+  "DecalModel_na": {
+    "Layer": "Transparent",
+    "Textures": [
+      "normal",
+      "transparency"
+    ]
+  },
   "Detail_dpndpn": {
     "Parameters": {
       "DetailFactor": {
         "Type": "Float",
         "Default": [
-          1,
+          35,
           0,
           0,
           0
@@ -1184,12 +1092,34 @@
       "normal"
     ]
   },
+  "DirectionBlend_dpndpnn": {
+    "Parameters": {
+      "DirectionParam": {
+        "Type": "Float",
+        "Default": [
+          0,
+          1,
+          0,
+          0
+        ]
+      },
+      "NormalBlendParam": {
+        "Type": "Float",
+        "Default": [
+          0.5,
+          0,
+          0,
+          0
+        ]
+      }
+    }
+  },
   "DirectionBlend_dpnndpn": {
     "Parameters": {
       "DetailFactor": {
         "Type": "Float",
         "Default": [
-          15,
+          6,
           0,
           0,
           0
@@ -1215,181 +1145,41 @@
       }
     }
   },
-  "Dpower_dpnnEf": {
+  "DistanceBlend_dpn": {
     "Parameters": {
-      "ChaosWaveParamEx": {
-        "Type": "Float",
-        "Default": [
-          2,
-          0,
-          0,
-          0
-        ]
-      },
-      "ChaosWaveParamY": {
-        "Type": "Float",
-        "Default": [
-          3,
-          1,
-          0.1,
-          0
-        ]
-      },
-      "ChaosWaveParamZX": {
-        "Type": "Float",
-        "Default": [
-          3,
-          1,
-          0.1,
-          3
-        ]
-      },
       "DetailFactor": {
         "Type": "Float",
         "Default": [
-          1,
-          30,
-          20,
+          0.1,
+          0.02,
+          0,
           0
         ]
       },
-      "FalloffFactor": {
+      "DistanceBlend": {
         "Type": "Float",
         "Default": [
-          1.2,
-          8,
-          0.25,
-          1
-        ]
-      },
-      "Luminance": {
-        "Type": "Float",
-        "Default": [
-          6,
-          0.4,
-          0,
-          0.6
-        ]
-      }
-    }
-  },
-  "DpowerVanish_dpnnEfa": {
-    "Layer": "Transparent",
-    "Parameters": {
-      "ChaosWaveParamEx": {
-        "Type": "Float",
-        "Default": [
-          6,
-          1,
-          0.5,
-          1
-        ]
-      },
-      "ChaosWaveParamY": {
-        "Type": "Float",
-        "Default": [
-          0.05,
-          1,
-          0.02,
-          2
-        ]
-      },
-      "ChaosWaveParamZX": {
-        "Type": "Float",
-        "Default": [
-          0.1,
-          1,
-          0.02,
-          5
-        ]
-      },
-      "FalloffFactor": {
-        "Type": "Float",
-        "Default": [
-          0.2,
+          80,
+          400,
           50,
-          0.05,
-          1.5
+          200
         ]
       },
-      "VanishParam": {
+      "PBRFactor": {
         "Type": "Float",
         "Default": [
-          1,
+          0.06,
           0,
           0,
-          0.07
-        ]
-      },
-      "VanishUVParam": {
-        "Type": "Float",
-        "Default": [
-          1,
-          1,
-          1,
           0
         ]
       }
-    }
-  },
-  "DpowerVanishEff_dpnnEfa": {
-    "Layer": "Transparent",
-    "Parameters": {
-      "ChaosWaveParamEx": {
-        "Type": "Float",
-        "Default": [
-          20,
-          1,
-          0.5,
-          10
-        ]
-      },
-      "ChaosWaveParamY": {
-        "Type": "Float",
-        "Default": [
-          7,
-          1,
-          0.01,
-          10
-        ]
-      },
-      "ChaosWaveParamZX": {
-        "Type": "Float",
-        "Default": [
-          30,
-          1,
-          0.08,
-          10
-        ]
-      },
-      "FalloffFactor": {
-        "Type": "Float",
-        "Default": [
-          1.2,
-          5,
-          0,
-          0.5
-        ]
-      },
-      "VanishParam": {
-        "Type": "Float",
-        "Default": [
-          0.5,
-          0.1,
-          0.5,
-          0.03
-        ]
-      },
-      "VanishUVParam": {
-        "Type": "Float",
-        "Default": [
-          8,
-          0.6,
-          1,
-          3
-        ]
-      }
-    }
+    },
+    "Textures": [
+      "diffuse",
+      "specular",
+      "normal"
+    ]
   },
   "Earth_dpnEE": {
     "Parameters": {
@@ -1422,8 +1212,34 @@
       }
     }
   },
+  "Effaddhoc": {},
   "EffAdhoc": {
     "Hide": false
+  },
+  "Emission_d": {
+    "Parameters": {
+      "Luminance": {
+        "Type": "Float",
+        "Default": [
+          1,
+          0,
+          0,
+          0
+        ]
+      },
+      "PBRFactor": {
+        "Type": "Float",
+        "Default": [
+          0.1,
+          0.6,
+          0,
+          0
+        ]
+      }
+    },
+    "Textures": [
+      "diffuse"
+    ]
   },
   "Emission_dE": {
     "Parameters": {
@@ -1439,8 +1255,8 @@
       "PBRFactor": {
         "Type": "Float",
         "Default": [
-          0.05,
-          0.5,
+          0.2,
+          0.8,
           0,
           0
         ]
@@ -1480,6 +1296,15 @@
           0,
           0
         ]
+      },
+      "PBRFactor": {
+        "Type": "Float",
+        "Default": [
+          0.04,
+          0.2,
+          0,
+          0
+        ]
       }
     },
     "Textures": [
@@ -1490,13 +1315,12 @@
     ]
   },
   "Emission_dpnEa": {
-    "Hide": false,
     "Layer": "Transparent",
     "Parameters": {
       "Luminance": {
         "Type": "Float",
         "Default": [
-          15,
+          1,
           0,
           0,
           0
@@ -1512,12 +1336,13 @@
     ]
   },
   "EmissionTone_dapnE": {
+    "Hide": false,
     "Layer": "Transparent",
     "Parameters": {
       "Luminance": {
         "Type": "Float",
         "Default": [
-          1,
+          6,
           0,
           0,
           0
@@ -1557,7 +1382,7 @@
       "Luminance": {
         "Type": "Float",
         "Default": [
-          1,
+          15,
           0,
           0,
           0
@@ -1565,29 +1390,11 @@
       }
     },
     "Textures": [
-      "emission"
-    ]
-  },
-  "EmissionToneOpAnim_dpnE": {
-    "Parameters": {
-      "Luminance": {
-        "Type": "Float",
-        "Default": [
-          1,
-          0,
-          0,
-          0
-        ]
-      }
-    },
-    "Textures": [
-      "diffuse",
-      "specular",
-      "normal",
       "emission"
     ]
   },
   "EnmEmissionTone_dpnE": {
+    "Hide": false,
     "Parameters": {
       "ClippingOffset": {
         "Type": "Float",
@@ -1607,24 +1414,6 @@
           0
         ]
       },
-      "FalloffColor": {
-        "Type": "Color",
-        "Default": [
-          1,
-          1,
-          1,
-          0
-        ]
-      },
-      "FalloffFactor": {
-        "Type": "Float",
-        "Default": [
-          0,
-          8,
-          0,
-          1
-        ]
-      },
       "Luminance": {
         "Type": "Float",
         "Default": [
@@ -1632,15 +1421,6 @@
           0,
           0,
           0
-        ]
-      },
-      "Luminance2": {
-        "Type": "Float",
-        "Default": [
-          1,
-          0.5,
-          0,
-          0.2
         ]
       }
     },
@@ -1671,24 +1451,6 @@
           0
         ]
       },
-      "FalloffColor": {
-        "Type": "Color",
-        "Default": [
-          1,
-          1,
-          1,
-          0
-        ]
-      },
-      "FalloffFactor": {
-        "Type": "Float",
-        "Default": [
-          1,
-          5,
-          0,
-          1
-        ]
-      },
       "Luminance": {
         "Type": "Float",
         "Default": [
@@ -1702,9 +1464,9 @@
         "Type": "Float",
         "Default": [
           3.5,
-          0.5,
           0,
-          0.2
+          0,
+          0
         ]
       }
     },
@@ -1716,13 +1478,62 @@
       "emission"
     ]
   },
-  "FakeGlass_d": {
+  "EnmEmissionTone_dpnnEr": {
     "Parameters": {
       "FalloffFactor": {
         "Type": "Float",
         "Default": [
           1,
-          4,
+          2.5,
+          0,
+          0
+        ]
+      },
+      "IridescenceOffset": {
+        "Type": "Float",
+        "Default": [
+          0,
+          0.5,
+          1,
+          1
+        ]
+      },
+      "Luminance": {
+        "Type": "Float",
+        "Default": [
+          1,
+          0,
+          0,
+          0
+        ]
+      },
+      "Luminance2": {
+        "Type": "Float",
+        "Default": [
+          2.2,
+          0,
+          0,
+          0
+        ]
+      }
+    }
+  },
+  "FakeGlass_d": {
+    "Parameters": {
+      "0": {
+        "Type": "Float",
+        "Default": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "FalloffFactor": {
+        "Type": "Float",
+        "Default": [
+          1,
+          10,
           0.05,
           0
         ]
@@ -1730,7 +1541,7 @@
       "PBRFactor": {
         "Type": "Float",
         "Default": [
-          0.02,
+          0.05,
           0.95,
           0,
           0
@@ -1746,36 +1557,9 @@
       "FalloffFactor": {
         "Type": "Float",
         "Default": [
+          0.85,
+          4,
           0.05,
-          0.5,
-          0.5,
-          1
-        ]
-      }
-    },
-    "Textures": [
-      "diffuse",
-      "specular",
-      "normal"
-    ]
-  },
-  "FalloffEmissionTone_dpn": {
-    "Parameters": {
-      "FalloffFactor": {
-        "Type": "Float",
-        "Default": [
-          2,
-          10,
-          0.3,
-          1
-        ]
-      },
-      "Luminance": {
-        "Type": "Float",
-        "Default": [
-          1,
-          0,
-          0,
           0
         ]
       }
@@ -1791,8 +1575,8 @@
       "FlowParam": {
         "Type": "Float",
         "Default": [
-          0.3,
-          3,
+          0.4,
+          2,
           10,
           1
         ]
@@ -1809,7 +1593,7 @@
       "ProjectionScale": {
         "Type": "Float",
         "Default": [
-          0.03,
+          0.04,
           0.02,
           0.01,
           1
@@ -1818,7 +1602,7 @@
       "VolumeTexNum": {
         "Type": "Float",
         "Default": [
-          4,
+          9,
           0,
           0,
           0
@@ -1826,138 +1610,22 @@
       }
     }
   },
-  "FlowWaterParallax_ddnnf": {
-    "Parameters": {
-      "ParallaxParam": {
-        "Type": "Float",
-        "Default": [
-          0.01,
-          20,
-          0,
-          0
-        ]
-      },
-      "PBRFactor": {
-        "Type": "Float",
-        "Default": [
-          0.04,
-          0.7,
-          0,
-          0
-        ]
-      },
-      "WaterFlowParam": {
-        "Type": "Float",
-        "Default": [
-          15,
-          5,
-          1,
-          1
-        ]
-      },
-      "WaterScaleParam": {
-        "Type": "Float",
-        "Default": [
-          0.08,
-          0.085,
-          0.03,
-          0.05
-        ]
-      },
-      "WaterSpeedParam": {
-        "Type": "Float",
-        "Default": [
-          0.1,
-          0.15,
-          0.1,
-          0.2
-        ]
-      },
-      "WaterWaveParam": {
-        "Type": "Float",
-        "Default": [
-          1,
-          10,
-          500,
-          1
-        ]
-      }
-    }
-  },
-  "FlowWaterParallax_ddnnff": {
-    "Parameters": {
-      "ParallaxParam": {
-        "Type": "Float",
-        "Default": [
-          0.005,
-          10,
-          10,
-          0
-        ]
-      },
-      "PBRFactor": {
-        "Type": "Float",
-        "Default": [
-          0.05,
-          0.95,
-          0,
-          0
-        ]
-      },
-      "WaterFlowParam": {
-        "Type": "Float",
-        "Default": [
-          -0.2,
-          10,
-          1,
-          1
-        ]
-      },
-      "WaterScaleParam": {
-        "Type": "Float",
-        "Default": [
-          4,
-          5,
-          3,
-          4
-        ]
-      },
-      "WaterSpeedParam": {
-        "Type": "Float",
-        "Default": [
-          0.001,
-          0.001,
-          0.002,
-          0.01
-        ]
-      },
-      "WaterWaveParam": {
-        "Type": "Float",
-        "Default": [
-          1,
-          10,
-          500,
-          1
-        ]
-      }
-    }
-  },
-  "FlowWaterWP": {
+  "FlowWaterLite": {
     "Parameters": {
       "CausticsLighting": {
         "Type": "Float",
         "Default": [
+          0.25,
           2,
           0,
-          0,
-          0.5
+          1
         ]
       },
       "CausticsProjection": {
         "Type": "Float",
         "Default": [
+          0.75,
           0.25,
-          0.2,
           0.9,
           0.1
         ]
@@ -1974,34 +1642,207 @@
       "RiverFlowParam": {
         "Type": "Float",
         "Default": [
-          0.5,
-          2,
-          15,
-          10
+          0.3,
+          3,
+          9,
+          8
         ]
       },
       "RiverWaterParam": {
         "Type": "Float",
         "Default": [
+          0.03,
           0.1,
-          0.1,
-          1,
-          0.1
+          20,
+          0.03
         ]
       },
       "RiverWaveParam": {
         "Type": "Float",
         "Default": [
-          5,
-          0.1,
           1,
+          1,
+          0.25,
+          0.25
+        ]
+      }
+    }
+  },
+  "FlowWaterLiteFar": {
+    "Parameters": {
+      "CausticsLighting": {
+        "Type": "Float",
+        "Default": [
+          1,
+          2,
+          0,
           1
+        ]
+      },
+      "CausticsProjection": {
+        "Type": "Float",
+        "Default": [
+          0.75,
+          0.25,
+          0.9,
+          0.1
+        ]
+      },
+      "PBRFactor": {
+        "Type": "Float",
+        "Default": [
+          0.05,
+          0.95,
+          0,
+          1
+        ]
+      },
+      "RiverFlowParam": {
+        "Type": "Float",
+        "Default": [
+          0.3,
+          3,
+          9,
+          8
+        ]
+      },
+      "RiverWaterParam": {
+        "Type": "Float",
+        "Default": [
+          0.03,
+          0.1,
+          20,
+          0.03
+        ]
+      },
+      "RiverWaveParam": {
+        "Type": "Float",
+        "Default": [
+          1,
+          1,
+          0.25,
+          0.25
+        ]
+      }
+    }
+  },
+  "FlowWaterWP": {
+    "Parameters": {
+      "CausticsLighting": {
+        "Type": "Float",
+        "Default": [
+          1,
+          1,
+          0,
+          1
+        ]
+      },
+      "CausticsProjection": {
+        "Type": "Float",
+        "Default": [
+          15,
+          0,
+          0.95,
+          0.1
+        ]
+      },
+      "PBRFactor": {
+        "Type": "Float",
+        "Default": [
+          0.05,
+          0.95,
+          0,
+          1
+        ]
+      },
+      "RiverFlowParam": {
+        "Type": "Float",
+        "Default": [
+          0.01,
+          2,
+          0,
+          0
+        ]
+      },
+      "RiverWaterParam": {
+        "Type": "Float",
+        "Default": [
+          0.03,
+          0.1,
+          10,
+          0.03
+        ]
+      },
+      "RiverWaveParam": {
+        "Type": "Float",
+        "Default": [
+          0,
+          0,
+          0,
+          0.1
+        ]
+      }
+    }
+  },
+  "FlyerRoad": {
+    "Parameters": {
+      "FalloffAndLuminance": {
+        "Type": "Float",
+        "Default": [
+          2,
+          1,
+          0,
+          0
+        ]
+      },
+      "IridescenceOffset": {
+        "Type": "Float",
+        "Default": [
+          0.25,
+          0.75,
+          0,
+          0.5
+        ]
+      },
+      "Luminance": {
+        "Type": "Float",
+        "Default": [
+          1,
+          150,
+          0,
+          0
+        ]
+      },
+      "PBRFactor": {
+        "Type": "Float",
+        "Default": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "VanishParam": {
+        "Type": "Float",
+        "Default": [
+          0.1,
+          0.5,
+          0,
+          0.1
+        ]
+      },
+      "VanishUVParam": {
+        "Type": "Float",
+        "Default": [
+          3,
+          3,
+          3,
+          2
         ]
       }
     }
   },
   "Fur": {
-    "Hide": false,
     "Parameters": {
       "AnisoFactor": {
         "Type": "Float",
@@ -2038,6 +1879,19 @@
           0.5,
           1
         ]
+      }
+    }
+  },
+  "Generate_dpnEg": {
+    "Parameters": {
+      "GenerateClip": {
+        "Type": "Float",
+        "Default": [
+          1,
+          0.01,
+          0.05,
+          -0.03
+        ]
       },
       "Luminance": {
         "Type": "Float",
@@ -2050,7 +1904,62 @@
       }
     }
   },
+  "GenerateIrie_dpnnrEg": {
+    "Parameters": {
+      "FalloffAndParallax": {
+        "Type": "Float",
+        "Default": [
+          1,
+          -0.1,
+          0,
+          1
+        ]
+      },
+      "GenerateClip": {
+        "Type": "Float",
+        "Default": [
+          0.1,
+          0.01,
+          0.05,
+          -0.01
+        ]
+      },
+      "IridescenceOffset": {
+        "Type": "Float",
+        "Default": [
+          0,
+          0.5,
+          0.5,
+          0
+        ]
+      },
+      "PBRFactor": {
+        "Type": "Float",
+        "Default": [
+          1,
+          1,
+          0,
+          0
+        ]
+      }
+    }
+  },
+  "Giant": {
+    "Hide": false,
+    "Parameters": {
+      "Luminance": {
+        "Type": "Float",
+        "Default": [
+          1,
+          0,
+          0,
+          0
+        ]
+      }
+    }
+  },
   "Glass_dpn": {
+    "Hide": false,
     "Parameters": {
       "FalloffFactor": {
         "Type": "Float",
@@ -2078,6 +1987,7 @@
     ]
   },
   "GlassTone_dpnE": {
+    "Hide": false,
     "Parameters": {
       "FalloffFactor": {
         "Type": "Float",
@@ -2114,12 +2024,73 @@
       "emission"
     ]
   },
+  "Grass_d": {
+    "Parameters": {
+      "PBRFactor": {
+        "Type": "Float",
+        "Default": [
+          0.05,
+          0.6,
+          0,
+          0
+        ]
+      },
+      "TransColor": {
+        "Type": "Color",
+        "Default": [
+          0,
+          0,
+          0,
+          0.23
+        ]
+      },
+      "TransParam": {
+        "Type": "Float",
+        "Default": [
+          0.25,
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    "Textures": [
+      "diffuse"
+    ]
+  },
+  "Grass_dn": {
+    "Parameters": {
+      "PBRFactor": {
+        "Type": "Float",
+        "Default": [
+          0.025,
+          0.1,
+          0,
+          0
+        ]
+      },
+      "TransParam": {
+        "Type": "Float",
+        "Default": [
+          0.25,
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    "Textures": [
+      "diffuse",
+      "normal"
+    ]
+  },
   "Grass_dpn": {
+    "Hide": false,
     "Parameters": {
       "TransParam": {
         "Type": "Float",
         "Default": [
-          0,
+          0.25,
           0,
           0,
           0
@@ -2133,7 +2104,6 @@
     ]
   },
   "IgnoreLight_d": {
-    "Hide": false,
     "Parameters": {
       "Luminance": {
         "Type": "Float",
@@ -2154,8 +2124,17 @@
       "Luminance": {
         "Type": "Float",
         "Default": [
-          1.8,
+          1,
           0,
+          0,
+          0
+        ]
+      },
+      "PBRFactor": {
+        "Type": "Float",
+        "Default": [
+          0.04,
+          0.2,
           0,
           0
         ]
@@ -2167,12 +2146,11 @@
     ]
   },
   "IgnoreLight_E": {
-    "Hide": false,
     "Parameters": {
       "Luminance": {
         "Type": "Float",
         "Default": [
-          1,
+          20,
           0,
           0,
           0
@@ -2183,35 +2161,52 @@
       "emission"
     ]
   },
-  "Impostor_dpn": {
+  "Impostor_Vegetation_dn": {
+    "Hide": false,
     "Parameters": {
       "Impostor": {
         "Type": "Float",
         "Default": [
           8,
-          1000,
-          2,
+          8.751,
+          0,
           0.5
         ]
       },
       "ImpostorPivot": {
         "Type": "Float",
         "Default": [
+          0.02,
+          0.955,
+          -0.015,
+          1024
+        ]
+      },
+      "PBRFactor": {
+        "Type": "Float",
+        "Default": [
+          0.04,
+          0.2,
+          0,
+          0
+        ]
+      },
+      "TransParam": {
+        "Type": "Float",
+        "Default": [
+          0.25,
           0,
           0,
-          0,
-          2048
+          0
         ]
       }
     },
     "Textures": [
       "diffuse",
-      "specular",
       "normal"
     ]
   },
   "Indirect_daon": {
-    "Layer": "Transparent",
     "Parameters": {
       "Offset": {
         "Type": "Float",
@@ -2233,6 +2228,38 @@
       }
     }
   },
+  "Indirect_dopn": {
+    "Parameters": {
+      "Offset": {
+        "Type": "Float",
+        "Default": [
+          0.1,
+          0.1,
+          0,
+          0
+        ]
+      }
+    },
+    "Textures": [
+      "diffuse",
+      "specular",
+      "normal",
+      "reflection"
+    ]
+  },
+  "Indirect_dpnd": {
+    "Parameters": {
+      "Offset": {
+        "Type": "Float",
+        "Default": [
+          0.1,
+          0.1,
+          0,
+          0
+        ]
+      }
+    }
+  },
   "InstancedGrind_dpnEa": {
     "Layer": "Transparent",
     "Parameters": {
@@ -2248,24 +2275,6 @@
       "TilingDistance": {
         "Type": "Float",
         "Default": [
-          8,
-          0,
-          0,
-          0
-        ]
-      },
-      "UvScroll": {
-        "Type": "Float",
-        "Default": [
-          0,
-          0,
-          0,
-          0
-        ]
-      },
-      "UvScroll2": {
-        "Type": "Float",
-        "Default": [
           1,
           0,
           0,
@@ -2278,7 +2287,7 @@
           0,
           0,
           0,
-          0.1
+          0.75
         ]
       },
       "VanishUVParam": {
@@ -2304,25 +2313,7 @@
       "TilingDistance": {
         "Type": "Float",
         "Default": [
-          4,
-          0,
-          0,
-          0
-        ]
-      },
-      "UvScroll": {
-        "Type": "Float",
-        "Default": [
-          0,
-          0,
-          0,
-          0
-        ]
-      },
-      "UvScroll2": {
-        "Type": "Float",
-        "Default": [
-          0,
+          2,
           0,
           0,
           0
@@ -2335,54 +2326,7 @@
       "normal"
     ]
   },
-  "InstancedWire_dpnE": {
-    "Parameters": {
-      "Luminance": {
-        "Type": "Float",
-        "Default": [
-          1,
-          0,
-          0,
-          0
-        ]
-      },
-      "TilingDistance": {
-        "Type": "Float",
-        "Default": [
-          0.15,
-          0,
-          0,
-          0
-        ]
-      },
-      "UvScroll": {
-        "Type": "Float",
-        "Default": [
-          0,
-          0,
-          0,
-          0
-        ]
-      },
-      "UvScroll2": {
-        "Type": "Float",
-        "Default": [
-          0,
-          0,
-          0,
-          0
-        ]
-      }
-    },
-    "Textures": [
-      "diffuse",
-      "specular",
-      "normal",
-      "emission"
-    ]
-  },
   "Iridescence_ddpNrEa": {
-    "Layer": "Transparent",
     "Parameters": {
       "FalloffAndLuminance": {
         "Type": "Float",
@@ -2422,8 +2366,53 @@
       }
     }
   },
+  "Iridescence_dpnnr": {
+    "Parameters": {
+      "FalloffAndParallax": {
+        "Type": "Float",
+        "Default": [
+          5,
+          1,
+          1,
+          0
+        ]
+      },
+      "IridescenceOffset": {
+        "Type": "Float",
+        "Default": [
+          0.25,
+          0.75,
+          0,
+          0.5
+        ]
+      },
+      "Luminance": {
+        "Type": "Float",
+        "Default": [
+          1,
+          0,
+          0,
+          0
+        ]
+      },
+      "PBRFactor": {
+        "Type": "Float",
+        "Default": [
+          1,
+          1,
+          0,
+          0
+        ]
+      }
+    },
+    "Textures": [
+      "diffuse",
+      "specular",
+      "normal",
+      "normal"
+    ]
+  },
   "IridescenceStone_ddpNrEa": {
-    "Layer": "Transparent",
     "Parameters": {
       "FalloffAndLuminance": {
         "Type": "Float",
@@ -2463,6 +2452,86 @@
       }
     }
   },
+  "IridescenceStoneTone_ddpNrEa": {
+    "Parameters": {
+      "FalloffAndLuminance": {
+        "Type": "Float",
+        "Default": [
+          1,
+          0.5,
+          0.5,
+          0
+        ]
+      },
+      "IridescenceMask": {
+        "Type": "Float",
+        "Default": [
+          0.5,
+          0.5,
+          0.5,
+          0
+        ]
+      },
+      "IridescenceOffset": {
+        "Type": "Float",
+        "Default": [
+          0,
+          0.5,
+          0.5,
+          0
+        ]
+      },
+      "WPBRFactor": {
+        "Type": "Float",
+        "Default": [
+          1,
+          1,
+          0,
+          0
+        ]
+      }
+    }
+  },
+  "IridescenceStoneTone_dpNrEam": {
+    "Parameters": {
+      "FalloffAndLuminance": {
+        "Type": "Float",
+        "Default": [
+          1.5,
+          1,
+          1,
+          0
+        ]
+      },
+      "IridescenceMask": {
+        "Type": "Float",
+        "Default": [
+          0.5,
+          0.5,
+          0.5,
+          0
+        ]
+      },
+      "IridescenceOffset": {
+        "Type": "Float",
+        "Default": [
+          0.25,
+          0.75,
+          0,
+          0.5
+        ]
+      },
+      "WPBRFactor": {
+        "Type": "Float",
+        "Default": [
+          1,
+          1,
+          0,
+          0
+        ]
+      }
+    }
+  },
   "Jewel": {
     "Parameters": {
       "Luminance": {
@@ -2480,58 +2549,25 @@
       "normal"
     ]
   },
-  "Jewel_dnE": {
+  "LightMaskWeather_dpnmb": {
+    "Layer": "Transparent",
     "Parameters": {
-      "Luminance": {
+      "UVRotate": {
         "Type": "Float",
         "Default": [
-          1,
+          225,
           0,
           0,
-          0
-        ]
-      }
-    },
-    "Textures": [
-      "diffuse",
-      "normal",
-      "emission"
-    ]
-  },
-  "Kaleidoscope": {
-    "Textures": [
-      "diffuse",
-      "specular",
-      "normal"
-    ]
-  },
-  "MariaEye_dpnE": {
-    "Parameters": {
-      "FalloffColor": {
-        "Type": "Color",
-        "Default": [
-          1,
-          1,
-          1,
           0
         ]
       },
-      "FalloffFactor": {
-        "Type": "Float",
-        "Default": [
-          0.2,
-          50,
-          0,
-          1
-        ]
-      },
-      "Luminance": {
+      "WorldUVScroll": {
         "Type": "Float",
         "Default": [
           1,
           0,
-          0,
-          0
+          0.01,
+          0.01
         ]
       }
     },
@@ -2539,92 +2575,15 @@
       "diffuse",
       "specular",
       "normal",
-      "emission"
+      "diffuse",
+      "transparency"
     ]
   },
-  "MariaHair_dither_dpncfs": {
+  "NearVanish_da": {
+    "Hide": false,
+    "Layer": "Transparent",
     "Parameters": {
-      "AnisoFactor": {
-        "Type": "Float",
-        "Default": [
-          3,
-          1,
-          0,
-          0
-        ]
-      },
-      "CDRFParam": {
-        "Type": "Float",
-        "Default": [
-          0.6,
-          0,
-          0,
-          0
-        ]
-      },
-      "FalloffColor": {
-        "Type": "Color",
-        "Default": [
-          1,
-          1,
-          1,
-          0
-        ]
-      },
-      "FalloffFactor": {
-        "Type": "Float",
-        "Default": [
-          1,
-          2,
-          0.1,
-          1
-        ]
-      }
-    }
-  },
-  "MariaHair_dpncfs": {
-    "Parameters": {
-      "AnisoFactor": {
-        "Type": "Float",
-        "Default": [
-          1,
-          1,
-          0,
-          0
-        ]
-      },
-      "CDRFParam": {
-        "Type": "Float",
-        "Default": [
-          0.6,
-          0,
-          0,
-          0
-        ]
-      },
-      "FalloffColor": {
-        "Type": "Color",
-        "Default": [
-          1,
-          1,
-          1,
-          0
-        ]
-      },
-      "FalloffFactor": {
-        "Type": "Float",
-        "Default": [
-          1,
-          2,
-          0.1,
-          1
-        ]
-      }
-    }
-  },
-  "Mephiles_dpnnEE": {
-    "Parameters": {
-      "ChaosWaveParamEx": {
+      "FlipParam": {
         "Type": "Float",
         "Default": [
           0,
@@ -2633,60 +2592,20 @@
           0
         ]
       },
-      "ChaosWaveParamY": {
+      "NearClip": {
         "Type": "Float",
         "Default": [
-          0.5,
-          0.5,
-          0.05,
-          3
-        ]
-      },
-      "ChaosWaveParamZX": {
-        "Type": "Float",
-        "Default": [
-          1,
-          1,
-          0.05,
-          2
-        ]
-      },
-      "FalloffColor": {
-        "Type": "Color",
-        "Default": [
-          0.7,
-          0.2,
-          1,
-          0
-        ]
-      },
-      "FalloffFactor": {
-        "Type": "Float",
-        "Default": [
-          1.5,
-          3,
-          0.1,
-          0.1
-        ]
-      },
-      "Luminance": {
-        "Type": "Float",
-        "Default": [
-          2,
-          1,
-          0.3,
-          0
-        ]
-      }
-    }
-  },
-  "Mist_dn": {
-    "Parameters": {
-      "MistThickness": {
-        "Type": "Float",
-        "Default": [
+          2500,
           100,
-          150,
+          0.001,
+          0
+        ]
+      },
+      "PBRFactor": {
+        "Type": "Float",
+        "Default": [
+          1,
+          1,
           0,
           0
         ]
@@ -2694,7 +2613,7 @@
     },
     "Textures": [
       "diffuse",
-      "normal"
+      "transparency"
     ]
   },
   "OceanParallax_ddnnfm": {
@@ -2755,70 +2674,96 @@
       }
     }
   },
-  "OceanParallaxLight_ddnnfm": {
+  "Plush": {
     "Parameters": {
-      "DistortionParam": {
+      "FalloffFactor": {
         "Type": "Float",
         "Default": [
-          0.005,
+          0.07,
+          2,
           0,
-          0,
-          0
+          0.1
         ]
       },
-      "FlowParam": {
-        "Type": "Float",
-        "Default": [
-          -0.2,
-          0.1,
-          0.03,
-          0
-        ]
-      },
-      "ParallaxParam": {
-        "Type": "Float",
-        "Default": [
-          12,
-          0.001,
-          0.04,
-          0
-        ]
-      },
-      "PBRFactor": {
-        "Type": "Float",
-        "Default": [
-          0.05,
-          0.7,
-          0,
-          0
-        ]
-      },
-      "UVRotate": {
-        "Type": "Float",
-        "Default": [
-          225,
-          0,
-          0,
-          0
-        ]
-      },
-      "WorldUVScroll": {
+      "GrainParam": {
         "Type": "Float",
         "Default": [
           1,
-          0,
-          0.01,
-          0.01
+          1,
+          1,
+          0.3
+        ]
+      },
+      "TilingScale_GrainRange": {
+        "Type": "Float",
+        "Default": [
+          1,
+          1,
+          0.4,
+          0.7
         ]
       }
-    }
+    },
+    "Textures": [
+      "diffuse",
+      "specular",
+      "normal"
+    ]
+  },
+  "Plush_dpnna": {
+    "Layer": "Transparent",
+    "Parameters": {
+      "FalloffFactor": {
+        "Type": "Float",
+        "Default": [
+          1,
+          1,
+          1,
+          0
+        ]
+      },
+      "GrainParam": {
+        "Type": "Float",
+        "Default": [
+          0.05,
+          0.1,
+          0.03,
+          1
+        ]
+      },
+      "SpecularMask_GrainShadowMask": {
+        "Type": "Float",
+        "Default": [
+          1,
+          1,
+          1,
+          1
+        ]
+      },
+      "TilingScale_GrainRange": {
+        "Type": "Float",
+        "Default": [
+          1,
+          1,
+          0.7,
+          1
+        ]
+      }
+    },
+    "Textures": [
+      "diffuse",
+      "specular",
+      "normal",
+      "normal",
+      "transparency"
+    ]
   },
   "Ring_dd": {
     "Parameters": {
       "Blend": {
         "Type": "Float",
         "Default": [
-          1,
+          0.5,
           0,
           0,
           0
@@ -2828,8 +2773,8 @@
         "Type": "Float",
         "Default": [
           0.1,
-          0.75,
-          1,
+          0.5,
+          0.8,
           0
         ]
       }
@@ -2844,7 +2789,7 @@
       "Blend": {
         "Type": "Float",
         "Default": [
-          0.85,
+          0.5,
           0,
           0,
           0
@@ -2858,142 +2803,110 @@
       "normal"
     ]
   },
-  "RingFalloff_ddpn": {
+  "sage01": {
     "Parameters": {
-      "Blend": {
+      "FalloffAndLuminance": {
         "Type": "Float",
         "Default": [
+          1,
+          1,
+          1,
+          0
+        ]
+      },
+      "IridescenceOffset": {
+        "Type": "Float",
+        "Default": [
+          0.2,
+          0.7,
           0.5,
-          0,
-          0,
-          0
-        ]
-      },
-      "FalloffColor": {
-        "Type": "Color",
-        "Default": [
-          1,
-          1,
-          1,
-          0
-        ]
-      },
-      "FalloffFactor": {
-        "Type": "Float",
-        "Default": [
-          2,
-          5,
-          0,
           1
         ]
       },
-      "Luminance": {
-        "Type": "Float",
-        "Default": [
-          1,
-          0.5,
-          0,
-          0
-        ]
-      }
-    },
-    "Textures": [
-      "diffuse",
-      "diffuse",
-      "specular",
-      "normal"
-    ]
-  },
-  "RingFalloffVanish_ddpna": {
-    "Layer": "Transparent",
-    "Parameters": {
-      "Blend": {
-        "Type": "Float",
-        "Default": [
-          0.97,
-          0,
-          0,
-          0
-        ]
-      },
-      "FalloffColor": {
-        "Type": "Color",
-        "Default": [
-          1,
-          1,
-          1,
-          0
-        ]
-      },
-      "FalloffFactor": {
+      "IridescenceScroll": {
         "Type": "Float",
         "Default": [
           0.1,
-          8,
+          0.1,
           0,
-          1
+          0
         ]
       },
       "Luminance": {
         "Type": "Float",
         "Default": [
-          1,
-          0.5,
-          10,
+          2,
+          8,
+          0.1,
           0
         ]
       },
       "VanishParam": {
         "Type": "Float",
         "Default": [
-          0.02,
-          0.1,
-          0.2,
-          0.2
+          0,
+          0,
+          0,
+          0.1
         ]
       },
       "VanishUVParam": {
         "Type": "Float",
         "Default": [
+          0.5,
+          0.5,
           1,
+          2
+        ]
+      }
+    }
+  },
+  "sage02": {
+    "Parameters": {
+      "Luminance": {
+        "Type": "Float",
+        "Default": [
           1,
-          1,
+          0,
+          0,
+          0
+        ]
+      },
+      "Luminance2": {
+        "Type": "Float",
+        "Default": [
+          0,
+          0,
+          0,
           0
         ]
       }
-    },
-    "Textures": [
-      "diffuse",
-      "diffuse",
-      "specular",
-      "normal",
-      "transparency"
-    ]
+    }
   },
   "SearchLight": {
     "Parameters": {
       "FalloffFactor": {
         "Type": "Float",
         "Default": [
-          0.12,
-          1.25,
-          0,
+          0.95,
+          0.65,
+          0.05,
           0
         ]
       },
       "FalloffFactor2": {
         "Type": "Float",
         "Default": [
-          0,
-          0,
-          0,
-          0
+          0.6,
+          1,
+          0.5,
+          1
         ]
       },
       "Luminance": {
         "Type": "Float",
         "Default": [
-          0.5,
+          40,
           0,
           0,
           0
@@ -3015,7 +2928,6 @@
     }
   },
   "Sky_da": {
-    "Layer": "Transparent",
     "Parameters": {
       "Luminance": {
         "Type": "Float",
@@ -3050,6 +2962,341 @@
       }
     }
   },
+  "SonicCyber01": {
+    "Parameters": {
+      "FalloffAndLuminance": {
+        "Type": "Float",
+        "Default": [
+          2,
+          2,
+          0,
+          0
+        ]
+      },
+      "IridescenceOffset": {
+        "Type": "Float",
+        "Default": [
+          0.25,
+          0.75,
+          1,
+          0.5
+        ]
+      },
+      "Luminance": {
+        "Type": "Float",
+        "Default": [
+          1,
+          8,
+          0,
+          0
+        ]
+      },
+      "MirrorPlane": {
+        "Type": "Float",
+        "Default": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "VanishParam": {
+        "Type": "Float",
+        "Default": [
+          0,
+          0,
+          0,
+          0.1
+        ]
+      },
+      "VanishUVParam": {
+        "Type": "Float",
+        "Default": [
+          0.7,
+          0.7,
+          0.8,
+          2
+        ]
+      }
+    }
+  },
+  "SonicCyber02": {
+    "Parameters": {
+      "AnisoFactor": {
+        "Type": "Float",
+        "Default": [
+          1,
+          8,
+          0,
+          0
+        ]
+      },
+      "FalloffFactor": {
+        "Type": "Float",
+        "Default": [
+          2,
+          3.5,
+          0.2,
+          1
+        ]
+      },
+      "FurParam": {
+        "Type": "Float",
+        "Default": [
+          0.1,
+          8,
+          8,
+          1
+        ]
+      },
+      "FurParam2": {
+        "Type": "Float",
+        "Default": [
+          0,
+          0.6,
+          0.5,
+          1
+        ]
+      },
+      "VanishParam": {
+        "Type": "Float",
+        "Default": [
+          20,
+          0,
+          0,
+          0.02
+        ]
+      },
+      "VanishUVParam": {
+        "Type": "Float",
+        "Default": [
+          1,
+          1,
+          1,
+          0
+        ]
+      }
+    }
+  },
+  "SonicCyber03": {
+    "Parameters": {
+      "CDRFParam": {
+        "Type": "Float",
+        "Default": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "FalloffFactor": {
+        "Type": "Float",
+        "Default": [
+          1,
+          5,
+          0.1,
+          1
+        ]
+      },
+      "Luminance": {
+        "Type": "Float",
+        "Default": [
+          1,
+          1,
+          0,
+          0
+        ]
+      },
+      "MirrorPlane": {
+        "Type": "Float",
+        "Default": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "VanishParam": {
+        "Type": "Float",
+        "Default": [
+          20,
+          0,
+          0,
+          0.02
+        ]
+      },
+      "VanishUVParam": {
+        "Type": "Float",
+        "Default": [
+          1,
+          1,
+          1,
+          0
+        ]
+      }
+    }
+  },
+  "SonicCyber04": {
+    "Parameters": {
+      "Luminance": {
+        "Type": "Float",
+        "Default": [
+          1,
+          20,
+          0,
+          0
+        ]
+      },
+      "VanishParam": {
+        "Type": "Float",
+        "Default": [
+          0,
+          0,
+          0,
+          0.02
+        ]
+      },
+      "VanishUVParam": {
+        "Type": "Float",
+        "Default": [
+          1,
+          1,
+          1,
+          0
+        ]
+      }
+    }
+  },
+  "SpeedTree_dpn": {
+    "Parameters": {
+      "PBRFactor": {
+        "Type": "Float",
+        "Default": [
+          1,
+          1,
+          0,
+          0
+        ]
+      },
+      "SpeedTreeParam": {
+        "Type": "Float",
+        "Default": [
+          1,
+          0.1,
+          0.25,
+          0.01
+        ]
+      },
+      "TransColor": {
+        "Type": "Color",
+        "Default": [
+          1,
+          1,
+          1,
+          0
+        ]
+      },
+      "TransParam": {
+        "Type": "Float",
+        "Default": [
+          0.25,
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    "Textures": [
+      "diffuse",
+      "specular",
+      "normal"
+    ]
+  },
+  "SuperSonic_ddpf": {
+    "Parameters": {
+      "Blend": {
+        "Type": "Float",
+        "Default": [
+          0.2,
+          0,
+          0,
+          0
+        ]
+      },
+      "FalloffFactor": {
+        "Type": "Float",
+        "Default": [
+          1,
+          3,
+          0.3,
+          1
+        ]
+      }
+    },
+    "Textures": [
+      "diffuse",
+      "specular",
+      "diffuse",
+      "diffuse"
+    ]
+  },
+  "SuperSonic_ddpn": {
+    "Parameters": {
+      "Blend": {
+        "Type": "Float",
+        "Default": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "FalloffFactor": {
+        "Type": "Float",
+        "Default": [
+          1,
+          3,
+          0,
+          1
+        ]
+      }
+    },
+    "Textures": [
+      "diffuse",
+      "diffuse",
+      "specular",
+      "normal"
+    ]
+  },
+  "SuperSonic_ddpnf": {
+    "Parameters": {
+      "Blend": {
+        "Type": "Float",
+        "Default": [
+          0.65,
+          0,
+          0,
+          0
+        ]
+      },
+      "FalloffFactor": {
+        "Type": "Float",
+        "Default": [
+          1.2,
+          1,
+          0.2,
+          1
+        ]
+      }
+    },
+    "Textures": [
+      "diffuse",
+      "specular",
+      "normal",
+      "diffuse",
+      "diffuse"
+    ]
+  },
   "SuperSonicShape": {
     "Parameters": {
       "FalloffFactor": {
@@ -3072,59 +3319,45 @@
       }
     }
   },
-  "TimeEater_dnn": {
+  "tear_dpna": {
     "Parameters": {
-      "ChaosWaveParamEx": {
-        "Type": "Float",
-        "Default": [
-          1,
-          0.5,
-          0,
-          0
-        ]
-      },
-      "ChaosWaveParamY": {
-        "Type": "Float",
-        "Default": [
-          1,
-          1,
-          0.5,
-          5
-        ]
-      },
-      "ChaosWaveParamZX": {
-        "Type": "Float",
-        "Default": [
-          0.3,
-          1,
-          0.02,
-          20
-        ]
-      },
       "FalloffFactor": {
         "Type": "Float",
         "Default": [
           1,
-          10,
-          -0.2,
+          4,
+          0.1,
           0
         ]
       },
-      "PBRFactor": {
+      "TearWaveParamY": {
         "Type": "Float",
         "Default": [
+          0.03,
+          4,
           0,
+          4
+        ]
+      },
+      "TearWaveParamZX": {
+        "Type": "Float",
+        "Default": [
+          0.03,
+          3,
           0,
+          6.5
+        ]
+      },
+      "TeaWaveParamEx": {
+        "Type": "Float",
+        "Default": [
+          1,
+          0.3,
           0,
-          0
+          1
         ]
       }
-    },
-    "Textures": [
-      "diffuse",
-      "normal",
-      "normal"
-    ]
+    }
   },
   "Translucent_dpn": {
     "Parameters": {
@@ -3156,13 +3389,12 @@
       "reflection"
     ]
   },
-  "unlit_da": {
-    "Layer": "Transparent",
+  "Tree_dpn": {
     "Parameters": {
-      "Luminance": {
+      "TransParam": {
         "Type": "Float",
         "Default": [
-          1,
+          0.25,
           0,
           0,
           0
@@ -3171,7 +3403,8 @@
     },
     "Textures": [
       "diffuse",
-      "transparency"
+      "specular",
+      "normal"
     ]
   },
   "Vanish_dpna": {
@@ -3180,8 +3413,8 @@
       "Luminance": {
         "Type": "Float",
         "Default": [
-          0,
-          3.5,
+          0.1,
+          5,
           0,
           0
         ]
@@ -3192,16 +3425,16 @@
           0,
           0,
           0,
-          0.05
+          0.2
         ]
       },
       "VanishUVParam": {
         "Type": "Float",
         "Default": [
-          1,
-          1,
-          1,
-          0
+          0.3,
+          0.3,
+          0.3,
+          2
         ]
       }
     },
@@ -3220,7 +3453,7 @@
         "Type": "Float",
         "Default": [
           1,
-          10,
+          1,
           0,
           0
         ]
@@ -3231,16 +3464,16 @@
           0,
           0,
           0,
-          0.05
+          0.1
         ]
       },
       "VanishUVParam": {
         "Type": "Float",
         "Default": [
-          14,
-          14,
-          14,
-          12
+          3,
+          3,
+          3,
+          2
         ]
       }
     },
@@ -3258,8 +3491,8 @@
       "Luminance": {
         "Type": "Float",
         "Default": [
-          1,
-          0,
+          3.5,
+          12,
           0,
           0
         ]
@@ -3267,19 +3500,19 @@
       "VanishParam": {
         "Type": "Float",
         "Default": [
+          0.3,
           0.7,
-          0.2,
           0,
-          0.2
+          0.1
         ]
       },
       "VanishUVParam": {
         "Type": "Float",
         "Default": [
-          1,
-          1,
-          1,
-          0
+          2.5,
+          2.5,
+          2.5,
+          2
         ]
       }
     },
@@ -3298,7 +3531,7 @@
       "Luminance": {
         "Type": "Float",
         "Default": [
-          0.5,
+          3.5,
           1,
           0,
           0
@@ -3316,77 +3549,10 @@
       "VanishColor": {
         "Type": "Color",
         "Default": [
-          2,
-          0.5,
-          10,
-          0
-        ]
-      },
-      "VanishParam": {
-        "Type": "Float",
-        "Default": [
-          0,
-          0,
-          0,
-          0.04
-        ]
-      },
-      "VanishUVParam": {
-        "Type": "Float",
-        "Default": [
-          0,
-          2,
-          2,
-          2
-        ]
-      }
-    },
-    "Textures": [
-      "diffuse",
-      "specular",
-      "normal",
-      "emission",
-      "emission",
-      "transparency"
-    ]
-  },
-  "VanishDarkFalloff_dpnEa": {
-    "Layer": "Transparent",
-    "Parameters": {
-      "FalloffColor": {
-        "Type": "Color",
-        "Default": [
           1,
-          1,
-          1,
-          0
-        ]
-      },
-      "FalloffFactor": {
-        "Type": "Float",
-        "Default": [
-          1,
-          6,
           0,
-          1
-        ]
-      },
-      "Luminance": {
-        "Type": "Float",
-        "Default": [
-          1,
-          3,
           0,
           0
-        ]
-      },
-      "Luminance2": {
-        "Type": "Float",
-        "Default": [
-          1,
-          0.5,
-          0,
-          0.2
         ]
       },
       "VanishParam": {
@@ -3401,9 +3567,9 @@
       "VanishUVParam": {
         "Type": "Float",
         "Default": [
-          1,
-          1,
-          1,
+          1.5,
+          1.5,
+          1.5,
           2
         ]
       }
@@ -3413,15 +3579,159 @@
       "specular",
       "normal",
       "emission",
+      "emission",
       "transparency"
     ]
+  },
+  "VanishDark_dpnEEar": {
+    "Parameters": {
+      "FalloffAndLuminance": {
+        "Type": "Float",
+        "Default": [
+          1,
+          1,
+          0,
+          0
+        ]
+      },
+      "IridescenceOffset": {
+        "Type": "Float",
+        "Default": [
+          0.25,
+          0.75,
+          0.5,
+          0.8
+        ]
+      },
+      "Luminance": {
+        "Type": "Float",
+        "Default": [
+          1,
+          1,
+          0,
+          0
+        ]
+      },
+      "VanishColor": {
+        "Type": "Color",
+        "Default": [
+          1,
+          0,
+          0,
+          0
+        ]
+      },
+      "VanishParam": {
+        "Type": "Float",
+        "Default": [
+          0.1,
+          0.5,
+          0,
+          0.1
+        ]
+      },
+      "VanishUVParam": {
+        "Type": "Float",
+        "Default": [
+          2,
+          2,
+          2,
+          3
+        ]
+      }
+    }
+  },
+  "Vegetation_Grass_d": {
+    "Hide": false,
+    "Parameters": {
+      "PBRFactor": {
+        "Type": "Float",
+        "Default": [
+          0.04,
+          0.06,
+          0,
+          0
+        ]
+      },
+      "TransColor": {
+        "Type": "Color",
+        "Default": [
+          1,
+          1,
+          1,
+          0.23
+        ]
+      },
+      "TransParam": {
+        "Type": "Float",
+        "Default": [
+          0.25,
+          0,
+          0,
+          0
+        ]
+      }
+    }
+  },
+  "Vegetation_Grass_dn": {
+    "Parameters": {
+      "PBRFactor": {
+        "Type": "Float",
+        "Default": [
+          0.04,
+          0.1,
+          0,
+          0
+        ]
+      },
+      "TransParam": {
+        "Type": "Float",
+        "Default": [
+          0.25,
+          0,
+          0,
+          0
+        ]
+      }
+    }
   },
   "Vegetation_Grass_dpn": {
     "Parameters": {
       "TransParam": {
         "Type": "Float",
         "Default": [
+          0.25,
           0,
+          0,
+          0
+        ]
+      }
+    }
+  },
+  "Vegetation_Tree_d": {
+    "Parameters": {
+      "PBRFactor": {
+        "Type": "Float",
+        "Default": [
+          1,
+          1,
+          0,
+          0
+        ]
+      },
+      "TransColor": {
+        "Type": "Color",
+        "Default": [
+          1,
+          1,
+          1,
+          0
+        ]
+      },
+      "TransParam": {
+        "Type": "Float",
+        "Default": [
+          0.25,
           0,
           0,
           0
@@ -3434,7 +3744,7 @@
       "TransParam": {
         "Type": "Float",
         "Default": [
-          0,
+          0.25,
           0,
           0,
           0
@@ -3456,9 +3766,9 @@
       "VolcanicAshParam": {
         "Type": "Float",
         "Default": [
-          2682.6,
-          768.2,
-          659.9,
+          -233.9,
+          879.6,
+          556.2,
           0.46
         ]
       }
@@ -3469,183 +3779,7 @@
       "reflection"
     ]
   },
-  "VolumeVAT_dn": {
-    "Parameters": {
-      "PBRFactor": {
-        "Type": "Float",
-        "Default": [
-          0.04,
-          0.24,
-          0,
-          0
-        ]
-      },
-      "VATVolumeOption": {
-        "Type": "Float",
-        "Default": [
-          0,
-          0,
-          0,
-          0
-        ]
-      },
-      "VATVolumeParam": {
-        "Type": "Float",
-        "Default": [
-          0,
-          0,
-          0,
-          0
-        ]
-      },
-      "VATVolumePos": {
-        "Type": "Float",
-        "Default": [
-          0,
-          0,
-          0,
-          0
-        ]
-      }
-    },
-    "Textures": [
-      "diffuse",
-      "normal"
-    ]
-  },
-  "VolumeVAT_dpn": {
-    "Hide": false,
-    "Parameters": {
-      "VATVolumeOption": {
-        "Type": "Float",
-        "Default": [
-          0,
-          0,
-          0,
-          0
-        ]
-      },
-      "VATVolumeParam": {
-        "Type": "Float",
-        "Default": [
-          0,
-          0,
-          0,
-          0
-        ]
-      },
-      "VATVolumePos": {
-        "Type": "Float",
-        "Default": [
-          0,
-          0,
-          0,
-          0
-        ]
-      }
-    },
-    "Textures": [
-      "diffuse",
-      "specular",
-      "normal"
-    ]
-  },
-  "VolumeVAT_dpnE": {
-    "Parameters": {
-      "Luminance": {
-        "Type": "Float",
-        "Default": [
-          1,
-          0,
-          0,
-          0
-        ]
-      },
-      "VATVolumeOption": {
-        "Type": "Float",
-        "Default": [
-          0,
-          0,
-          0,
-          0
-        ]
-      },
-      "VATVolumeParam": {
-        "Type": "Float",
-        "Default": [
-          0,
-          0,
-          0,
-          0
-        ]
-      },
-      "VATVolumePos": {
-        "Type": "Float",
-        "Default": [
-          0,
-          0,
-          0,
-          0
-        ]
-      }
-    },
-    "Textures": [
-      "diffuse",
-      "specular",
-      "normal",
-      "emission"
-    ]
-  },
-  "VolumeVAT_dpnEa": {
-    "Layer": "Transparent",
-    "Parameters": {
-      "Luminance": {
-        "Type": "Float",
-        "Default": [
-          1700,
-          0,
-          0,
-          0
-        ]
-      },
-      "VATVolumeOption": {
-        "Type": "Float",
-        "Default": [
-          0,
-          0,
-          0,
-          0
-        ]
-      },
-      "VATVolumeParam": {
-        "Type": "Float",
-        "Default": [
-          0,
-          0,
-          0,
-          0
-        ]
-      },
-      "VATVolumePos": {
-        "Type": "Float",
-        "Default": [
-          0,
-          0,
-          0,
-          0
-        ]
-      }
-    },
-    "Textures": [
-      "diffuse",
-      "specular",
-      "normal",
-      "emission",
-      "transparency"
-    ]
-  },
   "WaterRefraction_dnnao": {
-    "Layer": "Transparent",
     "Parameters": {
       "DistortionParam": {
         "Type": "Float",
@@ -3670,390 +3804,6 @@
         "Default": [
           0.02,
           1,
-          0,
-          0
-        ]
-      }
-    }
-  },
-  "WhiteSpaceAmoeba_dopnfE": {
-    "Parameters": {
-      "Luminance": {
-        "Type": "Float",
-        "Default": [
-          1,
-          0,
-          0,
-          0
-        ]
-      },
-      "Offset": {
-        "Type": "Float",
-        "Default": [
-          0.1,
-          0.1,
-          0,
-          0
-        ]
-      },
-      "WaterFlowParam": {
-        "Type": "Float",
-        "Default": [
-          5,
-          3,
-          1,
-          1
-        ]
-      },
-      "WhiteSpaceParam": {
-        "Type": "Float",
-        "Default": [
-          0,
-          0,
-          0,
-          0
-        ]
-      }
-    }
-  },
-  "WhiteSpaceBlend_dpndpn": {
-    "Hide": false,
-    "Parameters": {
-      "WhiteSpaceParam": {
-        "Type": "Float",
-        "Default": [
-          0,
-          0,
-          0,
-          0
-        ]
-      }
-    },
-    "Textures": [
-      "diffuse",
-      "specular",
-      "normal",
-      "diffuse",
-      "specular",
-      "normal"
-    ]
-  },
-  "WhiteSpaceCommon_dp": {
-    "Parameters": {
-      "WhiteSpaceParam": {
-        "Type": "Float",
-        "Default": [
-          0,
-          0,
-          0,
-          0
-        ]
-      }
-    },
-    "Textures": [
-      "diffuse",
-      "specular"
-    ]
-  },
-  "WhiteSpaceCommon_dpn": {
-    "Hide": false,
-    "Parameters": {
-      "WhiteSpaceParam": {
-        "Type": "Float",
-        "Default": [
-          0,
-          0,
-          0,
-          0
-        ]
-      }
-    },
-    "Textures": [
-      "diffuse",
-      "specular",
-      "normal"
-    ]
-  },
-  "WhiteSpaceDetail_dpnn": {
-    "Parameters": {
-      "DetailFactor": {
-        "Type": "Float",
-        "Default": [
-          1,
-          0,
-          0,
-          0
-        ]
-      },
-      "WhiteSpaceParam": {
-        "Type": "Float",
-        "Default": [
-          0,
-          0,
-          0,
-          0
-        ]
-      }
-    },
-    "Textures": [
-      "diffuse",
-      "specular",
-      "normal",
-      "normal"
-    ]
-  },
-  "WhiteSpaceDirectionBlend_dpnndpn": {
-    "Parameters": {
-      "DetailFactor": {
-        "Type": "Float",
-        "Default": [
-          3,
-          0,
-          0,
-          0
-        ]
-      },
-      "DirectionParam": {
-        "Type": "Float",
-        "Default": [
-          0,
-          1,
-          0,
-          0
-        ]
-      },
-      "NormalBlendParam": {
-        "Type": "Float",
-        "Default": [
-          0.5,
-          0,
-          0,
-          0
-        ]
-      },
-      "WhiteSpaceParam": {
-        "Type": "Float",
-        "Default": [
-          0,
-          0,
-          0,
-          0
-        ]
-      }
-    }
-  },
-  "WhiteSpaceEmission_dpnE": {
-    "Hide": false,
-    "Parameters": {
-      "Luminance": {
-        "Type": "Float",
-        "Default": [
-          1,
-          0,
-          0,
-          0
-        ]
-      },
-      "WhiteSpaceParam": {
-        "Type": "Float",
-        "Default": [
-          0,
-          0,
-          0,
-          0
-        ]
-      }
-    },
-    "Textures": [
-      "diffuse",
-      "specular",
-      "normal",
-      "emission"
-    ]
-  },
-  "WhiteSpaceEmission_dpnEa": {
-    "Layer": "Transparent",
-    "Parameters": {
-      "Luminance": {
-        "Type": "Float",
-        "Default": [
-          1,
-          0,
-          0,
-          0
-        ]
-      },
-      "WhiteSpaceParam": {
-        "Type": "Float",
-        "Default": [
-          0,
-          0,
-          0,
-          0
-        ]
-      }
-    },
-    "Textures": [
-      "diffuse",
-      "specular",
-      "normal",
-      "emission",
-      "transparency"
-    ]
-  },
-  "WhiteSpaceEmissionTone_dpnE": {
-    "Hide": false,
-    "Parameters": {
-      "Luminance": {
-        "Type": "Float",
-        "Default": [
-          1,
-          0,
-          0,
-          0
-        ]
-      },
-      "WhiteSpaceParam": {
-        "Type": "Float",
-        "Default": [
-          0,
-          0,
-          0,
-          0
-        ]
-      }
-    },
-    "Textures": [
-      "diffuse",
-      "specular",
-      "normal",
-      "emission"
-    ]
-  },
-  "WhiteSpaceGlass_dpn": {
-    "Parameters": {
-      "FalloffFactor": {
-        "Type": "Float",
-        "Default": [
-          1,
-          4,
-          0.05,
-          0
-        ]
-      },
-      "Refraction": {
-        "Type": "Float",
-        "Default": [
-          0.3,
-          0,
-          0,
-          0
-        ]
-      },
-      "WhiteSpaceParam": {
-        "Type": "Float",
-        "Default": [
-          0,
-          0,
-          0,
-          0
-        ]
-      }
-    },
-    "Textures": [
-      "diffuse",
-      "specular",
-      "normal"
-    ]
-  },
-  "WhiteSpaceIridescence_ddpNrEa": {
-    "Layer": "Transparent",
-    "Parameters": {
-      "FalloffAndLuminance": {
-        "Type": "Float",
-        "Default": [
-          1.5,
-          1,
-          1,
-          0
-        ]
-      },
-      "IridescenceMask": {
-        "Type": "Float",
-        "Default": [
-          0.5,
-          0.5,
-          0.5,
-          0
-        ]
-      },
-      "IridescenceOffset": {
-        "Type": "Float",
-        "Default": [
-          0,
-          0.5,
-          0.5,
-          0
-        ]
-      },
-      "WhiteSpaceParam": {
-        "Type": "Float",
-        "Default": [
-          0,
-          0,
-          0,
-          0
-        ]
-      },
-      "WPBRFactor": {
-        "Type": "Float",
-        "Default": [
-          1,
-          1,
-          0,
-          0
-        ]
-      }
-    }
-  },
-  "WhiteSpaceVegetation_Grass_dpn": {
-    "Parameters": {
-      "TransParam": {
-        "Type": "Float",
-        "Default": [
-          0.25,
-          0,
-          0,
-          0
-        ]
-      },
-      "WhiteSpaceParam": {
-        "Type": "Float",
-        "Default": [
-          0,
-          0,
-          0,
-          0
-        ]
-      }
-    }
-  },
-  "WhiteSpaceVegetation_Tree_dpn": {
-    "Parameters": {
-      "TransParam": {
-        "Type": "Float",
-        "Default": [
-          0.25,
-          0,
-          0,
-          0
-        ]
-      },
-      "WhiteSpaceParam": {
-        "Type": "Float",
-        "Default": [
-          0,
-          0,
           0,
           0
         ]

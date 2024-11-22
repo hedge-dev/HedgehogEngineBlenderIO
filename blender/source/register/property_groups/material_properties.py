@@ -7,13 +7,12 @@ from bpy.props import (
     PointerProperty,
 )
 
-from .base_list import BaseList
 from .material_parameter_properties import HEIO_MaterialParameterList
 from .material_texture_properties import HEIO_MaterialTextureList
 from .sca_parameter_properties import HEIO_SCA_Parameters
 
 from .. import definitions
-from ..definitions.shader_definitions import ShaderParameterType
+from ..definitions.shader_definitions import ShaderDefinition, ShaderParameterType
 
 
 def _update_blending(heio_material, context):
@@ -22,7 +21,7 @@ def _update_blending(heio_material, context):
 
 def _get_shader_enum_params(context: bpy.types.Context):
     show_all: bool = context.scene.heio_scene.show_all_shaders
-    shader_definition_collection = definitions.get_shader_definitions(context)
+    shader_definition_collection = definitions.get_target_definition(context).shaders
 
     return show_all, shader_definition_collection
 
@@ -73,10 +72,12 @@ def _set_shader_definition(material_properties, value):
         bpy.context)
     fallback = False
 
-    if material_properties.shader_name in sdc.definitions:
+    prev_name = material_properties.shader_name
+
+    if prev_name in sdc.definitions:
         if show_all:
             items = sdc.items_all
-        elif sdc.definitions[material_properties.shader_name].hide:
+        elif sdc.definitions[prev_name].hide:
             items = sdc.items_visible_fallback
             fallback = True
         else:
@@ -88,7 +89,6 @@ def _set_shader_definition(material_properties, value):
         else:
             items = sdc.items_visible_fallback
 
-    prev_name = material_properties.shader_name
     material_properties.shader_name = items[value][0]
 
     if prev_name == material_properties.shader_name or fallback and value == 0:
@@ -153,33 +153,32 @@ class HEIO_Material(bpy.types.PropertyGroup):
         type=HEIO_SCA_Parameters
     )
 
-    def setup_definition_parameters(self, definition: definitions.shader.ShaderDefinition):
+    def setup_definition_parameters(self, definition: ShaderDefinition):
         current_index = 0
         parameters: HEIO_MaterialParameterList = self.parameters
 
-        for parameter_name, parameter_type in definition.parameters.items():
+        for parameter in definition.parameters.values():
 
-            if parameter_type == ShaderParameterType.BOOLEAN:
+            if parameter.type == ShaderParameterType.BOOLEAN:
                 index = parameters.find_next_index(
-                    parameter_name, current_index, ['BOOLEAN'])
+                    parameter.name, current_index, ['BOOLEAN'])
             else:
                 index = parameters.find_next_index(
-                    parameter_name, current_index, ['FLOAT', 'COLOR'])
+                    parameter.name, current_index, ['FLOAT', 'COLOR'])
 
             if index >= 0:
                 item = parameters[index]
 
-                if item.value_type != parameter_type.name:
-                    item.value_type = parameter_type.name
+                if item.value_type != parameter.type.name:
+                    item.value_type = parameter.type.name
 
             else:
                 index = len(parameters)
                 item = parameters.new()
-                item.name = parameter_name
-                item.value_type = parameter_type.name
+                item.name = parameter.name
+                item.value_type = parameter.type.name
 
-                if parameter_type == ShaderParameterType.COLOR:
-                    item.color_value = (1, 1, 1, 1)
+                setattr(item, item.value_type.lower() + "_value", parameter.default)
 
             if index != current_index:
                 parameters.move(index, current_index)
@@ -192,7 +191,7 @@ class HEIO_Material(bpy.types.PropertyGroup):
             parameters.remove(remove_index)
             remove_index -= 1
 
-    def setup_definition_textures(self, definition: definitions.shader.ShaderDefinition):
+    def setup_definition_textures(self, definition: ShaderDefinition):
         current_index = 0
         textures: HEIO_MaterialTextureList = self.textures
 
@@ -217,7 +216,7 @@ class HEIO_Material(bpy.types.PropertyGroup):
             textures.remove(remove_index)
             remove_index -= 1
 
-    def setup_definition(self, definition: definitions.shader.ShaderDefinition):
+    def setup_definition(self, definition: ShaderDefinition):
         self.setup_definition_parameters(definition)
         self.setup_definition_textures(definition)
 

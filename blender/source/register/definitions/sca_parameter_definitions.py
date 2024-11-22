@@ -1,12 +1,23 @@
 from enum import Enum
-
-from ...exceptions import HEIOException
+from .json_util import HEIOJSONException, JSONWrapper
 
 
 class SCAParameterType(Enum):
     INTEGER = 1
     FLOAT = 2
     BOOLEAN = 3
+
+    @staticmethod
+    def parse_json_data(data: str):
+        if data == 'Integer':
+            return SCAParameterType.INTEGER
+        elif data == 'Float':
+            return SCAParameterType.FLOAT
+        elif data == 'Boolean':
+            return SCAParameterType.BOOLEAN
+        else:
+            raise HEIOJSONException(
+                f"Invalid SCA parameter type \"{data}\"")
 
 
 class SCAParameterDefinition:
@@ -20,36 +31,20 @@ class SCAParameterDefinition:
         self.description = description
 
     @staticmethod
-    def from_json_data(name, data):
-
-        if "Type" not in data:
-            raise HEIOException(
-                f"SCA parameter definition \"{name}\" does not have the mandatory field \"Type\"!")
-
-        type = data["Type"]
-        if type == 'Integer':
-            type = SCAParameterType.INTEGER
-        elif type == 'Float':
-            type = SCAParameterType.FLOAT
-        elif type == 'Boolean':
-            type = SCAParameterType.BOOLEAN
-        else:
-            raise HEIOException(
-                f"SCA parameter definition \"{name}\" has an invalid type \"{type}\"!")
-
-        description = ""
-        if "Description" in data:
-            description = data["Description"]
-
-        return SCAParameterDefinition(name, type, description)
+    def parse_json_data(data: JSONWrapper):
+        return SCAParameterDefinition(
+            data.identifier,
+            data.parse_property("Type", SCAParameterType),
+            data.get_item_fallback("Description", "")
+        )
 
     @staticmethod
-    def dict_items_from_json_data(data: dict):
+    def dict_items_from_json_data(data: JSONWrapper):
         dict = {}
         items = []
 
-        for key, value in data.items():
-            definition = SCAParameterDefinition.from_json_data(key, value)
+        for key, value in data:
+            definition = value.parse(SCAParameterDefinition)
             dict[key] = definition
             items.append((key, key, definition.description))
 
@@ -58,21 +53,18 @@ class SCAParameterDefinition:
 
 class SCAParameterDefinitionCollection:
 
-    name: str
-
     material: dict[str, SCAParameterDefinition]
     '''[name] = (type, description)'''
 
     material_items: list[tuple[str, str, str]]
 
-    def __init__(self, name: str):
-        self.name = name
+    def __init__(self):
         self.material = {}
         self.material_items = []
 
     @staticmethod
-    def from_json_data(name, data):
-        result = SCAParameterDefinitionCollection(name)
+    def parse_json_data(data):
+        result = SCAParameterDefinitionCollection()
 
         if "Material" in data:
             result.material, result.material_items = SCAParameterDefinition.dict_items_from_json_data(

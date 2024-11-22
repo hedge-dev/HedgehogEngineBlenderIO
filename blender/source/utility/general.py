@@ -3,10 +3,9 @@ import bpy
 
 from os.path import dirname
 
-from ..register.property_groups.addon_preferences import HEIO_AddonPreferences
-
 ADDON_DIR = dirname(dirname(dirname(os.path.realpath(__file__))))
 ADDON_NAME = os.path.basename(ADDON_DIR)
+PACKAGE_NAME = '.'.join(__package__.split('.')[:3])
 
 
 def get_path():
@@ -22,7 +21,7 @@ def compare_path(a: str, b: str):
     absolute = os.path.abspath(absolute)
     return a == absolute
 
-def get_addon_preferences(context: bpy.types.Context | None) -> HEIO_AddonPreferences:
+def get_addon_preferences(context: bpy.types.Context | None):
     if context is None:
         context = bpy.context
-    return context.preferences.addons[HEIO_AddonPreferences.bl_idname].preferences
+    return context.preferences.addons[PACKAGE_NAME].preferences
