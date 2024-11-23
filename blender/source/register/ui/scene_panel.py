@@ -16,7 +16,10 @@ class HEIO_PT_Scene(PropertiesPanel):
         layout.use_property_split = True
         layout.use_property_decorate = False
 
-        layout.prop(setting_properties, "target_game")
+        layout.prop(
+            setting_properties,
+            "target_game",
+            icon="ERROR" if setting_properties.target_game == "ERROR_FALLBACK" else "NONE")
 
     def draw_panel(self, context):
         HEIO_PT_Scene.draw_scene_properties(

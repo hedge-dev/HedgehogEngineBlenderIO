@@ -2498,7 +2498,7 @@
     ]
   },
   "MeshParticle_d": {
-    "Variations": [
+    "Variants": [
       "uv"
     ],
     "Parameters": {
@@ -2698,7 +2698,7 @@
   },
   "Sky_d": {
     "Hide": false,
-    "Variations": [
+    "Variants": [
       "",
       "u",
       "uv",
@@ -2723,7 +2723,7 @@
   },
   "Sky_da": {
     "Hide": false,
-    "Variations": [
+    "Variants": [
       "uv"
     ],
     "Parameters": {
@@ -2744,7 +2744,7 @@
     ]
   },
   "Sky_daE": {
-    "Variations": [
+    "Variants": [
       "uv"
     ],
     "Parameters": {
@@ -2765,7 +2765,7 @@
     ]
   },
   "Sky_dE": {
-    "Variations": [
+    "Variants": [
       "",
       "v"
     ],
@@ -2788,7 +2788,7 @@
   },
   "SkyIndirect_dao": {
     "Hide": false,
-    "Variations": [
+    "Variants": [
       "uv"
     ],
     "Parameters": {
@@ -2809,7 +2809,7 @@
     ]
   },
   "SkyIndirect_do": {
-    "Variations": [
+    "Variants": [
       "uv"
     ],
     "Parameters": {
@@ -2830,7 +2830,7 @@
     ]
   },
   "SkyIndirect2_dao": {
-    "Variations": [
+    "Variants": [
       "uv"
     ],
     "Parameters": {

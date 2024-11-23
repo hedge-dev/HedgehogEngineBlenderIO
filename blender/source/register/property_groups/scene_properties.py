@@ -38,7 +38,6 @@ def _set_target_game(scene_properties, value):
 class HEIO_Scene(bpy.types.PropertyGroup):
 
     target_game_name: StringProperty(
-        name="Test",
         default="SHADOW_GENERATIONS"
     )
 

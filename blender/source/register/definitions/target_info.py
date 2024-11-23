@@ -79,10 +79,7 @@ class TargetDefinition:
         return result
 
     @staticmethod
-    def from_directory(directory: str, identifier: str | None = None) -> 'TargetDefinition':
-        if identifier is None:
-            identifier = os.path.basename(directory)
-
+    def from_directory(directory: str, identifier: str) -> 'TargetDefinition':
         target_info_filepath = os.path.join(directory, "TargetInfo.json")
         target_info_data = JSONWrapper.read_file(target_info_filepath)
 

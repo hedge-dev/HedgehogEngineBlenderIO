@@ -60,7 +60,7 @@
     }
   },
   "BillboardParticle_d": {
-    "Variations": [
+    "Variants": [
       "v"
     ],
     "Parameters": {
@@ -130,7 +130,7 @@
     ]
   },
   "BossDarkGaia_dnnE": {
-    "Variations": [
+    "Variants": [
       "b"
     ],
     "Parameters": {
@@ -153,7 +153,7 @@
     ]
   },
   "BossDarkGaia_dpnE": {
-    "Variations": [
+    "Variants": [
       "b"
     ],
     "Parameters": {
@@ -176,7 +176,7 @@
     ]
   },
   "BossMorayFreeze_dpner": {
-    "Variations": [
+    "Variants": [
       "b"
     ],
     "Parameters": {
@@ -209,7 +209,7 @@
     ]
   },
   "BossPhoenix_dn": {
-    "Variations": [
+    "Variants": [
       "b"
     ],
     "Parameters": {
@@ -241,7 +241,7 @@
     ]
   },
   "BossPhoenix_dnE": {
-    "Variations": [
+    "Variants": [
       "b"
     ],
     "Parameters": {
@@ -344,7 +344,7 @@
     ]
   },
   "ChipJewel_def": {
-    "Variations": [
+    "Variants": [
       "b"
     ],
     "Textures": [
@@ -354,7 +354,7 @@
     ]
   },
   "Cloth_dsnt": {
-    "Variations": [
+    "Variants": [
       "b"
     ],
     "Textures": [
@@ -367,7 +367,7 @@
   },
   "Common_d": {
     "Hide": false,
-    "Variations": [
+    "Variants": [
       "",
       "b",
       "bu",
@@ -388,7 +388,7 @@
   },
   "Common_de": {
     "Hide": false,
-    "Variations": [
+    "Variants": [
       "",
       "b",
       "bw"
@@ -403,7 +403,7 @@
   },
   "Common_dn": {
     "Hide": false,
-    "Variations": [
+    "Variants": [
       "",
       "b",
       "bv",
@@ -420,7 +420,7 @@
   },
   "Common_dne": {
     "Hide": false,
-    "Variations": [
+    "Variants": [
       "",
       "b",
       "bc",
@@ -437,7 +437,7 @@
   },
   "Common_dp": {
     "Hide": false,
-    "Variations": [
+    "Variants": [
       "",
       "b",
       "bu",
@@ -457,7 +457,7 @@
   },
   "Common_dpe": {
     "Hide": false,
-    "Variations": [
+    "Variants": [
       "",
       "b",
       "bc",
@@ -475,7 +475,7 @@
   },
   "Common_dpn": {
     "Hide": false,
-    "Variations": [
+    "Variants": [
       "",
       "b",
       "bv",
@@ -494,7 +494,7 @@
   },
   "Common_dpne": {
     "Hide": false,
-    "Variations": [
+    "Variants": [
       "",
       "b",
       "bc",
@@ -533,7 +533,7 @@
   },
   "Common_dsn": {
     "Hide": false,
-    "Variations": [
+    "Variants": [
       "b",
       "bw"
     ],
@@ -547,7 +547,7 @@
   },
   "Common_dsne": {
     "Hide": false,
-    "Variations": [
+    "Variants": [
       "b"
     ],
     "Textures": [
@@ -559,7 +559,7 @@
     ]
   },
   "DayEnemyMetal_dspne": {
-    "Variations": [
+    "Variants": [
       "b"
     ],
     "Parameters": {
@@ -592,7 +592,7 @@
   },
   "DayEnemyMetalBody_dspne": {
     "Hide": false,
-    "Variations": [
+    "Variants": [
       "b"
     ],
     "Parameters": {
@@ -624,7 +624,7 @@
     ]
   },
   "DayEnemyMetalSocket_dspne": {
-    "Variations": [
+    "Variants": [
       "b"
     ],
     "Parameters": {
@@ -824,7 +824,7 @@
     ]
   },
   "FallOff_df": {
-    "Variations": [
+    "Variants": [
       "bw"
     ],
     "Textures": [
@@ -836,7 +836,7 @@
     ]
   },
   "FallOff_dpf": {
-    "Variations": [
+    "Variants": [
       "v"
     ],
     "Textures": [
@@ -848,7 +848,7 @@
     ]
   },
   "FallOff_dpnf": {
-    "Variations": [
+    "Variants": [
       "bw"
     ],
     "Textures": [
@@ -868,7 +868,7 @@
     ]
   },
   "FallOffV_dnn": {
-    "Variations": [
+    "Variants": [
       "bu"
     ],
     "Textures": [
@@ -879,7 +879,7 @@
     ]
   },
   "FallOffV_dp": {
-    "Variations": [
+    "Variants": [
       "b"
     ],
     "Textures": [
@@ -890,7 +890,7 @@
     ]
   },
   "Glass_de": {
-    "Variations": [
+    "Variants": [
       "",
       "b",
       "bw",
@@ -905,7 +905,7 @@
     ]
   },
   "Glass_dpe": {
-    "Variations": [
+    "Variants": [
       "",
       "b",
       "bw",
@@ -929,7 +929,7 @@
     ]
   },
   "Glass_dspe": {
-    "Variations": [
+    "Variants": [
       "",
       "c"
     ],
@@ -942,7 +942,7 @@
     ]
   },
   "Glass_dspne": {
-    "Variations": [
+    "Variants": [
       "bw"
     ],
     "Textures": [
@@ -954,7 +954,7 @@
     ]
   },
   "Hair_dpt": {
-    "Variations": [
+    "Variants": [
       "b"
     ],
     "Parameters": {
@@ -985,7 +985,7 @@
     ]
   },
   "Ice_der": {
-    "Variations": [
+    "Variants": [
       "b",
       "bv",
       "v"
@@ -1012,7 +1012,7 @@
     ]
   },
   "Ice_dnenr": {
-    "Variations": [
+    "Variants": [
       "cuv",
       "u"
     ],
@@ -1038,7 +1038,7 @@
     ]
   },
   "Ice_dner": {
-    "Variations": [
+    "Variants": [
       "bv"
     ],
     "Parameters": {
@@ -1063,7 +1063,7 @@
     ]
   },
   "Ice_dpnenr": {
-    "Variations": [
+    "Variants": [
       "",
       "b",
       "bc",
@@ -1115,7 +1115,7 @@
   },
   "IgnoreLight_d": {
     "Hide": false,
-    "Variations": [
+    "Variants": [
       "",
       "b",
       "bu",
@@ -1130,7 +1130,7 @@
     ]
   },
   "Jihada": {
-    "Variations": [
+    "Variants": [
       "b"
     ],
     "Textures": [
@@ -1142,7 +1142,7 @@
     ]
   },
   "Lava_dnE": {
-    "Variations": [
+    "Variants": [
       "u"
     ],
     "Parameters": {
@@ -1171,7 +1171,7 @@
   },
   "Luminescence_d": {
     "Hide": false,
-    "Variations": [
+    "Variants": [
       "",
       "b",
       "buv",
@@ -1186,7 +1186,7 @@
   },
   "Luminescence_dE": {
     "Hide": false,
-    "Variations": [
+    "Variants": [
       "",
       "b",
       "bv",
@@ -1201,7 +1201,7 @@
   },
   "Luminescence_dnE": {
     "Hide": false,
-    "Variations": [
+    "Variants": [
       "",
       "u"
     ],
@@ -1231,7 +1231,7 @@
     ]
   },
   "MeshParticle_d": {
-    "Variations": [
+    "Variants": [
       "uv",
       "v"
     ],
@@ -1254,7 +1254,7 @@
     ]
   },
   "Metal_d": {
-    "Variations": [
+    "Variants": [
       "",
       "w"
     ],
@@ -1267,7 +1267,7 @@
     ]
   },
   "Metal_de": {
-    "Variations": [
+    "Variants": [
       "",
       "b",
       "c"
@@ -1281,7 +1281,7 @@
     ]
   },
   "Metal_dne": {
-    "Variations": [
+    "Variants": [
       "bw"
     ],
     "Textures": [
@@ -1294,7 +1294,7 @@
   },
   "Metal_dp": {
     "Hide": false,
-    "Variations": [
+    "Variants": [
       "",
       "b",
       "bu",
@@ -1310,7 +1310,7 @@
     ]
   },
   "Metal_dpe": {
-    "Variations": [
+    "Variants": [
       "",
       "bw",
       "w"
@@ -1325,7 +1325,7 @@
   },
   "Metal_dpn": {
     "Hide": false,
-    "Variations": [
+    "Variants": [
       "",
       "b",
       "bw",
@@ -1340,7 +1340,7 @@
     ]
   },
   "Metal_dpne": {
-    "Variations": [
+    "Variants": [
       "",
       "b",
       "bw"
@@ -1354,7 +1354,7 @@
     ]
   },
   "Metal_dse": {
-    "Variations": [
+    "Variants": [
       "",
       "c"
     ],
@@ -1367,7 +1367,7 @@
     ]
   },
   "Metal_dsne": {
-    "Variations": [
+    "Variants": [
       "b"
     ],
     "Textures": [
@@ -1379,7 +1379,7 @@
     ]
   },
   "Metal_dsp": {
-    "Variations": [
+    "Variants": [
       "",
       "b"
     ],
@@ -1401,7 +1401,7 @@
     ]
   },
   "Metal_dspn": {
-    "Variations": [
+    "Variants": [
       "",
       "bw"
     ],
@@ -1414,7 +1414,7 @@
     ]
   },
   "Metal_dspne": {
-    "Variations": [
+    "Variants": [
       "",
       "bc",
       "bw",
@@ -1429,7 +1429,7 @@
     ]
   },
   "Myst_d": {
-    "Variations": [
+    "Variants": [
       "bu"
     ],
     "Textures": [
@@ -1442,7 +1442,7 @@
   },
   "NightEnemyCommon_drE": {
     "Hide": false,
-    "Variations": [
+    "Variants": [
       "b"
     ],
     "Parameters": {
@@ -1512,7 +1512,7 @@
   },
   "NPCCloth_ds": {
     "Hide": false,
-    "Variations": [
+    "Variants": [
       "b"
     ],
     "Parameters": {
@@ -1535,7 +1535,7 @@
   },
   "NPCCloth_dsn": {
     "Hide": false,
-    "Variations": [
+    "Variants": [
       "b"
     ],
     "Parameters": {
@@ -1558,7 +1558,7 @@
   },
   "NPCEye_dn": {
     "Hide": false,
-    "Variations": [
+    "Variants": [
       "b"
     ],
     "Parameters": {
@@ -1652,7 +1652,7 @@
   },
   "NPCHair_dp": {
     "Hide": false,
-    "Variations": [
+    "Variants": [
       "b"
     ],
     "Parameters": {
@@ -1683,7 +1683,7 @@
     ]
   },
   "NPCHair_dpn": {
-    "Variations": [
+    "Variants": [
       "b"
     ],
     "Parameters": {
@@ -1715,7 +1715,7 @@
   },
   "NPCTeeth_dpn": {
     "Hide": false,
-    "Variations": [
+    "Variants": [
       "b"
     ],
     "Parameters": {
@@ -1746,7 +1746,7 @@
     ]
   },
   "Ring_dse": {
-    "Variations": [
+    "Variants": [
       "",
       "b"
     ],
@@ -1759,7 +1759,7 @@
   },
   "Skin_dp": {
     "Hide": false,
-    "Variations": [
+    "Variants": [
       "b"
     ],
     "Parameters": {
@@ -1800,7 +1800,7 @@
   },
   "Skin_dpn": {
     "Hide": false,
-    "Variations": [
+    "Variants": [
       "b"
     ],
     "Parameters": {
@@ -1841,7 +1841,7 @@
   },
   "Sky_d": {
     "Hide": false,
-    "Variations": [
+    "Variants": [
       "",
       "v"
     ],
@@ -1851,7 +1851,7 @@
     ]
   },
   "SonicCloth_dsn": {
-    "Variations": [
+    "Variants": [
       "b"
     ],
     "Parameters": {
@@ -1873,7 +1873,7 @@
     ]
   },
   "SonicEnamel_dspe": {
-    "Variations": [
+    "Variants": [
       "b",
       "bc"
     ],
@@ -1885,7 +1885,7 @@
     ]
   },
   "SonicEnamel_dspne": {
-    "Variations": [
+    "Variants": [
       "b"
     ],
     "Textures": [
@@ -1896,7 +1896,7 @@
     ]
   },
   "SonicEye_dpne": {
-    "Variations": [
+    "Variants": [
       "bcu",
       "bu"
     ],
@@ -1928,7 +1928,7 @@
     ]
   },
   "SonicMetal_dpe": {
-    "Variations": [
+    "Variants": [
       "b",
       "bc"
     ],
@@ -1940,7 +1940,7 @@
     ]
   },
   "SonicSkin_dspf": {
-    "Variations": [
+    "Variants": [
       "b"
     ],
     "Parameters": {
@@ -1962,7 +1962,7 @@
     ]
   },
   "SonicSkin_dspnf": {
-    "Variations": [
+    "Variants": [
       "b"
     ],
     "Parameters": {
@@ -1984,7 +1984,7 @@
     ]
   },
   "SuperSonic_dspe": {
-    "Variations": [
+    "Variants": [
       "b"
     ],
     "Parameters": {
@@ -2016,7 +2016,7 @@
     ]
   },
   "SuperSonic_dspf": {
-    "Variations": [
+    "Variants": [
       "b"
     ],
     "Parameters": {
@@ -2048,7 +2048,7 @@
     ]
   },
   "SuperSonic_dspn": {
-    "Variations": [
+    "Variants": [
       "b"
     ],
     "Parameters": {
@@ -2080,7 +2080,7 @@
     ]
   },
   "TempleRobo_dnno": {
-    "Variations": [
+    "Variants": [
       "b"
     ],
     "Parameters": {
@@ -2102,7 +2102,7 @@
     ]
   },
   "TempleRobo_dno": {
-    "Variations": [
+    "Variants": [
       "b"
     ],
     "Parameters": {
@@ -2140,7 +2140,7 @@
     ]
   },
   "TransThin_dnt": {
-    "Variations": [
+    "Variants": [
       "",
       "b"
     ],
@@ -2151,7 +2151,7 @@
     ]
   },
   "TransThin_dpnt": {
-    "Variations": [
+    "Variants": [
       "",
       "b"
     ],
@@ -2162,7 +2162,7 @@
     ]
   },
   "TransThin_dpt": {
-    "Variations": [
+    "Variants": [
       "",
       "b"
     ],
@@ -2173,7 +2173,7 @@
     ]
   },
   "TransThin_dt": {
-    "Variations": [
+    "Variants": [
       "",
       "b"
     ],
@@ -2184,7 +2184,7 @@
     ]
   },
   "Water_Add": {
-    "Variations": [
+    "Variants": [
       "u"
     ],
     "Textures": [
@@ -2195,7 +2195,7 @@
     ]
   },
   "Water_Add_SoftEdge": {
-    "Variations": [
+    "Variants": [
       "u"
     ],
     "Textures": [
@@ -2206,7 +2206,7 @@
     ]
   },
   "Water_Add_SoftEdge_Ref": {
-    "Variations": [
+    "Variants": [
       "u"
     ],
     "Textures": [
@@ -2217,7 +2217,7 @@
     ]
   },
   "Water_Mul": {
-    "Variations": [
+    "Variants": [
       "u"
     ],
     "Textures": [
@@ -2228,7 +2228,7 @@
     ]
   },
   "Water_Mul_SoftEdge": {
-    "Variations": [
+    "Variants": [
       "u"
     ],
     "Textures": [
@@ -2239,7 +2239,7 @@
     ]
   },
   "Water_Opacity": {
-    "Variations": [
+    "Variants": [
       "u"
     ],
     "Textures": [
@@ -2250,7 +2250,7 @@
     ]
   },
   "Water_Opacity_Ref": {
-    "Variations": [
+    "Variants": [
       "u"
     ],
     "Textures": [

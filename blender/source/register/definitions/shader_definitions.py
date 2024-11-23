@@ -78,6 +78,9 @@ class ShaderDefinition:
     parameters: dict[str, ShaderParameter]
     textures: list[str]
 
+    variant_items: list[tuple[str, str, str]]
+    variant_items_fallback: list[tuple[str, str, str]]
+
     def __init__(self, name: str, all_items_index: int, visible_items_index: int):
         self.name = name
         self.all_items_index = all_items_index
@@ -88,6 +91,9 @@ class ShaderDefinition:
         self.variants = []
         self.parameters = {}
         self.textures = []
+
+        self.variant_items = None
+        self.variant_items_fallback = None
 
     @staticmethod
     def parse_json_data(
@@ -119,6 +125,19 @@ class ShaderDefinition:
         if "Parameters" in data:
             for key, value in data["Parameters"]:
                 result.parameters[key] = value.parse(ShaderParameter)
+
+        if len(result.variants) > 0:
+            result.variant_items = []
+            result.variant_items_fallback = [("ERROR_FALLBACK", "", "")]
+
+            for variant in result.variants:
+                if len(variant) == 0:
+                    variant_item = ("/", "", "")
+                else:
+                    variant_item = (variant, variant, "")
+
+                result.variant_items.append(variant_item)
+                result.variant_items_fallback.append(variant_item)
 
         return result
 

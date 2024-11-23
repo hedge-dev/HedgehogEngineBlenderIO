@@ -2,6 +2,7 @@ import os
 import bpy
 
 from . import target_info
+from .json_util import HEIOJSONException
 from ...utility import general
 from ...exceptions import HEIOException
 
@@ -11,9 +12,20 @@ TARGET_ENUM_ITEMS_INVALID: list[tuple[str, str, str]] = None
 
 
 def register_definition(directory: str, identifier: str | None = None):
-    target_definition = target_info.TargetDefinition.from_directory(
-        directory, identifier)
-    TARGET_DEFINITIONS[target_definition.identifier] = target_definition
+    if identifier is None:
+        identifier = os.path.basename(directory)
+
+    try:
+        target_definition = target_info.TargetDefinition.from_directory(
+            directory, identifier)
+        TARGET_DEFINITIONS[target_definition.identifier] = target_definition
+
+    except HEIOException as exception:
+        print(f"Failed to register target \"{identifier}\"")
+        if isinstance(exception, HEIOJSONException):
+            print(f"Error at " + exception.get_json_path())
+        print(exception)
+        return
 
     target_item = (
         target_definition.identifier,

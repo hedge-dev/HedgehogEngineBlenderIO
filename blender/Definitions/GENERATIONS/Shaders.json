@@ -60,7 +60,7 @@
     }
   },
   "BillboardParticle_d": {
-    "Variations": [
+    "Variants": [
       "v"
     ],
     "Parameters": {
@@ -773,7 +773,7 @@
   },
   "Common_d": {
     "Hide": false,
-    "Variations": [
+    "Variants": [
       "",
       "b",
       "v",
@@ -883,7 +883,7 @@
   },
   "Common_dp": {
     "Hide": false,
-    "Variations": [
+    "Variants": [
       "",
       "w"
     ],
@@ -899,7 +899,7 @@
   },
   "Common_dpe": {
     "Hide": false,
-    "Variations": [
+    "Variants": [
       "",
       "c"
     ],
@@ -937,7 +937,7 @@
   },
   "Common_dpn": {
     "Hide": false,
-    "Variations": [
+    "Variants": [
       "",
       "E",
       "uv",
@@ -955,7 +955,7 @@
   },
   "Common_dpne": {
     "Hide": false,
-    "Variations": [
+    "Variants": [
       "",
       "c"
     ],
@@ -1037,7 +1037,7 @@
   },
   "Common_dsn": {
     "Hide": false,
-    "Variations": [
+    "Variants": [
       "",
       "b"
     ],
@@ -1824,7 +1824,7 @@
     ]
   },
   "FallOff_dpf": {
-    "Variations": [
+    "Variants": [
       "v"
     ],
     "Textures": [
@@ -1929,7 +1929,7 @@
     ]
   },
   "Ice_der": {
-    "Variations": [
+    "Variants": [
       "v"
     ],
     "Parameters": {
@@ -1954,7 +1954,7 @@
     ]
   },
   "Ice_dner": {
-    "Variations": [
+    "Variants": [
       "v"
     ],
     "Parameters": {
@@ -1980,7 +1980,7 @@
   },
   "IgnoreLight_d": {
     "Hide": false,
-    "Variations": [
+    "Variants": [
       "",
       "v"
     ],
@@ -2131,7 +2131,7 @@
     ]
   },
   "Lava_dnE": {
-    "Variations": [
+    "Variants": [
       "u"
     ],
     "Parameters": {
@@ -2168,7 +2168,7 @@
     ]
   },
   "Luminescence_d": {
-    "Variations": [
+    "Variants": [
       "",
       "v"
     ],
@@ -2183,7 +2183,7 @@
   },
   "Luminescence_dE": {
     "Hide": false,
-    "Variations": [
+    "Variants": [
       "",
       "b",
       "v"
@@ -2249,7 +2249,7 @@
   },
   "Luminescence_dpnE": {
     "Hide": false,
-    "Variations": [
+    "Variants": [
       "",
       "v"
     ],
@@ -2338,7 +2338,7 @@
     ]
   },
   "MeshParticle_d": {
-    "Variations": [
+    "Variants": [
       "",
       "v"
     ],
@@ -2392,7 +2392,7 @@
   },
   "Sky_d": {
     "Hide": false,
-    "Variations": [
+    "Variants": [
       "",
       "uv",
       "v"
@@ -2404,7 +2404,7 @@
     ]
   },
   "Sky_da": {
-    "Variations": [
+    "Variants": [
       "uv"
     ],
     "Textures": [
@@ -2414,7 +2414,7 @@
     ]
   },
   "Sky_dE": {
-    "Variations": [
+    "Variants": [
       "uv"
     ],
     "Textures": [
@@ -2752,7 +2752,7 @@
     ]
   },
   "Water_Add_SoftEdge_Ref": {
-    "Variations": [
+    "Variants": [
       "u"
     ],
     "Parameters": {
@@ -2870,7 +2870,7 @@
     ]
   },
   "Water_Opacity": {
-    "Variations": [
+    "Variants": [
       "",
       "u"
     ],

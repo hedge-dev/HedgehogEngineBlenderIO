@@ -96,16 +96,19 @@ class JSONWrapper:
 
         if isinstance(json_data, dict):
             data = {}
+            result = JSONWrapper(identifier, data, parent)
             for key, value in json_data.items():
-                data[key] = JSONWrapper._wrap_data(key, value, parent)
+                data[key] = JSONWrapper._wrap_data(key, value, result)
+            return result
+
         elif isinstance(json_data, list):
             data = []
+            result = JSONWrapper(identifier, data, parent)
             for i, value in enumerate(json_data):
-                data.append(JSONWrapper._wrap_data(i, value, parent))
-        else:
-            return json_data
+                data.append(JSONWrapper._wrap_data(i, value, result))
+            return result
 
-        return JSONWrapper(identifier, data, parent)
+        return json_data
 
     @staticmethod
     def read_file(filepath: str):

@@ -14,6 +14,10 @@ from .sca_parameter_properties import HEIO_SCA_Parameters
 from .. import definitions
 from ..definitions.shader_definitions import ShaderDefinition, ShaderParameterType
 
+SHADER_ERROR_FALLBACK = [("ERROR_FALLBACK", "", "")]
+VARIANT_ERROR_FALLBACK = [("ERROR_FALLBACK", "", "")]
+VARIANT_ERROR_FALLBACK_EMPTY = [("ERROR_FALLBACK", "", ""), ("/", "", "")]
+
 
 def _update_blending(heio_material, context):
     heio_material.update_material_properties()
@@ -21,7 +25,11 @@ def _update_blending(heio_material, context):
 
 def _get_shader_enum_params(context: bpy.types.Context):
     show_all: bool = context.scene.heio_scene.show_all_shaders
-    shader_definition_collection = definitions.get_target_definition(context).shaders
+    target_definition = definitions.get_target_definition(context)
+    if target_definition is not None:
+        shader_definition_collection = target_definition.shaders
+    else:
+        shader_definition_collection = None
 
     return show_all, shader_definition_collection
 
@@ -29,6 +37,11 @@ def _get_shader_enum_params(context: bpy.types.Context):
 def _get_shader_definition_items(material_properties, context: bpy.types.Context):
     show_all, sdc = _get_shader_enum_params(
         context)
+
+    if sdc is None:
+        SHADER_ERROR_FALLBACK[0] = (
+            "ERROR_FALLBACK", material_properties.shader_name, "")
+        return SHADER_ERROR_FALLBACK
 
     if material_properties.shader_name in sdc.definitions:
 
@@ -52,7 +65,7 @@ def _get_shader_definition(material_properties):
     show_all, sdc = _get_shader_enum_params(
         bpy.context)
 
-    if material_properties.shader_name in sdc.definitions:
+    if sdc is not None and material_properties.shader_name in sdc.definitions:
         definition = sdc.definitions[material_properties.shader_name]
         if show_all:
             return definition.all_items_index
@@ -70,8 +83,11 @@ def _set_shader_definition(material_properties, value):
 
     show_all, sdc = _get_shader_enum_params(
         bpy.context)
-    fallback = False
 
+    if sdc is None:
+        return
+
+    fallback = False
     prev_name = material_properties.shader_name
 
     if prev_name in sdc.definitions:
@@ -91,11 +107,83 @@ def _set_shader_definition(material_properties, value):
 
     material_properties.shader_name = items[value][0]
 
+    if material_properties.shader_name in sdc.definitions:
+        definition = sdc.definitions[material_properties.shader_name]
+        if len(definition.variants) == 0:
+            material_properties.variant_name = ""
+        elif material_properties.variant_name not in definition.variants:
+            material_properties.variant_name = definition.variants[0]
+
     if prev_name == material_properties.shader_name or fallback and value == 0:
         return
 
     material_properties.setup_definition(
         sdc.definitions[material_properties.shader_name])
+
+
+def _get_shader_variant_items(material_properties, context: bpy.types.Context):
+    _, sdc = _get_shader_enum_params(context)
+
+    if sdc is None or material_properties.shader_name not in sdc.definitions:
+
+        VARIANT_ERROR_FALLBACK[0] = (
+            "ERROR_FALLBACK", material_properties.variant_name, "")
+        return VARIANT_ERROR_FALLBACK
+
+    definition = sdc.definitions[material_properties.shader_name]
+    if definition.variant_items is None:
+        VARIANT_ERROR_FALLBACK_EMPTY[0] = (
+            "ERROR_FALLBACK", material_properties.variant_name, "")
+        return VARIANT_ERROR_FALLBACK_EMPTY
+
+    if material_properties.variant_name in definition.variants:
+        return definition.variant_items
+    else:
+
+        result = definition.variant_items_fallback
+        result[0] = ("ERROR_FALLBACK", material_properties.variant_name, "")
+        return result
+
+
+def _get_shader_variant(material_properties):
+    _, sdc = _get_shader_enum_params(bpy.context)
+
+    if sdc is None or material_properties.shader_name not in sdc.definitions:
+        return 0
+
+    definition = sdc.definitions[material_properties.shader_name]
+    if definition.variant_items is None:
+        return 1 if material_properties.variant_name == "" else 0
+
+    try:
+        return definition.variants.index(material_properties.variant_name)
+    except ValueError:
+        return 0
+
+
+def _set_shader_variant(material_properties, value):
+    if material_properties.custom_shader:
+        return
+
+    _, sdc = _get_shader_enum_params(
+        bpy.context)
+
+    if sdc is None or material_properties.shader_name not in sdc.definitions:
+        return
+
+    definition = sdc.definitions[material_properties.shader_name]
+    if definition.variant_items is None:
+        items = VARIANT_ERROR_FALLBACK_EMPTY
+    elif material_properties.variant_name in definition.variants:
+        items = definition.variant_items
+    else:
+        items = definition.variant_items_fallback
+
+    new_name = items[value][0]
+    if new_name == "/":
+        new_name = ""
+
+    material_properties.variant_name = new_name
 
 
 class HEIO_Material(bpy.types.PropertyGroup):
@@ -117,6 +205,19 @@ class HEIO_Material(bpy.types.PropertyGroup):
         items=_get_shader_definition_items,
         get=_get_shader_definition,
         set=_set_shader_definition
+    )
+
+    variant_name: StringProperty(
+        name="Variant name",
+        description="Shader variant to use"
+    )
+
+    variant_definition: EnumProperty(
+        name="Variant",
+        description="Shader variant to use",
+        items=_get_shader_variant_items,
+        get=_get_shader_variant,
+        set=_set_shader_variant
     )
 
     layer: EnumProperty(
@@ -178,7 +279,8 @@ class HEIO_Material(bpy.types.PropertyGroup):
                 item.name = parameter.name
                 item.value_type = parameter.type.name
 
-                setattr(item, item.value_type.lower() + "_value", parameter.default)
+                setattr(item, item.value_type.lower() +
+                        "_value", parameter.default)
 
             if index != current_index:
                 parameters.move(index, current_index)

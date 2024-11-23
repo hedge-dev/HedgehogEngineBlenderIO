@@ -45,6 +45,7 @@ def _get_placeholder_image_color(node: bpy.types.ShaderNodeTexImage):
 
     return (red, green, blue, alpha)
 
+
 def _import_image_dds_addon(image_name: str, net_image):
     from blender_dds_addon.ui.import_dds import load_dds
     import os
@@ -70,6 +71,7 @@ def _import_image_dds_addon(image_name: str, net_image):
 
     return image
 
+
 def _import_image_native(image_name: str, net_image):
     if net_image.StreamedData is not None:
         image = bpy.data.images.new(image_name, 1, 1)
@@ -83,6 +85,7 @@ def _import_image_native(image_name: str, net_image):
         image.name = image_name
 
     return image
+
 
 def _load_image(
         texture,
@@ -204,7 +207,7 @@ def convert_sharpneedle_materials(
         textures_path: str | None):
 
     converted: dict[any, bpy.types.Material] = {}
-    shader_definitions = definitions.get_shader_definitions(context)
+    target_definition = definitions.get_target_definition(context)
 
     for sn_material in sn_materials:
         if sn_material in converted:
@@ -215,15 +218,21 @@ def convert_sharpneedle_materials(
 
         material_properties: HEIO_Material = material.heio_material
 
-        material_properties.shader_name = sn_material.ShaderName
+        if sn_material.ShaderName[-1] == ']':
+            index = sn_material.ShaderName.index('[')
+            material_properties.shader_name = sn_material.ShaderName[:index]
+            material_properties.variant_name = sn_material.ShaderName[(index+1):-1]
+        else:
+            material_properties.shader_name = sn_material.ShaderName
+
         material_properties.use_additive_blending = sn_material.UseAdditiveBlending
         material.alpha_threshold = sn_material.AlphaThreshold / 255.0
         material.use_backface_culling = not sn_material.NoBackFaceCulling
 
-        if shader_definitions is not None and material_properties.shader_name in shader_definitions.definitions:
+        if target_definition is not None and material_properties.shader_name in target_definition.shaders.definitions:
             material_properties.custom_shader = False
             material_properties.setup_definition(
-                shader_definitions.definitions[material_properties.shader_name]
+                target_definition.shaders.definitions[material_properties.shader_name]
             )
         else:
             material_properties.custom_shader = True
@@ -231,8 +240,10 @@ def convert_sharpneedle_materials(
     setup_and_update_materials(context, converted.values())
 
     pref = get_addon_preferences(context)
-    ntsp_dir = getattr(pref, "ntsp_dir_" + context.scene.heio_scene.target_game.lower())
-    images = HEIO_NET.IMAGE.LoadMaterialImages(sn_materials, textures_path, ntsp_dir)
+    ntsp_dir = getattr(pref, "ntsp_dir_" +
+                       context.scene.heio_scene.target_game.lower())
+    images = HEIO_NET.IMAGE.LoadMaterialImages(
+        sn_materials, textures_path, ntsp_dir)
 
     loaded_textures = {}
 

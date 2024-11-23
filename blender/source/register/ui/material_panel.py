@@ -2,14 +2,14 @@ import bpy
 from bpy.types import Context
 
 from .base_panel import PropertiesPanel
+from .sca_parameter_panel import draw_sca_editor_menu
 
 from ..operators import material_parameter_operators as mpop
 from ..operators.material_operators import HEIO_OT_Material_UpdateActiveProperties
 
 from ..property_groups.material_properties import HEIO_Material
 from ..property_groups.scene_properties import HEIO_Scene
-
-from .sca_parameter_panel import draw_sca_editor_menu
+from .. import definitions
 
 from ...utility.draw import draw_list, TOOL_PROPERTY
 
@@ -67,7 +67,8 @@ class BaseParameterList:
 
         split = layout.split(factor=0.4, align=True)
         self.draw_item_name(split, item, icon)
-        split.row(align=True).prop(item, item.value_type.lower() + "_value", text="")
+        split.row(align=True).prop(
+            item, item.value_type.lower() + "_value", text="")
 
 
 class HEIO_UL_ParameterList(bpy.types.UIList, BaseParameterList):
@@ -174,7 +175,8 @@ class HEIO_PT_Material(PropertiesPanel):
         if material_properties.custom_shader:
             menu.prop(parameter, "value_type")
 
-        menu.row(align=True).prop(parameter, parameter.value_type.lower() + "_value")
+        menu.row(align=True).prop(
+            parameter, parameter.value_type.lower() + "_value")
 
     @staticmethod
     def draw_texture_editor(
@@ -243,9 +245,9 @@ class HEIO_PT_Material(PropertiesPanel):
         menu.prop(material_properties, "use_additive_blending")
 
     @staticmethod
-    def draw_material_properties(
+    def draw_header_properties(
             layout: bpy.types.UILayout,
-            scene_properties: HEIO_Scene,
+            context: bpy.types.Context,
             material: bpy.types.Material,
             material_properties: HEIO_Material):
 
@@ -263,17 +265,41 @@ class HEIO_PT_Material(PropertiesPanel):
                     material_properties.shader_name) > 0 else "ERROR"
             )
 
+            layout.prop(material_properties, "variant_name")
+
         else:
-            row.prop(
-                scene_properties,
-                "show_all_shaders"
-            )
+            row.prop(context.scene.heio_scene, "show_all_shaders")
 
             layout.prop(
                 material_properties,
                 "shader_definition",
                 icon="ERROR" if material_properties.shader_definition == "ERROR_FALLBACK" else "NONE"
             )
+
+
+            definition = definitions.get_target_definition(context)
+            if material_properties.shader_name in definition.shaders.definitions:
+                shader_definition = definition.shaders.definitions[material_properties.shader_name]
+                if len(shader_definition.variants) > 0 or material_properties.variant_name != "":
+                    layout.prop(
+                        material_properties,
+                        "variant_definition",
+                        icon="ERROR" if material_properties.variant_definition == "ERROR_FALLBACK" else "NONE"
+                    )
+
+    @staticmethod
+    def draw_material_properties(
+            layout: bpy.types.UILayout,
+            context: bpy.types.Context,
+            material: bpy.types.Material,
+            material_properties: HEIO_Material):
+
+        HEIO_PT_Material.draw_header_properties(
+            layout,
+            context,
+            material,
+            material_properties
+        )
 
         HEIO_PT_Material.draw_general_properties(
             layout,
@@ -321,6 +347,6 @@ class HEIO_PT_Material(PropertiesPanel):
 
         HEIO_PT_Material.draw_material_properties(
             self.layout,
-            context.scene.heio_scene,
+            context,
             context.active_object.active_material,
             context.active_object.active_material.heio_material)
