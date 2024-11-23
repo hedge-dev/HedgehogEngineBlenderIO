@@ -6,7 +6,7 @@ class HEIO_AddonPreferences(bpy.types.AddonPreferences):
     bl_idname = '.'.join(__package__.split('.')[:3])
 
     @classmethod
-    def register(cls):
+    def class_setup(cls):
         for definition in definitions.TARGET_DEFINITIONS.keys():
             keyword = definition.lower()
             def add_property(name, property):

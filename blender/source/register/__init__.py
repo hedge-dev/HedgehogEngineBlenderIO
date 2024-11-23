@@ -22,6 +22,10 @@ def register():
     definitions.load_definitions()
 
     for cls in classes:
+        if hasattr(cls, "class_setup"):
+            cls.class_setup()
+
+    for cls in classes:
         if not hasattr(cls, "DONT_REGISTER_CLASS"):
             bpy.utils.register_class(cls)
         elif hasattr(cls, "register"):
