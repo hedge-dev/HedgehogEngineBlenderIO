@@ -8,6 +8,8 @@ from bpy.props import (
 )
 
 from .base import HEIOBaseDirectorySaveOperator
+from .. import definitions
+from ...exceptions import UserException
 
 
 class ExportOperator(HEIOBaseDirectorySaveOperator):
@@ -19,6 +21,10 @@ class ExportOperator(HEIOBaseDirectorySaveOperator):
     def _execute(self, context: Context):
         from ...dotnet import load_dotnet
         load_dotnet()
+
+        self.target_definition = definitions.get_target_definition(context)
+        if self.target_definition is None:
+            raise UserException("Invalid target game!")
 
         return self.export(context)
 
@@ -172,7 +178,7 @@ class ExportMaterialOperator(ExportObjectSelectionOperator):
     def export_materials(self, context: bpy.types.Context, materials):
         from ...exporting import o_material
         sn_materials = o_material.convert_to_sharpneedle_materials(
-            context, materials)
+            self.target_definition, materials)
 
         from ...dotnet import SharpNeedle
 

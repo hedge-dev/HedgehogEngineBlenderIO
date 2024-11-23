@@ -37,7 +37,7 @@ class TargetDefinition:
     release_year: int
     hedgehog_engine_version: int
 
-    data_versions: dict[str, int]
+    data_versions: TargetDataVersions
 
     shaders: shader_definitions.ShaderDefinitionCollection
     sca_parameters: sca_parameter_definitions.SCAParameterDefinitionCollection | None
@@ -58,7 +58,7 @@ class TargetDefinition:
         self.release_year = release_year
         self.hedgehog_engine_version = hedgehog_engine_version
 
-        self.data_versions = {}
+        self.data_versions = None
         self.shaders = None
         self.sca_parameters = None
 

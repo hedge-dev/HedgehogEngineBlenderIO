@@ -5,18 +5,13 @@ from . import o_enum, o_sca_parameters
 
 from ..dotnet import SharpNeedle, System, HEIO_NET
 from ..register.property_groups.material_properties import HEIO_Material
-
+from ..register.definitions.target_info import TargetDefinition
 
 def convert_to_sharpneedle_materials(
-    context: bpy.types.Context,
+        target_definition: TargetDefinition,
         materials: Iterable[bpy.types.Material]):
 
     converted = {}
-
-    if context.scene.heio_scene.target_game == 'UNLEASHED':
-        data_version = 1
-    else:
-        data_version = 3
 
     for material in materials:
         if material in converted:
@@ -27,10 +22,10 @@ def convert_to_sharpneedle_materials(
 
         material_properties: HEIO_Material = material.heio_material
 
-        sn_material.DataVersion = data_version
+        sn_material.DataVersion = target_definition.data_versions.material
         sn_material.Name = material.name
 
-        if data_version == 1 or len(material_properties.sca_parameters) == 0:
+        if target_definition.data_versions.material_sample_chunk == 1:
             sn_material.Root = None
         else:
             sn_material.SetupNodes()
