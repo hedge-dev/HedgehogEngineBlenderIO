@@ -33,20 +33,6 @@ Every target definition has its own directory, and contains the following files:
 		sca_parameters
 
 
-HEIO Defaults
-=============
-
-HEIO itself supports 7 hedgehog engine games:
-
-- Sonic Unleashed
-- Sonic Generations
-- Sonic Lost World
-- Sonic Forces
-- Sonic Origins
-- Sonic Frontiers
-- Sonic X Shadow Genrations
-
-
 Adding a new target configuration
 =================================
 
