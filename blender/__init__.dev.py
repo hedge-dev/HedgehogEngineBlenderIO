@@ -5,6 +5,7 @@ if "register" in locals():
     reload_package(locals())
 
 from .source.register import register, unregister
+from .source.register.definitions import register_definition
 
 bl_info = {
     "name": "Hedgehog Engine I/O DEV BUILD",

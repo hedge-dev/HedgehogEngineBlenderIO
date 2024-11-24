@@ -131,15 +131,19 @@ def _predict_material_name(name):
 
 
 def _get_templates(context: bpy.types.Context, shader_names: set[str]):
-    setups_path = os.path.join(
-        general.get_path(),
-        "Definitions",
-        context.scene.heio_scene.target_game,
-        "MaterialSetups.blend")
+    from ..register import definitions
+    target_definition = definitions.get_target_definition(context)
+
+    if target_definition is None:
+        return None
+
+    templates_path = os.path.join(
+        target_definition.directory,
+        "MaterialTemplates.blend")
 
     shader_materials = {}
 
-    with bpy.data.libraries.load(setups_path) as (data_from, data_to):
+    with bpy.data.libraries.load(templates_path) as (data_from, data_to):
         to_load = {}
 
         for shader_name in shader_names:
@@ -166,6 +170,9 @@ def setup_and_update_materials(
 
     shader_names = set([x.heio_material.shader_name for x in materials])
     templates = _get_templates(context, shader_names)
+
+    if templates is None:
+        return
 
     for material in materials:
         material.use_nodes = True
