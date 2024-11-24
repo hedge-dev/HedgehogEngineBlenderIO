@@ -402,3 +402,6 @@ FodyWeavers.xsd
 
 #PIP wheel
 *.whl
+
+# sphinx documentation build
+/documentation/build
