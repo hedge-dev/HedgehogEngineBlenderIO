@@ -3,6 +3,7 @@
   "Description": "Sonic Lost World",
   "ReleaseYear": 2013,
   "HedgehogEngine": 1,
+  "UsesNTSP": false,
   "DataVersions": {
     "Material": 3,
     "MaterialSampleChunk": 2

@@ -3,6 +3,7 @@
   "Description": "Sonic Generations (2011)",
   "ReleaseYear": 2011,
   "HedgehogEngine": 1,
+  "UsesNTSP": false,
   "DataVersions": {
     "Material": 3,
     "MaterialSampleChunk": 1

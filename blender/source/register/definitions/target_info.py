@@ -37,8 +37,10 @@ class TargetDefinition:
     release_year: int
     hedgehog_engine_version: int
 
-    data_versions: TargetDataVersions
+    uses_ntsp: bool
+    has_preferences: bool
 
+    data_versions: TargetDataVersions
     shaders: shader_definitions.ShaderDefinitionCollection
     sca_parameters: sca_parameter_definitions.SCAParameterDefinitionCollection | None
 
@@ -49,7 +51,8 @@ class TargetDefinition:
             name: str,
             description: str,
             release_year: int,
-            hedgehog_engine_version: int):
+            hedgehog_engine_version: int,
+            uses_ntsp: bool):
 
         self.directory = directory
         self.identifier = identifier
@@ -57,6 +60,9 @@ class TargetDefinition:
         self.description = description
         self.release_year = release_year
         self.hedgehog_engine_version = hedgehog_engine_version
+
+        self.uses_ntsp = uses_ntsp
+        self.has_preferences = uses_ntsp
 
         self.data_versions = None
         self.shaders = None
@@ -70,7 +76,8 @@ class TargetDefinition:
             data["Name"],
             data["Description"],
             data["ReleaseYear"],
-            data["HedgehogEngine"]
+            data["HedgehogEngine"],
+            data["UsesNTSP"]
         )
 
         result.data_versions = data.parse_property(

@@ -239,9 +239,12 @@ def convert_sharpneedle_materials(
 
     setup_and_update_materials(context, converted.values())
 
-    pref = get_addon_preferences(context)
-    ntsp_dir = getattr(pref, "ntsp_dir_" +
-                       context.scene.heio_scene.target_game.lower())
+    ntsp_dir = ""
+
+    if target_definition.uses_ntsp:
+        pref = get_addon_preferences(context)
+        ntsp_dir = getattr(pref, "ntsp_dir_" + target_definition.identifier.lower())
+
     images = HEIO_NET.IMAGE.LoadMaterialImages(
         sn_materials, textures_path, ntsp_dir)
 
