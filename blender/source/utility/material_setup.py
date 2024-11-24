@@ -2,8 +2,6 @@ import os
 import bpy
 from typing import Iterable
 
-from ..utility import general
-
 
 def _get_socket_by_identifier(
         sockets: list[bpy.types.NodeSocket],
@@ -168,7 +166,16 @@ def setup_and_update_materials(
         context: bpy.types.Context,
         materials: Iterable[bpy.types.Material]):
 
-    shader_names = set([x.heio_material.shader_name for x in materials])
+    shader_names = set()
+
+    for material in materials:
+        shader_name = material.heio_material.shader_name
+        shader_names.add(shader_name)
+
+        if len(material.heio_material.variant_name) > 0:
+            shader_name += f"[{material.heio_material.variant_name}]"
+            shader_names.add(shader_name)
+
     templates = _get_templates(context, shader_names)
 
     if templates is None:
@@ -176,8 +183,14 @@ def setup_and_update_materials(
 
     for material in materials:
         material.use_nodes = True
-        _setup_material(
-            material, templates[material.heio_material.shader_name])
+
+        template = templates[material.heio_material.shader_name]
+
+        if len(material.heio_material.variant_name) > 0:
+            shader_name = f"{material.heio_material.shader_name}[{material.heio_material.variant_name}]"
+            template = templates[shader_name]
+
+        _setup_material(material, template)
         material.heio_material.update_material_all()
 
     template_materials = set(templates.values())
