@@ -59,3 +59,28 @@ class HEIO_OT_Import_Material_Active(ImportMaterialOperator):
             object.data.materials.append(material)
 
         return {'FINISHED'}
+
+
+class HEIO_OT_Import_Material_Active_if(ImportMaterialOperator):
+    bl_idname = "heio.import_material_active_if"
+    bl_label = "Import HE Material (*.material)"
+
+    filter_glob: StringProperty(
+        default="*.material",
+        options={'HIDDEN'},
+    )
+
+    files: CollectionProperty(
+        name='File paths',
+        type=bpy.types.OperatorFileListElement
+    )
+
+    def _execute(self, context):
+        materials = self.import_materials(context)
+
+        object = context.active_object
+        if object is not None and object.select_get():
+            for material in materials.values():
+                object.data.materials.append(material)
+
+        return {'FINISHED'}

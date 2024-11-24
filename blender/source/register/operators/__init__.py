@@ -1,6 +1,7 @@
 from . import (
 	import_operators,
 	export_operators,
+	filehandlers,
 	sca_parameter_operators,
 	material_operators,
 	material_parameter_operators,
@@ -10,9 +11,12 @@ from . import (
 to_register = [
 	import_operators.HEIO_OT_Import_Material,
 	import_operators.HEIO_OT_Import_Material_Active,
+	import_operators.HEIO_OT_Import_Material_Active_if,
 
 	export_operators.HEIO_OT_Export_Material,
 	export_operators.HEIO_OT_Export_Material_Active,
+
+	filehandlers.HEIO_FH_Material,
 
 	sca_parameter_operators.HEIO_OT_SCAParameters_Add,
 	sca_parameter_operators.HEIO_OT_SCAParameters_Remove,

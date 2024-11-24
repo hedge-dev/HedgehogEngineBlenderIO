@@ -183,7 +183,7 @@ class ExportMaterialOperator(ExportObjectSelectionOperator):
         from ...dotnet import SharpNeedle
 
         for sn_material in sn_materials.values():
-            filepath = os.path.join(self.directory, sn_material.Name + ".material")
+            filepath = os.path.join(self.filepath, sn_material.Name + ".material")
             SharpNeedle.RESOURCE_EXTENSIONS.Write(sn_material, filepath)
 
         if self.image_mode != 'NONE' and "blender_dds_addon" in context.preferences.addons.keys():
@@ -198,7 +198,7 @@ class ExportMaterialOperator(ExportObjectSelectionOperator):
                         images.add(texture.image)
 
             for image in images:
-                filepath = os.path.join(self.directory, image.name + ".dds")
+                filepath = os.path.join(self.filepath, image.name + ".dds")
 
                 if self.image_mode == 'OVERWRITE' or not os.path.isfile(filepath):
                     export_image = image.evaluated_get(depsgraph)

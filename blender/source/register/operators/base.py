@@ -104,7 +104,7 @@ class HEIOBaseFileSaveOperator(HEIOBaseOperator):
 
 class HEIOBaseDirectorySaveOperator(HEIOBaseOperator):
 
-    directory: StringProperty(
+    filepath: StringProperty(
         name="Directory Path",
         description="Directory path used for exporting the file(s)",
         maxlen=1024,
