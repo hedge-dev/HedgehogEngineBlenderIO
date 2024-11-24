@@ -9,7 +9,7 @@ class HEIO_OT_Info_Manual(HEIOBaseOperator):
 
     def _execute(self, context: bpy.types.Context):
         import webbrowser
-        webbrowser.open("https://x-hax.github.io/HedgehogEngineBlenderIO/")
+        webbrowser.open("https://hedge-dev.github.io/HedgehogEngineBlenderIO/")
         return {'FINISHED'}
 
 

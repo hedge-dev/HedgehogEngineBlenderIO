@@ -7,7 +7,7 @@ tagline = "Import/Exporter for Hedgehog Engine 3D related formats"
 maintainer = "Justin113D, hedge-dev"
 type = "add-on"
 
-website = "https://github.com/X-Hax/HedgehogEngineBlenderIO"
+website = "https://github.com/hedge-dev/HedgehogEngineBlenderIO"
 tags = ["Import-Export"]
 
 blender_version_min = "4.3.0"
