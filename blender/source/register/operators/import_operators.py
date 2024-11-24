@@ -1,4 +1,3 @@
-import os
 import bpy
 from bpy.props import (
     StringProperty,
@@ -9,7 +8,6 @@ from .base_import_operators import (
     ImportMaterialOperator
 )
 
-from ...dotnet import load_dotnet, SharpNeedle
 
 
 class HEIO_OT_Import_Material(ImportMaterialOperator):
@@ -26,42 +24,24 @@ class HEIO_OT_Import_Material(ImportMaterialOperator):
         type=bpy.types.OperatorFileListElement
     )
 
-    def import_materials(self, context):
-        load_dotnet()
-
-        directory = os.path.dirname(self.filepath)
-        sn_materials = []
-        resource_manager = SharpNeedle.RESOURCE_MANAGER()
-
-        for file in self.files:
-            filepath = os.path.join(directory, file.name)
-
-            try:
-                material = SharpNeedle.RESOURCE_EXTENSIONS.Open[SharpNeedle.MATERIAL](
-                    resource_manager, filepath, True)
-            except Exception as error:
-                print(f"An error occured while importing {file.name}")
-                raise error
-
-            sn_materials.append(material)
-
-        from ...importing import i_material
-
-        return i_material.convert_sharpneedle_materials(
-            context,
-            sn_materials,
-            self.create_undefined_parameters,
-            self.use_existing_images,
-            directory if self.import_images else None)
-
     def _execute(self, context):
         self.import_materials(context)
         return {'FINISHED'}
 
 
-class HEIO_OT_Import_Material_Active(HEIO_OT_Import_Material):
+class HEIO_OT_Import_Material_Active(ImportMaterialOperator):
     bl_idname = "heio.import_material_active"
     bl_label = "Import HE Material (*.material)"
+
+    filter_glob: StringProperty(
+        default="*.material",
+        options={'HIDDEN'},
+    )
+
+    files: CollectionProperty(
+        name='File paths',
+        type=bpy.types.OperatorFileListElement
+    )
 
     @classmethod
     def poll(cls, context):

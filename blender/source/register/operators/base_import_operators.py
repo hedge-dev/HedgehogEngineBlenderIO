@@ -1,3 +1,4 @@
+import os
 import bpy
 from bpy.types import Context
 from bpy.props import (
@@ -5,6 +6,8 @@ from bpy.props import (
 )
 
 from .base import HEIOBaseFileLoadOperator
+
+from ...dotnet import load_dotnet, SharpNeedle
 
 
 class ImportOperator(HEIOBaseFileLoadOperator):
@@ -30,6 +33,36 @@ class ImportMaterialOperator(ImportOperator):
         description="When the active file contains a image with a matching image file name, use that instead of importing an image file",
         default=False
     )
+
+
+    def import_materials(self, context):
+        load_dotnet()
+
+        directory = os.path.dirname(self.filepath)
+        sn_materials = []
+        resource_manager = SharpNeedle.RESOURCE_MANAGER()
+
+        for file in self.files:
+            filepath = os.path.join(directory, file.name)
+
+            try:
+                material = SharpNeedle.RESOURCE_EXTENSIONS.Open[SharpNeedle.MATERIAL](
+                    resource_manager, filepath, True)
+            except Exception as error:
+                print(f"An error occured while importing {file.name}")
+                raise error
+
+            sn_materials.append(material)
+
+        from ...importing import i_material
+
+        return i_material.convert_sharpneedle_materials(
+            context,
+            sn_materials,
+            self.create_undefined_parameters,
+            self.use_existing_images,
+            directory if self.import_images else None)
+
 
     def draw_panel_material(self):
         header, body = self.layout.panel(
