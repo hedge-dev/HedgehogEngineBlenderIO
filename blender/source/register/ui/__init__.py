@@ -21,5 +21,6 @@ to_register = [
     menus.TOPBAR_MT_HEIO_Import,
     menus.NativeHooks,
 
+    viewport_toolbar.HEIO_PT_VTP_Material,
     viewport_toolbar.HEIO_PT_VTP_Info
 ]

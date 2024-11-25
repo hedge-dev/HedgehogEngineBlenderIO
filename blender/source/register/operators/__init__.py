@@ -23,8 +23,8 @@ to_register = [
 	sca_parameter_operators.HEIO_OT_SCAParameters_Move,
 	sca_parameter_operators.HEIO_OT_SCAParameters_NewFromPreset,
 
-	material_operators.HEIO_OT_Material_UpdateProperties,
-	material_operators.HEIO_OT_Material_UpdateActiveProperties,
+	material_operators.HEIO_OT_Material_SetupNodes,
+	material_operators.HEIO_OT_Material_SetupNodes_Active,
 
 	material_parameter_operators.HEIO_OT_MaterialParameters_Add,
 	material_parameter_operators.HEIO_OT_MaterialParameters_Remove,

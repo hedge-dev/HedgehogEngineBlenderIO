@@ -5,7 +5,7 @@ from .base_panel import PropertiesPanel
 from .sca_parameter_panel import draw_sca_editor_menu
 
 from ..operators import material_parameter_operators as mpop
-from ..operators.material_operators import HEIO_OT_Material_UpdateActiveProperties
+from ..operators.material_operators import HEIO_OT_Material_SetupNodes_Active
 
 from ..property_groups.material_properties import HEIO_Material
 from ..property_groups.scene_properties import HEIO_Scene
@@ -251,8 +251,6 @@ class HEIO_PT_Material(PropertiesPanel):
             material: bpy.types.Material,
             material_properties: HEIO_Material):
 
-        layout.operator(HEIO_OT_Material_UpdateActiveProperties.bl_idname)
-
         row = layout.row(align=True)
 
         row.prop(material_properties, "custom_shader")
@@ -286,6 +284,8 @@ class HEIO_PT_Material(PropertiesPanel):
                         "variant_definition",
                         icon="ERROR" if material_properties.variant_definition == "ERROR_FALLBACK" else "NONE"
                     )
+
+        layout.operator(HEIO_OT_Material_SetupNodes_Active.bl_idname)
 
     @staticmethod
     def draw_material_properties(

@@ -1,5 +1,9 @@
 import bpy
 
+from ..operators.material_operators import (
+    HEIO_OT_Material_SetupNodes
+)
+
 from ..operators.info_operators import (
     HEIO_OT_Info_Manual,
     HEIO_OT_Info_Discord
@@ -10,6 +14,18 @@ class ViewportToolPanel(bpy.types.Panel):
     bl_region_type = 'UI'
     bl_category = "HEIO Tools"
     bl_options = {'DEFAULT_CLOSED'}
+
+
+class HEIO_PT_VTP_Material(bpy.types.Panel):
+    bl_label = "Material"
+    bl_space_type = 'VIEW_3D'
+    bl_region_type = 'UI'
+    bl_category = "HEIO Tools"
+
+    def draw(self, context):
+        layout = self.layout
+
+        layout.operator(HEIO_OT_Material_SetupNodes.bl_idname)
 
 
 class HEIO_PT_VTP_Info(bpy.types.Panel):

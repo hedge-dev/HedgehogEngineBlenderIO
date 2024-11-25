@@ -61,17 +61,17 @@ class MaterialOperator(HEIOBasePopupOperator):
         return {'FINISHED'}
 
 
-class HEIO_OT_Material_UpdateProperties(MaterialOperator):
-    bl_idname = "heio.material_updateprops"
+class HEIO_OT_Material_SetupNodes(MaterialOperator):
+    bl_idname = "heio.material_setup_nodes"
     bl_label = "Setup/Update Material Nodes"
-    bl_description = "Setup and updates node properties to match the HEIO material properties."
+    bl_description = "Set up material nodes based on the selected shader"
 
     def mat_execute(self, context, materials):
         setup_and_update_materials(context, materials)
 
 
-class HEIO_OT_Material_UpdateActiveProperties(HEIOBaseOperator):
-    bl_idname = "heio.material_updateactiveprops"
+class HEIO_OT_Material_SetupNodes_Active(HEIOBaseOperator):
+    bl_idname = "heio.material_setup_nodes_active"
     bl_label = "Setup/Update Nodes"
     bl_options = {'UNDO'}
 
