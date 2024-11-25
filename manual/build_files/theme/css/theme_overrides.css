@@ -73,7 +73,7 @@ dl dt {
 /* Fixes to field list, see #104636 */
 dl.field-list {
 	display: grid;
-	grid-template-columns: auto minmax(80%, 95%);
+	grid-template-columns: auto minmax(60%, 95%);
 	row-gap: 0.125em;
 }
 
@@ -195,6 +195,10 @@ a.external:not(figure > a.external) {
 .lead {
 	clear: both;
 	width: 100%;
+}
+
+.largertext {
+	font-size: larger;
 }
 
 /* Start reference admonition. */

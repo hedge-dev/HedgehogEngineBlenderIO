@@ -10,6 +10,8 @@ Importers
 	importing anything!
 
 
+.. _bpy.ops.heio.import_material:
+
 Material Import
 ===============
 
@@ -44,6 +46,8 @@ Use existing images
 	If enabled, the importer will check if blender already has an image loaded with the exact name
 	and use that instead. If no image exists, the regular logic applies
 
+
+.. _bpy.ops.heio.import_material_active:
 
 Active Material Import
 ======================

@@ -16,6 +16,8 @@ Exporters
 	collection exporters too!
 
 
+.. _tools-export-common-properties:
+
 Common Export Properties
 ========================
 
@@ -30,11 +32,13 @@ Visible
 	Ignore all hidden objects
 
 Active Collection
-	Ignore all objects outside active collection
+	Ignore all objects outside of the active collection
 
 Active scene
 	Ignore all objects not part of the active scene
 
+
+.. _bpy.ops.heio.export_material:
 
 Material Export
 ===============
@@ -54,12 +58,14 @@ Image export mode
 	- ``None``: Export no images at all
 
 
+.. _bpy.ops.heio.export_material_active:
+
 Active Material Export
 ======================
 
 .. reference::
 
-	:Menu:		:menuselection:`Properties --> Material Properties --> Material Specials -> Export HE Material (*.material)`
+	:Menu:		:menuselection:`Properties --> Material Properties --> Material Specials --> Export HE Material (*.material)`
 
 Exports only the active material.
 

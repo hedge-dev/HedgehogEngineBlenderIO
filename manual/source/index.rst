@@ -65,6 +65,14 @@ Sections
 
       .. container:: card
 
+         .. figure:: /images/index_guides.png
+            :target: guides/index.html
+
+         :doc:`/guides/index`
+            Learn how to perform basic tasks with the addon
+
+      .. container:: card
+
          .. figure:: /images/index_target_configuration.png
             :target: target_configuration/index.html
 
@@ -78,4 +86,5 @@ Sections
       :maxdepth: 2
 
       /user_interface/index
+      /guides/index
       /target_configuration/index

@@ -16,7 +16,7 @@ Custom Shader
 	pre-defined shader from the :ref:`target game <HEIO_Scene.target_game>`
 
 
-.. _HEIO_Material.show_all_shaders:
+.. _HEIO_Scene.show_all_shaders:
 
 Show All Shaders
 	Most target games have over 100 shaders, many of which are for very niche use cases and will
@@ -61,7 +61,7 @@ Variant
 	Otherwise, depending on whether the selected shader has any variants, you it's a dropdown.
 
 
-.. _bpy.op.Material.heio.material_updateactiveprops:
+.. _bpy.ops.heio.material_setup_nodes_active:
 
 Setup/Update Nodes
 	When pressed, the addon will look up the shader (+ variant) in the target games material
@@ -83,11 +83,10 @@ Layer
 	is not defined by the targeted game, ``Opaque`` will be used.
 
 Clip Threshold
-	`The default clip threshold property <https://docs.blender.org/manual/en/4.3/render/materials/index.html?utm_source=blender-4.3.0#bpy-types-material>`_
-	added here for convenience.
+	The default clip threshold property added here for convenience.
 
 Backface Culling
-	`The default backface culling property <https://docs.blender.org/manual/en/4.3/render/eevee/material_settings.html?utm_source=blender-4.3.0#bpy-types-material-use-backface-culling>`_
+	`The default backface culling property <https://docs.blender.org/manual/en/latest/render/eevee/material_settings.html#bpy-types-material-use-backface-culling>`_
 	added here for convenience.
 
 

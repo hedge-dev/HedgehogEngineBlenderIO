@@ -35,9 +35,10 @@ release = " ".join((heio_version, "DEV"))
 
 # -- General configuration ---------------------------------------------------
 
-extensions = extensions = [
+extensions = [
 	"404",
 	"reference",
+	"sphinx_design",
     "sphinx.ext.todo",
 ]
 
