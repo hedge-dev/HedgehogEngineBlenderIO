@@ -83,6 +83,8 @@ class ImageLoader:
         image.name = image_name
         image.filepath = os.path.splitext(net_image.Filepath)[0] + ".tga"
 
+        image.packed_files[0].filepath = image.filepath
+
         return image
 
     @staticmethod
@@ -93,6 +95,7 @@ class ImageLoader:
             image.filepath = net_image.Filepath
             byte_data = bytes(net_image.StreamedData)
             image.pack(data=byte_data, data_len=len(byte_data))
+            image.packed_files[0].filepath = image.filepath
 
         else:
             image = bpy.data.images.load(
@@ -139,6 +142,12 @@ class ImageLoader:
                     pixels = numpy.array(image.pixels, dtype=numpy.float32)
                     HEIO_NET.IMAGE.FlipYChannel(System.INT_PTR(pixels.ctypes.data), len(pixels))
                     image.pixels = pixels
+
+                    filepath = image.packed_files[0].filepath
+                    image.pack()
+                    image.packed_files[0].filepath = filepath
+
+
 
         image.update()
 

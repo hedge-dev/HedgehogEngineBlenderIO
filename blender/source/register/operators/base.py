@@ -105,16 +105,38 @@ class HEIOBaseFileSaveOperator(HEIOBaseOperator):
 class HEIOBaseDirectorySaveOperator(HEIOBaseOperator):
 
     filepath: StringProperty(
-        name="Directory Path",
+        name="Filepath (required, irrelevant)",
+        description="Directory path used for exporting the file(s)",
+        maxlen=0,
+        subtype='FILE_PATH',
+        options={'HIDDEN'},
+    )
+
+    directory: StringProperty(
+        name="Directory",
         description="Directory path used for exporting the file(s)",
         maxlen=1024,
         subtype='DIR_PATH',
         options={'HIDDEN'},
     )
 
+    def correct_filepath(self, context: bpy.types.Context):
+        if self.directory:
+            filepath = self.directory + os.sep
+        elif context.blend_data.filepath:
+            filepath = os.path.dirname(context.blend_data.filepath) + os.sep
+
+        changed = filepath != self.filepath
+        self.filepath = filepath
+        return changed
+
     def _invoke(self, context, event):
+        self.correct_filepath(context)
         context.window_manager.fileselect_add(self)
         return {'RUNNING_MODAL'}
+
+    def check(self, context: Context) -> bool:
+        return self.correct_filepath(context)
 
     def draw(self, context: Context):
         layout = self.layout

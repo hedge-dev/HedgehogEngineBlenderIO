@@ -1,6 +1,9 @@
 import bpy
 import os
 from typing import Iterable
+import numpy
+
+from ..dotnet import HEIO_NET, System
 
 def _check_texture_is_normal_map(texture):
 	node: bpy.types.ShaderNodeTexImage = texture.image_node
@@ -51,7 +54,8 @@ def export_material_images(
 		export_image: bpy.types.Image = image.evaluated_get(depsgraph)
 
 		if image in normal_images:
-			for i in range(1, len(export_image.pixels), 4):
-				export_image.pixels[i] = 1 - export_image.pixels[i]
+			pixels = numpy.array(export_image.pixels, dtype=numpy.float32)
+			HEIO_NET.IMAGE.FlipYChannel(System.INT_PTR(pixels.ctypes.data), len(pixels))
+			export_image.pixels = pixels
 
 		export_as_dds(context, export_image, filepath)
