@@ -198,7 +198,7 @@ class ExportMaterialOperator(ExportObjectSelectionOperator):
         from ...dotnet import SharpNeedle
 
         for sn_material in sn_materials.values():
-            filepath = os.path.join(self.filepath, sn_material.Name + ".material")
+            filepath = os.path.join(self.directory, sn_material.Name + ".material")
             SharpNeedle.RESOURCE_EXTENSIONS.Write(sn_material, filepath)
 
         if self.image_mode != 'NONE':
