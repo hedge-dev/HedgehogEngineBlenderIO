@@ -135,6 +135,17 @@ class ExportMaterialOperator(ExportObjectSelectionOperator):
         default='MISSING'
     )
 
+    nrm_flip_y_channel: EnumProperty(
+        name="Flip Y channel of normal maps",
+        description="Whether to flip the y channel on normal maps when exporting",
+        items=(
+            ("AUTO", "Automatic", "Automatically determine whether to flip the Y channel based on the target game"),
+            ("FLIP", "Flip", "Always flip the Y channel"),
+            ("DONT", "Don't flip", "Don't flip any Y channels")
+        ),
+        default="AUTO"
+    )
+
     def draw_panel_material(self):
         header, body = self.layout.panel(
             "HEIO_export_material", default_closed=False)
@@ -152,6 +163,10 @@ class ExportMaterialOperator(ExportObjectSelectionOperator):
 
         if "blender_dds_addon" in bpy.context.preferences.addons.keys():
             body.prop(self, "image_mode")
+
+            if self.image_mode != 'NONE':
+                body.prop(self, "nrm_flip_y_channel")
+
         else:
             box = body.box()
             box.label(text="Please install and enable the blender")
@@ -186,23 +201,23 @@ class ExportMaterialOperator(ExportObjectSelectionOperator):
             filepath = os.path.join(self.filepath, sn_material.Name + ".material")
             SharpNeedle.RESOURCE_EXTENSIONS.Write(sn_material, filepath)
 
-        if self.image_mode != 'NONE' and "blender_dds_addon" in context.preferences.addons.keys():
-            from blender_dds_addon.ui.export_dds import export_as_dds # type: ignore
-            context.scene.dds_options.allow_slow_codec = True
-            depsgraph = context.evaluated_depsgraph_get()
+        if self.image_mode != 'NONE':
+            from ...exporting import o_image
 
-            images = set()
-            for material in materials:
-                for texture in material.heio_material.textures:
-                    if texture.image is not None:
-                        images.add(texture.image)
+            flip_normal_map_y_channel = (
+                self.nrm_flip_y_channel == "FLIP"
+                or (
+                    self.nrm_flip_y_channel == "AUTO"
+                    and self.target_definition.hedgehog_engine_version == 1
+                )
+            )
 
-            for image in images:
-                filepath = os.path.join(self.filepath, image.name + ".dds")
-
-                if self.image_mode == 'OVERWRITE' or not os.path.isfile(filepath):
-                    export_image = image.evaluated_get(depsgraph)
-                    export_as_dds(context, export_image, filepath)
-
+            o_image.export_material_images(
+                materials,
+                context,
+                self.image_mode,
+                flip_normal_map_y_channel,
+                self.filepath
+            )
 
         return {'FINISHED'}

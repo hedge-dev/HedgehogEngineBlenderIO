@@ -3,9 +3,14 @@ import bpy
 from bpy.types import Context
 from bpy.props import (
     BoolProperty,
+    EnumProperty,
+    StringProperty,
+    CollectionProperty
 )
 
 from .base import HEIOBaseFileLoadOperator
+from .. import definitions
+from ...exceptions import UserException
 
 from ...dotnet import load_dotnet, SharpNeedle
 
@@ -13,8 +18,28 @@ from ...dotnet import load_dotnet, SharpNeedle
 class ImportOperator(HEIOBaseFileLoadOperator):
     bl_options = {'PRESET', 'UNDO'}
 
+    def _execute(self, context: Context):
+        from ...dotnet import load_dotnet
+        load_dotnet()
+
+        self.target_definition = definitions.get_target_definition(context)
+        if self.target_definition is None:
+            raise UserException("Invalid target game!")
+
+        return self.import_(context)
+
 
 class ImportMaterialOperator(ImportOperator):
+
+    filter_glob: StringProperty(
+        default="*.material",
+        options={'HIDDEN'},
+    )
+
+    files: CollectionProperty(
+        name='File paths',
+        type=bpy.types.OperatorFileListElement
+    )
 
     create_undefined_parameters: BoolProperty(
         name="Create undefined parameters/textures",
@@ -26,6 +51,17 @@ class ImportMaterialOperator(ImportOperator):
         name="Import Images",
         description="Import images if found, otherwise use placeholders",
         default=True
+    )
+
+    nrm_flip_y_channel: EnumProperty(
+        name="Flip Y channel of normal maps",
+        description="Whether to flip the y channel on normal maps when importing",
+        items=(
+            ("AUTO", "Automatic", "Automatically determine whether to flip the Y channel based on the target game"),
+            ("FLIP", "Flip", "Always flip the Y channel"),
+            ("DONT", "Don't flip", "Don't flip any Y channels")
+        ),
+        default="AUTO"
     )
 
     use_existing_images: BoolProperty(
@@ -56,11 +92,20 @@ class ImportMaterialOperator(ImportOperator):
 
         from ...importing import i_material
 
+        flip_normal_map_y_channel = (
+            self.nrm_flip_y_channel == "FLIP"
+            or (
+                self.nrm_flip_y_channel == "AUTO"
+                and self.target_definition.hedgehog_engine_version == 1
+            )
+        )
+
         return i_material.convert_sharpneedle_materials(
             context,
             sn_materials,
             self.create_undefined_parameters,
             self.use_existing_images,
+            flip_normal_map_y_channel,
             directory if self.import_images else None)
 
 
@@ -81,6 +126,12 @@ class ImportMaterialOperator(ImportOperator):
 
         body.prop(self, "create_undefined_parameters")
         body.prop(self, "import_images")
+
+        if self.import_images:
+            body.use_property_split = True
+            body.prop(self, "nrm_flip_y_channel")
+            body.use_property_split = False
+
         body.prop(self, "use_existing_images")
 
         if "blender_dds_addon" not in bpy.context.preferences.addons.keys():

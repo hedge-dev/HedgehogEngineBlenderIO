@@ -1,9 +1,8 @@
 from typing import Iterable
 import bpy
 
-from . import i_enum, i_sca_parameters
+from . import i_enum, i_image, i_sca_parameters
 
-from ..dotnet import HEIO_NET
 from ..register import definitions
 from ..register.property_groups.material_properties import (
     HEIO_Material,
@@ -12,125 +11,17 @@ from ..register.property_groups.material_properties import (
 )
 
 from ..utility.material_setup import (
-    setup_and_update_materials,
-    get_first_connected_socket
+    setup_and_update_materials
 )
 
 from ..utility.general import get_addon_preferences
-
-
-def _get_placeholder_image_color(node: bpy.types.ShaderNodeTexImage):
-    if node is None:
-        return (1, 1, 1, 1)
-
-    rgb_connection = get_first_connected_socket(node.outputs[0])
-    alpha_connection = get_first_connected_socket(node.outputs[1])
-
-    red = green = blue = alpha = 1
-
-    if rgb_connection is not None:
-        if rgb_connection.type == 'VALUE':
-            red = green = blue = rgb_connection.default_value
-        elif rgb_connection.type in ['RGBA', 'VECTOR']:
-            red = rgb_connection.default_value[0]
-            green = rgb_connection.default_value[1]
-            blue = rgb_connection.default_value[2]
-
-    if alpha_connection is not None:
-        if alpha_connection.type == 'VALUE':
-            alpha = alpha_connection.default_value
-        elif alpha_connection.type in ['RGBA', 'VECTOR']:
-            rgb = alpha_connection.default_value
-            alpha = 0.2989 * rgb[0] + 0.5870 * rgb[1] + 0.1140 * rgb[2]
-
-    return (red, green, blue, alpha)
-
-
-def _import_image_dds_addon(image_name: str, net_image):
-    from blender_dds_addon.ui.import_dds import load_dds
-    import os
-
-    if net_image.StreamedData is not None:
-        from tempfile import TemporaryDirectory
-
-        byte_data = bytes(net_image.StreamedData)
-
-        with TemporaryDirectory() as temp_dir:
-            temp = os.path.join(temp_dir, image_name + ".dds")
-
-            with open(temp, "wb") as temp_file:
-                temp_file.write(byte_data)
-
-            image = load_dds(temp)
-
-    else:
-        image = load_dds(net_image.Filepath)
-
-    image.name = image_name
-    image.filepath = os.path.splitext(net_image.Filepath)[0] + ".tga"
-
-    return image
-
-
-def _import_image_native(image_name: str, net_image):
-    if net_image.StreamedData is not None:
-        image = bpy.data.images.new(image_name, 1, 1)
-        image.source = 'FILE'
-        image.filepath = net_image.Filepath
-        byte_data = bytes(net_image.StreamedData)
-        image.pack(data=byte_data, data_len=len(byte_data))
-
-    else:
-        image = bpy.data.images.load(net_image.Filepath, check_existing=True)
-        image.name = image_name
-
-    return image
-
-
-def _load_image(
-        texture,
-        image_name: str,
-        net_images: dict[str, any],):
-
-    image = None
-    node: bpy.types.ShaderNodeTexImage = texture.image_node
-
-    if image_name in net_images:
-        net_image = net_images[image_name]
-
-        if "blender_dds_addon" in bpy.context.preferences.addons.keys():
-            image = _import_image_dds_addon(image_name, net_image)
-        else:
-            image = _import_image_native(image_name, net_image)
-
-    if image is None:
-        # placeholder texture
-        image = bpy.data.images.new(
-            image_name,
-            16,
-            16,
-            alpha=True)
-
-        image.source = 'GENERATED'
-        image.generated_color = _get_placeholder_image_color(node)
-
-    if node is not None:
-        label_colorspace = node.label.split(";")[0]
-        if label_colorspace in ["sRGB", "Non-Color"]:
-            image.colorspace_settings.name = label_colorspace
-
-    image.update()
-
-    return image
 
 
 def _convert_textures(
         sn_texture_set: any,
         output: HEIO_MaterialTextureList,
         create_missing: bool,
-        use_existing_images: bool,
-        images: dict[str, any],
-        loaded_images: dict[str, bpy.types.Image]):
+        image_loader: i_image.ImageLoader):
 
     name_indices = {}
     created_missing = False
@@ -157,20 +48,7 @@ def _convert_textures(
         texture.texcoord_index = sn_texture.TexCoordIndex
         texture.wrapmode_u = i_enum.from_wrap_mode(sn_texture.WrapModeU)
         texture.wrapmode_v = i_enum.from_wrap_mode(sn_texture.WrapModeV)
-
-        if len(sn_texture.PictureName.strip()) > 0:
-            if sn_texture.PictureName in loaded_images:
-                texture.image = loaded_images[sn_texture.PictureName]
-            elif use_existing_images and sn_texture.PictureName in bpy.data.images:
-                texture.image = bpy.data.images[sn_texture.PictureName]
-            else:
-                image = _load_image(
-                    texture,
-                    sn_texture.PictureName,
-                    images)
-
-                loaded_images[sn_texture.PictureName] = image
-                texture.image = image
+        texture.image = image_loader.get_image(texture, sn_texture.PictureName)
 
     return created_missing
 
@@ -204,6 +82,7 @@ def convert_sharpneedle_materials(
         sn_materials: Iterable[any],
         create_undefined_parameters: bool,
         use_existing_images: bool,
+        flip_normal_map_y_channel: bool,
         textures_path: str | None):
 
     converted: dict[any, bpy.types.Material] = {}
@@ -245,10 +124,8 @@ def convert_sharpneedle_materials(
         pref = get_addon_preferences(context)
         ntsp_dir = getattr(pref, "ntsp_dir_" + target_definition.identifier.lower())
 
-    images = HEIO_NET.IMAGE.LoadMaterialImages(
-        sn_materials, textures_path, ntsp_dir)
-
-    loaded_textures = {}
+    image_loader = i_image.ImageLoader(use_existing_images, flip_normal_map_y_channel)
+    image_loader.load_images_from_sn_materials(sn_materials, textures_path, ntsp_dir)
 
     for sn_material, material in converted.items():
         material_properties: HEIO_Material = material.heio_material
@@ -274,9 +151,7 @@ def convert_sharpneedle_materials(
             sn_material.Texset,
             material_properties.textures,
             create_missing,
-            use_existing_images,
-            images,
-            loaded_textures
+            image_loader
         )
 
         i_sca_parameters.convert_from_data(
