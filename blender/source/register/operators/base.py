@@ -107,7 +107,7 @@ class HEIOBaseDirectorySaveOperator(HEIOBaseOperator):
     filepath: StringProperty(
         name="Filepath (required, irrelevant)",
         description="Directory path used for exporting the file(s)",
-        maxlen=0,
+        maxlen=1024,
         subtype='FILE_PATH',
         options={'HIDDEN'},
     )
