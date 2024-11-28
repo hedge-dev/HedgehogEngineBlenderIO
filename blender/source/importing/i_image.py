@@ -107,6 +107,7 @@ class ImageLoader:
     def _load_image_from_file(self, texture, image_name: str):
 
         image = None
+        net_image = None
         node: bpy.types.ShaderNodeTexImage = texture.image_node
 
         if image_name in self._net_images:
