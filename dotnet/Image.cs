@@ -77,5 +77,15 @@ namespace HEIO.NET
 
             return result;
         }
+    
+        public static unsafe void FlipYChannel(nint pixelPointer, int length)
+        {
+            float* pixels = (float*)pixelPointer;
+
+            for(int i = 1; i < length; i += 4)
+            {
+                pixels[i] = 1 - pixels[i];
+            }
+        }
     }
 }
