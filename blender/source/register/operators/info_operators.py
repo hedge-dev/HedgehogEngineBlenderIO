@@ -24,6 +24,17 @@ class HEIO_OT_Info_Discord(HEIOBaseOperator):
         return {'FINISHED'}
 
 
+class HEIO_OT_Info_Report(HEIOBaseOperator):
+    bl_idname = "heio.info_report"
+    bl_label = "Report a bug / an issue"
+    bl_description = "Opens the github repository issues page"
+
+    def _execute(self, context: bpy.types.Context):
+        import webbrowser
+        webbrowser.open("https://github.com/hedge-dev/HedgehogEngineBlenderIO/issues")
+        return {'FINISHED'}
+
+
 class HEIO_OT_Info_DDS_Addon(HEIOBaseOperator):
     bl_idname = "heio.info_dds_addon"
     bl_label = "Open DDS Addon repository website"

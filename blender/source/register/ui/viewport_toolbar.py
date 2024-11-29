@@ -6,7 +6,8 @@ from ..operators.material_operators import (
 
 from ..operators.info_operators import (
     HEIO_OT_Info_Manual,
-    HEIO_OT_Info_Discord
+    HEIO_OT_Info_Discord,
+    HEIO_OT_Info_Report
 )
 
 class ViewportToolPanel(bpy.types.Panel):
@@ -45,3 +46,4 @@ class HEIO_PT_VTP_Info(bpy.types.Panel):
 
         layout.operator(HEIO_OT_Info_Manual.bl_idname)
         layout.operator(HEIO_OT_Info_Discord.bl_idname)
+        layout.operator(HEIO_OT_Info_Report.bl_idname)
