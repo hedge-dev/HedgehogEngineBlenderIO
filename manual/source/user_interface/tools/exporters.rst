@@ -57,6 +57,13 @@ Image export mode
 	- ``Missing``: Export only images that dont already exist in the output directory
 	- ``None``: Export no images at all
 
+Invert Y channel of normal maps
+	Inverts the Y (Green) channel on normal maps.
+
+	- ``Automatic``: Inverts if the target game uses Hedgehog Engine 1
+	- ``Invert``: Always inverts
+	- ``Don't invert``: Does not invert
+
 
 .. _bpy.ops.heio.export_material_active:
 

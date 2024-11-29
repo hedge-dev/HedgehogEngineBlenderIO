@@ -41,6 +41,12 @@ Import images
 		If this is disabled, or the addon fails to load the specified image, then a 16x16 image
 		with a solid color will be generated in its place.
 
+Invert Y channel of normal maps
+	Inverts the Y (Green) channel on normal maps.
+
+	- ``Automatic``: Inverts if the target game uses Hedgehog Engine 1
+	- ``Invert``: Always inverts
+	- ``Don't invert``: Does not invert
 
 Use existing images
 	If enabled, the importer will check if blender already has an image loaded with the exact name
