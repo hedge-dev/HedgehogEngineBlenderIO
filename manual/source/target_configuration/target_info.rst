@@ -25,6 +25,10 @@ File Structure
 	  // The hedgehog engine version used (either 1 or 2)
 	  "HedgehogEngine": 2,
 
+	  // Whether the game makes use of needle texture streaming packages,
+	  // A feature available since Sonic Frontiers that allows for texture streaming
+	  "UsesNTSP": true,
+
 	  // The various data versions to encode files with
 	  "DataVersions": {
 

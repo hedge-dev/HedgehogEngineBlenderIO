@@ -71,11 +71,17 @@ The Image node
 		Make sure to set the extension mode of the node to ``Extend``!
 
 	The image node also has special behavior regarding its label: By default, images are loaded as
-	sRGB images, which is often not desired. To load images with a different color space, add the
-	name of the color mode to the start of the label followed by a ``;``.
+	regular sRGB images, which is often not desired. You can specify an "image type" by adding it
+	to the start of a label and following it up with a ``;``.
+
+	Following texture types exist:
+
+	- ``sRGB``: Color texture
+	- ``Linear``: Non-color texture
+	- ``Normal``: Normal map (will enable y-channel flipping on import/export)
 
 	For example: A normalmap texture would get an image texture node with the name ``Texture normal`` and
-	the label ``Non-Color; Texture normal``.
+	the label ``Normal; Texture normal``.
 
 
 The "Has Texture" node
