@@ -28,6 +28,7 @@ Type Name
 	Cannot be edited when material is not using a custom shader.
 
 	.. note::
+
 		Some shaders use the same texture type multiple times! If that is the case, the order
 		of textures is important and changes how same-named textures get used!
 

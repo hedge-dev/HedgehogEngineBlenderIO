@@ -3,13 +3,13 @@
 Material Templates
 ******************
 
-Stored in ``MaterialTemplates.blend``, this is where the addon will look up material templates for
+Stored in ``MaterialTemplates.blend``, this is where the addon will look up node setups for
 each shader, copy it over to the material and fill it with textures and parameters.
 
 Basics
 ======
 
-Every material in the file is a template, despite not needing to be attached to an object,
+Every material in the file is a template. Despite not needing to be attached to an object,
 it's recommended to set up a dummy object to hold all the materials.
 
 Every templates file should also have at least a ``FALLBACK`` material, which is used
@@ -53,7 +53,7 @@ with the :ref:`texture type name <HEIO_MaterialTexture.name>` they are set up fo
 	example for a texture nodes setup
 
 
-.. note::
+.. important::
 
 	If a shader has a texture type more than once, and you want to make use of the second or
 	even third texture entry, you need to append the occurrance index to the end of the type.

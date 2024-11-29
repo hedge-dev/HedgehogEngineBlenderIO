@@ -5,7 +5,7 @@ Shader Features
 
 .. todo::
 
-	This page is incomplete! You can help by contributing: [TODO]
+	This page is incomplete! You can help by contributing
 
 
 Shader features were used in Hedgehog Engine 1 games to allow for shaders compiled with certain

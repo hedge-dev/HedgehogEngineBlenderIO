@@ -3,7 +3,7 @@
 About HEIO
 **********
 
-The `Hedgehog Engine Blender I/O Addon <https://github.com/hedge-dev/HedgehogEngineBlenderIO>`_, or
+The `Hedgehog Engine Blender I/O Addon <https://github.com/hedge-dev/HedgehogEngineBlenderIO>`_,
 short "**HEIO**", is an addon for `Blender <https://www.blender.org/>`_, adding the ability to
 import and export 3D related file formats used by
 `Hedgehog Engine and Hedgehog Engine 2 games <https://hedgedocs.com/docs/hedgehog-engine/gamelist/>`_.

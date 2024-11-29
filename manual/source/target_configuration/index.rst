@@ -36,7 +36,7 @@ Every target definition has its own directory, and contains the following files:
 Adding a new target configuration
 =================================
 
-Since HEIO is powered by SharpNeedle, its possible that it contains all the necessary
+Since HEIO is powered by SharpNeedle, it's possible the addon has all the necessary
 code to support editing the files of a hedgehog engine game that is not supported by
 default.
 
@@ -47,7 +47,7 @@ that adds a new target configuration to HEIO. The code to do so is very simple:
 
 	import bpy
 	if "hedgehog_engine_io" in bpy.context.preferences.addons.keys():
-	   from hedgehog_engine_io import register_definition
+	   from bpy_ext.sonic_io.hedgehog_engine_io import register_definition
 	   register_definition("/path/to/target/definition/directory", "MY_NEW_TARGET")
 
 Unfortunately, this is not very robust right now and may cause issues when addons are being loaded,

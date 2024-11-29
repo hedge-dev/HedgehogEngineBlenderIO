@@ -137,14 +137,14 @@ If a shader has variants, you can select those via a second dropdown.
 
 	Available shader variants for the shader ``Common_de`` for Sonic Unleashed
 
-Each target games shader features and their purposes are documented :doc:`here <features>`.
+Each target games shader features and their purposes are documented :doc:`here <shader_features>`.
 
 .. container:: global-index-toc
 
    .. toctree::
       :maxdepth: 1
 
-      features
+      shader_features
 
 
 .. _guides_material_editing_node_setup:
@@ -197,6 +197,9 @@ These are values that get passed to the shader, like a diffuse color or similar.
 Every shader can define their own custom parameters, of which the usage is fully up to
 the shader itself and may need fiddling and/or reverse engineering to figure out how they work.
 
+For more detailed information about parameters, read
+:doc:`HEIO Material Parameters </user_interface/object/material_parameters>`
+
 .. note::
 
 	All shaders, **even those that dont actually use them**, have the following parameters:
@@ -211,23 +214,32 @@ the shader itself and may need fiddling and/or reverse engineering to figure out
 	These are legacy hedgehog engine 1 parameters, and are part of ever shader to ensure compatibility
 	with every engine and tool.
 
-.. note::
-
-	Under the hood, float and color parameters use the same values. Changing a float parameter
-	to a color parameter keeps the values, which is needed for parameters that are not
-	correctly typed.
-
-
 .. caution::
 
 	**Changing the shader preset** will add new parameters with their default values
 	and **remove old unused parameters**. Be aware of this when trying out a different shader
 	or similar!
 
+
 Textures
 ^^^^^^^^
 
-todo
+Textures are very simple: You have slots with certain types, and these get used by the shader for
+various purposes.
+
+For more detailed information about textures, read
+
+- :doc:`HEIO Material Textures </user_interface/object/material_textures>`
+- :doc:`Texture systems in each engine <textures/index>`
+
+.. important::
+
+	Textures are exported using the `Blender DDS Addon <https://github.com/matyalatte/Blender-DDS-Addon>`_,
+	which allows you to set the DDS encoding to use when exporting for each image.
+
+	.. figure:: /images/guides_material_editing_dds_encoding.png
+
+		Where to find the DDS encoding settings
 
 .. container:: global-index-toc
 
@@ -240,7 +252,13 @@ todo
 SCA Parameters
 --------------
 
-todo
+SCA parameters are additional information that can be attached to a file in Sonic Lost World and games
+released after.
+
+For more detailed information about SCA parameters, read
+
+- :doc:`HEIO SCA Parameters </user_interface/sca_parameters>`
+- :doc:`Material SCA parameters <sca_parameters>`
 
 .. container:: global-index-toc
 

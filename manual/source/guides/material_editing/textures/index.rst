@@ -3,9 +3,8 @@
 Textures
 ########
 
-Hedgehog Engine 1
-=================
+.. toctree::
+	:maxdepth: 1
 
-
-Hedgehog Engine 2
-=================
+	textures_he1
+	textures_he2
