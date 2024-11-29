@@ -29,7 +29,7 @@ Here is a list of all texture types and how they are most commonly used:
 	  - `Opacity`_
 
 	* - reflection
-	  - `Falloff`_, `Environment map`_
+	  - `Environment map`_
 	  - /
 
 	* - specular
@@ -46,7 +46,7 @@ Here is a list of all texture types and how they are most commonly used:
 
 	* - displacement
 	  - General use texture type
-	  - `Emission`_
+	  - `Falloff`_, `Emission`_
 
 
 File formats and encodings
