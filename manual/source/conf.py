@@ -82,7 +82,7 @@ html_theme_path = []
 
 
 html_theme_options = {
-    "source_edit_link": "https://github.com/hedge-dev/HedgehogEngineBlenderIO/_edit/dev/manual/source/{filename}",
+    "source_edit_link": "https://github.com/hedge-dev/HedgehogEngineBlenderIO/edit/dev/manual/source/{filename}",
     "light_css_variables": {
         "color-brand-primary": "#265787",
         "color-brand-content": "#265787",
