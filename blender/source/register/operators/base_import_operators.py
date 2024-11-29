@@ -53,13 +53,13 @@ class ImportMaterialOperator(ImportOperator):
         default=True
     )
 
-    nrm_flip_y_channel: EnumProperty(
-        name="Flip Y channel of normal maps",
-        description="Whether to flip the y channel on normal maps when importing",
+    nrm_invert_y_channel: EnumProperty(
+        name="Invert Y channel of normal maps",
+        description="Whether to invert the Y channel on normal maps when importing",
         items=(
-            ("AUTO", "Automatic", "Automatically determine whether to flip the Y channel based on the target game"),
-            ("FLIP", "Flip", "Always flip the Y channel"),
-            ("DONT", "Don't flip", "Don't flip any Y channels")
+            ("AUTO", "Automatic", "Automatically determine whether to invert the Y channel based on the target game"),
+            ("INVERT", "Invert", "Always invert the Y channel"),
+            ("DONT", "Don't invert", "Don't invert the Y channel")
         ),
         default="AUTO"
     )
@@ -92,10 +92,10 @@ class ImportMaterialOperator(ImportOperator):
 
         from ...importing import i_material
 
-        flip_normal_map_y_channel = (
-            self.nrm_flip_y_channel == "FLIP"
+        invert_normal_map_y_channel = (
+            self.nrm_invert_y_channel == "FLIP"
             or (
-                self.nrm_flip_y_channel == "AUTO"
+                self.nrm_invert_y_channel == "AUTO"
                 and self.target_definition.hedgehog_engine_version == 1
             )
         )
@@ -105,7 +105,7 @@ class ImportMaterialOperator(ImportOperator):
             sn_materials,
             self.create_undefined_parameters,
             self.use_existing_images,
-            flip_normal_map_y_channel,
+            invert_normal_map_y_channel,
             directory if self.import_images else None)
 
 
@@ -129,7 +129,7 @@ class ImportMaterialOperator(ImportOperator):
 
         if self.import_images:
             body.use_property_split = True
-            body.prop(self, "nrm_flip_y_channel")
+            body.prop(self, "nrm_invert_y_channel")
             body.use_property_split = False
 
         body.prop(self, "use_existing_images")

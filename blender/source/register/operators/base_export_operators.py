@@ -135,13 +135,13 @@ class ExportMaterialOperator(ExportObjectSelectionOperator):
         default='MISSING'
     )
 
-    nrm_flip_y_channel: EnumProperty(
-        name="Flip Y channel of normal maps",
-        description="Whether to flip the y channel on normal maps when exporting",
+    nrm_invert_y_channel: EnumProperty(
+        name="Invert Y channel of normal maps",
+        description="Whether to invert the Y channel on normal maps when exporting",
         items=(
-            ("AUTO", "Automatic", "Automatically determine whether to flip the Y channel based on the target game"),
-            ("FLIP", "Flip", "Always flip the Y channel"),
-            ("DONT", "Don't flip", "Don't flip any Y channels")
+            ("AUTO", "Automatic", "Automatically determine whether to invert the Y channel based on the target game"),
+            ("INVERT", "Invert", "Always invert the Y channel"),
+            ("DONT", "Don't invert", "Don't invert the Y channel")
         ),
         default="AUTO"
     )
@@ -165,7 +165,7 @@ class ExportMaterialOperator(ExportObjectSelectionOperator):
             body.prop(self, "image_mode")
 
             if self.image_mode != 'NONE':
-                body.prop(self, "nrm_flip_y_channel")
+                body.prop(self, "nrm_invert_y_channel")
 
         else:
             box = body.box()
@@ -204,10 +204,10 @@ class ExportMaterialOperator(ExportObjectSelectionOperator):
         if self.image_mode != 'NONE':
             from ...exporting import o_image
 
-            flip_normal_map_y_channel = (
-                self.nrm_flip_y_channel == "FLIP"
+            invert_normal_map_y_channel = (
+                self.nrm_invert_y_channel == "INVERT"
                 or (
-                    self.nrm_flip_y_channel == "AUTO"
+                    self.nrm_invert_y_channel == "AUTO"
                     and self.target_definition.hedgehog_engine_version == 1
                 )
             )
@@ -216,7 +216,7 @@ class ExportMaterialOperator(ExportObjectSelectionOperator):
                 materials,
                 context,
                 self.image_mode,
-                flip_normal_map_y_channel,
+                invert_normal_map_y_channel,
                 self.filepath
             )
 

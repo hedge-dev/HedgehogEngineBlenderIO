@@ -82,7 +82,7 @@ def convert_sharpneedle_materials(
         sn_materials: Iterable[any],
         create_undefined_parameters: bool,
         use_existing_images: bool,
-        flip_normal_map_y_channel: bool,
+        invert_normal_map_y_channel: bool,
         textures_path: str | None):
 
     converted: dict[any, bpy.types.Material] = {}
@@ -124,7 +124,7 @@ def convert_sharpneedle_materials(
         pref = get_addon_preferences(context)
         ntsp_dir = getattr(pref, "ntsp_dir_" + target_definition.identifier.lower())
 
-    image_loader = i_image.ImageLoader(use_existing_images, flip_normal_map_y_channel)
+    image_loader = i_image.ImageLoader(use_existing_images, invert_normal_map_y_channel)
     image_loader.load_images_from_sn_materials(sn_materials, textures_path, ntsp_dir)
 
     for sn_material, material in converted.items():

@@ -9,7 +9,7 @@ from ..utility.material_setup import get_first_connected_socket
 class ImageLoader:
 
     _use_existing_images: bool
-    _flip_normal_map_y_channel: bool
+    _invert_normal_map_y_channel: bool
 
     _net_images: dict[str, any]
     _loaded_images: dict[str, bpy.types.Image]
@@ -17,10 +17,10 @@ class ImageLoader:
     def __init__(
             self,
             use_existing_images: bool,
-            flip_normal_map_y_channel: bool):
+            invert_normal_map_y_channel: bool):
 
         self._use_existing_images = use_existing_images
-        self._flip_normal_map_y_channel = flip_normal_map_y_channel
+        self._invert_normal_map_y_channel = invert_normal_map_y_channel
 
         self._net_images = {}
         self._loaded_images = {}
@@ -129,6 +129,8 @@ class ImageLoader:
             image.source = 'GENERATED'
             image.generated_color = self._get_placeholder_image_color(node)
 
+        is_normal_map = texture.name.lower() == "normal"
+
         if node is not None:
             label_type = node.label.split(";")[0]
 
@@ -138,15 +140,16 @@ class ImageLoader:
                 image.colorspace_settings.name = 'Non-Color'
             elif label_type == 'Normal':
                 image.colorspace_settings.name = 'Non-Color'
+                is_normal_map = True
 
-                if net_image is not None and self._flip_normal_map_y_channel:
-                    pixels = numpy.array(image.pixels, dtype=numpy.float32)
-                    HEIO_NET.IMAGE.FlipYChannel(System.INT_PTR(pixels.ctypes.data), len(pixels))
-                    image.pixels = pixels
+        if is_normal_map and net_image is not None and self._invert_normal_map_y_channel:
+            pixels = numpy.array(image.pixels, dtype=numpy.float32)
+            HEIO_NET.IMAGE.InvertGreenChannel(System.INT_PTR(pixels.ctypes.data), len(pixels))
+            image.pixels = pixels
 
-                    filepath = image.packed_files[0].filepath
-                    image.pack()
-                    image.packed_files[0].filepath = filepath
+            filepath = image.packed_files[0].filepath
+            image.pack()
+            image.packed_files[0].filepath = filepath
 
 
 

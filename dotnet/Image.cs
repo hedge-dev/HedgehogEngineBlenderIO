@@ -78,7 +78,7 @@ namespace HEIO.NET
             return result;
         }
     
-        public static unsafe void FlipYChannel(nint pixelPointer, int length)
+        public static unsafe void InvertGreenChannel(nint pixelPointer, int length)
         {
             float* pixels = (float*)pixelPointer;
 

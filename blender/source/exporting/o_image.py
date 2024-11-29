@@ -6,6 +6,9 @@ import numpy
 from ..dotnet import HEIO_NET, System
 
 def _check_texture_is_normal_map(texture):
+	if texture.name.lower() == "normal":
+		return True
+
 	node: bpy.types.ShaderNodeTexImage = texture.image_node
 	if node is None:
 		return False
@@ -22,7 +25,7 @@ def export_material_images(
 		materials: Iterable[bpy.types.Material],
 		context: bpy.types.Context,
 		export_mode: str,
-		flip_normal_map_y_channel: bool,
+		invert_normal_map_y_channel: bool,
 		output_directory: str):
 
 	if "blender_dds_addon" not in context.preferences.addons.keys():
@@ -41,7 +44,7 @@ def export_material_images(
 
 			images.add(texture.image)
 
-			if flip_normal_map_y_channel and _check_texture_is_normal_map(texture):
+			if invert_normal_map_y_channel and _check_texture_is_normal_map(texture):
 				normal_images.add(texture.image)
 
 	for image in images:
@@ -55,7 +58,7 @@ def export_material_images(
 
 		if image in normal_images:
 			pixels = numpy.array(export_image.pixels, dtype=numpy.float32)
-			HEIO_NET.IMAGE.FlipYChannel(System.INT_PTR(pixels.ctypes.data), len(pixels))
+			HEIO_NET.IMAGE.InvertGreenChannel(System.INT_PTR(pixels.ctypes.data), len(pixels))
 			export_image.pixels = pixels
 
 		export_as_dds(context, export_image, filepath)
