@@ -105,8 +105,8 @@ class HEIOBaseFileSaveOperator(HEIOBaseOperator):
 class HEIOBaseDirectorySaveOperator(HEIOBaseOperator):
 
     filepath: StringProperty(
-        name="Filepath (required, irrelevant)",
-        description="Directory path used for exporting the file(s)",
+        name="Filepath",
+        description="Filepath used for exporting the file(s)",
         maxlen=1024,
         subtype='FILE_PATH',
         options={'HIDDEN'},
@@ -125,6 +125,8 @@ class HEIOBaseDirectorySaveOperator(HEIOBaseOperator):
             filepath = self.directory + os.sep
         elif context.blend_data.filepath:
             filepath = os.path.dirname(context.blend_data.filepath) + os.sep
+        else:
+            return False
 
         changed = filepath != self.filepath
         self.filepath = filepath
