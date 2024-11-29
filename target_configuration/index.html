@@ -248,14 +248,18 @@
 <li class="toctree-l4"><a class="reference internal" href="../guides/material_editing/shaders/shaders_shadow_generations.html">Shadow Generations</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="../guides/material_editing/features.html">Shader Features</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../guides/material_editing/textures/index.html">Textures</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/material_editing/shader_features.html">Shader Features</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../guides/material_editing/textures/index.html">Textures</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle navigation of Textures</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../guides/material_editing/textures/textures_he1.html">Hedgehog engine 1</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../guides/material_editing/textures/textures_he2.html">Hedgehog engine 2</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="../guides/material_editing/sca_parameters.html">SCA Parameters</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l1 current has-children current-page"><a class="current reference internal" href="#">Target Configuration</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle navigation of Target Configuration</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l1 current has-children current-page"><a class="current reference internal" href="#">Target Configuration</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" role="switch" type="checkbox"/><label for="toctree-checkbox-10"><div class="visually-hidden">Toggle navigation of Target Configuration</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="target_info.html">Target Info</a></li>
 <li class="toctree-l2"><a class="reference internal" href="shaders.html">Shaders</a></li>
 <li class="toctree-l2"><a class="reference internal" href="material_templates.html">Material Templates</a></li>
@@ -330,14 +334,14 @@ hedgehog engine game.</p>
 </div>
 <section id="adding-a-new-target-configuration">
 <h2>Adding a new target configuration<a class="headerlink" href="#adding-a-new-target-configuration" title="Link to this heading">¶</a></h2>
-<p>Since HEIO is powered by SharpNeedle, its possible that it contains all the necessary
+<p>Since HEIO is powered by SharpNeedle, it’s possible the addon has all the necessary
 code to support editing the files of a hedgehog engine game that is not supported by
 default.</p>
 <p>While HEIO will never add every hedgehog engine game, its possible to write an addon/extension
 that adds a new target configuration to HEIO. The code to do so is very simple:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">bpy</span>
 <span class="k">if</span> <span class="s2">&quot;hedgehog_engine_io&quot;</span> <span class="ow">in</span> <span class="n">bpy</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">preferences</span><span class="o">.</span><span class="n">addons</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-   <span class="kn">from</span> <span class="nn">hedgehog_engine_io</span> <span class="kn">import</span> <span class="n">register_definition</span>
+   <span class="kn">from</span> <span class="nn">bpy_ext.sonic_io.hedgehog_engine_io</span> <span class="kn">import</span> <span class="n">register_definition</span>
    <span class="n">register_definition</span><span class="p">(</span><span class="s2">&quot;/path/to/target/definition/directory&quot;</span><span class="p">,</span> <span class="s2">&quot;MY_NEW_TARGET&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -380,7 +384,7 @@ unloaded or updated.</p>
             Made with 
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2024-11-26</div>
+              Last updated on 2024-11-29</div>
           </div>
           <div class="right-details">
             

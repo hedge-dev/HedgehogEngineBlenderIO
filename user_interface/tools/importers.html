@@ -248,14 +248,18 @@
 <li class="toctree-l4"><a class="reference internal" href="../../guides/material_editing/shaders/shaders_shadow_generations.html">Shadow Generations</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="../../guides/material_editing/features.html">Shader Features</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../guides/material_editing/textures/index.html">Textures</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../guides/material_editing/shader_features.html">Shader Features</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../guides/material_editing/textures/index.html">Textures</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle navigation of Textures</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../guides/material_editing/textures/textures_he1.html">Hedgehog engine 1</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../guides/material_editing/textures/textures_he2.html">Hedgehog engine 2</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="../../guides/material_editing/sca_parameters.html">SCA Parameters</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../../target_configuration/index.html">Target Configuration</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle navigation of Target Configuration</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../target_configuration/index.html">Target Configuration</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" role="switch" type="checkbox"/><label for="toctree-checkbox-10"><div class="visually-hidden">Toggle navigation of Target Configuration</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../target_configuration/target_info.html">Target Info</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../target_configuration/shaders.html">Shaders</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../target_configuration/material_templates.html">Material Templates</a></li>
@@ -336,6 +340,13 @@ If that happens <a class="reference internal" href="../object/material.html#heio
 with a solid color will be generated in its place.</p>
 </div>
 </dd>
+<dt>Invert Y channel of normal maps</dt><dd><p>Inverts the Y (Green) channel on normal maps.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Automatic</span></code>: Inverts if the target game uses Hedgehog Engine 1</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Invert</span></code>: Always inverts</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Don't</span> <span class="pre">invert</span></code>: Does not invert</p></li>
+</ul>
+</dd>
 <dt>Use existing images</dt><dd><p>If enabled, the importer will check if blender already has an image loaded with the exact name
 and use that instead. If no image exists, the regular logic applies</p>
 </dd>
@@ -389,7 +400,7 @@ and use that instead. If no image exists, the regular logic applies</p>
             Made with 
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2024-11-26</div>
+              Last updated on 2024-11-29</div>
           </div>
           <div class="right-details">
             

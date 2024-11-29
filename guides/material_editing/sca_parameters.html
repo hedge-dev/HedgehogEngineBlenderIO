@@ -3,7 +3,7 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" /><link rel="next" title="Target Configuration" href="../../target_configuration/index.html" /><link rel="prev" title="Textures" href="textures/index.html" />
+<link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" /><link rel="next" title="Target Configuration" href="../../target_configuration/index.html" /><link rel="prev" title="Hedgehog engine 2" href="textures/textures_he2.html" />
         <link rel="canonical" href="https://hedge-dev.github.io/HedgehogEngineBlenderIO/guides/material_editing/sca_parameters.html" />
 
     <!-- Generated with Sphinx 8.1.3 and Furo 2024.08.06 -->
@@ -248,14 +248,18 @@
 <li class="toctree-l4"><a class="reference internal" href="shaders/shaders_shadow_generations.html">Shadow Generations</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="features.html">Shader Features</a></li>
-<li class="toctree-l3"><a class="reference internal" href="textures/index.html">Textures</a></li>
+<li class="toctree-l3"><a class="reference internal" href="shader_features.html">Shader Features</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="textures/index.html">Textures</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle navigation of Textures</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="textures/textures_he1.html">Hedgehog engine 1</a></li>
+<li class="toctree-l4"><a class="reference internal" href="textures/textures_he2.html">Hedgehog engine 2</a></li>
+</ul>
+</li>
 <li class="toctree-l3 current current-page"><a class="current reference internal" href="#">SCA Parameters</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../../target_configuration/index.html">Target Configuration</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle navigation of Target Configuration</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../target_configuration/index.html">Target Configuration</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" role="switch" type="checkbox"/><label for="toctree-checkbox-10"><div class="visually-hidden">Toggle navigation of Target Configuration</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../target_configuration/target_info.html">Target Info</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../target_configuration/shaders.html">Shaders</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../target_configuration/material_templates.html">Material Templates</a></li>
@@ -302,6 +306,63 @@
         <article role="main" id="furo-main-content">
           <section id="sca-parameters">
 <h1>SCA Parameters<a class="headerlink" href="#sca-parameters" title="Link to this heading">¶</a></h1>
+<p>A list of SCA parameters for materials.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>not all parameters are available in every game</p>
+</div>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>MaxAniso</p></td>
+<td><p>Integer</p></td>
+<td><p>Maximum anisotropy filtering level</p></td>
+</tr>
+<tr class="row-odd"><td><p>TrnsType</p></td>
+<td><p>Boolean</p></td>
+<td><p>Transparency type (?)</p></td>
+</tr>
+<tr class="row-even"><td><p>TrnsPrio</p></td>
+<td><p>Integer</p></td>
+<td><p>Transparency rendering priority. Used to adjusted drawing order.</p></td>
+</tr>
+<tr class="row-odd"><td><p>MipBias</p></td>
+<td><p>Float</p></td>
+<td><p>Mipmap selection bias</p></td>
+</tr>
+<tr class="row-even"><td><p>UsePrior</p></td>
+<td><p>Boolean</p></td>
+<td><p>Use Prior (?)</p></td>
+</tr>
+<tr class="row-odd"><td><p>UseGrass</p></td>
+<td><p>Integer</p></td>
+<td><p>Render grass on material (?)</p></td>
+</tr>
+<tr class="row-even"><td><p>VertSnap</p></td>
+<td><p>Boolean</p></td>
+<td><p>Vertex snapping (?)</p></td>
+</tr>
+<tr class="row-odd"><td><p>VatVolum</p></td>
+<td><p>Boolean</p></td>
+<td><p>Whether the material is affected by VAT volumes</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr class="docutils" />
+<p>There are also SCA parameters that we know exist, but we don’t know the purpose of, as they are
+never actually used in any material:</p>
+<ul class="simple">
+<li><p>RenderCa (found in Shadow Generations)</p></li>
+<li><p>ExtnAABB (found in Shadow Generations)</p></li>
+</ul>
+<p>They are possibly used in another hedgehog engine game that was not looked into yet.</p>
 </section>
 
         </article>
@@ -318,14 +379,14 @@
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
-          <a class="prev-page" href="textures/index.html">
+          <a class="prev-page" href="textures/textures_he2.html">
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">Textures</div>
+                <div class="title">Hedgehog engine 2</div>
                 
               </div>
             </a>
@@ -338,7 +399,7 @@
             Made with 
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2024-11-26</div>
+              Last updated on 2024-11-29</div>
           </div>
           <div class="right-details">
             

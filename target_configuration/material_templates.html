@@ -248,14 +248,18 @@
 <li class="toctree-l4"><a class="reference internal" href="../guides/material_editing/shaders/shaders_shadow_generations.html">Shadow Generations</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="../guides/material_editing/features.html">Shader Features</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../guides/material_editing/textures/index.html">Textures</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/material_editing/shader_features.html">Shader Features</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../guides/material_editing/textures/index.html">Textures</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle navigation of Textures</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../guides/material_editing/textures/textures_he1.html">Hedgehog engine 1</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../guides/material_editing/textures/textures_he2.html">Hedgehog engine 2</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="../guides/material_editing/sca_parameters.html">SCA Parameters</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">Target Configuration</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle navigation of Target Configuration</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">Target Configuration</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" role="switch" type="checkbox"/><label for="toctree-checkbox-10"><div class="visually-hidden">Toggle navigation of Target Configuration</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="target_info.html">Target Info</a></li>
 <li class="toctree-l2"><a class="reference internal" href="shaders.html">Shaders</a></li>
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Material Templates</a></li>
@@ -302,11 +306,11 @@
         <article role="main" id="furo-main-content">
           <section id="material-templates">
 <h1>Material Templates<a class="headerlink" href="#material-templates" title="Link to this heading">¶</a></h1>
-<p>Stored in <code class="docutils literal notranslate"><span class="pre">MaterialTemplates.blend</span></code>, this is where the addon will look up material templates for
+<p>Stored in <code class="docutils literal notranslate"><span class="pre">MaterialTemplates.blend</span></code>, this is where the addon will look up node setups for
 each shader, copy it over to the material and fill it with textures and parameters.</p>
 <section id="basics">
 <h2>Basics<a class="headerlink" href="#basics" title="Link to this heading">¶</a></h2>
-<p>Every material in the file is a template, despite not needing to be attached to an object,
+<p>Every material in the file is a template. Despite not needing to be attached to an object,
 it’s recommended to set up a dummy object to hold all the materials.</p>
 <p>Every templates file should also have at least a <code class="docutils literal notranslate"><span class="pre">FALLBACK</span></code> material, which is used
 whenever a shader does not have its own template set up yet.</p>
@@ -345,8 +349,8 @@ with the <a class="reference internal" href="../user_interface/object/material_t
 <p><span class="caption-text">example for a texture nodes setup</span><a class="headerlink" href="#id5" title="Link to this image">¶</a></p>
 </figcaption>
 </figure>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
 <p>If a shader has a texture type more than once, and you want to make use of the second or
 even third texture entry, you need to append the occurrance index to the end of the type.</p>
 <p>For example, if you have 3 <code class="docutils literal notranslate"><span class="pre">diffuse</span></code> textures, the first one remains as is, while the
@@ -360,10 +364,16 @@ with the name <code class="docutils literal notranslate"><span class="pre">Textu
 <p>Make sure to set the extension mode of the node to <code class="docutils literal notranslate"><span class="pre">Extend</span></code>!</p>
 </div>
 <p>The image node also has special behavior regarding its label: By default, images are loaded as
-sRGB images, which is often not desired. To load images with a different color space, add the
-name of the color mode to the start of the label followed by a <code class="docutils literal notranslate"><span class="pre">;</span></code>.</p>
+regular sRGB images, which is often not desired. You can specify an “image type” by adding it
+to the start of a label and following it up with a <code class="docutils literal notranslate"><span class="pre">;</span></code>.</p>
+<p>Following texture types exist:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">sRGB</span></code>: Color texture</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Linear</span></code>: Non-color texture</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Normal</span></code>: Normal map (will enable y-channel flipping on import/export)</p></li>
+</ul>
 <p>For example: A normalmap texture would get an image texture node with the name <code class="docutils literal notranslate"><span class="pre">Texture</span> <span class="pre">normal</span></code> and
-the label <code class="docutils literal notranslate"><span class="pre">Non-Color;</span> <span class="pre">Texture</span> <span class="pre">normal</span></code>.</p>
+the label <code class="docutils literal notranslate"><span class="pre">Normal;</span> <span class="pre">Texture</span> <span class="pre">normal</span></code>.</p>
 </dd>
 <dt>The “Has Texture” node</dt><dd><p>A <a class="reference external" href="https://docs.blender.org/manual/en/latest/render/shader_nodes/input/value.html">value node</a>
 with the name <code class="docutils literal notranslate"><span class="pre">Has</span> <span class="pre">Texture</span></code> (e.g. <code class="docutils literal notranslate"><span class="pre">Has</span> <span class="pre">Texture</span> <span class="pre">diffuse</span></code>), which receives a <code class="docutils literal notranslate"><span class="pre">1</span></code> if an
@@ -414,7 +424,7 @@ replaces the texture wrapping to make per-axis wrapping possible.</p>
             Made with 
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2024-11-26</div>
+              Last updated on 2024-11-29</div>
           </div>
           <div class="right-details">
             
