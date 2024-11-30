@@ -315,12 +315,10 @@ environment maps and similar.
 
 .. note::
 
-	As with most program, HE2 automatically calculates the blue / Z channel for normal maps when
-	not provided by the encoding; Usually BC5 is used, which is a 2-component encoding and has this
-	happen.
+	HE2 always automatically calculates the blue / Z channel for normal maps.
 
-	If you end up using a 3-component encoding, like BC1 or BC7, make sure to include a
-	pre-calculated blue / Z channel yourself.
+	That means, when using a three-component texture for a normal map, the blue channel gets
+	ignored.
 
 
 .. container:: lead
