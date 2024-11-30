@@ -655,11 +655,9 @@ a slightly different PRM setup:</p>
 environment maps and similar.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>As with most program, HE2 automatically calculates the blue / Z channel for normal maps when
-not provided by the encoding; Usually BC5 is used, which is a 2-component encoding and has this
-happen.</p>
-<p>If you end up using a 3-component encoding, like BC1 or BC7, make sure to include a
-pre-calculated blue / Z channel yourself.</p>
+<p>HE2 always automatically calculates the blue / Z channel for normal maps.</p>
+<p>That means, when using a three-component texture for a normal map, the blue channel gets
+ignored.</p>
 </div>
 <div class="lead docutils container">
 </div>
