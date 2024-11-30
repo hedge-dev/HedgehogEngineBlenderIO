@@ -60,6 +60,9 @@ encoding. Only a handful are not compressed.
 Since HE1 is programmed with `Direct3D 9 <https://en.wikipedia.org/wiki/Direct3D#Direct3D_9>`_,
 the number of available block compression encodings is limited to BC1, BC2 and BC3.
 
+More info on DDS block compression can be found
+`here <https://learn.microsoft.com/en-us/windows/win32/direct3d11/texture-block-compression-in-direct3d-11>`_.
+
 .. note::
 
 	The `Direct3D 11 mod for Sonic Generations (PC) <https://gamebanana.com/mods/407367>`_ by Skyth
@@ -79,7 +82,8 @@ Diffuse
 
 	:File suffix: 			``_dif``
 	:Composition:			``RGBA``
-	:Recommended encoding:	``BC1_UNORM`` when opaque, ``BC3_UNORM`` when transparent
+	:Recommended encoding:	- ``BC1_UNORM`` when opaque
+							- ``BC3_UNORM`` when transparent
 
 
 .. figure:: /images/guides_material_editing_textures_he1_dif.png
@@ -140,12 +144,14 @@ Falloff
 
 	``chr_sonic_body01_fal_HD.dds`` from Sonic Generations
 
-.. figure:: /images/guides_material_editing_textures_he1_fal.gif
+
+.. figure:: /images/guides_material_editing_textures_fal.gif
 	:align: right
 	:figwidth: 40%
 
 	A camera rotating around Suzanne with a raw falloff factor.
 	The diffuse texture is black, and the falloff texture is white
+
 
 Falloff textures change the color of the diffuse texture based on the viewing angle:
 The greater the angle between the camera and the surface of the model, the greater
@@ -169,7 +175,8 @@ Environment map
 
 	:File suffix: 			``_ref``, ``_env``, ``_cube``
 	:Composition:			``RGBA``
-	:Recommended encoding:	``BC1_UNORM`` when opaque, ``BC3_UNORM`` when transparent
+	:Recommended encoding:	- ``BC1_UNORM`` when opaque,
+							- ``BC3_UNORM`` when transparent
 
 
 Environment textures are used to project a fake reflection of the surroundings onto a model
@@ -339,7 +346,7 @@ Normal map
 
 .. reference::
 
-	:File suffix: 			``_nrm`` (rarely ``_norm``, ``_nor``)
+	:File suffix: 			``_nrm`` (rarely ``_norm``, ``_nor``, ``_nml``)
 	:Composition:			``Color``
 	:Recommended encoding:	``BC1_UNORM``
 
