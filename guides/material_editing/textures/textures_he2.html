@@ -183,7 +183,7 @@
           <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
         </button>
       </div>
-      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
         <div class="visually-hidden">Toggle table of contents sidebar</div>
         <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
       </label>
@@ -298,7 +298,7 @@
               <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
             </button>
           </div>
-          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
             <div class="visually-hidden">Toggle table of contents sidebar</div>
             <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
           </label>
@@ -306,6 +306,483 @@
         <article role="main" id="furo-main-content">
           <section id="hedgehog-engine-2">
 <h1>Hedgehog engine 2<a class="headerlink" href="#hedgehog-engine-2" title="Link to this heading">¶</a></h1>
+<p>Hedgehog Engine 2 games limit themselves to a few texture types, which can make configuring
+materials difficult, as many shaders use certain types differently than what their name suggests.</p>
+<p>Here is a list of all texture types and how they are most commonly used:</p>
+<div class="table-wrapper colwidths-auto docutils container" id="id11">
+<table class="docutils align-default" id="id11">
+<caption><span class="caption-text">Texture types and their common use cases</span><a class="headerlink" href="#id11" title="Link to this table">¶</a></caption>
+<thead>
+<tr class="row-odd"><th class="head"><p>Type</p></th>
+<th class="head"><p>Primarily used with</p></th>
+<th class="head"><p>Occasionally used with</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>diffuse</p></td>
+<td><p><a class="reference internal" href="#albedo">Albedo</a>, <a class="reference internal" href="#falloff">Falloff</a></p></td>
+<td><p>/</p></td>
+</tr>
+<tr class="row-odd"><td><p>transparency</p></td>
+<td><p><a class="reference internal" href="#albedo">Albedo</a></p></td>
+<td><p><a class="reference internal" href="#transparency">Transparency</a></p></td>
+</tr>
+<tr class="row-even"><td><p>emission</p></td>
+<td><p><a class="reference internal" href="#emission">Emission</a></p></td>
+<td><p>/</p></td>
+</tr>
+<tr class="row-odd"><td><p>reflection</p></td>
+<td><p><a class="reference internal" href="#flow-map">Flow map</a>, <a class="reference internal" href="#fur-noise">Fur noise</a></p></td>
+<td><p><a class="reference internal" href="#iridescence-reflection">Iridescence reflection</a>, <a class="reference internal" href="#offset-map">Offset map</a></p></td>
+</tr>
+<tr class="row-even"><td><p>specular</p></td>
+<td><p><a class="reference internal" href="#prm">PRM</a></p></td>
+<td><p>/</p></td>
+</tr>
+<tr class="row-odd"><td><p>normal</p></td>
+<td><p><a class="reference internal" href="#normal-map">Normal map</a></p></td>
+<td><p>/</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<section id="file-formats-and-encodings">
+<h2>File formats and encodings<a class="headerlink" href="#file-formats-and-encodings" title="Link to this heading">¶</a></h2>
+<p>Textures are always stored in <a class="reference external" href="https://en.wikipedia.org/wiki/DirectDraw_Surface">DDS</a> files.</p>
+<p>HE2 is programmed with <a class="reference external" href="https://en.wikipedia.org/wiki/Direct3D#Direct3D_11">Direct3D 11</a>
+(or newer), which means all DDS encodings are available for use.</p>
+<p>More info on DDS block compression can be found
+<a class="reference external" href="https://learn.microsoft.com/en-us/windows/win32/direct3d11/texture-block-compression-in-direct3d-11">here</a>.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>HE2 games often use BC7 encoding for its higher image quality.</p>
+<p>If the recommended encoding does
+not give satisfying results, you can always use BC7 encoding to increase the quality, but keep
+in mind that this will also increase file size!</p>
+</div>
+<section id="file-streaming">
+<h3>File streaming<a class="headerlink" href="#file-streaming" title="Link to this heading">¶</a></h3>
+<p>Many textures in Frontiers and onwards make use of file streaming to reduce texture-load-time
+and reuse the same texture between multiple archives.</p>
+<p>The addon automatically handles those on import (if you specified the
+<a class="reference internal" href="../../addon_config.html"><span class="doc">NTSP directory</span></a>), but if you want to handle streamed file data
+outside of blender, you can use
+<a class="reference external" href="https://github.com/Justin113D/NeedleTextureStreamingUtility">NeedleTextureStreamingUtility</a>.</p>
+</section>
+</section>
+<section id="kinds-of-textures">
+<h2>Kinds of textures<a class="headerlink" href="#kinds-of-textures" title="Link to this heading">¶</a></h2>
+<p>The majority of textures used by materials are one of the following kind of textures.</p>
+<section id="albedo">
+<h3>Albedo<a class="headerlink" href="#albedo" title="Link to this heading">¶</a></h3>
+<div class="refbox admonition" id="id1">
+<p class="admonition-title">Reference</p>
+<dl class="field-list simple">
+<dt class="field-odd">File suffix<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">_abd</span></code></p>
+</dd>
+<dt class="field-even">Composition<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">RGBA</span></code></p>
+</dd>
+<dt class="field-odd">Recommended encoding<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">BC1_UNORM</span></code> when opaque,</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">BC7_UNORM</span></code> when transparent</p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<figure class="align-right" id="id12" style="width: 40%">
+<img alt="../../../_images/guides_material_editing_textures_he2_dif.png" src="../../../_images/guides_material_editing_textures_he2_dif.png" />
+<figcaption>
+<p><span class="caption-text"><code class="docutils literal notranslate"><span class="pre">chr_big_fur_abd.dds</span></code> from Sonic X Shadow Generations</span><a class="headerlink" href="#id12" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>Albedo textures are color-transparency textures that are sampled directly for the base
+color of a material.</p>
+<div class="lead docutils container">
+</div>
+</section>
+<section id="transparency">
+<h3>Transparency<a class="headerlink" href="#transparency" title="Link to this heading">¶</a></h3>
+<div class="refbox admonition" id="id2">
+<p class="admonition-title">Reference</p>
+<dl class="field-list simple">
+<dt class="field-odd">File suffix<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">_alp</span></code></p>
+</dd>
+<dt class="field-even">Composition<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">Grayscale</span></code></p>
+</dd>
+<dt class="field-odd">Recommended encoding<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">BC4_UNORM</span></code></p>
+</dd>
+</dl>
+</div>
+<figure class="align-right" id="id13" style="width: 40%">
+<img alt="../../../_images/guides_material_editing_textures_he2_alp.png" src="../../../_images/guides_material_editing_textures_he2_alp.png" />
+<figcaption>
+<p><span class="caption-text"><code class="docutils literal notranslate"><span class="pre">cmnisl_blackstone501_tk1_alp.dds</span></code> from Sonic X Shadow Generations</span><a class="headerlink" href="#id13" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>Transparency textures determine the transparency of a material.</p>
+<p>Usually transparency is relayed to <a class="reference internal" href="#albedo">Albedo</a> textures, and actual opacity textures
+are only used when special alpha compositing happens.</p>
+<div class="lead docutils container">
+</div>
+</section>
+<section id="falloff">
+<h3>Falloff<a class="headerlink" href="#falloff" title="Link to this heading">¶</a></h3>
+<div class="refbox admonition" id="id3">
+<p class="admonition-title">Reference</p>
+<dl class="field-list simple">
+<dt class="field-odd">File suffix<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">_fal</span></code></p>
+</dd>
+<dt class="field-even">Composition<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">Color</span></code></p>
+</dd>
+<dt class="field-odd">Recommended encoding<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">BC1_UNORM</span></code></p>
+</dd>
+</dl>
+</div>
+<figure class="align-right" id="id14" style="width: 40%">
+<img alt="../../../_images/guides_material_editing_textures_he2_fal.png" src="../../../_images/guides_material_editing_textures_he2_fal.png" />
+<figcaption>
+<p><span class="caption-text"><code class="docutils literal notranslate"><span class="pre">chr_big_fur_fal.dds</span></code> from Sonic X Shadow Generations</span><a class="headerlink" href="#id14" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<figure class="align-right" id="id15" style="width: 40%">
+<img alt="../../../_images/guides_material_editing_textures_fal.gif" src="../../../_images/guides_material_editing_textures_fal.gif" />
+<figcaption>
+<p><span class="caption-text">A camera rotating around Suzanne with a raw falloff factor.
+The albedo texture is black, and the falloff texture is white</span><a class="headerlink" href="#id15" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>Falloff textures change the color of the albedo texture based on the viewing angle:
+The greater the angle between the camera and the surface of the model, the greater
+the influence.</p>
+<p>Depending on the shader, the falloff color either gets mixed with the albedo color or
+added to it.</p>
+<p>Additionally, shaders with falloff colors or textures basically always come with a parameter that
+controls how the falloff factor gets calculated.</p>
+<div class="lead docutils container">
+</div>
+</section>
+<section id="emission">
+<h3>Emission<a class="headerlink" href="#emission" title="Link to this heading">¶</a></h3>
+<div class="refbox admonition" id="id4">
+<p class="admonition-title">Reference</p>
+<dl class="field-list simple">
+<dt class="field-odd">File suffix<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">_ems</span></code></p>
+</dd>
+<dt class="field-even">Composition<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">HDR</span></code></p>
+</dd>
+<dt class="field-odd">Recommended encoding<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">BC6H_UF16</span></code></p>
+</dd>
+</dl>
+</div>
+<figure class="align-right" id="id16" style="width: 40%">
+<img alt="../../../_images/guides_material_editing_textures_he2_ems.png" src="../../../_images/guides_material_editing_textures_he2_ems.png" />
+<figcaption>
+<p><span class="caption-text"><code class="docutils literal notranslate"><span class="pre">bos_mephiles_body_ems.dds</span></code> from Sonic X Shadow Generations</span><a class="headerlink" href="#id16" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>Emission textures make parts of a model emit light. These are usually
+<a class="reference external" href="https://en.wikipedia.org/wiki/High_dynamic_range">HDR</a> textures.</p>
+<div class="lead docutils container">
+</div>
+</section>
+<section id="prm">
+<h3>PRM<a class="headerlink" href="#prm" title="Link to this heading">¶</a></h3>
+<div class="refbox admonition" id="id5">
+<p class="admonition-title">Reference</p>
+<dl class="field-list simple">
+<dt class="field-odd">File suffix<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">_prm</span></code></p>
+</dd>
+<dt class="field-even">Composition<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">RGBA</span></code></p>
+</dd>
+<dt class="field-odd">Recommended encoding<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">BC1_UNORM</span></code> when no alpha channel is needed</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">BC3_UNORM</span></code> when alpha channel is needed</p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<figure class="align-right" id="id17" style="width: 40%">
+<img alt="../../../_images/guides_material_editing_textures_he2_prm.png" src="../../../_images/guides_material_editing_textures_he2_prm.png" />
+<figcaption>
+<p><span class="caption-text"><code class="docutils literal notranslate"><span class="pre">chr_big_rod_prm.dds</span></code> from Sonic X Shadow Generations</span><a class="headerlink" href="#id17" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>PRM textures, likely an abbreviation for “Physical rendering map”, are the defacto PBR textures
+of Hedgehg Engine 2 games.</p>
+<p>If you are unfamiliar with Physically based rendering, it is recommended to
+<a class="reference external" href="https://marmoset.co/posts/physically-based-rendering-and-you-can-too/">read up on that</a> before
+trying to edit materials.</p>
+<div class="lead docutils container">
+</div>
+<p>Each channel contains one PBR map:</p>
+<div class="table-wrapper colwidths-given valign docutils container" id="id18">
+<table class="valign docutils align-default" id="id18">
+<caption><span class="caption-text">PRM channels</span><a class="headerlink" href="#id18" title="Link to this table">¶</a></caption>
+<colgroup>
+<col style="width: 10.0%" />
+<col style="width: 12.0%" />
+<col style="width: 10.0%" />
+<col style="width: 48.0%" />
+<col style="width: 20.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Channel</p></th>
+<th class="head"><p>Contents</p></th>
+<th class="head"><p>“Default” value</p></th>
+<th class="head"><p>Notes</p></th>
+<th class="head"><div class="line-block">
+<div class="line">Example from</div>
+<div class="line"><code class="docutils literal notranslate"><span class="pre">chr_big_rod_prm.dds</span></code></div>
+</div>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Red</p></td>
+<td><p>f0 Specular</p></td>
+<td><p>0.5</p></td>
+<td></td>
+<td><figure class="align-default">
+<img alt="../../../_images/guides_material_editing_textures_he2_prm_r.png" src="../../../_images/guides_material_editing_textures_he2_prm_r.png" />
+</figure>
+</td>
+</tr>
+<tr class="row-odd"><td><p>Green</p></td>
+<td><p>Smoothness</p></td>
+<td><p>0.8</p></td>
+<td><p>Blender uses a roughness setup, which is just the inverse of smoothness</p></td>
+<td><figure class="align-default">
+<img alt="../../../_images/guides_material_editing_textures_he2_prm_g.png" src="../../../_images/guides_material_editing_textures_he2_prm_g.png" />
+</figure>
+</td>
+</tr>
+<tr class="row-even"><td><p>Blue</p></td>
+<td><p>Metallic</p></td>
+<td><p>0</p></td>
+<td></td>
+<td><figure class="align-default">
+<img alt="../../../_images/guides_material_editing_textures_he2_prm_b.png" src="../../../_images/guides_material_editing_textures_he2_prm_b.png" />
+</figure>
+</td>
+</tr>
+<tr class="row-odd"><td><p>Alpha</p></td>
+<td><p>Ambient Occlusion</p></td>
+<td><p>1</p></td>
+<td><p>Many tutorials claim that AO is just multiplied into the albedo channel, which is <strong>not</strong> true.</p>
+<p>AO gets mixed into the lighting, which is difficult to replicate in render engines like Cycles, but doable in Eevee.</p>
+</td>
+<td><figure class="align-default">
+<img alt="../../../_images/guides_material_editing_textures_he2_prm_a.png" src="../../../_images/guides_material_editing_textures_he2_prm_a.png" />
+</figure>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>Older HE2 games, primarily <strong>Sonic Forces</strong> and <strong>Mario &amp; Sonic at the Rio 2016 Olympic Games</strong> use
+a slightly different PRM setup:</p>
+<div class="table-wrapper colwidths-auto valign docutils container" id="id19">
+<table class="valign docutils align-default" id="id19">
+<caption><span class="caption-text">PRM channels in older HE2 titles</span><a class="headerlink" href="#id19" title="Link to this table">¶</a></caption>
+<thead>
+<tr class="row-odd"><th class="head"><p>Channel</p></th>
+<th class="head"><p>Contents</p></th>
+<th class="head"><p>Notes</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Red</p></td>
+<td><p>f0 Specular</p></td>
+<td><p>If the value is above 0.9, the material gets treated as completely metallic.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Green</p></td>
+<td><p>Smoothness</p></td>
+<td><p>Same as above</p></td>
+</tr>
+<tr class="row-even"><td><p>Blue</p></td>
+<td><p>Ambient Occlusion</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>Alpha</p></td>
+<td><p>Metallic</p></td>
+<td><p>Only used in select shaders like <code class="docutils literal notranslate"><span class="pre">MCommon</span></code>, where the specular-above-0.9 check isnt done</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="normal-map">
+<h3>Normal map<a class="headerlink" href="#normal-map" title="Link to this heading">¶</a></h3>
+<div class="refbox admonition" id="id6">
+<p class="admonition-title">Reference</p>
+<dl class="field-list simple">
+<dt class="field-odd">File suffix<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">_nrm</span></code></p>
+</dd>
+<dt class="field-even">Composition<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">RG</span></code></p>
+</dd>
+<dt class="field-odd">Recommended encoding<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">BC5_UNORM</span></code></p>
+</dd>
+</dl>
+</div>
+<figure class="align-right" id="id20" style="width: 40%">
+<img alt="../../../_images/guides_material_editing_textures_he2_nrm.png" src="../../../_images/guides_material_editing_textures_he2_nrm.png" />
+<figcaption>
+<p><span class="caption-text"><code class="docutils literal notranslate"><span class="pre">chr_big_rod_nrm.dds</span></code> from Sonic X Shadow Generations</span><a class="headerlink" href="#id20" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>Normal map textures are used for faking bumps and dents on a model to affect lighting, falloff,
+environment maps and similar.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>As with most program, HE2 automatically calculates the blue / Z channel for normal maps when
+not provided by the encoding; Usually BC5 is used, which is a 2-component encoding and has this
+happen.</p>
+<p>If you end up using a 3-component encoding, like BC1 or BC7, make sure to include a
+pre-calculated blue / Z channel yourself.</p>
+</div>
+<div class="lead docutils container">
+</div>
+</section>
+<section id="other">
+<h3>Other<a class="headerlink" href="#other" title="Link to this heading">¶</a></h3>
+<section id="flow-map">
+<h4>Flow map<a class="headerlink" href="#flow-map" title="Link to this heading">¶</a></h4>
+<div class="refbox admonition" id="id7">
+<p class="admonition-title">Reference</p>
+<dl class="field-list simple">
+<dt class="field-odd">File suffix<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">_flw</span></code></p>
+</dd>
+<dt class="field-even">Composition<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">RG</span></code></p>
+</dd>
+<dt class="field-odd">Recommended encoding<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">BC5_UNORM</span></code></p>
+</dd>
+</dl>
+</div>
+<figure class="align-right" id="id21" style="width: 40%">
+<img alt="../../../_images/guides_material_editing_textures_he2_flw.png" src="../../../_images/guides_material_editing_textures_he2_flw.png" />
+<figcaption>
+<p><span class="caption-text"><code class="docutils literal notranslate"><span class="pre">chr_shadow_fur_flw.dds</span></code> from Sonic X Shadow Generations</span><a class="headerlink" href="#id21" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>Flow textures are two-component textures that, similar to normal maps, encode a direction.
+Each pixel determines the direction of “flow” to use when sampling the noise texture.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Older flow texture have a blue channel, which went unused.</p>
+</div>
+<div class="lead docutils container">
+</div>
+</section>
+<section id="fur-noise">
+<h4>Fur noise<a class="headerlink" href="#fur-noise" title="Link to this heading">¶</a></h4>
+<div class="refbox admonition" id="id8">
+<p class="admonition-title">Reference</p>
+<dl class="field-list simple">
+<dt class="field-odd">File suffix<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">_fur</span></code></p>
+</dd>
+<dt class="field-even">Composition<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">RGBA</span></code></p>
+</dd>
+<dt class="field-odd">Recommended encoding<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">BC3_UNORM</span></code></p>
+</dd>
+</dl>
+</div>
+<figure class="align-right" id="id22" style="width: 40%">
+<img alt="../../../_images/guides_material_editing_textures_he2_fur.png" src="../../../_images/guides_material_editing_textures_he2_fur.png" />
+<figcaption>
+<p><span class="caption-text"><code class="docutils literal notranslate"><span class="pre">chr_shadow_fur_fur.dds</span></code> from Sonic X Shadow Generations</span><a class="headerlink" href="#id22" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>Fur noise textures get sampled based on the direction of a flow map to create a “flowing lines”
+type of pattern.</p>
+<p>The color channel gets multiplied into the albedo color, while the alpha channel determine the
+specularity.</p>
+<p>This allows for characters to have fine details without needing huge textures.</p>
+<div class="lead docutils container">
+</div>
+</section>
+<section id="iridescence-reflection">
+<h4>Iridescence reflection<a class="headerlink" href="#iridescence-reflection" title="Link to this heading">¶</a></h4>
+<div class="refbox admonition" id="id9">
+<p class="admonition-title">Reference</p>
+<dl class="field-list simple">
+<dt class="field-odd">File suffix<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">_ref</span></code></p>
+</dd>
+<dt class="field-even">Composition<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">Color</span></code></p>
+</dd>
+<dt class="field-odd">Recommended encoding<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">BC1_UNORM</span></code></p>
+</dd>
+</dl>
+</div>
+<figure class="align-right" id="id23" style="width: 40%">
+<img alt="../../../_images/guides_material_editing_textures_he2_ref.png" src="../../../_images/guides_material_editing_textures_he2_ref.png" />
+<figcaption>
+<p><span class="caption-text"><code class="docutils literal notranslate"><span class="pre">w05_ruins_biometal_ref.dds</span></code> from Sonic X Shadow Generations</span><a class="headerlink" href="#id23" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>Iridescence shaders use these reflection textures to create their effect of the same name.</p>
+<div class="lead docutils container">
+</div>
+</section>
+<section id="offset-map">
+<h4>Offset map<a class="headerlink" href="#offset-map" title="Link to this heading">¶</a></h4>
+<div class="refbox admonition" id="id10">
+<p class="admonition-title">Reference</p>
+<dl class="field-list simple">
+<dt class="field-odd">File suffix<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">_off</span></code></p>
+</dd>
+<dt class="field-even">Composition<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">RG</span></code></p>
+</dd>
+<dt class="field-odd">Recommended encoding<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">BC5_UNORM</span></code></p>
+</dd>
+</dl>
+</div>
+<figure class="align-right" id="id24" style="width: 40%">
+<img alt="../../../_images/guides_material_editing_textures_he2_off.png" src="../../../_images/guides_material_editing_textures_he2_off.png" />
+<figcaption>
+<p><span class="caption-text"><code class="docutils literal notranslate"><span class="pre">w09_btl02_poisonswamp_s3_jh1_off.dds</span></code> from Sonic X Shadow Generations</span><a class="headerlink" href="#id24" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>Offset maps are basically normal maps that are used to distore another texture by shifting the
+sample coordinate.</p>
+<p>These are often used with things like water or wind.</p>
+<div class="lead docutils container">
+</div>
+</section>
+</section>
+</section>
 </section>
 
         </article>
@@ -342,7 +819,7 @@
             Made with 
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2024-11-29</div>
+              Last updated on 2024-11-30</div>
           </div>
           <div class="right-details">
             
@@ -361,8 +838,46 @@
 </div>
       </footer>
     </div>
-    <aside class="toc-drawer no-toc">
+    <aside class="toc-drawer">
       
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Hedgehog engine 2</a><ul>
+<li><a class="reference internal" href="#file-formats-and-encodings">File formats and encodings</a><ul>
+<li><a class="reference internal" href="#file-streaming">File streaming</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#kinds-of-textures">Kinds of textures</a><ul>
+<li><a class="reference internal" href="#albedo">Albedo</a></li>
+<li><a class="reference internal" href="#transparency">Transparency</a></li>
+<li><a class="reference internal" href="#falloff">Falloff</a></li>
+<li><a class="reference internal" href="#emission">Emission</a></li>
+<li><a class="reference internal" href="#prm">PRM</a></li>
+<li><a class="reference internal" href="#normal-map">Normal map</a></li>
+<li><a class="reference internal" href="#other">Other</a><ul>
+<li><a class="reference internal" href="#flow-map">Flow map</a></li>
+<li><a class="reference internal" href="#fur-noise">Fur noise</a></li>
+<li><a class="reference internal" href="#iridescence-reflection">Iridescence reflection</a></li>
+<li><a class="reference internal" href="#offset-map">Offset map</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
       
       
     </aside>

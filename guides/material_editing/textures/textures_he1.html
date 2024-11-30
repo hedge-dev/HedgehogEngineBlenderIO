@@ -362,6 +362,8 @@ of which the vast majority use some form of
 encoding. Only a handful are not compressed.</p>
 <p>Since HE1 is programmed with <a class="reference external" href="https://en.wikipedia.org/wiki/Direct3D#Direct3D_9">Direct3D 9</a>,
 the number of available block compression encodings is limited to BC1, BC2 and BC3.</p>
+<p>More info on DDS block compression can be found
+<a class="reference external" href="https://learn.microsoft.com/en-us/windows/win32/direct3d11/texture-block-compression-in-direct3d-11">here</a>.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>The <a class="reference external" href="https://gamebanana.com/mods/407367">Direct3D 11 mod for Sonic Generations (PC)</a> by Skyth
@@ -384,7 +386,10 @@ which can read newer DDS encodings like BC4, BC5, BC6, BC7 and more.</p>
 <dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">RGBA</span></code></p>
 </dd>
 <dt class="field-odd">Recommended encoding<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">BC1_UNORM</span></code> when opaque, <code class="docutils literal notranslate"><span class="pre">BC3_UNORM</span></code> when transparent</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">BC1_UNORM</span></code> when opaque</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">BC3_UNORM</span></code> when transparent</p></li>
+</ul>
 </dd>
 </dl>
 </div>
@@ -450,7 +455,7 @@ are only used when special alpha compositing happens.</p>
 </figcaption>
 </figure>
 <figure class="align-right" id="id14" style="width: 40%">
-<img alt="../../../_images/guides_material_editing_textures_he1_fal.gif" src="../../../_images/guides_material_editing_textures_he1_fal.gif" />
+<img alt="../../../_images/guides_material_editing_textures_fal.gif" src="../../../_images/guides_material_editing_textures_fal.gif" />
 <figcaption>
 <p><span class="caption-text">A camera rotating around Suzanne with a raw falloff factor.
 The diffuse texture is black, and the falloff texture is white</span><a class="headerlink" href="#id14" title="Link to this image">¶</a></p>
@@ -478,7 +483,10 @@ controls how the falloff factor gets calculated.</p>
 <dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">RGBA</span></code></p>
 </dd>
 <dt class="field-odd">Recommended encoding<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">BC1_UNORM</span></code> when opaque, <code class="docutils literal notranslate"><span class="pre">BC3_UNORM</span></code> when transparent</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">BC1_UNORM</span></code> when opaque,</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">BC3_UNORM</span></code> when transparent</p></li>
+</ul>
 </dd>
 </dl>
 </div>
@@ -634,7 +642,7 @@ the same gloss texture to look different in each game.</p>
 <p class="admonition-title">Reference</p>
 <dl class="field-list simple">
 <dt class="field-odd">File suffix<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">_nrm</span></code> (rarely <code class="docutils literal notranslate"><span class="pre">_norm</span></code>, <code class="docutils literal notranslate"><span class="pre">_nor</span></code>)</p>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">_nrm</span></code> (rarely <code class="docutils literal notranslate"><span class="pre">_norm</span></code>, <code class="docutils literal notranslate"><span class="pre">_nor</span></code>, <code class="docutils literal notranslate"><span class="pre">_nml</span></code>)</p>
 </dd>
 <dt class="field-even">Composition<span class="colon">:</span></dt>
 <dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">Color</span></code></p>
@@ -696,7 +704,7 @@ environment maps and similar.</p>
             Made with 
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2024-11-29</div>
+              Last updated on 2024-11-30</div>
           </div>
           <div class="right-details">
             
