@@ -213,7 +213,7 @@ PRM
 	``chr_big_rod_prm.dds`` from Sonic X Shadow Generations
 
 
-PRM textures, likely an abbreviation for "Physical rendering map", are the defacto PBR textures
+PRM textures, an abbreviation for "Parameter", are the defacto PBR textures
 of Hedgehg Engine 2 games.
 
 If you are unfamiliar with Physically based rendering, it is recommended to
