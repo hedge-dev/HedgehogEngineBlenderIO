@@ -137,6 +137,8 @@ class HEIO_MaterialTexture(bpy.types.PropertyGroup):
         if nodes[0] is not None:
             nodes[0].image = self.image
             nodes[0].extension = 'EXTEND'
+            nodes[0].interpolation = 'Cubic'
+            nodes[0].projection = 'FLAT'
 
         if nodes[1] is not None:
             nodes[1].outputs[0].default_value = 0 if self.image is None else 1

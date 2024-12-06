@@ -2,6 +2,11 @@ import os
 import bpy
 from typing import Iterable
 
+NODE_IGNORE_PROPERTIES = [
+    "parent",
+    "warning_propagation",
+    "select",
+]
 
 def _get_socket_by_identifier(
         sockets: list[bpy.types.NodeSocket],
@@ -32,15 +37,22 @@ def _setup_material(
         node = node_tree.nodes.new(tnode.bl_idname)
         mapping[tnode] = node
 
-        node.name = tnode.name
-        node.label = tnode.label
-        node.height = tnode.height
-        node.width = tnode.width
-        node.location = tnode.location
-        node.hide = tnode.hide
+        for property in tnode.bl_rna.properties:
+            if property.is_readonly or property.identifier.startswith("bl_") or property.identifier in NODE_IGNORE_PROPERTIES:
+                continue
 
-        if tnode.type == 'GROUP':
-            node.node_tree = tnode.node_tree
+            value = getattr(tnode, property.identifier)
+            setattr(node, property.identifier, value)
+
+        # node.name = tnode.name
+        # node.label = tnode.label
+        # node.height = tnode.height
+        # node.width = tnode.width
+        # node.location = tnode.location
+        # node.hide = tnode.hide
+
+        # if tnode.type == 'GROUP':
+        #     node.node_tree = tnode.node_tree
 
         for tinput in tnode.inputs:
             input_socket = _get_socket_by_identifier(
