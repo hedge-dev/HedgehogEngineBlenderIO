@@ -68,6 +68,7 @@
     }
   },
   "Blend_dpnbdpn": {
+    "Layer": "Transparent",
     "Textures": [
       "reflection",
       "transparency",
@@ -643,6 +644,7 @@
   },
   "Common_da": {
     "Hide": false,
+    "Layer": "Transparent",
     "Parameters": {
       "PBRFactor": {
         "Type": "Float",
@@ -686,6 +688,7 @@
   },
   "Common_dpa": {
     "Hide": false,
+    "Layer": "Transparent",
     "Textures": [
       "diffuse",
       "transparency",
@@ -702,6 +705,7 @@
   },
   "Common_dpna": {
     "Hide": false,
+    "Layer": "Transparent",
     "Textures": [
       "diffuse",
       "transparency",
@@ -851,6 +855,7 @@
   },
   "Emission_dpnEa": {
     "Hide": false,
+    "Layer": "Transparent",
     "Parameters": {
       "Luminance": {
         "Type": "Float",
@@ -1446,6 +1451,7 @@
     ]
   },
   "IgnoreLight_da": {
+    "Layer": "Transparent",
     "Parameters": {
       "Luminance": {
         "Type": "Float",
@@ -1463,6 +1469,7 @@
     ]
   },
   "IgnoreLight_dao": {
+    "Layer": "Transparent",
     "Parameters": {
       "Offset": {
         "Type": "Float",
@@ -1542,6 +1549,7 @@
   },
   "IgnoreLight_Eao": {
     "Hide": false,
+    "Layer": "Transparent",
     "Parameters": {
       "Offset": {
         "Type": "Float",
@@ -1569,6 +1577,7 @@
     ]
   },
   "Indirect_daopn": {
+    "Layer": "Transparent",
     "Parameters": {
       "Offset": {
         "Type": "Float",
@@ -1589,6 +1598,7 @@
     ]
   },
   "Indirect_doapn": {
+    "Layer": "Transparent",
     "Parameters": {
       "Offset": {
         "Type": "Float",
@@ -1628,6 +1638,7 @@
     ]
   },
   "Indirect2_daopn": {
+    "Layer": "Transparent",
     "Parameters": {
       "Offset": {
         "Type": "Float",
@@ -1795,6 +1806,7 @@
     ]
   },
   "MEmission_dpnEa": {
+    "Layer": "Transparent",
     "Parameters": {
       "Luminance": {
         "Type": "Float",
@@ -1832,6 +1844,7 @@
     ]
   },
   "Ocean01": {
+    "Layer": "Transparent",
     "Parameters": {
       "PBRFactor": {
         "Type": "Float",
@@ -2040,6 +2053,7 @@
   },
   "Sky_da": {
     "Hide": false,
+    "Layer": "Transparent",
     "Textures": [
       "diffuse",
       "emission",
@@ -2066,6 +2080,7 @@
     ]
   },
   "Water03": {
+    "Layer": "Transparent",
     "Parameters": {
       "RefractionCubemap": {
         "Type": "Float",

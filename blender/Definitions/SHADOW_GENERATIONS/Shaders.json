@@ -108,6 +108,7 @@
   },
   "Blend_dpnbdpn": {
     "Hide": false,
+    "Layer": "Transparent",
     "Textures": [
       "reflection",
       "diffuse",
@@ -487,6 +488,7 @@
     ]
   },
   "ChrEyeE_dpna": {
+    "Layer": "Transparent",
     "Parameters": {
       "CDRFParam": {
         "Type": "Float",
@@ -544,6 +546,7 @@
   },
   "ChrFalloffVanish_dpna": {
     "Hide": false,
+    "Layer": "Transparent",
     "Parameters": {
       "FalloffFactor": {
         "Type": "Float",
@@ -600,6 +603,7 @@
   },
   "ChrFalloffVanish_dpnEa": {
     "Hide": false,
+    "Layer": "Transparent",
     "Parameters": {
       "FalloffFactor": {
         "Type": "Float",
@@ -657,6 +661,7 @@
   },
   "ChrFalloffVanishCyber_dpnEa": {
     "Hide": false,
+    "Layer": "Transparent",
     "Parameters": {
       "FalloffFactor": {
         "Type": "Float",
@@ -733,6 +738,7 @@
     ]
   },
   "ChrFalloffVanishEff_dpnEa": {
+    "Layer": "Transparent",
     "Parameters": {
       "FalloffFactor": {
         "Type": "Float",
@@ -1035,6 +1041,7 @@
   },
   "Common_dpna": {
     "Hide": false,
+    "Layer": "Transparent",
     "Textures": [
       "diffuse",
       "normal",
@@ -1144,6 +1151,7 @@
     ]
   },
   "CyberHologram": {
+    "Layer": "Transparent",
     "Parameters": {
       "EdgeParam": {
         "Type": "Float",
@@ -1180,6 +1188,7 @@
     ]
   },
   "DecalModel_dna": {
+    "Layer": "Transparent",
     "Textures": [
       "diffuse",
       "normal",
@@ -1187,6 +1196,7 @@
     ]
   },
   "DecalModel_dpn": {
+    "Layer": "Transparent",
     "Textures": [
       "diffuse",
       "normal",
@@ -1373,6 +1383,7 @@
     ]
   },
   "DpowerVanish_dpnnEfa": {
+    "Layer": "Transparent",
     "Parameters": {
       "FalloffFactor": {
         "Type": "Float",
@@ -1440,6 +1451,7 @@
     ]
   },
   "DpowerVanishEff_dpnnEfa": {
+    "Layer": "Transparent",
     "Parameters": {
       "FalloffFactor": {
         "Type": "Float",
@@ -1613,6 +1625,7 @@
   },
   "Emission_dpnEa": {
     "Hide": false,
+    "Layer": "Transparent",
     "Parameters": {
       "Luminance": {
         "Type": "Float",
@@ -1633,6 +1646,7 @@
     ]
   },
   "EmissionTone_dapnE": {
+    "Layer": "Transparent",
     "Parameters": {
       "Luminance": {
         "Type": "Float",
@@ -1925,6 +1939,7 @@
     ]
   },
   "FlowLava_dpnbEa": {
+    "Layer": "Transparent",
     "Parameters": {
       "FlowParam": {
         "Type": "Float",
@@ -1978,6 +1993,7 @@
     ]
   },
   "FlowWaterParallax_ddnnf": {
+    "Layer": "Transparent",
     "Parameters": {
       "PBRFactor": {
         "Type": "Float",
@@ -2043,6 +2059,7 @@
     ]
   },
   "FlowWaterParallax_ddnnff": {
+    "Layer": "Transparent",
     "Parameters": {
       "PBRFactor": {
         "Type": "Float",
@@ -2391,6 +2408,7 @@
     ]
   },
   "Impostor_dpn": {
+    "Layer": "Transparent",
     "Parameters": {
       "Impostor": {
         "Type": "Float",
@@ -2419,6 +2437,7 @@
     ]
   },
   "Indirect_daon": {
+    "Layer": "Transparent",
     "Parameters": {
       "Offset": {
         "Type": "Float",
@@ -2447,6 +2466,7 @@
     ]
   },
   "InstancedGrind_dpnEa": {
+    "Layer": "Transparent",
     "Parameters": {
       "VanishParam": {
         "Type": "Float",
@@ -2596,6 +2616,7 @@
     ]
   },
   "Iridescence_ddpNrEa": {
+    "Layer": "Transparent",
     "Parameters": {
       "WPBRFactor": {
         "Type": "Float",
@@ -2645,6 +2666,7 @@
     ]
   },
   "IridescenceStone_ddpNrEa": {
+    "Layer": "Transparent",
     "Parameters": {
       "WPBRFactor": {
         "Type": "Float",
@@ -3169,6 +3191,7 @@
     ]
   },
   "RingFalloffVanish_ddpna": {
+    "Layer": "Transparent",
     "Parameters": {
       "Blend": {
         "Type": "Float",
@@ -3281,6 +3304,7 @@
     ]
   },
   "Sky_da": {
+    "Layer": "Transparent",
     "Parameters": {
       "Luminance": {
         "Type": "Float",
@@ -3431,6 +3455,7 @@
     ]
   },
   "unlit_da": {
+    "Layer": "Transparent",
     "Parameters": {
       "Luminance": {
         "Type": "Float",
@@ -3448,6 +3473,7 @@
     ]
   },
   "Vanish_dpna": {
+    "Layer": "Transparent",
     "Parameters": {
       "VanishParam": {
         "Type": "Float",
@@ -3487,6 +3513,7 @@
     ]
   },
   "VanishDark_dpnEa": {
+    "Layer": "Transparent",
     "Hide": false,
     "Parameters": {
       "VanishParam": {
@@ -3528,6 +3555,7 @@
     ]
   },
   "VanishDark_dpnEaa": {
+    "Layer": "Transparent",
     "Parameters": {
       "VanishParam": {
         "Type": "Float",
@@ -3569,6 +3597,7 @@
     ]
   },
   "VanishDark_dpnEEa": {
+    "Layer": "Transparent",
     "Parameters": {
       "VanishParam": {
         "Type": "Float",
@@ -3628,6 +3657,7 @@
     ]
   },
   "VanishDarkFalloff_dpnEa": {
+    "Layer": "Transparent",
     "Parameters": {
       "Luminance": {
         "Type": "Float",
@@ -3885,6 +3915,7 @@
     ]
   },
   "VolumeVAT_dpnEa": {
+    "Layer": "Transparent",
     "Parameters": {
       "Luminance": {
         "Type": "Float",
@@ -3932,6 +3963,7 @@
     ]
   },
   "WaterRefraction_dnnao": {
+    "Layer": "Transparent",
     "Parameters": {
       "PBRFactor": {
         "Type": "Float",
@@ -4184,6 +4216,7 @@
     ]
   },
   "WhiteSpaceEmission_dpnEa": {
+    "Layer": "Transparent",
     "Parameters": {
       "Luminance": {
         "Type": "Float",
@@ -4287,6 +4320,7 @@
     ]
   },
   "WhiteSpaceIridescence_ddpNrEa": {
+    "Layer": "Transparent",
     "Parameters": {
       "WPBRFactor": {
         "Type": "Float",

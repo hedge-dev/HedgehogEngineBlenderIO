@@ -373,6 +373,7 @@
     ]
   },
   "GerstnerWave_ddna": {
+    "Layer": "Transparent",
     "Parameters": {
       "PBRFactor": {
         "Type": "Float",

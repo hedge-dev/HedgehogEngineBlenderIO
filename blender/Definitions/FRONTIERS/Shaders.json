@@ -68,6 +68,7 @@
     }
   },
   "Blend_dpnbdpn": {
+    "Layer": "Transparent",
     "Textures": [
       "reflection",
       "transparency",
@@ -154,6 +155,7 @@
     ]
   },
   "BossCable_dpnEEa": {
+    "Layer": "Transparent",
     "Parameters": {
       "UVscrollParam": {
         "Type": "Float",
@@ -773,6 +775,7 @@
     ]
   },
   "Common_dpna": {
+    "Layer": "Transparent",
     "Hide": false,
     "Textures": [
       "diffuse",
@@ -791,6 +794,7 @@
     ]
   },
   "cyber": {
+    "Layer": "Transparent",
     "Parameters": {
       "Blend": {
         "Type": "Float",
@@ -1088,6 +1092,7 @@
     }
   },
   "CyberHologram": {
+    "Layer": "Transparent",
     "Parameters": {
       "EdgeParam": {
         "Type": "Float",
@@ -1131,6 +1136,7 @@
     ]
   },
   "CyberSpaceNoise_dpa": {
+    "Layer": "Transparent",
     "Hide": false,
     "Textures": [
       "diffuse",
@@ -1147,6 +1153,7 @@
     ]
   },
   "CyberSpaceNoise_dpnE": {
+    "Layer": "Transparent",
     "Hide": false,
     "Parameters": {
       "Luminance": {
@@ -1493,6 +1500,7 @@
     ]
   },
   "Emission_dpnEa": {
+    "Layer": "Transparent",
     "Parameters": {
       "Luminance": {
         "Type": "Float",
@@ -1513,6 +1521,7 @@
     ]
   },
   "EmissionTone_dapnE": {
+    "Layer": "Transparent",
     "Hide": false,
     "Parameters": {
       "Luminance": {
@@ -1754,6 +1763,7 @@
     ]
   },
   "FlowLava_dpnbEa": {
+    "Layer": "Transparent",
     "Parameters": {
       "FlowParam": {
         "Type": "Float",
@@ -2035,6 +2045,7 @@
     ]
   },
   "FlyerRoad": {
+    "Layer": "Transparent",
     "Parameters": {
       "FalloffAndLuminance": {
         "Type": "Float",
@@ -2142,6 +2153,7 @@
     ]
   },
   "Generate_dpnEg": {
+    "Layer": "Transparent",
     "Parameters": {
       "Luminance": {
         "Type": "Float",
@@ -2172,6 +2184,7 @@
     ]
   },
   "GenerateIrie_dpnnrEg": {
+    "Layer": "Transparent",
     "Parameters": {
       "PBRFactor": {
         "Type": "Float",
@@ -2221,6 +2234,7 @@
     ]
   },
   "Giant": {
+    "Layer": "Transparent",
     "Hide": false,
     "Parameters": {
       "Luminance": {
@@ -2514,6 +2528,7 @@
     ]
   },
   "Indirect_daon": {
+    "Layer": "Transparent",
     "Parameters": {
       "Offset": {
         "Type": "Float",
@@ -2580,6 +2595,7 @@
     ]
   },
   "InstancedGrind_dpnEa": {
+    "Layer": "Transparent",
     "Parameters": {
       "VanishParam": {
         "Type": "Float",
@@ -2647,6 +2663,7 @@
     ]
   },
   "Iridescence_ddpNrEa": {
+    "Layer": "Transparent",
     "Parameters": {
       "WPBRFactor": {
         "Type": "Float",
@@ -2743,6 +2760,7 @@
     ]
   },
   "IridescenceStone_ddpNrEa": {
+    "Layer": "Transparent",
     "Parameters": {
       "WPBRFactor": {
         "Type": "Float",
@@ -2792,6 +2810,7 @@
     ]
   },
   "IridescenceStoneTone_ddpNrEa": {
+    "Layer": "Transparent",
     "Parameters": {
       "WPBRFactor": {
         "Type": "Float",
@@ -2841,6 +2860,7 @@
     ]
   },
   "IridescenceStoneTone_dpNrEam": {
+    "Layer": "Transparent",
     "Parameters": {
       "WPBRFactor": {
         "Type": "Float",
@@ -2907,6 +2927,7 @@
     ]
   },
   "LightMaskWeather_dpnmb": {
+    "Layer": "Transparent",
     "Parameters": {
       "WorldUVScroll": {
         "Type": "Float",
@@ -2938,6 +2959,7 @@
     ]
   },
   "NearVanish_da": {
+    "Layer": "Transparent",
     "Hide": false,
     "Parameters": {
       "PBRFactor": {
@@ -3168,6 +3190,7 @@
     ]
   },
   "sage01": {
+    "Layer": "Transparent",
     "Parameters": {
       "IridescenceOffset": {
         "Type": "Float",
@@ -3235,6 +3258,7 @@
     ]
   },
   "sage02": {
+    "Layer": "Transparent",
     "Parameters": {
       "Luminance": {
         "Type": "Float",
@@ -3350,6 +3374,7 @@
     }
   },
   "SonicCyber01": {
+    "Layer": "Transparent",
     "Parameters": {
       "IridescenceOffset": {
         "Type": "Float",
@@ -3415,6 +3440,7 @@
     ]
   },
   "SonicCyber02": {
+    "Layer": "Transparent",
     "Parameters": {
       "FalloffFactor": {
         "Type": "Float",
@@ -3482,6 +3508,7 @@
     ]
   },
   "SonicCyber03": {
+    "Layer": "Transparent",
     "Parameters": {
       "VanishParam": {
         "Type": "Float",
@@ -3549,6 +3576,7 @@
     ]
   },
   "SonicCyber04": {
+    "Layer": "Transparent",
     "Parameters": {
       "Luminance": {
         "Type": "Float",
@@ -3735,6 +3763,7 @@
     }
   },
   "tear_dpna": {
+    "Layer": "Transparent",
     "Parameters": {
       "PBRFactor": {
         "Type": "Float",
@@ -3843,6 +3872,7 @@
     ]
   },
   "Vanish_dpna": {
+    "Layer": "Transparent",
     "Parameters": {
       "VanishParam": {
         "Type": "Float",
@@ -3882,6 +3912,7 @@
     ]
   },
   "VanishDark_dpnEa": {
+    "Layer": "Transparent",
     "Hide": false,
     "Parameters": {
       "VanishParam": {
@@ -3923,6 +3954,7 @@
     ]
   },
   "VanishDark_dpnEaa": {
+    "Layer": "Transparent",
     "Parameters": {
       "VanishParam": {
         "Type": "Float",
@@ -3964,6 +3996,7 @@
     ]
   },
   "VanishDark_dpnEEa": {
+    "Layer": "Transparent",
     "Parameters": {
       "VanishParam": {
         "Type": "Float",
@@ -4023,6 +4056,7 @@
     ]
   },
   "VanishDark_dpnEEar": {
+    "Layer": "Transparent",
     "Parameters": {
       "VanishParam": {
         "Type": "Float",
@@ -4247,6 +4281,7 @@
     ]
   },
   "WaterRefraction_dnnao": {
+    "Layer": "Transparent",
     "Parameters": {
       "PBRFactor": {
         "Type": "Float",
