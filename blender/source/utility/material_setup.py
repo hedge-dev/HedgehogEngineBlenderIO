@@ -141,7 +141,7 @@ def _get_templates(context: bpy.types.Context, shader_names: set[str]):
 
     shader_materials = {}
 
-    with bpy.data.libraries.load(templates_path) as (data_from, data_to):
+    with bpy.data.libraries.load(templates_path, link=True) as (data_from, data_to):
         to_load = {}
 
         for shader_name in shader_names:
