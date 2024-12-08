@@ -231,7 +231,7 @@ class ImportTerrainModelOperator(ImportModelBaseOperator):
 
         meshes = self.import_models(context, terrain_models)
         for mesh in meshes:
-            obj = bpy.data.objects.new(meshes.Name, mesh)
+            obj = bpy.data.objects.new(mesh.name, mesh)
             context.scene.collection.objects.link(obj)
 
         self.print_resolve_info(context, resolve_info)
