@@ -11,8 +11,8 @@ class ImageLoader:
     _use_existing_images: bool
     _invert_normal_map_y_channel: bool
 
-    _net_images: dict[str, any]
-    _loaded_images: dict[str, bpy.types.Image]
+    _loaded_images: dict[str, any]
+    _setup_images: dict[str, bpy.types.Image]
 
     def __init__(
             self,
@@ -22,15 +22,8 @@ class ImageLoader:
         self._use_existing_images = use_existing_images
         self._invert_normal_map_y_channel = invert_normal_map_y_channel
 
-        self._net_images = {}
         self._loaded_images = {}
-
-    def load_images_from_sn_materials(self, sn_materials, textures_path: str | None, ntsp_dir: str):
-
-        images = HEIO_NET.IMAGE.LoadMaterialImages(
-            sn_materials, textures_path, ntsp_dir)
-
-        self._net_images.update(images)
+        self._setup_images = {}
 
     @staticmethod
     def _get_placeholder_image_color(node: bpy.types.ShaderNodeTexImage):
@@ -104,19 +97,15 @@ class ImageLoader:
 
         return image
 
-    def _load_image_from_file(self, texture, image_name: str):
+    def _setup_image(self, texture, image_name: str):
 
         image = None
-        net_image = None
+        from_loaded = False
         node: bpy.types.ShaderNodeTexImage = texture.image_node
 
-        if image_name in self._net_images:
-            net_image = self._net_images[image_name]
-
-            if "blender_dds_addon" in bpy.context.preferences.addons.keys():
-                image = self._import_image_dds_addon(image_name, net_image)
-            else:
-                image = self._import_image_native(image_name, net_image)
+        if image_name in self._loaded_images:
+            image = self._loaded_images[image_name]
+            from_loaded = True
 
         if image is None:
             # placeholder texture
@@ -142,35 +131,49 @@ class ImageLoader:
                 image.colorspace_settings.name = 'Non-Color'
                 is_normal_map = True
 
-        if is_normal_map and net_image is not None and self._invert_normal_map_y_channel:
+        if is_normal_map and from_loaded and self._invert_normal_map_y_channel:
             pixels = numpy.array(image.pixels, dtype=numpy.float32)
-            HEIO_NET.IMAGE.InvertGreenChannel(System.INT_PTR(pixels.ctypes.data), len(pixels))
+            HEIO_NET.IMAGE.InvertGreenChannel(
+                System.INT_PTR(pixels.ctypes.data), len(pixels))
             image.pixels = pixels
 
             filepath = image.packed_files[0].filepath
             image.pack()
             image.packed_files[0].filepath = filepath
 
-
-
         image.update()
 
         return image
+
+    def load_images_from_sn_materials(self, sn_materials, textures_path: str, ntsp_dir: str):
+
+        net_images = HEIO_NET.IMAGE.LoadMaterialImages(
+            sn_materials, textures_path, ntsp_dir)
+
+        for item in net_images:
+
+            if "blender_dds_addon" in bpy.context.preferences.addons.keys():
+                image = self._import_image_dds_addon(item.Key, item.Value)
+            else:
+                image = self._import_image_native(item.Key, item.Value)
+
+            self._loaded_images[item.Key] = image
+
 
     def get_image(self, texture, image_name: str):
         if len(image_name.strip()) == 0:
             return None
 
-        if image_name in self._loaded_images:
-            return self._loaded_images[image_name]
+        if image_name in self._setup_images:
+            return self._setup_images[image_name]
         elif self._use_existing_images and image_name in bpy.data.images:
             return bpy.data.images[image_name]
         else:
-            image = self._load_image_from_file(
+            image = self._setup_image(
                 texture,
                 image_name)
 
-            self._loaded_images[image_name] = image
+            self._setup_images[image_name] = image
             texture.image = image
 
             return image

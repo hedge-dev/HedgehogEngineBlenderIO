@@ -128,8 +128,10 @@ def convert_sharpneedle_materials(
 
     image_loader = i_image.ImageLoader(
         use_existing_images, invert_normal_map_y_channel)
-    image_loader.load_images_from_sn_materials(
-        sn_materials, textures_path, ntsp_dir)
+
+    if textures_path is not None:
+        image_loader.load_images_from_sn_materials(
+            sn_materials, textures_path, ntsp_dir)
 
     for sn_material, material in converted.items():
         material_properties: HEIO_Material = material.heio_material
