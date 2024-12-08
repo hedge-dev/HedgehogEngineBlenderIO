@@ -118,32 +118,44 @@ namespace HEIO.NET.VertexUtils
 
         private static IEnumerable<ushort> ExpandStrip(ushort[] indices)
         {
-            bool rev = true;
+            bool rev = false;
+            ushort a = indices[0];
+            ushort b = indices[1];
 
-            for(int i = 2; i < indices.Length; i++, rev = !rev)
+            for(int i = 2; i < indices.Length; i++)
             {
-                ushort i1 = indices[i - 2];
-                ushort i2 = indices[i - 1];
-                ushort i3 = indices[i];
+                ushort c = indices[i];
 
-                if(i1 == i2 || i2 == i3 || i3 == i1)
+                if(c == ushort.MaxValue)
                 {
+                    a = indices[++i];
+                    b = indices[++i];
+                    rev = false;
                     continue;
                 }
 
-                if(rev)
+                rev = !rev;
+
+                if(a != b && b != c && c != a)
                 {
-                    yield return i2;
-                    yield return i1;
-                    yield return i3;
+                    if(rev)
+                    {
+                        yield return b;
+                        yield return a;
+                        yield return c;
+                    }
+                    else
+                    {
+                        yield return a;
+                        yield return b;
+                        yield return c;
+                    }
                 }
-                else
-                {
-                    yield return i1;
-                    yield return i2;
-                    yield return i3;
-                }
+
+                a = b;
+                b = c;
             }
         }
     }
 }
+
