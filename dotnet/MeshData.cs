@@ -6,6 +6,7 @@ using SharpNeedle.Resource;
 using SharpNeedle.Structs;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Numerics;
 
@@ -27,8 +28,8 @@ namespace HEIO.NET
         {
             const float mergeDistance = 0.001f * 0.001f;
 
-            return EqualityComparer<Vertex>.Create((v1, v2) => 
-                v1.SetIndex == v2.SetIndex 
+            return EqualityComparer<Vertex>.Create((v1, v2) =>
+                v1.SetIndex == v2.SetIndex
                 && Vector3.DistanceSquared(v1.Position, v2.Position) <= mergeDistance);
         }
 
@@ -61,12 +62,12 @@ namespace HEIO.NET
         public Vector4[][]? FloatColors { get; set; }
 
 
-        public Material[] Materials { get; set; }
+        public ResourceReference<Material>[] Materials { get; set; }
 
         public int[] MaterialTriangleLengths { get; set; }
 
 
-        public MeshData(string name, Vertex[] vertices, int[] triangleIndices, Vector3[] normals, Vector3[] tangents, Vector2[][] textureCoordinates, Vector4Int[][]? byteColors, Vector4[][]? floatColors, Material[] materials, int[] materialTriangleLengths)
+        public MeshData(string name, Vertex[] vertices, int[] triangleIndices, Vector3[] normals, Vector3[] tangents, Vector2[][] textureCoordinates, Vector4Int[][]? byteColors, Vector4[][]? floatColors, ResourceReference<Material>[] materials, int[] materialTriangleLengths)
         {
             Name = name;
             Vertices = vertices;
@@ -111,8 +112,8 @@ namespace HEIO.NET
                 }
             }
 
-            DistinctMap<Vertex> vertexMap = vertexMergeMode == VertexMergeMode.None 
-                ? new(vertices, null) 
+            DistinctMap<Vertex> vertexMap = vertexMergeMode == VertexMergeMode.None
+                ? new(vertices, null)
                 : DistinctMap.CreateDistinctMap(vertices, Vertex.GetMergeComparer());
 
             int loopCount = gpuModel.Triangles.Length;
@@ -135,7 +136,7 @@ namespace HEIO.NET
                 byteColors = new Vector4Int[gpuModel.ColorSets][];
                 for(int i = 0; i < gpuModel.ColorSets; i++)
                 {
-                    byteColors [i] = new Vector4Int[loopCount];
+                    byteColors[i] = new Vector4Int[loopCount];
                 }
             }
             else
@@ -159,7 +160,7 @@ namespace HEIO.NET
 
                 for(int j = 0; j < gpuModel.TexcoordSets; j++)
                 {
-                    textureCoordinates[j][i] = gpuVertex.TextureCoordinates[j];
+                    textureCoordinates[j][i] = new(gpuVertex.TextureCoordinates[j].X, 1 - gpuVertex.TextureCoordinates[j].Y);
                 }
 
                 if(gpuModel.UseByteColors)
@@ -193,14 +194,17 @@ namespace HEIO.NET
         }
 
 
-        public static TerrainModel[][] LoadTerrainFiles(string[] filepaths)
+        public static TerrainModel[][] LoadTerrainFiles(string[] filepaths, out ResolveInfo resolveInfo)
         {
-            ResourceManager manager = new();
+            DependencyResourceManager dependencyManager = new();
+
             List<TerrainModel[]> result = [];
+            List<(ModelBase, IFile)> modelFiles = [];
 
             foreach(string filepath in filepaths)
             {
                 IFile file = FileSystem.Instance.Open(filepath)!;
+                ResourceManager manager = dependencyManager.GetResourceManagerForDirectory(file.Parent);
                 TerrainModel[] models;
 
                 try
@@ -218,19 +222,88 @@ namespace HEIO.NET
                     models = [manager.Open<TerrainModel>(file, false)];
                 }
 
+                result.Add(models);
+
                 foreach(TerrainModel model in models)
                 {
-                    try
-                    {
-                        model.ResolveDependencies(new DirectoryResourceResolver(file.Parent, manager));
-                    }
-                    catch { }
+                    modelFiles.Add((model, file));
+                    break;
                 }
-
-                result.Add(models);
             }
 
+            resolveInfo = TryResolveMaterials(dependencyManager, modelFiles);
+
             return [.. result];
+        }
+
+        private static ResolveInfo TryResolveMaterials(DependencyResourceManager dependencyManager, IEnumerable<(ModelBase, IFile)> models)
+        {
+            Dictionary<string, (IDirectory, List<ModelBase>)> directories = [];
+
+            foreach((ModelBase model, IFile file) in models)
+            {
+                IDirectory parent = file.Parent;
+
+                if(!directories.TryGetValue(parent.Path, out (IDirectory, List<ModelBase>) directory))
+                {
+                    directory = (parent, []);
+                    directories[parent.Path] = directory;
+                }
+
+                directory.Item2.Add(model);
+            }
+
+            HashSet<string> unresolved = [];
+            HashSet<string> missingDependencies = [];
+            HashSet<string> dependencyPacFiles = [];
+
+            foreach((IDirectory directory, List<ModelBase> directoryModels) in directories.Values)
+            {
+                IResourceResolver[] resolvers = dependencyManager.CollectResolvers(directory, out string[] missing, out string[] pacs);
+
+                missingDependencies.UnionWith(missingDependencies);
+                dependencyPacFiles.UnionWith(pacs);
+
+                foreach(ModelBase model in directoryModels)
+                {
+                    foreach(MeshGroup group in model.Groups)
+                    {
+                        foreach(Mesh mesh in group)
+                        {
+                            if(mesh.Material.IsValid())
+                            {
+                                continue;
+                            }
+
+                            string filename = $"{mesh.Material.Name}.material";
+                            bool resolved = false;
+
+                            foreach(IResourceResolver resolver in resolvers)
+                            {
+                                try
+                                {
+                                    mesh.Material = resolver.Open<Material>(filename)
+                                        ?? throw new InvalidDataException($"Material file \"{filename}\" failed to be read!");
+
+                                    resolved = true;
+                                    break;
+                                }
+                                catch(FileNotFoundException)
+                                {
+
+                                }
+                            }
+
+                            if(!resolved)
+                            {
+                                unresolved.Add(filename);
+                            }
+                        }
+                    }
+                }
+            }
+
+            return new([.. unresolved], [.. missingDependencies], [.. dependencyPacFiles]);
         }
 
         public static Material[] GetMaterials(ModelBase[][] models)
@@ -239,8 +312,8 @@ namespace HEIO.NET
                 .SelectMany(x => x)
                 .SelectMany(x => x.Groups)
                 .SelectMany(x => x)
-                .Select(x => x.Material.Resource)
-                .OfType<Material>()
+                .Where(x => x.Material.IsValid())
+                .Select(x => x.Material.Resource!)
                 .Distinct()
                 .ToArray();
         }

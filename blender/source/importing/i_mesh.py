@@ -31,10 +31,10 @@ def process_mesh_data(
     # Material Data
 
     for material in mesh_data.Materials:
-        if material is not None and material.Name in materials:
+        if material.IsValid() and material.Name in materials:
             mesh.materials.append(materials[material.Name][1])
         else:
-            mesh.materials.append(None)
+            mesh.materials.append(bpy.data.materials.new(material.Name))
 
     face_index = 0
     for i, face_count in enumerate(mesh_data.MaterialTriangleLengths):

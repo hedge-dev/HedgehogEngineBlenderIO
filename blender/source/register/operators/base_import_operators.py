@@ -23,6 +23,37 @@ class ImportOperator(HEIOBaseFileLoadOperator):
         type=bpy.types.OperatorFileListElement
     )
 
+    def print_resolve_info(self, context: bpy.types.Context, resolve_info):
+        if resolve_info.UnresolvedFiles.Length == 0:
+            return
+
+        resolve_info_text = bpy.data.texts.new("Import resolve report")
+        resolve_info_text.write(f"{resolve_info.UnresolvedFiles.Length} files could not be found.\n\n")
+
+        if resolve_info.PackedDependencies.Length > 0:
+            resolve_info_text.write("Some files may be located in the following archives and need to be unpacked:\n")
+            for packed in resolve_info.PackedDependencies:
+                resolve_info_text.write(f"\t{packed}\n")
+
+            resolve_info_text.write("\n")
+
+        if resolve_info.MissingDependencies.Length > 0:
+            resolve_info_text.write("Following dependencies were not found altogether:\n")
+            for missing in resolve_info.MissingDependencies:
+                resolve_info_text.write(f"\t{missing}\n")
+
+            resolve_info_text.write("\n")
+
+        resolve_info_text.write("List of unresolved files:\n")
+        for unresolved_file in resolve_info.UnresolvedFiles:
+            resolve_info_text.write(f"\t{unresolved_file}\n")
+
+        bpy.ops.wm.window_new()
+        context.area.type = 'TEXT_EDITOR'
+        context.space_data.text = resolve_info_text
+        context.space_data.top = 0
+
+
     def _execute(self, context: Context):
         from ...dotnet import load_dotnet
         load_dotnet()
@@ -213,6 +244,8 @@ class ImportTerrainModelOperator(ImportModelBaseOperator):
         directory = os.path.dirname(self.filepath)
         filepaths = [os.path.join(directory, file.name) for file in self.files]
 
-        terrain_models = HEIO_NET.MESH_DATA.LoadTerrainFiles(filepaths)
+        terrain_models, resolve_info = HEIO_NET.MESH_DATA.LoadTerrainFiles(filepaths, HEIO_NET.RESOLVE_INFO())
 
         self.import_models(context, terrain_models, directory)
+
+        self.print_resolve_info(context, resolve_info)

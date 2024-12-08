@@ -1,4 +1,5 @@
 ﻿using SharpNeedle.Framework.HedgehogEngine.Mirage;
+using SharpNeedle.Resource;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,9 +24,9 @@ namespace HEIO.NET.VertexUtils
 
         public int[] TriangleSetSizes { get; }
 
-        public Material[] SetMaterials { get; }
+        public ResourceReference<Material>[] SetMaterials { get; }
 
-        public GPUModel(GPUVertex[] vertices, int[] vertexSetSizes, int texcoordSets, int colorSets, bool useByteColors, int[] triangles, int[] triangleSetSizes, Material[] setMaterials)
+        public GPUModel(GPUVertex[] vertices, int[] vertexSetSizes, int texcoordSets, int colorSets, bool useByteColors, int[] triangles, int[] triangleSetSizes, ResourceReference<Material>[] setMaterials)
         {
             Vertices = vertices;
             VertexSetSizes = vertexSetSizes;
@@ -43,7 +44,7 @@ namespace HEIO.NET.VertexUtils
             List<int> vertexSetSizes = [];
             List<int> triangles = [];
             List<int> triangleSetSizes = [];
-            List<Material?> materials = [];
+            List<ResourceReference<Material>> materials = [];
 
             bool useTriangleList = false;
 
@@ -86,7 +87,7 @@ namespace HEIO.NET.VertexUtils
 
                     int triangleCount = (triangles.Count - prevLength) / 3;
                     triangleSetSizes.Add(triangleCount);
-                    materials.Add(mesh.Material.Resource);
+                    materials.Add(mesh.Material);
 
                     GPUVertex[] vertexData = GPUVertex.ReadVertexData(mesh, texcoordSets, colorSets, useByteColors);
                     vertices.AddRange(vertexData);
