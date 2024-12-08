@@ -1,10 +1,10 @@
 ﻿using System.IO;
-using SharpNeedle.HedgehogEngine.Needle.TextureStreaming;
 using SharpNeedle.IO;
 using System.Collections.Generic;
-using SharpNeedle.HedgehogEngine.Mirage;
 using System;
 using SharpNeedle.Utilities;
+using SharpNeedle.Framework.HedgehogEngine.Mirage;
+using SharpNeedle.Framework.HedgehogEngine.Needle.TextureStreaming;
 
 namespace HEIO.NET
 {
@@ -23,14 +23,13 @@ namespace HEIO.NET
         }
 
 
-        public static Image? LoadImage(string filepath, string streamingDirectory)
+        public static Image? LoadImage(string filepath, Dictionary<string, Package?> packages, string streamingDirectory)
         {
-            if(!File.Exists(filepath))
+            IFile? file = FileSystem.Instance.Open(filepath);
+            if(file == null)
             {
                 return null;
             }
-
-            IFile file = FileSystem.Open(filepath);
 
             Stream stream = file.Open(FileAccess.Read);
             uint signature = BitConverter.ToUInt32(stream.ReadBytes(4));
@@ -41,16 +40,23 @@ namespace HEIO.NET
                 Info info = new();
                 info.Read(file);
 
-                string ntspPath = Path.Join(streamingDirectory, info.PackageName + ".ntsp");
-                if(!File.Exists(ntspPath))
+                if(!packages.TryGetValue(info.PackageName, out Package? package))
                 {
-                    return null;
+                    string ntspPath = Path.Join(streamingDirectory, info.PackageName + ".ntsp");
+                    IFile? packageFile = FileSystem.Instance.Open(ntspPath);
+
+                    if(packageFile != null)
+                    {
+                        package = new();
+                        package.Read(packageFile);
+                    }
+
+                    packages[info.PackageName] = package;
                 }
 
-                Package package = new();
-                package.Read(FileSystem.Open(ntspPath));
-
-                return new(filepath, info.UnpackDDS(package));
+                return package == null 
+                    ? null 
+                    : new(filepath, info.UnpackDDS(package));
             }
 
             return new(filepath, null);
@@ -59,17 +65,18 @@ namespace HEIO.NET
         public static Dictionary<string, Image> LoadMaterialImages(Material[] materials, string materialDirectory, string streamingDirectory)
         {
             Dictionary<string, Image> result = [];
+            Dictionary<string, Package?> packages = [];
 
             foreach(Material material in materials)
             {
                 foreach(Texture texture in material.Texset.Textures)
                 {
-                    if(!result.ContainsKey(texture.PictureName))
+                    if(!result.ContainsKey(texture.PictureName!))
                     {
-                        Image? image = LoadImage(Path.Join(materialDirectory, texture.PictureName + ".dds"), streamingDirectory);
+                        Image? image = LoadImage(Path.Join(materialDirectory, texture.PictureName + ".dds"), packages, streamingDirectory);
                         if(image != null)
                         {
-                            result.Add(texture.PictureName, image);
+                            result.Add(texture.PictureName!, image);
                         }
                     }
                 }

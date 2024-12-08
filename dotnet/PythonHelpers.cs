@@ -1,4 +1,4 @@
-﻿using SharpNeedle.HedgehogEngine.Mirage;
+﻿using SharpNeedle.Framework.HedgehogEngine.Mirage;
 using System.Numerics;
 
 namespace HEIO.NET

@@ -15,3 +15,14 @@ WRAP_MODE = {
     "BORDER": "Border"
 
 }
+
+VERTEX_MERGE_MODE = {
+	"None" : "NONE",
+    "NONE" : "None",
+
+    "SubMesh" : "SUBMESH",
+    "SUBMESH" : "SubMesh",
+
+    "All" : "ALL",
+    "ALL" : "All",
+}

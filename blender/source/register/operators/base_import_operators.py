@@ -12,11 +12,16 @@ from .base import HEIOBaseFileLoadOperator
 from .. import definitions
 from ...exceptions import UserException
 
-from ...dotnet import load_dotnet, SharpNeedle
+from ...dotnet import load_dotnet, SharpNeedle, HEIO_NET
 
 
 class ImportOperator(HEIOBaseFileLoadOperator):
     bl_options = {'PRESET', 'UNDO'}
+
+    files: CollectionProperty(
+        name='File paths',
+        type=bpy.types.OperatorFileListElement
+    )
 
     def _execute(self, context: Context):
         from ...dotnet import load_dotnet
@@ -36,11 +41,6 @@ class ImportMaterialOperator(ImportOperator):
         options={'HIDDEN'},
     )
 
-    files: CollectionProperty(
-        name='File paths',
-        type=bpy.types.OperatorFileListElement
-    )
-
     create_undefined_parameters: BoolProperty(
         name="Create undefined parameters/textures",
         description="If the shader of a material is defined, create parameters inside the material that are not part of the definition, otherwise ignore them.",
@@ -57,7 +57,8 @@ class ImportMaterialOperator(ImportOperator):
         name="Invert Y channel of normal maps",
         description="Whether to invert the Y channel on normal maps when importing",
         items=(
-            ("AUTO", "Automatic", "Automatically determine whether to invert the Y channel based on the target game"),
+            ("AUTO", "Automatic",
+             "Automatically determine whether to invert the Y channel based on the target game"),
             ("INVERT", "Invert", "Always invert the Y channel"),
             ("DONT", "Don't invert", "Don't invert the Y channel")
         ),
@@ -70,8 +71,26 @@ class ImportMaterialOperator(ImportOperator):
         default=False
     )
 
+    def import_materials(self, context, materials, directory: str):
+        from ...importing import i_material
 
-    def import_materials(self, context):
+        invert_normal_map_y_channel = (
+            self.nrm_invert_y_channel == "FLIP"
+            or (
+                self.nrm_invert_y_channel == "AUTO"
+                and self.target_definition.hedgehog_engine_version == 1
+            )
+        )
+
+        return i_material.convert_sharpneedle_materials(
+            context,
+            materials,
+            self.create_undefined_parameters,
+            self.use_existing_images,
+            invert_normal_map_y_channel,
+            directory if self.import_images else None)
+
+    def import_material_files(self, context):
         load_dotnet()
 
         directory = os.path.dirname(self.filepath)
@@ -90,24 +109,7 @@ class ImportMaterialOperator(ImportOperator):
 
             sn_materials.append(material)
 
-        from ...importing import i_material
-
-        invert_normal_map_y_channel = (
-            self.nrm_invert_y_channel == "FLIP"
-            or (
-                self.nrm_invert_y_channel == "AUTO"
-                and self.target_definition.hedgehog_engine_version == 1
-            )
-        )
-
-        return i_material.convert_sharpneedle_materials(
-            context,
-            sn_materials,
-            self.create_undefined_parameters,
-            self.use_existing_images,
-            invert_normal_map_y_channel,
-            directory if self.import_images else None)
-
+        return self.import_materials(context, sn_materials, directory)
 
     def draw_panel_material(self):
         header, body = self.layout.panel(
@@ -145,3 +147,72 @@ class ImportMaterialOperator(ImportOperator):
     def draw(self, context: Context):
         super().draw(context)
         self.draw_panel_material()
+
+
+class ImportModelBaseOperator(ImportMaterialOperator):
+
+    vertex_merge_mode: EnumProperty(
+        name="Vertex merge mode",
+        description="\"Merge by distance\" mode",
+        items=(
+            ('NONE', "None", "No merging at all"),
+            ('SUBMESH', "Per Submesh",
+             "Merge vertices that are part of the same submesh"),
+            ('ALL', "All", "Merge all"),
+        ),
+        default='ALL'
+    )
+
+    def import_models(self, context: bpy.types.Context, models, directory: str):
+
+        sn_materials = HEIO_NET.MESH_DATA.GetMaterials(models)
+        materials = self.import_materials(context, sn_materials, directory)
+
+        from ...importing import i_mesh
+        from ...exporting import o_enum
+
+        vertex_merge_mode = o_enum.to_vertex_merge_mode(self.vertex_merge_mode)
+
+        for terrain_model_set in models:
+            terrain_model = terrain_model_set[0]
+
+            mesh_data = HEIO_NET.MESH_DATA.FromHEModel(terrain_model, vertex_merge_mode)
+            mesh = i_mesh.process_mesh_data(context, mesh_data, materials)
+
+            obj = bpy.data.objects.new(terrain_model.Name, mesh)
+            context.scene.collection.objects.link(obj)
+
+    def draw_panel_model(self):
+        header, body = self.layout.panel(
+            "HEIO_import_model", default_closed=False)
+        header.label(text="Model")
+
+        if not body:
+            return
+
+        body.use_property_split = True
+        body.use_property_decorate = False
+
+        body.prop(self, "vertex_merge_mode")
+
+    def draw(self, context: Context):
+        super().draw(context)
+        self.draw_panel_model()
+
+
+class ImportTerrainModelOperator(ImportModelBaseOperator):
+
+    filter_glob: StringProperty(
+        default="*.terrain-model",
+        options={'HIDDEN'},
+    )
+
+    def import_terrain_model_files(self, context: bpy.types.Context):
+        load_dotnet()
+
+        directory = os.path.dirname(self.filepath)
+        filepaths = [os.path.join(directory, file.name) for file in self.files]
+
+        terrain_models = HEIO_NET.MESH_DATA.LoadTerrainFiles(filepaths)
+
+        self.import_models(context, terrain_models, directory)

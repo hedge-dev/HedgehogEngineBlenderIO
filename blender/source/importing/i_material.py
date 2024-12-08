@@ -85,7 +85,7 @@ def convert_sharpneedle_materials(
         invert_normal_map_y_channel: bool,
         textures_path: str | None):
 
-    converted: dict[any, bpy.types.Material] = {}
+    converted: dict[str, bpy.types.Material] = {}
     target_definition = definitions.get_target_definition(context)
 
     for sn_material in sn_materials:
@@ -100,7 +100,8 @@ def convert_sharpneedle_materials(
         if sn_material.ShaderName[-1] == ']':
             index = sn_material.ShaderName.index('[')
             material_properties.shader_name = sn_material.ShaderName[:index]
-            material_properties.variant_name = sn_material.ShaderName[(index+1):-1]
+            material_properties.variant_name = sn_material.ShaderName[(
+                index+1):-1]
         else:
             material_properties.shader_name = sn_material.ShaderName
 
@@ -122,10 +123,13 @@ def convert_sharpneedle_materials(
 
     if target_definition.uses_ntsp:
         pref = get_addon_preferences(context)
-        ntsp_dir = getattr(pref, "ntsp_dir_" + target_definition.identifier.lower())
+        ntsp_dir = getattr(pref, "ntsp_dir_" +
+                           target_definition.identifier.lower())
 
-    image_loader = i_image.ImageLoader(use_existing_images, invert_normal_map_y_channel)
-    image_loader.load_images_from_sn_materials(sn_materials, textures_path, ntsp_dir)
+    image_loader = i_image.ImageLoader(
+        use_existing_images, invert_normal_map_y_channel)
+    image_loader.load_images_from_sn_materials(
+        sn_materials, textures_path, ntsp_dir)
 
     for sn_material, material in converted.items():
         material_properties: HEIO_Material = material.heio_material
@@ -163,4 +167,4 @@ def convert_sharpneedle_materials(
         if created_missing:
             material_properties.custom_shader = True
 
-    return converted
+    return {k.Name: (k, v) for k, v in converted.items()}

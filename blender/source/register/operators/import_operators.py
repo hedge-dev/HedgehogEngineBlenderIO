@@ -1,5 +1,6 @@
 from .base_import_operators import (
-    ImportMaterialOperator
+    ImportMaterialOperator,
+    ImportTerrainModelOperator
 )
 
 
@@ -8,7 +9,7 @@ class HEIO_OT_Import_Material(ImportMaterialOperator):
     bl_label = "HE Material (*.material)"
 
     def import_(self, context):
-        self.import_materials(context)
+        self.import_material_files(context)
         return {'FINISHED'}
 
 
@@ -25,7 +26,7 @@ class HEIO_OT_Import_Material_Active(ImportMaterialOperator):
         )
 
     def import_(self, context):
-        materials = self.import_materials(context)
+        materials = self.import_material_files(context)
 
         object = context.active_object
         for material in materials.values():
@@ -39,11 +40,20 @@ class HEIO_OT_Import_Material_Active_if(ImportMaterialOperator):
     bl_label = "Import HE Material (*.material)"
 
     def import_(self, context):
-        materials = self.import_materials(context)
+        materials = self.import_material_files(context)
 
         object = context.active_object
         if object is not None and object.select_get():
             for material in materials.values():
                 object.data.materials.append(material)
 
+        return {'FINISHED'}
+
+
+class HEIO_OT_Import_TerrainModel(ImportTerrainModelOperator):
+    bl_idname = "heio.import_terrainmodel"
+    bl_label = "Import HE Terrain model (*.terrain-model)"
+
+    def import_(self, context):
+        self.import_terrain_model_files(context)
         return {'FINISHED'}

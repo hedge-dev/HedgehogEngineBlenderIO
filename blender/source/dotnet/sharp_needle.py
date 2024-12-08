@@ -2,37 +2,34 @@ class SharpNeedle:
     '''SharpNeedle library types'''
 
     RESOURCE_MANAGER: any = None
-    '''class SharpNeedle.ResourceManager'''
+    '''class SharpNeedle.Resource.ResourceManager'''
 
     RESOURCE_EXTENSIONS: any = None
-    '''class SharpNeedle.Utilities.ResourceExtensions'''
+    '''class SharpNeedle.Resource.ResourceExtensions'''
 
     SAMPLE_CHUNK_NODE: any = None
-    '''class SharpNeedle.HedgehogEngine.Mirage.SampleChunkNode'''
+    '''class SharpNeedle.FrameWork.HedgehogEngine.Mirage.SampleChunkNode'''
 
     MATERIAL: any = None
-    '''class SharpNeedle.HedgehogEngine.Mirage.Material'''
+    '''class SharpNeedle.FrameWork.HedgehogEngine.Mirage.Material'''
 
     TEXTURE: any = None
-    '''class SharpNeedle.HedgehogEngine.Mirage.Texture'''
+    '''class SharpNeedle.FrameWork.HedgehogEngine.Mirage.Texture'''
 
     WRAP_MODE: any = None
-    '''enum SharpNeedle.HedgehogEngine.Mirage.WrapMode'''
+    '''enum SharpNeedle.FrameWork.HedgehogEngine.Mirage.WrapMode'''
 
 
 
     @classmethod
     def load(cls):
 
-        from SharpNeedle import (
-            ResourceManager
-        )
-
-        from SharpNeedle.Utilities import (
+        from SharpNeedle.Resource import (
+            ResourceManager,
             ResourceExtensions
         )
 
-        from SharpNeedle.HedgehogEngine.Mirage import (
+        from SharpNeedle.Framework.HedgehogEngine.Mirage import (
             SampleChunkNode,
             Material,
             Texture,
