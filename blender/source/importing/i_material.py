@@ -83,7 +83,7 @@ def convert_sharpneedle_materials(
         create_undefined_parameters: bool,
         use_existing_images: bool,
         invert_normal_map_y_channel: bool,
-        textures_path: str | None):
+        import_textures: bool):
 
     converted: dict[str, bpy.types.Material] = {}
     target_definition = definitions.get_target_definition(context)
@@ -129,9 +129,8 @@ def convert_sharpneedle_materials(
     image_loader = i_image.ImageLoader(
         use_existing_images, invert_normal_map_y_channel)
 
-    if textures_path is not None:
-        image_loader.load_images_from_sn_materials(
-            sn_materials, textures_path, ntsp_dir)
+    if import_textures:
+        image_loader.load_images_from_sn_materials(sn_materials, ntsp_dir)
 
     for sn_material, material in converted.items():
         material_properties: HEIO_Material = material.heio_material

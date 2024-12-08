@@ -145,10 +145,10 @@ class ImageLoader:
 
         return image
 
-    def load_images_from_sn_materials(self, sn_materials, textures_path: str, ntsp_dir: str):
+    def load_images_from_sn_materials(self, sn_materials, ntsp_dir: str):
 
         net_images = HEIO_NET.IMAGE.LoadMaterialImages(
-            sn_materials, textures_path, ntsp_dir)
+            sn_materials, ntsp_dir)
 
         for item in net_images:
 

@@ -119,7 +119,7 @@ class ImportMaterialOperator(ImportOperator):
             self.create_undefined_parameters,
             self.use_existing_images,
             invert_normal_map_y_channel,
-            directory if self.import_images else None)
+            self.import_images)
 
     def import_material_files(self, context):
         load_dotnet()
