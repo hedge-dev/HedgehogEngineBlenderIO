@@ -84,7 +84,9 @@ def process_mesh_data(
 
     mesh.normals_split_custom_set([(x.X, -x.Z, x.Y) for x in mesh_data.Normals])
 
-    # Validating the mesh, as for some reason things really like to break
+    ##################################################
+    # Cleaning up
+
     mesh.validate()
 
     edge_loop_map = [([], []) for _ in mesh.edges]
@@ -116,7 +118,7 @@ def process_mesh_data(
         nrm2 = mesh.corner_normals[loop_map[1][0]].vector
         nrm3 = mesh.corner_normals[loop_map[1][1]].vector
 
-        if (nrm0 - nrm1).length_squared < 0.01 and (nrm2 - nrm3).length_squared < 0.01:
+        if nrm0.dot(nrm1) > 0.995 and nrm2.dot(nrm3) > 0.995:
             edge.use_edge_sharp = False
 
     return mesh
