@@ -215,7 +215,7 @@ namespace HEIO.NET
                 }
                 catch
                 {
-                    models = [manager.Open<TerrainModel>(file)];
+                    models = [manager.Open<TerrainModel>(file, false)];
                 }
 
                 foreach(TerrainModel model in models)
