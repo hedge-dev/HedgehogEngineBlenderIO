@@ -62,7 +62,7 @@ namespace HEIO.NET
             return new(filepath, null);
         }
     
-        public static Dictionary<string, Image> LoadMaterialImages(Material[] materials, string materialDirectory, string streamingDirectory)
+        public static Dictionary<string, Image> LoadMaterialImages(Material[] materials, string streamingDirectory)
         {
             Dictionary<string, Image> result = [];
             Dictionary<string, Package?> packages = [];
@@ -73,7 +73,7 @@ namespace HEIO.NET
                 {
                     if(!result.ContainsKey(texture.PictureName!))
                     {
-                        Image? image = LoadImage(Path.Join(materialDirectory, texture.PictureName + ".dds"), packages, streamingDirectory);
+                        Image? image = LoadImage(Path.Join(material.BaseFile!.Parent.Path, texture.PictureName + ".dds"), packages, streamingDirectory);
                         if(image != null)
                         {
                             result.Add(texture.PictureName!, image);

@@ -37,7 +37,7 @@ namespace HEIO.NET
                 }
                 else
                 {
-                    missingList.Append(dependency);
+                    missingList.Add(dependency);
                 }
             }
 
@@ -78,7 +78,7 @@ namespace HEIO.NET
                 if(dependencyDirectory != null)
                 {
                     _dependencyResolvers[dependency] = new DirectoryResourceResolver(dependencyDirectory, GetResourceManagerForDirectory(dependencyDirectory));
-                    ResolveDirectoryDependencies(directory, absoluteDependencies);
+                    ResolveDirectoryDependencies(dependencyDirectory, absoluteDependencies);
                 }
                 else
                 {

@@ -261,7 +261,7 @@ namespace HEIO.NET
             {
                 IResourceResolver[] resolvers = dependencyManager.CollectResolvers(directory, out string[] missing, out string[] pacs);
 
-                missingDependencies.UnionWith(missingDependencies);
+                missingDependencies.UnionWith(missing);
                 dependencyPacFiles.UnionWith(pacs);
 
                 foreach(ModelBase model in directoryModels)
