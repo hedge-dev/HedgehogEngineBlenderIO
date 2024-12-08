@@ -82,11 +82,19 @@ def convert_sharpneedle_materials(
         sn_materials: Iterable[any],
         create_undefined_parameters: bool,
         use_existing_images: bool,
-        invert_normal_map_y_channel: bool,
+        nrm_invert_y_channel: str,
         import_textures: bool):
 
     converted: dict[str, bpy.types.Material] = {}
     target_definition = definitions.get_target_definition(context)
+
+    invert_normal_map_y_channel = (
+        nrm_invert_y_channel == "FLIP"
+        or (
+            nrm_invert_y_channel == "AUTO"
+            and target_definition.hedgehog_engine_version == 1
+        )
+    )
 
     for sn_material in sn_materials:
         if sn_material in converted:

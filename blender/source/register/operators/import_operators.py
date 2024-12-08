@@ -1,6 +1,7 @@
 from .base_import_operators import (
     ImportMaterialOperator,
-    ImportTerrainModelOperator
+    ImportTerrainModelOperator,
+    ImportPointCloudOperator
 )
 
 
@@ -52,8 +53,17 @@ class HEIO_OT_Import_Material_Active_if(ImportMaterialOperator):
 
 class HEIO_OT_Import_TerrainModel(ImportTerrainModelOperator):
     bl_idname = "heio.import_terrainmodel"
-    bl_label = "Import HE Terrain model (*.terrain-model)"
+    bl_label = "HE Terrain model (*.terrain-model)"
 
     def import_(self, context):
         self.import_terrain_model_files(context)
+        return {'FINISHED'}
+
+
+class HEIO_OT_Import_PointCloud(ImportPointCloudOperator):
+    bl_idname = "heio.import_pointcloud"
+    bl_label = "HE Point cloud (*.pcmodel)"
+
+    def import_(self, context):
+        self.import_point_cloud_files(context)
         return {'FINISHED'}

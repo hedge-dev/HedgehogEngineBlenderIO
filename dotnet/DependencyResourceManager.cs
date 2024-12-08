@@ -13,13 +13,49 @@ namespace HEIO.NET
     {
         private readonly Dictionary<string, ResourceManager> _directoryResourceManagers = [];
         private readonly Dictionary<string, IResourceResolver?> _dependencyResolvers = [];
+        private readonly Dictionary<string, string[]> _absoluteDependencies = [];
         private readonly Dictionary<string, IFile> _foundPacs = [];
+
+        public ResolveInfo ResolveDependencies<T>(IEnumerable<(T, IFile)> data, Action<IResourceResolver[], T, IFile, HashSet<string>> resolveFunc)
+        {
+            Dictionary<string, (IDirectory, List<(T, IFile)>)> directories = [];
+
+            foreach((T item, IFile file) in data)
+            {
+                IDirectory parent = file.Parent;
+
+                if(!directories.TryGetValue(parent.Path, out (IDirectory, List<(T, IFile)>) directory))
+                {
+                    directory = (parent, []);
+                    directories[parent.Path] = directory;
+                }
+
+                directory.Item2.Add((item, file));
+            }
+
+            HashSet<string> unresolved = [];
+            HashSet<string> missingDependencies = [];
+            HashSet<string> dependencyPacFiles = [];
+
+            foreach((IDirectory directory, List<(T, IFile)> directoryData) in directories.Values)
+            {
+                IResourceResolver[] resolvers = CollectResolvers(directory, out string[] missing, out string[] pacs);
+
+                missingDependencies.UnionWith(missing);
+                dependencyPacFiles.UnionWith(pacs);
+
+                foreach((T item, IFile file) in directoryData)
+                {
+                    resolveFunc(resolvers, item, file, unresolved);
+                }
+            }
+
+            return new([.. unresolved], [.. missingDependencies], [.. dependencyPacFiles]);
+        }
 
         public IResourceResolver[] CollectResolvers(IDirectory directory, out string[] missing, out string[] pacs)
         {
-            List<string> absoluteDependencies = [];
-
-            ResolveDirectoryDependencies(directory, absoluteDependencies);
+            string[] absoluteDependencies = ResolveDirectoryDependencies(directory);
 
             List<string> missingList = [];
             List<string> pacsList = [];
@@ -50,26 +86,29 @@ namespace HEIO.NET
             ];
         }
 
-        private void ResolveDirectoryDependencies(IDirectory directory, List<string> absoluteDependencies)
+        private string[] ResolveDirectoryDependencies(IDirectory directory)
         {
             IFile? dependenciesFile = directory.GetFile("!DEPENDENCIES.txt");
             if(dependenciesFile == null)
             {
-                return;
+                return [];
             }
+
+            List<string> result = [];
 
             string[] dependencies = ReadDependencyLines(dependenciesFile);
             foreach(string dependency in dependencies)
             {
-                if(absoluteDependencies.Contains(dependency))
+                if(result.Contains(dependency))
                 {
                     continue;
                 }
 
-                absoluteDependencies.Add(dependency);
+                result.Add(dependency);
 
                 if(_dependencyResolvers.ContainsKey(dependency))
                 {
+                    result.AddRange(_absoluteDependencies[dependency]);
                     continue;
                 }
 
@@ -78,11 +117,14 @@ namespace HEIO.NET
                 if(dependencyDirectory != null)
                 {
                     _dependencyResolvers[dependency] = new DirectoryResourceResolver(dependencyDirectory, GetResourceManagerForDirectory(dependencyDirectory));
-                    ResolveDirectoryDependencies(dependencyDirectory, absoluteDependencies);
+                    string[] absoluteDependencies = ResolveDirectoryDependencies(dependencyDirectory);
+                    _absoluteDependencies[dependency] = absoluteDependencies;
+                    result.AddRange(absoluteDependencies);
                 }
                 else
                 {
                     _dependencyResolvers[dependency] = null;
+                    _absoluteDependencies[dependency] = [];
                 }
 
                 if(pacFile != null)
@@ -90,6 +132,8 @@ namespace HEIO.NET
                     _foundPacs[dependency] = pacFile;
                 }
             }
+
+            return [.. result];
         }
 
         public ResourceManager GetResourceManagerForDirectory(IDirectory directory)
@@ -103,7 +147,6 @@ namespace HEIO.NET
             return resourceManager;
         }
 
-        
 
         private static string[] ReadDependencyLines(IFile file)
         {

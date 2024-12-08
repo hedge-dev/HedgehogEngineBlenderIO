@@ -1,8 +1,8 @@
 import bpy
 
+from ..dotnet import HEIO_NET
 
-def process_mesh_data(
-        context: bpy.types.Context,
+def convert_mesh_data(
         mesh_data: any,
         materials: dict[str, bpy.types.Material]):
 
@@ -122,3 +122,19 @@ def process_mesh_data(
             edge.use_edge_sharp = False
 
     return mesh
+
+
+def convert_models(models, materials, vertex_merge_mode: str):
+
+    from ..exporting import o_enum
+
+    vertex_merge_mode = o_enum.to_vertex_merge_mode(vertex_merge_mode)
+    result = []
+
+    for terrain_model_set in models:
+        terrain_model = terrain_model_set[0]
+
+        mesh_data = HEIO_NET.MESH_DATA.FromHEModel(terrain_model, vertex_merge_mode)
+        result.append(convert_mesh_data(mesh_data, materials))
+
+    return result

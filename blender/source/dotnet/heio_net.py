@@ -16,6 +16,12 @@ class HEIO_NET:
     RESOLVE_INFO: any = None
     '''struct HEIO.NET.ResolveInfo'''
 
+    MODEL_HELPER: any = None
+    '''class HEIO.NET.ModelHelper'''
+
+    POINT_CLOUD_COLLECTION: any = None
+    '''class HEIO.NET.PointCloudCollection'''
+
     @classmethod
     def load(cls):
 
@@ -24,7 +30,9 @@ class HEIO_NET:
             PythonHelpers,
             MeshData,
             VertexMergeMode,
-            ResolveInfo
+            ResolveInfo,
+            ModelHelper,
+            PointCloudCollection
         )
 
         cls.IMAGE = Image
@@ -32,3 +40,5 @@ class HEIO_NET:
         cls.MESH_DATA = MeshData
         cls.VERTEX_MERGE_MODE = VertexMergeMode
         cls.RESOLVE_INFO = ResolveInfo
+        cls.MODEL_HELPER = ModelHelper
+        cls.POINT_CLOUD_COLLECTION = PointCloudCollection

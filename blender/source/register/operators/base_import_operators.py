@@ -28,17 +28,20 @@ class ImportOperator(HEIOBaseFileLoadOperator):
             return
 
         resolve_info_text = bpy.data.texts.new("Import resolve report")
-        resolve_info_text.write(f"{resolve_info.UnresolvedFiles.Length} files could not be found.\n\n")
+        resolve_info_text.write(
+            f"{resolve_info.UnresolvedFiles.Length} files could not be found.\n\n")
 
         if resolve_info.PackedDependencies.Length > 0:
-            resolve_info_text.write("Some files may be located in the following archives and need to be unpacked:\n")
+            resolve_info_text.write(
+                "Some files may be located in the following archives and need to be unpacked:\n")
             for packed in resolve_info.PackedDependencies:
                 resolve_info_text.write(f"\t{packed}\n")
 
             resolve_info_text.write("\n")
 
         if resolve_info.MissingDependencies.Length > 0:
-            resolve_info_text.write("Following dependencies were not found altogether:\n")
+            resolve_info_text.write(
+                "Following dependencies were not found altogether:\n")
             for missing in resolve_info.MissingDependencies:
                 resolve_info_text.write(f"\t{missing}\n")
 
@@ -52,7 +55,6 @@ class ImportOperator(HEIOBaseFileLoadOperator):
         context.area.type = 'TEXT_EDITOR'
         context.space_data.text = resolve_info_text
         context.space_data.top = 0
-
 
     def _execute(self, context: Context):
         from ...dotnet import load_dotnet
@@ -102,23 +104,14 @@ class ImportMaterialOperator(ImportOperator):
         default=False
     )
 
-    def import_materials(self, context, materials, directory: str):
+    def import_materials(self, context, materials):
         from ...importing import i_material
-
-        invert_normal_map_y_channel = (
-            self.nrm_invert_y_channel == "FLIP"
-            or (
-                self.nrm_invert_y_channel == "AUTO"
-                and self.target_definition.hedgehog_engine_version == 1
-            )
-        )
-
         return i_material.convert_sharpneedle_materials(
             context,
             materials,
             self.create_undefined_parameters,
             self.use_existing_images,
-            invert_normal_map_y_channel,
+            self.nrm_invert_y_channel,
             self.import_images)
 
     def import_material_files(self, context):
@@ -140,7 +133,7 @@ class ImportMaterialOperator(ImportOperator):
 
             sn_materials.append(material)
 
-        return self.import_materials(context, sn_materials, directory)
+        return self.import_materials(context, sn_materials)
 
     def draw_panel_material(self):
         header, body = self.layout.panel(
@@ -194,24 +187,13 @@ class ImportModelBaseOperator(ImportMaterialOperator):
         default='ALL'
     )
 
-    def import_models(self, context: bpy.types.Context, models, directory: str):
+    def import_models(self, context: bpy.types.Context, models):
 
-        sn_materials = HEIO_NET.MESH_DATA.GetMaterials(models)
-        materials = self.import_materials(context, sn_materials, directory)
+        sn_materials = HEIO_NET.MODEL_HELPER.GetMaterials(models)
+        materials = self.import_materials(context, sn_materials)
 
         from ...importing import i_mesh
-        from ...exporting import o_enum
-
-        vertex_merge_mode = o_enum.to_vertex_merge_mode(self.vertex_merge_mode)
-
-        for terrain_model_set in models:
-            terrain_model = terrain_model_set[0]
-
-            mesh_data = HEIO_NET.MESH_DATA.FromHEModel(terrain_model, vertex_merge_mode)
-            mesh = i_mesh.process_mesh_data(context, mesh_data, materials)
-
-            obj = bpy.data.objects.new(terrain_model.Name, mesh)
-            context.scene.collection.objects.link(obj)
+        return i_mesh.convert_models(models, materials, self.vertex_merge_mode)
 
     def draw_panel_model(self):
         header, body = self.layout.panel(
@@ -244,8 +226,37 @@ class ImportTerrainModelOperator(ImportModelBaseOperator):
         directory = os.path.dirname(self.filepath)
         filepaths = [os.path.join(directory, file.name) for file in self.files]
 
-        terrain_models, resolve_info = HEIO_NET.MESH_DATA.LoadTerrainFiles(filepaths, HEIO_NET.RESOLVE_INFO())
+        terrain_models, resolve_info = HEIO_NET.MODEL_HELPER.LoadTerrainFiles(
+            filepaths, HEIO_NET.RESOLVE_INFO())
 
-        self.import_models(context, terrain_models, directory)
+        meshes = self.import_models(context, terrain_models)
+        for mesh in meshes:
+            obj = bpy.data.objects.new(meshes.Name, mesh)
+            context.scene.collection.objects.link(obj)
+
+        self.print_resolve_info(context, resolve_info)
+
+
+class ImportPointCloudOperator(ImportModelBaseOperator):
+
+    filter_glob: StringProperty(
+        default="*.pcmodel",
+        options={'HIDDEN'},
+    )
+
+    def import_point_cloud_files(self, context: bpy.types.Context):
+        directory = os.path.dirname(self.filepath)
+        filepaths = [os.path.join(directory, file.name) for file in self.files]
+
+        point_cloud_collection, resolve_info = HEIO_NET.POINT_CLOUD_COLLECTION.LoadPointClouds(
+            filepaths, HEIO_NET.RESOLVE_INFO())
+
+        meshes = self.import_models(context, point_cloud_collection.TerrainModels)
+
+        from ...importing import i_pointcloud
+        collections = i_pointcloud.convert_point_cloud_collection(point_cloud_collection, meshes)
+
+        for collection in collections:
+            context.collection.children.link(collection)
 
         self.print_resolve_info(context, resolve_info)
