@@ -110,7 +110,6 @@
     "Hide": false,
     "Layer": "Transparent",
     "Textures": [
-      "reflection",
       "diffuse",
       "diffuse",
       "normal",
@@ -122,7 +121,6 @@
   },
   "Blend_dpndpn": {
     "Textures": [
-      "reflection",
       "diffuse",
       "diffuse",
       "normal",
@@ -144,7 +142,6 @@
       }
     },
     "Textures": [
-      "reflection",
       "normal",
       "diffuse",
       "diffuse",
@@ -730,7 +727,6 @@
     "Textures": [
       "diffuse",
       "diffuse",
-      "diffuse",
       "normal",
       "specular",
       "emission",
@@ -828,7 +824,6 @@
     "Textures": [
       "diffuse",
       "diffuse",
-      "diffuse",
       "normal",
       "specular"
     ]
@@ -855,7 +850,6 @@
       }
     },
     "Textures": [
-      "diffuse",
       "diffuse",
       "diffuse",
       "normal",
@@ -885,7 +879,6 @@
       }
     },
     "Textures": [
-      "diffuse",
       "diffuse",
       "diffuse",
       "normal",
@@ -1145,7 +1138,6 @@
     "Textures": [
       "diffuse",
       "diffuse",
-      "diffuse",
       "normal",
       "specular"
     ]
@@ -1182,8 +1174,6 @@
       }
     },
     "Textures": [
-      "diffuse",
-      "specular",
       "transparency"
     ]
   },
@@ -1266,7 +1256,6 @@
       }
     },
     "Textures": [
-      "reflection",
       "diffuse",
       "diffuse",
       "normal",
@@ -1306,7 +1295,6 @@
       }
     },
     "Textures": [
-      "reflection",
       "diffuse",
       "diffuse",
       "normal",
@@ -2051,7 +2039,6 @@
       }
     },
     "Textures": [
-      "transparency",
       "diffuse",
       "diffuse",
       "normal",
@@ -2117,7 +2104,6 @@
       }
     },
     "Textures": [
-      "transparency",
       "diffuse",
       "diffuse",
       "normal",
@@ -2192,7 +2178,6 @@
       }
     },
     "Textures": [
-      "normal",
       "diffuse",
       "reflection",
       "emission"
@@ -2525,8 +2510,6 @@
     },
     "Textures": [
       "diffuse",
-      "diffuse",
-      "diffuse",
       "normal",
       "specular",
       "emission",
@@ -2659,7 +2642,6 @@
       "normal",
       "diffuse",
       "diffuse",
-      "normal",
       "specular",
       "emission",
       "transparency"
@@ -2706,7 +2688,6 @@
       }
     },
     "Textures": [
-      "normal",
       "diffuse",
       "diffuse",
       "normal",
@@ -3505,8 +3486,6 @@
     },
     "Textures": [
       "diffuse",
-      "diffuse",
-      "diffuse",
       "normal",
       "specular",
       "transparency"
@@ -3546,8 +3525,6 @@
     },
     "Textures": [
       "diffuse",
-      "diffuse",
-      "diffuse",
       "normal",
       "specular",
       "emission",
@@ -3586,8 +3563,6 @@
       }
     },
     "Textures": [
-      "diffuse",
-      "diffuse",
       "diffuse",
       "normal",
       "specular",
@@ -3646,8 +3621,6 @@
       }
     },
     "Textures": [
-      "diffuse",
-      "diffuse",
       "diffuse",
       "normal",
       "specular",
@@ -3715,8 +3688,6 @@
       }
     },
     "Textures": [
-      "diffuse",
-      "diffuse",
       "diffuse",
       "normal",
       "specular",
@@ -4063,7 +4034,6 @@
       }
     },
     "Textures": [
-      "reflection",
       "diffuse",
       "diffuse",
       "normal",
@@ -4176,7 +4146,6 @@
       }
     },
     "Textures": [
-      "reflection",
       "diffuse",
       "diffuse",
       "normal",
@@ -4369,7 +4338,6 @@
       }
     },
     "Textures": [
-      "normal",
       "diffuse",
       "diffuse",
       "normal",
