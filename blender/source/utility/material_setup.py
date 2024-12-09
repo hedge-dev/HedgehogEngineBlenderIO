@@ -1,6 +1,7 @@
 import os
 import bpy
 from typing import Iterable
+from ..register.definitions.target_info import TargetDefinition
 
 NODE_IGNORE_PROPERTIES = [
     "parent",
@@ -140,10 +141,7 @@ def _predict_material_name(name):
     return number_name
 
 
-def _get_templates(context: bpy.types.Context, shader_names: set[str]):
-    from ..register import definitions
-    target_definition = definitions.get_target_definition(context)
-
+def _get_templates(target_definition: TargetDefinition | None, shader_names: set[str]):
     if target_definition is None:
         return None
 
@@ -175,7 +173,7 @@ def _get_templates(context: bpy.types.Context, shader_names: set[str]):
 
 
 def setup_and_update_materials(
-        context: bpy.types.Context,
+        target_definition: TargetDefinition | None,
         materials: Iterable[bpy.types.Material]):
 
     shader_names = set()
@@ -188,7 +186,7 @@ def setup_and_update_materials(
             shader_name += f"[{material.heio_material.variant_name}]"
             shader_names.add(shader_name)
 
-    templates = _get_templates(context, shader_names)
+    templates = _get_templates(target_definition, shader_names)
 
     if templates is None:
         return

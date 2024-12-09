@@ -9,10 +9,13 @@ from bpy.props import (
 )
 
 from .base import HEIOBaseFileLoadOperator
-from .. import definitions
-from ...exceptions import UserException
 
+from .. import definitions
+
+from ...importing import i_image, i_material, i_mesh
 from ...dotnet import load_dotnet, SharpNeedle, HEIO_NET
+from ...utility.general import get_addon_preferences
+from ...exceptions import UserException
 
 
 class ImportOperator(HEIOBaseFileLoadOperator):
@@ -23,7 +26,27 @@ class ImportOperator(HEIOBaseFileLoadOperator):
         type=bpy.types.OperatorFileListElement
     )
 
-    def print_resolve_info(self, context: bpy.types.Context, resolve_info):
+    def _execute(self, context: Context):
+        load_dotnet()
+
+        self.target_definition = definitions.get_target_definition(context)
+        if self.target_definition is None:
+            raise UserException("Invalid target game!")
+
+        self.addon_preference = get_addon_preferences(context)
+        self._setup(context)
+
+        result = self.import_(context)
+        self.print_resolve_info(context)
+
+        return result
+
+    def _setup(self, context):
+        self.resolve_infos = []
+
+    def print_resolve_info(self, context: bpy.types.Context):
+        resolve_info = HEIO_NET.RESOLVE_INFO.Combine(self.resolve_infos)
+
         if resolve_info.UnresolvedFiles.Length == 0:
             return
 
@@ -55,16 +78,6 @@ class ImportOperator(HEIOBaseFileLoadOperator):
         context.area.type = 'TEXT_EDITOR'
         context.space_data.text = resolve_info_text
         context.space_data.top = 0
-
-    def _execute(self, context: Context):
-        from ...dotnet import load_dotnet
-        load_dotnet()
-
-        self.target_definition = definitions.get_target_definition(context)
-        if self.target_definition is None:
-            raise UserException("Invalid target game!")
-
-        return self.import_(context)
 
 
 class ImportMaterialOperator(ImportOperator):
@@ -104,37 +117,6 @@ class ImportMaterialOperator(ImportOperator):
         default=False
     )
 
-    def import_materials(self, context, materials):
-        from ...importing import i_material
-        return i_material.convert_sharpneedle_materials(
-            context,
-            materials,
-            self.create_undefined_parameters,
-            self.use_existing_images,
-            self.nrm_invert_y_channel,
-            self.import_images)
-
-    def import_material_files(self, context):
-        load_dotnet()
-
-        directory = os.path.dirname(self.filepath)
-        sn_materials = []
-        resource_manager = SharpNeedle.RESOURCE_MANAGER()
-
-        for file in self.files:
-            filepath = os.path.join(directory, file.name)
-
-            try:
-                material = SharpNeedle.RESOURCE_EXTENSIONS.Open[SharpNeedle.MATERIAL](
-                    resource_manager, filepath, True)
-            except Exception as error:
-                print(f"An error occured while importing {file.name}")
-                raise error
-
-            sn_materials.append(material)
-
-        return self.import_materials(context, sn_materials)
-
     def draw_panel_material(self):
         header, body = self.layout.panel(
             "HEIO_import_material", default_closed=False)
@@ -172,6 +154,53 @@ class ImportMaterialOperator(ImportOperator):
         super().draw(context)
         self.draw_panel_material()
 
+    def _setup(self, context):
+        super()._setup(context)
+
+        ntsp_dir = ""
+
+        if self.target_definition.uses_ntsp:
+            ntsp_dir = getattr(self.addon_preference, "ntsp_dir_" +
+                               self.target_definition.identifier.lower())
+
+        self.image_loader = i_image.ImageLoader(
+            self.target_definition,
+            self.use_existing_images,
+            self.nrm_invert_y_channel,
+            ntsp_dir
+        )
+
+        self.material_converter = i_material.MaterialConverter(
+            self.target_definition,
+            self.image_loader,
+            self.create_undefined_parameters,
+            self.import_images
+        )
+
+    def import_material_files(self):
+
+        directory = os.path.dirname(self.filepath)
+        sn_materials = []
+        resource_manager = SharpNeedle.RESOURCE_MANAGER()
+
+        for file in self.files:
+            filepath = os.path.join(directory, file.name)
+
+            try:
+                material = SharpNeedle.RESOURCE_EXTENSIONS.Open[SharpNeedle.MATERIAL](
+                    resource_manager, filepath, True)
+            except Exception as error:
+                print(f"An error occured while importing {file.name}")
+                raise error
+
+            sn_materials.append(material)
+
+        return self.material_converter.convert_materials(sn_materials)
+
+    def print_resolve_info(self, context):
+        self.resolve_infos.extend(self.image_loader.resolve_infos)
+        return super().print_resolve_info(context)
+
 
 class ImportModelBaseOperator(ImportMaterialOperator):
 
@@ -186,14 +215,6 @@ class ImportModelBaseOperator(ImportMaterialOperator):
         ),
         default='ALL'
     )
-
-    def import_models(self, context: bpy.types.Context, models):
-
-        sn_materials = HEIO_NET.MODEL_HELPER.GetMaterials(models)
-        materials = self.import_materials(context, sn_materials)
-
-        from ...importing import i_mesh
-        return i_mesh.convert_models(models, materials, self.vertex_merge_mode)
 
     def draw_panel_model(self):
         header, body = self.layout.panel(
@@ -212,6 +233,21 @@ class ImportModelBaseOperator(ImportMaterialOperator):
         super().draw(context)
         self.draw_panel_model()
 
+    def _setup(self, context):
+        super()._setup(context)
+
+        self.mesh_converter = i_mesh.MeshConverter(
+            self.target_definition,
+            self.material_converter,
+            self.vertex_merge_mode
+        )
+
+    def import_models(self, model_sets):
+
+        sn_materials = HEIO_NET.MODEL_HELPER.GetMaterials(model_sets)
+        self.material_converter.convert_materials(sn_materials)
+        return self.mesh_converter.convert_model_sets(model_sets)
+
 
 class ImportTerrainModelOperator(ImportModelBaseOperator):
 
@@ -221,7 +257,6 @@ class ImportTerrainModelOperator(ImportModelBaseOperator):
     )
 
     def import_terrain_model_files(self, context: bpy.types.Context):
-        load_dotnet()
 
         directory = os.path.dirname(self.filepath)
         filepaths = [os.path.join(directory, file.name) for file in self.files]
@@ -229,12 +264,12 @@ class ImportTerrainModelOperator(ImportModelBaseOperator):
         terrain_models, resolve_info = HEIO_NET.MODEL_HELPER.LoadTerrainFiles(
             filepaths, HEIO_NET.RESOLVE_INFO())
 
-        meshes = self.import_models(context, terrain_models)
+        self.resolve_infos.append(resolve_info)
+
+        meshes = self.import_models(terrain_models)
         for mesh in meshes:
             obj = bpy.data.objects.new(mesh.name, mesh)
             context.scene.collection.objects.link(obj)
-
-        self.print_resolve_info(context, resolve_info)
 
 
 class ImportPointCloudOperator(ImportModelBaseOperator):
@@ -251,12 +286,13 @@ class ImportPointCloudOperator(ImportModelBaseOperator):
         point_cloud_collection, resolve_info = HEIO_NET.POINT_CLOUD_COLLECTION.LoadPointClouds(
             filepaths, HEIO_NET.RESOLVE_INFO())
 
-        meshes = self.import_models(context, point_cloud_collection.TerrainModels)
+        self.resolve_infos.append(resolve_info)
+
+        meshes = self.import_models(point_cloud_collection.TerrainModels)
 
         from ...importing import i_pointcloud
-        collections = i_pointcloud.convert_point_cloud_collection(point_cloud_collection, meshes)
+        collections = i_pointcloud.convert_point_cloud_collection(
+            point_cloud_collection, meshes)
 
         for collection in collections:
             context.collection.children.link(collection)
-
-        self.print_resolve_info(context, resolve_info)

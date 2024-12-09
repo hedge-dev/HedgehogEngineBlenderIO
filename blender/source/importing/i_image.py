@@ -2,28 +2,40 @@ import bpy
 import numpy
 
 from ..dotnet import HEIO_NET, System
-
+from ..register.definitions.target_info import TargetDefinition
 from ..utility.material_setup import get_first_connected_socket
 
 
 class ImageLoader:
 
+    _target_definition: TargetDefinition
+
     _use_existing_images: bool
     _invert_normal_map_y_channel: bool
+    _ntsp_dir: str
 
     _loaded_images: dict[str, any]
     _setup_images: dict[str, bpy.types.Image]
 
+    _resolve_infos: list
+
     def __init__(
             self,
+            target_definition: TargetDefinition,
             use_existing_images: bool,
-            invert_normal_map_y_channel: bool):
+            invert_normal_map_y_channel: bool,
+            ntsp_dir: str):
+
+        self._target_definition = target_definition
 
         self._use_existing_images = use_existing_images
         self._invert_normal_map_y_channel = invert_normal_map_y_channel
+        self._ntsp_dir = ntsp_dir
 
         self._loaded_images = {}
         self._setup_images = {}
+
+        self._resolve_infos = []
 
     @staticmethod
     def _get_placeholder_image_color(node: bpy.types.ShaderNodeTexImage):
@@ -54,7 +66,7 @@ class ImageLoader:
 
     @staticmethod
     def _import_image_dds_addon(image_name: str, net_image):
-        from blender_dds_addon.ui.import_dds import load_dds
+        from blender_dds_addon.ui.import_dds import load_dds  # type: ignore
         import os
 
         if net_image.StreamedData is not None:
@@ -145,12 +157,17 @@ class ImageLoader:
 
         return image
 
-    def load_images_from_sn_materials(self, sn_materials, ntsp_dir: str):
+    def load_images_from_materials(self, sn_materials):
 
-        net_images = HEIO_NET.IMAGE.LoadMaterialImages(
-            sn_materials, ntsp_dir)
+        net_images, resolve_info = HEIO_NET.IMAGE.LoadMaterialImages(
+            sn_materials, self._ntsp_dir, HEIO_NET.RESOLVE_INFO())
+
+        self._resolve_infos.append(resolve_info)
 
         for item in net_images:
+
+            if item.Key in self._loaded_images:
+                continue
 
             if "blender_dds_addon" in bpy.context.preferences.addons.keys():
                 image = self._import_image_dds_addon(item.Key, item.Value)
@@ -159,15 +176,16 @@ class ImageLoader:
 
             self._loaded_images[item.Key] = image
 
-
     def get_image(self, texture, image_name: str):
         if len(image_name.strip()) == 0:
             return None
 
         if image_name in self._setup_images:
             return self._setup_images[image_name]
+
         elif self._use_existing_images and image_name in bpy.data.images:
             return bpy.data.images[image_name]
+
         else:
             image = self._setup_image(
                 texture,
@@ -177,3 +195,7 @@ class ImageLoader:
             texture.image = image
 
             return image
+
+    @property
+    def resolve_infos(self):
+        return self._resolve_infos.copy()
