@@ -35,7 +35,7 @@ class SCAParameterDefinition:
         return SCAParameterDefinition(
             data.identifier,
             data.parse_property("Type", SCAParameterType),
-            data.get_item_fallback("Description", "")
+            data.get_property_fallback("Description", "")
         )
 
     @staticmethod

@@ -41,6 +41,8 @@ class TargetDefinition:
     has_preferences: bool
 
     data_versions: TargetDataVersions
+    default_texture_modes: dict[str, str]
+
     shaders: shader_definitions.ShaderDefinitionCollection
     sca_parameters: sca_parameter_definitions.SCAParameterDefinitionCollection | None
 
@@ -65,6 +67,8 @@ class TargetDefinition:
         self.has_preferences = uses_ntsp
 
         self.data_versions = None
+        self.default_texture_modes = dict()
+
         self.shaders = None
         self.sca_parameters = None
 
@@ -82,6 +86,9 @@ class TargetDefinition:
 
         result.data_versions = data.parse_property(
             "DataVersions", TargetDataVersions)
+
+        result.default_texture_modes.update(
+            data.get_property_fallback("DefaultTextureModes", {}))
 
         return result
 

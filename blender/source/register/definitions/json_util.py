@@ -65,7 +65,7 @@ class JSONWrapper:
         else:
             return self.data.__iter__()
 
-    def get_item_fallback(self, identifier: str | int, fallback: JSON_VALUE = None):
+    def get_property_fallback(self, identifier: str | int, fallback: JSON_VALUE = None):
         if identifier in self.data:
             return self.data[identifier]
         return fallback

@@ -5,6 +5,8 @@ from ..dotnet import HEIO_NET, System
 from ..register.definitions.target_info import TargetDefinition
 from ..utility.material_setup import get_first_connected_socket
 
+TEXTURE_MODES = {"sRGB", "Linear", "Normal"}
+
 
 class ImageLoader:
 
@@ -130,20 +132,24 @@ class ImageLoader:
             image.source = 'GENERATED'
             image.generated_color = self._get_placeholder_image_color(node)
 
-        is_normal_map = texture.name.lower() == "normal"
+        texture_mode = None
 
         if node is not None:
-            label_type = node.label.split(";")[0]
+            label_mode = node.label.split(";")[0]
+            if label_mode in TEXTURE_MODES:
+                texture_mode = label_mode
 
-            if label_type == 'sRGB':
+        if texture_mode is None:
+            if texture.name in self._target_definition.default_texture_modes:
+                texture_mode = self._target_definition.default_texture_modes[texture.name]
+
+        if texture_mode is not None:
+            if texture_mode == 'sRGB':
                 image.colorspace_settings.name = 'sRGB'
-            elif label_type == 'Linear':
+            elif texture_mode == 'Linear' or texture_mode == 'Normal':
                 image.colorspace_settings.name = 'Non-Color'
-            elif label_type == 'Normal':
-                image.colorspace_settings.name = 'Non-Color'
-                is_normal_map = True
 
-        if is_normal_map and from_loaded and self._invert_normal_map_y_channel:
+        if texture_mode == 'Normal' and from_loaded and self._invert_normal_map_y_channel:
             pixels = numpy.array(image.pixels, dtype=numpy.float32)
             HEIO_NET.IMAGE.InvertGreenChannel(
                 System.INT_PTR(pixels.ctypes.data), len(pixels))

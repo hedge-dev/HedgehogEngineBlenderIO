@@ -7,5 +7,13 @@
   "DataVersions": {
     "Material": 3,
     "MaterialSampleChunk": 2
+  },
+  "DefaultTextureModes": {
+    "diffuse": "sRGB",
+    "opacity": "Linear",
+    "reflection": "sRGB",
+    "specular": "sRGB",
+    "gloss": "Linear",
+    "normal": "Normal"
   }
 }

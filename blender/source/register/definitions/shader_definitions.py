@@ -112,9 +112,9 @@ class ShaderDefinition:
             result.parameters.update(base.parameters)
             result.textures.extend(base.textures)
 
-        result.hide = data.get_item_fallback("Hide", result.hide)
-        result.variants.extend(data.get_item_fallback("Variants", []))
-        result.textures.extend(data.get_item_fallback("Textures", []))
+        result.hide = data.get_property_fallback("Hide", result.hide)
+        result.variants.extend(data.get_property_fallback("Variants", []))
+        result.textures.extend(data.get_property_fallback("Textures", []))
 
         if result.hide:
             result.visible_items_index = -1
