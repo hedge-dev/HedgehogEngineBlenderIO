@@ -4,6 +4,21 @@ from ..dotnet import HEIO_NET
 from ..register.definitions.target_info import TargetDefinition
 from . import i_material
 
+LAYER_LUT = {
+    "AUTO": -1,
+    "OPAQUE": 0,
+    "TRANSPARENT": 1,
+    "PUNCHTHROUGH": 2,
+    "SPECIAL": 3,
+
+    -1: "AUTO",
+    0: "OPAQUE",
+    1: "TRANSPARENT",
+    2: "PUNCHTHROUGH",
+    3: "SPECIAL"
+}
+
+
 class MeshConverter:
 
     _target_definition: TargetDefinition
@@ -23,7 +38,8 @@ class MeshConverter:
         self._material_converter = material_converter
 
         from ..exporting import o_enum
-        self._vertex_merge_mode = o_enum.to_vertex_merge_mode(vertex_merge_mode)
+        self._vertex_merge_mode = o_enum.to_vertex_merge_mode(
+            vertex_merge_mode)
 
         self._converted_models = dict()
 
@@ -31,7 +47,7 @@ class MeshConverter:
 
         mesh = bpy.data.meshes.new(mesh_data.Name)
 
-        if mesh_data.Vertices.Length == 0:
+        if mesh_data.Vertices.Count == 0:
             return mesh
 
         ##################################################
@@ -53,11 +69,17 @@ class MeshConverter:
         ##################################################
         # Material Data
 
-        for material in mesh_data.Materials:
-            mesh.materials.append(self._material_converter.get_material(material))
+        for sn_material, slot in zip(mesh_data.SetMaterials, mesh_data.SetSlots):
+            material = self._material_converter.get_material(sn_material)
+            mesh.materials.append(material)
+
+            if LAYER_LUT[material.heio_material.layer] < slot.Type.value__:
+                material.heio_material.layer = LAYER_LUT[slot.Type.value__]
+                if material.heio_material.layer == 'SPECIAL':
+                    material.heio_material.special_layer_name = slot.Name
 
         face_index = 0
-        for i, face_count in enumerate(mesh_data.MaterialTriangleLengths):
+        for i, face_count in enumerate(mesh_data.SetSizes):
             for f in range(face_index, face_index + face_count):
                 mesh.polygons[f].material_index = i
             face_index += face_count
@@ -75,7 +97,7 @@ class MeshConverter:
         ##################################################
         # Colors
 
-        color_type = None
+        # color_type = None
 
         if mesh_data.ByteColors is not None:
             color_type = 'BYTE_COLOR'
@@ -100,9 +122,10 @@ class MeshConverter:
                         color.X, color.Y, color.Z, color.W)
 
         ##################################################
-        # Normals
+        # Normal
 
-        mesh.normals_split_custom_set([(x.X, -x.Z, x.Y) for x in mesh_data.Normals])
+        mesh.normals_split_custom_set(
+            [(x.X, -x.Z, x.Y) for x in mesh_data.Normals])
 
         ##################################################
         # Cleaning up
@@ -151,7 +174,8 @@ class MeshConverter:
             if model in self._converted_models:
                 mesh = self._converted_models[model]
             else:
-                mesh_data = HEIO_NET.MESH_DATA.FromHEModel(model, self._vertex_merge_mode)
+                mesh_data = HEIO_NET.MESH_DATA.FromHEModel(
+                    model, self._vertex_merge_mode)
                 mesh = self._convert_mesh_data(mesh_data)
                 self._converted_models[model] = mesh
 

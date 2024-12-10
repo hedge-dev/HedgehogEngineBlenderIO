@@ -240,6 +240,16 @@ class HEIO_PT_Material(PropertiesPanel):
         menu.use_property_decorate = False
 
         menu.prop(material_properties, "layer")
+
+        if material_properties.layer == 'SPECIAL':
+            menu.prop(
+                material_properties,
+                "special_layer_name",
+                icon="ERROR"
+                if len(material_properties.special_layer_name) == 0
+                else "NONE"
+            )
+
         menu.prop(material, "alpha_threshold", slider=True)
         menu.prop(material, "use_backface_culling")
         menu.prop(material_properties, "use_additive_blending")
@@ -248,7 +258,6 @@ class HEIO_PT_Material(PropertiesPanel):
     def draw_header_properties(
             layout: bpy.types.UILayout,
             context: bpy.types.Context,
-            material: bpy.types.Material,
             material_properties: HEIO_Material):
 
         row = layout.row(align=True)
@@ -274,7 +283,6 @@ class HEIO_PT_Material(PropertiesPanel):
                 icon="ERROR" if material_properties.shader_definition == "ERROR_FALLBACK" else "NONE"
             )
 
-
             definition = definitions.get_target_definition(context)
             if material_properties.shader_name in definition.shaders.definitions:
                 shader_definition = definition.shaders.definitions[material_properties.shader_name]
@@ -297,7 +305,6 @@ class HEIO_PT_Material(PropertiesPanel):
         HEIO_PT_Material.draw_header_properties(
             layout,
             context,
-            material,
             material_properties
         )
 

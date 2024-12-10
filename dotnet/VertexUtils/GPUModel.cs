@@ -3,8 +3,6 @@ using SharpNeedle.Resource;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace HEIO.NET.VertexUtils
 {
@@ -26,7 +24,9 @@ namespace HEIO.NET.VertexUtils
 
         public ResourceReference<Material>[] SetMaterials { get; }
 
-        public GPUModel(GPUVertex[] vertices, int[] vertexSetSizes, int texcoordSets, int colorSets, bool useByteColors, int[] triangles, int[] triangleSetSizes, ResourceReference<Material>[] setMaterials)
+        public MeshSlot[] SetSlots { get; }
+
+        public GPUModel(GPUVertex[] vertices, int[] vertexSetSizes, int texcoordSets, int colorSets, bool useByteColors, int[] triangles, int[] triangleSetSizes, ResourceReference<Material>[] setMaterials, MeshSlot[] setSlots)
         {
             Vertices = vertices;
             VertexSetSizes = vertexSetSizes;
@@ -36,6 +36,7 @@ namespace HEIO.NET.VertexUtils
             Triangles = triangles;
             TriangleSetSizes = triangleSetSizes;
             SetMaterials = setMaterials;
+            SetSlots = setSlots;
         }
 
         public static GPUModel ReadModelData(ModelBase model)
@@ -45,6 +46,7 @@ namespace HEIO.NET.VertexUtils
             List<int> triangles = [];
             List<int> triangleSetSizes = [];
             List<ResourceReference<Material>> materials = [];
+            List<MeshSlot> slots = [];
 
             bool useTriangleList = false;
 
@@ -88,6 +90,7 @@ namespace HEIO.NET.VertexUtils
                     int triangleCount = (triangles.Count - prevLength) / 3;
                     triangleSetSizes.Add(triangleCount);
                     materials.Add(mesh.Material);
+                    slots.Add(mesh.Slot);
 
                     GPUVertex[] vertexData = GPUVertex.ReadVertexData(mesh, texcoordSets, colorSets, useByteColors);
                     vertices.AddRange(vertexData);
@@ -103,7 +106,8 @@ namespace HEIO.NET.VertexUtils
                 useByteColors,
                 [.. triangles],
                 [.. triangleSetSizes],
-                [.. materials]);
+                [.. materials],
+                [.. slots]);
         }
 
 

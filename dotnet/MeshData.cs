@@ -1,13 +1,9 @@
 ﻿using HEIO.NET.VertexUtils;
 using SharpNeedle.Framework.HedgehogEngine.Mirage;
-using SharpNeedle.Framework.HedgehogEngine.Needle.Archive;
-using SharpNeedle.IO;
 using SharpNeedle.Resource;
 using SharpNeedle.Structs;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Numerics;
 
 namespace HEIO.NET
@@ -46,28 +42,30 @@ namespace HEIO.NET
     {
         public string Name { get; set; }
 
-        public Vertex[] Vertices { get; set; }
+        public IList<Vertex> Vertices { get; set; }
 
 
-        public int[] TriangleIndices { get; set; }
+        public IList<int> TriangleIndices { get; set; }
 
-        public Vector3[] Normals { get; set; }
+        public IList<Vector3> Normals { get; set; }
 
-        public Vector3[] Tangents { get; set; }
+        public IList<Vector3> Tangents { get; set; }
 
-        public Vector2[][] TextureCoordinates { get; set; }
+        public IList<Vector2>[] TextureCoordinates { get; set; }
 
-        public Vector4Int[][]? ByteColors { get; set; }
+        public IList<IList<Vector4Int>>? ByteColors { get; set; }
 
-        public Vector4[][]? FloatColors { get; set; }
-
-
-        public ResourceReference<Material>[] Materials { get; set; }
-
-        public int[] MaterialTriangleLengths { get; set; }
+        public IList<IList<Vector4>>? FloatColors { get; set; }
 
 
-        public MeshData(string name, Vertex[] vertices, int[] triangleIndices, Vector3[] normals, Vector3[] tangents, Vector2[][] textureCoordinates, Vector4Int[][]? byteColors, Vector4[][]? floatColors, ResourceReference<Material>[] materials, int[] materialTriangleLengths)
+        public ResourceReference<Material>[] SetMaterials { get; set; }
+
+        public MeshSlot[] SetSlots { get; }
+
+        public int[] SetSizes { get; set; }
+
+
+        public MeshData(string name, IList<Vertex> vertices, IList<int> triangleIndices, IList<Vector3> normals, IList<Vector3> tangents, IList<Vector2>[] textureCoordinates, IList<IList<Vector4Int>>? byteColors, IList<IList<Vector4>>? floatColors, ResourceReference<Material>[] setMaterials, MeshSlot[] setSlots, int[] setSizes)
         {
             Name = name;
             Vertices = vertices;
@@ -77,10 +75,58 @@ namespace HEIO.NET
             TextureCoordinates = textureCoordinates;
             ByteColors = byteColors;
             FloatColors = floatColors;
-            Materials = materials;
-            MaterialTriangleLengths = materialTriangleLengths;
+            SetMaterials = setMaterials;
+            SetSlots = setSlots;
+            SetSizes = setSizes;
         }
 
+
+        private readonly struct CompTri : IComparable<CompTri>
+        {
+            public readonly int i1, i2, i3;
+
+            public CompTri(int i1, int i2, int i3)
+            {
+                if(i1 > i2)
+                {
+                    (i1, i2) = (i2, i1);
+                }
+
+                if(i2 > i3)
+                {
+                    (i2, i3) = (i3, i2);
+                }
+
+                if(i1 > i2)
+                {
+                    (i1, i2) = (i2, i1);
+                }
+
+                this.i1 = i1;
+                this.i2 = i2;
+                this.i3 = i3;
+            }
+
+            public int CompareTo(CompTri other)
+            {
+                if(i1 != other.i1)
+                {
+                    return i1 > other.i1 ? 1 : -1;
+                }
+
+                if(i2 != other.i2)
+                {
+                    return i2 > other.i2 ? 1 : -1;
+                }
+
+                if(i3 != other.i3)
+                {
+                    return i3 > other.i3 ? 1 : -1;
+                }
+
+                return 0;
+            }
+        }
 
         public static MeshData FromHEModel(ModelBase model, VertexMergeMode vertexMergeMode)
         {
@@ -118,67 +164,97 @@ namespace HEIO.NET
 
             int loopCount = gpuModel.Triangles.Length;
 
-            int[] triangleIndices = new int[loopCount];
-            Vector3[] normals = new Vector3[loopCount];
-            Vector3[] tangents = new Vector3[loopCount];
+            List<int> triangleIndices = new(loopCount);
+            List<Vector3> normals = new(loopCount);
+            List<Vector3> tangents = new(loopCount);
 
-            Vector2[][] textureCoordinates = new Vector2[gpuModel.TexcoordSets][];
+            List<Vector2>[] textureCoordinates = new List<Vector2>[gpuModel.TexcoordSets];
             for(int i = 0; i < gpuModel.TexcoordSets; i++)
             {
-                textureCoordinates[i] = new Vector2[loopCount];
+                textureCoordinates[i] = new(loopCount);
             }
 
-            Vector4Int[][]? byteColors = null;
-            Vector4[][]? floatColors = null;
+            List<Vector4Int>[]? byteColors = null;
+            List<Vector4>[]? floatColors = null;
 
             if(gpuModel.UseByteColors)
             {
-                byteColors = new Vector4Int[gpuModel.ColorSets][];
+                byteColors = new List<Vector4Int>[gpuModel.ColorSets];
                 for(int i = 0; i < gpuModel.ColorSets; i++)
                 {
-                    byteColors[i] = new Vector4Int[loopCount];
+                    byteColors[i] = new(loopCount);
                 }
             }
             else
             {
-                floatColors = new Vector4[gpuModel.ColorSets][];
+                floatColors = new List<Vector4>[gpuModel.ColorSets];
                 for(int i = 0; i < gpuModel.ColorSets; i++)
                 {
-                    floatColors[i] = new Vector4[loopCount];
+                    floatColors[i] = new(loopCount);
                 }
             }
 
+            int[] triangleSetSizes = [..gpuModel.TriangleSetSizes];
+            SortedSet<CompTri> usedTriangles = [];
 
-            for(int i = 0; i < loopCount; i++)
+            for(int i = 0; i < loopCount;)
             {
-                int vertexIndex = gpuModel.Triangles[i];
-                GPUVertex gpuVertex = gpuModel.Vertices[vertexIndex];
+                int v1 = gpuModel.Triangles[i];
+                int v2 = gpuModel.Triangles[i + 1];
+                int v3 = gpuModel.Triangles[i + 2];
 
-                triangleIndices[i] = vertexMap[vertexIndex];
-                normals[i] = gpuVertex.Normal;
-                tangents[i] = gpuVertex.Tangent;
+                int t1 = vertexMap[v1];
+                int t2 = vertexMap[v2];
+                int t3 = vertexMap[v3];
 
-                for(int j = 0; j < gpuModel.TexcoordSets; j++)
+                if(t1 == t2 || t2 == t3 || t3 == t1 || !usedTriangles.Add(new(t1, t2, t3)))
                 {
-                    textureCoordinates[j][i] = new(gpuVertex.TextureCoordinates[j].X, 1 - gpuVertex.TextureCoordinates[j].Y);
-                }
-
-                if(gpuModel.UseByteColors)
-                {
-                    for(int j = 0; j < gpuModel.ColorSets; j++)
+                    int triangleIndex = triangleIndices.Count / 3;
+                    int offset = 0;
+                    for(int j = 0; j < triangleSetSizes.Length; offset += triangleSetSizes[j], j++)
                     {
-                        byteColors![j][i] = gpuVertex.ByteColors![j];
+                        if(triangleIndex - offset < triangleSetSizes[j])
+                        {
+                            triangleSetSizes[j]--;
+                            break;
+                        }
                     }
+
+                    i += 3;
+                    continue;
                 }
-                else
+
+                for(int j = 0; j < 3; j++, i++, 
+                    t1 = t2, t2 = t3, 
+                    v1 = v2, v2 = v3)
                 {
-                    for(int j = 0; j < gpuModel.ColorSets; j++)
+                    GPUVertex gpuVertex = gpuModel.Vertices[v1];
+
+                    triangleIndices.Add(t1);
+                    normals.Add(gpuVertex.Normal);
+                    tangents.Add(gpuVertex.Tangent);
+
+                    for(int k = 0; k < gpuModel.TexcoordSets; k++)
                     {
-                        floatColors![j][i] = gpuVertex.FloatColors![j];
+                        textureCoordinates[k].Add(new(gpuVertex.TextureCoordinates[k].X, 1 - gpuVertex.TextureCoordinates[k].Y));
+                    }
+
+                    if(gpuModel.UseByteColors)
+                    {
+                        for(int k = 0; k < gpuModel.ColorSets; k++)
+                        {
+                            byteColors![k].Add(gpuVertex.ByteColors![k]);
+                        }
+                    }
+                    else
+                    {
+                        for(int k = 0; k < gpuModel.ColorSets; k++)
+                        {
+                            floatColors![k].Add(gpuVertex.FloatColors![k]);
+                        }
                     }
                 }
             }
-
 
             return new(
                 model.Name,
@@ -190,7 +266,8 @@ namespace HEIO.NET
                 byteColors,
                 floatColors,
                 gpuModel.SetMaterials,
-                gpuModel.TriangleSetSizes);
+                gpuModel.SetSlots,
+                triangleSetSizes);
         }
 
     }

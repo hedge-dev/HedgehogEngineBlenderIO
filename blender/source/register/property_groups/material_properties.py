@@ -236,6 +236,11 @@ class HEIO_Material(bpy.types.PropertyGroup):
         update=_update_blending
     )
 
+    special_layer_name: StringProperty(
+        name="\"Special\" layer name",
+        description="Layer name for when the layer type \"special\" is used"
+    )
+
     use_additive_blending: BoolProperty(
         name="Use Additive Blending",
         description="Transparency gets applied with additive mixing, instead of \"normal\" mixing.",
