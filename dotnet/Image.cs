@@ -88,6 +88,7 @@ namespace HEIO.NET
                             }
 
                             resolved = true;
+                            break;
                         }
                     }
 
