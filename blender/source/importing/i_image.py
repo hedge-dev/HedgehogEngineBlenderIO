@@ -32,7 +32,13 @@ class ImageLoader:
         self._target_definition = target_definition
 
         self._use_existing_images = use_existing_images
-        self._invert_normal_map_y_channel = invert_normal_map_y_channel
+        self._invert_normal_map_y_channel = (
+            invert_normal_map_y_channel == "FLIP"
+            or (
+                invert_normal_map_y_channel == "AUTO"
+                and self._target_definition.hedgehog_engine_version == 1
+            )
+        )
         self._ntsp_dir = ntsp_dir
 
         self._loaded_images = {}
