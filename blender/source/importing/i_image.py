@@ -4,6 +4,7 @@ import numpy
 from ..dotnet import HEIO_NET, System
 from ..register.definitions.target_info import TargetDefinition
 from ..utility.material_setup import get_first_connected_socket
+from ..utility import progress_console
 
 TEXTURE_MODES = {"sRGB", "Linear", "Normal"}
 
@@ -150,6 +151,8 @@ class ImageLoader:
                 image.colorspace_settings.name = 'Non-Color'
 
         if texture_mode == 'Normal' and from_loaded and self._invert_normal_map_y_channel:
+            print(f"Flipping normals of image \"{image_name}\"..")
+
             pixels = numpy.array(image.pixels, dtype=numpy.float32)
             HEIO_NET.IMAGE.InvertGreenChannel(
                 System.INT_PTR(pixels.ctypes.data), len(pixels))
@@ -165,15 +168,23 @@ class ImageLoader:
 
     def load_images_from_materials(self, sn_materials):
 
+        progress_console.start("Loading Images")
+        progress_console.update("Resolving & preparing image files")
+
         net_images, resolve_info = HEIO_NET.IMAGE.LoadMaterialImages(
             sn_materials, self._ntsp_dir, HEIO_NET.RESOLVE_INFO())
 
         self._resolve_infos.append(resolve_info)
 
-        for item in net_images:
+        progress_console.end()
+        progress_console.start("Loading Images", len(net_images))
+
+        for i, item in enumerate(net_images):
 
             if item.Key in self._loaded_images:
                 continue
+
+            progress_console.update(f"Loading \"{item.Key}\"", i, clear_below=True)
 
             if "blender_dds_addon" in bpy.context.preferences.addons.keys():
                 image = self._import_image_dds_addon(item.Key, item.Value)
@@ -181,6 +192,8 @@ class ImageLoader:
                 image = self._import_image_native(item.Key, item.Value)
 
             self._loaded_images[item.Key] = image
+
+        progress_console.end()
 
     def get_image(self, texture, image_name: str):
         if len(image_name.strip()) == 0:

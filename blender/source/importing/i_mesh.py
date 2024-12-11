@@ -1,8 +1,10 @@
 import bpy
 
+from . import i_material
+
 from ..dotnet import HEIO_NET
 from ..register.definitions.target_info import TargetDefinition
-from . import i_material
+from ..utility import progress_console
 
 LAYER_LUT = {
     "AUTO": -1,
@@ -169,8 +171,12 @@ class MeshConverter:
     def convert_model_sets(self, model_sets):
         result = []
 
-        for model_set in model_sets:
+        progress_console.start("Converting Models", len(model_sets))
+
+        for i, model_set in enumerate(model_sets):
             model = model_set[0]
+            progress_console.update(f"Converting model \"{model.Name}\"", i)
+
             if model in self._converted_models:
                 mesh = self._converted_models[model]
             else:
@@ -180,5 +186,7 @@ class MeshConverter:
                 self._converted_models[model] = mesh
 
             result.append(mesh)
+
+        progress_console.end()
 
         return result

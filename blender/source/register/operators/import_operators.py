@@ -10,7 +10,7 @@ class HEIO_OT_Import_Material(ImportMaterialOperator):
     bl_label = "HE Material (*.material)"
 
     def import_(self, context):
-        self.import_material_files(context)
+        self.import_material_files()
         return {'FINISHED'}
 
 
@@ -27,7 +27,7 @@ class HEIO_OT_Import_Material_Active(ImportMaterialOperator):
         )
 
     def import_(self, context):
-        materials = self.import_material_files(context)
+        materials = self.import_material_files()
 
         object = context.active_object
         for material in materials.values():
@@ -41,7 +41,7 @@ class HEIO_OT_Import_Material_Active_if(ImportMaterialOperator):
     bl_label = "Import HE Material (*.material)"
 
     def import_(self, context):
-        materials = self.import_material_files(context)
+        materials = self.import_material_files()
 
         object = context.active_object
         if object is not None and object.select_get():

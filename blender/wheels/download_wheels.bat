@@ -8,6 +8,8 @@ set download=%py% -m pip download pythonnet --only-binary=:all: --platform=
 IF EXIST %py% (
 	%py% -m pip install --upgrade pip
 
+	%py% -m pip download colorama
+
 	%download%win_amd64
 	%download%win32
 

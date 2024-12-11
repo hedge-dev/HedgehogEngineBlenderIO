@@ -14,6 +14,7 @@ from ..exceptions import HEIOException
 from ..utility.material_setup import (
     setup_and_update_materials
 )
+from ..utility import progress_console
 
 
 class MaterialConverter:
@@ -104,11 +105,18 @@ class MaterialConverter:
 
     def convert_materials(self, sn_materials: Iterable[any]):
 
+        if self._import_images:
+            self._image_loader.load_images_from_materials(sn_materials)
+
+        progress_console.start("Setting up Materials", len(sn_materials))
+
         new_converted_materials = dict()
 
-        for sn_material in sn_materials:
+        for i, sn_material in enumerate(sn_materials):
             if sn_material in self._converted_materials:
                 continue
+
+            progress_console.update(f"Creating material \"{sn_material.Name}\"", i)
 
             material = bpy.data.materials.new(sn_material.Name)
             self._converted_materials[sn_material] = material
@@ -137,12 +145,18 @@ class MaterialConverter:
             else:
                 material_properties.custom_shader = True
 
+        progress_console.update(f"Setting up material node trees", len(sn_materials))
         setup_and_update_materials(self._target_definition, new_converted_materials.values())
 
-        if self._import_images:
-            self._image_loader.load_images_from_materials(sn_materials)
+        progress_console.end()
+        progress_console.start("Converting Materials", len(new_converted_materials))
 
-        for sn_material, material in new_converted_materials.items():
+        for i, item in enumerate(new_converted_materials.items()):
+            progress_console.update(f"Converting material \"{sn_material.Name}\"", i, True)
+
+            sn_material = item[0]
+            material = item[1]
+
             material_properties: HEIO_Material = material.heio_material
             create_missing = self._create_undefined_parameters or material_properties.custom_shader
 
@@ -176,6 +190,8 @@ class MaterialConverter:
 
             if created_missing:
                 material_properties.custom_shader = True
+
+        progress_console.end()
 
     def get_material(self, key: any):
 

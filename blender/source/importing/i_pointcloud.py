@@ -1,5 +1,6 @@
 import bpy
 from mathutils import Vector, Euler, Matrix
+from ..utility import progress_console
 
 def _create_object_from_point(point, datalist):
 	data = None
@@ -22,11 +23,21 @@ def _create_object_from_point(point, datalist):
 def convert_point_cloud_collection(point_cloud_collection, meshes: list[bpy.types.Mesh]):
 	result = []
 
-	for point_collection in point_cloud_collection.TerrainCollections:
+	progress_console.start("Importing Point Clouds", len(point_cloud_collection.TerrainCollections))
+
+	for i, point_collection in enumerate(point_cloud_collection.TerrainCollections):
+		progress_console.update(f"Importing \"{point_collection.Name}\"", i)
 		collection = bpy.data.collections.new(point_collection.Name)
 		result.append(collection)
 
-		for point in point_collection.Points:
+		progress_console.start("Importing points", len(point_collection.Points))
+
+		for j, point in enumerate(point_collection.Points):
+			progress_console.update("", j)
 			collection.objects.link(_create_object_from_point(point, meshes))
+
+		progress_console.end()
+
+	progress_console.end()
 
 	return result

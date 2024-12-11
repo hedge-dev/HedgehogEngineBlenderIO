@@ -15,6 +15,7 @@ from .. import definitions
 from ...importing import i_image, i_material, i_mesh
 from ...dotnet import load_dotnet, SharpNeedle, HEIO_NET
 from ...utility.general import get_addon_preferences
+from ...utility import progress_console
 from ...exceptions import UserException
 
 
@@ -36,7 +37,11 @@ class ImportOperator(HEIOBaseFileLoadOperator):
         self.addon_preference = get_addon_preferences(context)
         self._setup(context)
 
+        progress_console.cleanup()
+        progress_console.start("Importing")
         result = self.import_(context)
+        progress_console.end()
+
         self.print_resolve_info(context)
 
         return result
@@ -178,6 +183,7 @@ class ImportMaterialOperator(ImportOperator):
         )
 
     def import_material_files(self):
+        progress_console.update("Resolving & reading files")
 
         directory = os.path.dirname(self.filepath)
         sn_materials = []
@@ -195,7 +201,9 @@ class ImportMaterialOperator(ImportOperator):
 
             sn_materials.append(material)
 
+        progress_console.update("Importing data")
         return self.material_converter.convert_materials(sn_materials)
+
 
     def print_resolve_info(self, context):
         self.resolve_infos.extend(self.image_loader.resolve_infos)
@@ -257,6 +265,7 @@ class ImportTerrainModelOperator(ImportModelBaseOperator):
     )
 
     def import_terrain_model_files(self, context: bpy.types.Context):
+        progress_console.update("Resolving & reading files")
 
         directory = os.path.dirname(self.filepath)
         filepaths = [os.path.join(directory, file.name) for file in self.files]
@@ -265,6 +274,8 @@ class ImportTerrainModelOperator(ImportModelBaseOperator):
             filepaths, HEIO_NET.RESOLVE_INFO())
 
         self.resolve_infos.append(resolve_info)
+
+        progress_console.update("Importing data")
 
         meshes = self.import_models(terrain_models)
         for mesh in meshes:
@@ -280,6 +291,8 @@ class ImportPointCloudOperator(ImportModelBaseOperator):
     )
 
     def import_point_cloud_files(self, context: bpy.types.Context):
+        progress_console.update("Resolving & reading files")
+
         directory = os.path.dirname(self.filepath)
         filepaths = [os.path.join(directory, file.name) for file in self.files]
 
@@ -287,6 +300,8 @@ class ImportPointCloudOperator(ImportModelBaseOperator):
             filepaths, HEIO_NET.RESOLVE_INFO())
 
         self.resolve_infos.append(resolve_info)
+
+        progress_console.update("Importing data")
 
         meshes = self.import_models(point_cloud_collection.TerrainModels)
 
