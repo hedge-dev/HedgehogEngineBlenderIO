@@ -300,7 +300,7 @@ class HEIO_PT_Material(PropertiesPanel):
             context: bpy.types.Context,
             material: bpy.types.Material):
 
-        material_properties = material.material_properties
+        material_properties = material.heio_material
 
         HEIO_PT_Material.draw_header_properties(
             layout,
