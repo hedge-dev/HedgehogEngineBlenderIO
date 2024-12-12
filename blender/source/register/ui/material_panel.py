@@ -8,7 +8,6 @@ from ..operators import material_parameter_operators as mpop
 from ..operators.material_operators import HEIO_OT_Material_SetupNodes_Active
 
 from ..property_groups.material_properties import HEIO_Material
-from ..property_groups.scene_properties import HEIO_Scene
 from .. import definitions
 
 from ...utility.draw import draw_list, TOOL_PROPERTY
@@ -299,8 +298,9 @@ class HEIO_PT_Material(PropertiesPanel):
     def draw_material_properties(
             layout: bpy.types.UILayout,
             context: bpy.types.Context,
-            material: bpy.types.Material,
-            material_properties: HEIO_Material):
+            material: bpy.types.Material):
+
+        material_properties = material.material_properties
 
         HEIO_PT_Material.draw_header_properties(
             layout,
@@ -355,5 +355,4 @@ class HEIO_PT_Material(PropertiesPanel):
         HEIO_PT_Material.draw_material_properties(
             self.layout,
             context,
-            context.active_object.active_material,
-            context.active_object.active_material.heio_material)
+            context.active_object.active_material)

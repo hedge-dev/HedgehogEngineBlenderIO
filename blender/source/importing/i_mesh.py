@@ -27,6 +27,9 @@ class MeshConverter:
     _material_converter: i_material.MaterialConverter
 
     _vertex_merge_mode: any
+    _vertex_merge_distance: float
+    _merge_split_edges: bool
+    _create_mesh_slot_attributes: bool
 
     _converted_models: dict[any, bpy.types.Mesh]
 
@@ -34,7 +37,10 @@ class MeshConverter:
             self,
             target_definition: TargetDefinition,
             material_converter: TargetDefinition,
-            vertex_merge_mode: str):
+            vertex_merge_mode: str,
+            vertex_merge_distance: float,
+            merge_split_edges: bool,
+            create_mesh_slot_attributes: bool):
 
         self._target_definition = target_definition
         self._material_converter = material_converter
@@ -42,6 +48,10 @@ class MeshConverter:
         from ..exporting import o_enum
         self._vertex_merge_mode = o_enum.to_vertex_merge_mode(
             vertex_merge_mode)
+
+        self._vertex_merge_distance = vertex_merge_distance
+        self._merge_split_edges = merge_split_edges
+        self._create_mesh_slot_attributes = create_mesh_slot_attributes
 
         self._converted_models = dict()
 
@@ -87,6 +97,33 @@ class MeshConverter:
             face_index += face_count
 
         ##################################################
+        # Polygon layer attribute
+
+        if self._create_mesh_slot_attributes:
+            set_slot_indices = []
+            special_layer_map = {}
+
+            for layer, size in zip(mesh_data.SetSlots, mesh_data.SetSizes):
+                layer_index = layer.Type.value__
+
+                if layer_index == 3:
+                    if layer.Name not in special_layer_map:
+                        layer_index = 3 + len(special_layer_map)
+
+                        special_layer_map[layer.Name] = layer_index
+
+                        special_layer_name = mesh.heio_mesh.special_layer_names.new()
+                        special_layer_name.name = layer.Name
+
+                    else:
+                        layer_index = special_layer_map[layer.Name]
+
+                set_slot_indices.extend([layer_index] * size)
+
+            mesh.attributes.new("Layer", "INT8", "FACE").data.foreach_set("value", set_slot_indices)
+
+
+        ##################################################
         # Texture coordinates
 
         for i, uvmap in enumerate(mesh_data.TextureCoordinates):
@@ -99,7 +136,7 @@ class MeshConverter:
         ##################################################
         # Colors
 
-        # color_type = None
+        color_type = None
 
         if mesh_data.ByteColors is not None:
             color_type = 'BYTE_COLOR'
@@ -126,45 +163,53 @@ class MeshConverter:
         ##################################################
         # Normal
 
-        mesh.normals_split_custom_set(
-            [(x.X, -x.Z, x.Y) for x in mesh_data.Normals])
+        if mesh_data.PolygonNormals is None:
+            mesh.normals_split_custom_set_from_vertices(
+                [(v.Normal.X, -v.Normal.Z, v.Normal.Y) for v in mesh_data.Vertices]
+            )
+            mesh.validate()
 
-        ##################################################
-        # Cleaning up
+        else:
 
-        mesh.validate()
+            mesh.normals_split_custom_set(
+                [(n.X, -n.Z, n.Y) for n in mesh_data.PolygonNormals]
+            )
 
-        edge_loop_map = [([], []) for _ in mesh.edges]
+            # Cleaning up split edges
 
-        for polygon in mesh.polygons:
+            mesh.validate()
 
-            for i, loop_index in enumerate(polygon.loop_indices):
-                next_loop_index = polygon.loop_indices[i - 2]
+            edge_loop_map = [([], []) for _ in mesh.edges]
 
-                loop = mesh.loops[loop_index]
+            for polygon in mesh.polygons:
 
-                edge = mesh.edges[loop.edge_index]
-                edge_map = edge_loop_map[loop.edge_index]
+                for i, loop_index in enumerate(polygon.loop_indices):
+                    next_loop_index = polygon.loop_indices[i - 2]
 
-                if edge.vertices[0] == loop.vertex_index:
-                    edge_map[0].append(loop_index)
-                    edge_map[1].append(next_loop_index)
-                else:
-                    edge_map[0].append(next_loop_index)
-                    edge_map[1].append(loop_index)
+                    loop = mesh.loops[loop_index]
 
-        for edge in (x for x in mesh.edges if x.use_edge_sharp):
-            loop_map = edge_loop_map[edge.index]
-            if len(loop_map[0]) != 2:
-                continue
+                    edge = mesh.edges[loop.edge_index]
+                    edge_map = edge_loop_map[loop.edge_index]
 
-            nrm0 = mesh.corner_normals[loop_map[0][0]].vector
-            nrm1 = mesh.corner_normals[loop_map[0][1]].vector
-            nrm2 = mesh.corner_normals[loop_map[1][0]].vector
-            nrm3 = mesh.corner_normals[loop_map[1][1]].vector
+                    if edge.vertices[0] == loop.vertex_index:
+                        edge_map[0].append(loop_index)
+                        edge_map[1].append(next_loop_index)
+                    else:
+                        edge_map[0].append(next_loop_index)
+                        edge_map[1].append(loop_index)
 
-            if nrm0.dot(nrm1) > 0.995 and nrm2.dot(nrm3) > 0.995:
-                edge.use_edge_sharp = False
+            for edge in (x for x in mesh.edges if x.use_edge_sharp):
+                loop_map = edge_loop_map[edge.index]
+                if len(loop_map[0]) != 2:
+                    continue
+
+                nrm0 = mesh.corner_normals[loop_map[0][0]].vector
+                nrm1 = mesh.corner_normals[loop_map[0][1]].vector
+                nrm2 = mesh.corner_normals[loop_map[1][0]].vector
+                nrm3 = mesh.corner_normals[loop_map[1][1]].vector
+
+                if nrm0.dot(nrm1) > 0.995 and nrm2.dot(nrm3) > 0.995:
+                    edge.use_edge_sharp = False
 
         return mesh
 
@@ -179,9 +224,14 @@ class MeshConverter:
 
             if model in self._converted_models:
                 mesh = self._converted_models[model]
+
             else:
                 mesh_data = HEIO_NET.MESH_DATA.FromHEModel(
-                    model, self._vertex_merge_mode)
+                    model,
+                    self._vertex_merge_mode,
+                    self._vertex_merge_distance,
+                    self._merge_split_edges)
+
                 mesh = self._convert_mesh_data(mesh_data)
                 self._converted_models[model] = mesh
 

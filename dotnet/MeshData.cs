@@ -14,19 +14,53 @@ namespace HEIO.NET
 
         public Vector3 Position { get; set; }
 
+        public Vector3 Normal { get; set; }
 
-        public Vertex(Vector3 position)
+        public Vector3 Tangent { get; set; }
+
+        public Vertex(int setIndex, Vector3 position, Vector3 normal, Vector3 tangent)
         {
+            SetIndex = setIndex;
             Position = position;
+            Normal = normal;
+            Tangent = tangent;
         }
 
-        public static EqualityComparer<Vertex> GetMergeComparer()
+        public static EqualityComparer<Vertex> GetMergeComparer(float mergeDistance, bool compareSetIndex, bool compareNormals)
         {
-            const float mergeDistance = 0.001f * 0.001f;
+            float mergeDistanceSquared = mergeDistance * mergeDistance;
 
-            return EqualityComparer<Vertex>.Create((v1, v2) =>
-                v1.SetIndex == v2.SetIndex
-                && Vector3.DistanceSquared(v1.Position, v2.Position) <= mergeDistance);
+            if(compareSetIndex)
+            {
+                if(compareNormals)
+                {
+                    return EqualityComparer<Vertex>.Create((v1, v2) =>
+                        Vector3.DistanceSquared(v1.Position, v2.Position) < mergeDistanceSquared
+                        && Vector3.Dot(v1.Normal, v2.Normal) > 0.995f);
+                }
+                else
+                {
+                    return EqualityComparer<Vertex>.Create((v1, v2) =>
+                        Vector3.DistanceSquared(v1.Position, v2.Position) < mergeDistanceSquared);
+                }
+            }
+            else
+            {
+                if(compareNormals)
+                {
+                    return EqualityComparer<Vertex>.Create((v1, v2) =>
+                        v1.SetIndex == v2.SetIndex
+                        && Vector3.DistanceSquared(v1.Position, v2.Position) < mergeDistanceSquared
+                        && Vector3.Dot(v1.Normal, v2.Normal) > 0.995f);
+                }
+                else
+                {
+                    return EqualityComparer<Vertex>.Create((v1, v2) =>
+                        v1.SetIndex == v2.SetIndex
+                        && Vector3.DistanceSquared(v1.Position, v2.Position) < mergeDistanceSquared);
+                }
+            }
+
         }
 
     }
@@ -47,9 +81,9 @@ namespace HEIO.NET
 
         public IList<int> TriangleIndices { get; set; }
 
-        public IList<Vector3> Normals { get; set; }
+        public IList<Vector3>? PolygonNormals { get; set; }
 
-        public IList<Vector3> Tangents { get; set; }
+        public IList<Vector3>? PolygonTangents { get; set; }
 
         public IList<Vector2>[] TextureCoordinates { get; set; }
 
@@ -65,13 +99,13 @@ namespace HEIO.NET
         public int[] SetSizes { get; set; }
 
 
-        public MeshData(string name, IList<Vertex> vertices, IList<int> triangleIndices, IList<Vector3> normals, IList<Vector3> tangents, IList<Vector2>[] textureCoordinates, IList<IList<Vector4Int>>? byteColors, IList<IList<Vector4>>? floatColors, ResourceReference<Material>[] setMaterials, MeshSlot[] setSlots, int[] setSizes)
+        public MeshData(string name, IList<Vertex> vertices, IList<int> triangleIndices, IList<Vector3>? polygonNormals, IList<Vector3>? polygonTangents, IList<Vector2>[] textureCoordinates, IList<IList<Vector4Int>>? byteColors, IList<IList<Vector4>>? floatColors, ResourceReference<Material>[] setMaterials, MeshSlot[] setSlots, int[] setSizes)
         {
             Name = name;
             Vertices = vertices;
             TriangleIndices = triangleIndices;
-            Normals = normals;
-            Tangents = tangents;
+            PolygonNormals = polygonNormals;
+            PolygonTangents = polygonTangents;
             TextureCoordinates = textureCoordinates;
             ByteColors = byteColors;
             FloatColors = floatColors;
@@ -128,10 +162,8 @@ namespace HEIO.NET
             }
         }
 
-        public static MeshData FromHEModel(ModelBase model, VertexMergeMode vertexMergeMode)
+        private static DistinctMap<Vertex> GetVertices(GPUModel gpuModel, VertexMergeMode vertexMergeMode, float mergeDistance, bool mergeSplitEdges)
         {
-            GPUModel gpuModel = GPUModel.ReadModelData(model);
-
             Vertex[] vertices = new Vertex[gpuModel.Vertices.Length];
 
             int setIndex = 0;
@@ -140,33 +172,45 @@ namespace HEIO.NET
 
             for(int i = 0; i < vertices.Length; i++)
             {
-                vertices[i] = new Vertex(gpuModel.Vertices[i].Position)
-                {
-                    SetIndex = setIndex
-                };
+                GPUVertex vertex = gpuModel.Vertices[i];
 
-                if(vertexMergeMode == VertexMergeMode.SubMesh)
-                {
-                    setVertexIndex++;
+                vertices[i] = new Vertex(
+                    setIndex,
+                    vertex.Position,
+                    mergeSplitEdges ? default : vertex.Normal,
+                    mergeSplitEdges ? default : vertex.Tangent
+                );
 
-                    if(setVertexIndex > setSize)
-                    {
-                        setIndex++;
-                        setVertexIndex = 0;
-                        setSize = gpuModel.VertexSetSizes[setIndex];
-                    }
+                setVertexIndex++;
+
+                if(setVertexIndex > setSize)
+                {
+                    setIndex++;
+                    setVertexIndex = 0;
+                    setSize = gpuModel.VertexSetSizes[setIndex];
                 }
             }
 
-            DistinctMap<Vertex> vertexMap = vertexMergeMode == VertexMergeMode.None
+            return vertexMergeMode == VertexMergeMode.None
                 ? new(vertices, null)
-                : DistinctMap.CreateDistinctMap(vertices, Vertex.GetMergeComparer());
+                : DistinctMap.CreateDistinctMap(vertices,
+                    Vertex.GetMergeComparer(
+                        mergeDistance,
+                        vertexMergeMode == VertexMergeMode.SubMesh,
+                        !mergeSplitEdges));
+        }
+
+        public static MeshData FromHEModel(ModelBase model, VertexMergeMode vertexMergeMode, float mergeDistance, bool mergeSplitEdges)
+        {
+            GPUModel gpuModel = GPUModel.ReadModelData(model);
+
+            DistinctMap<Vertex> vertexMap = GetVertices(gpuModel, vertexMergeMode, mergeDistance, mergeSplitEdges);
 
             int loopCount = gpuModel.Triangles.Length;
 
             List<int> triangleIndices = new(loopCount);
-            List<Vector3> normals = new(loopCount);
-            List<Vector3> tangents = new(loopCount);
+            List<Vector3>? polygonNormals = mergeSplitEdges ? new(loopCount) : null;
+            List<Vector3>? polygonTangents = mergeSplitEdges ? new(loopCount) : null;
 
             List<Vector2>[] textureCoordinates = new List<Vector2>[gpuModel.TexcoordSets];
             for(int i = 0; i < gpuModel.TexcoordSets; i++)
@@ -194,7 +238,7 @@ namespace HEIO.NET
                 }
             }
 
-            int[] triangleSetSizes = [..gpuModel.TriangleSetSizes];
+            int[] triangleSetSizes = [.. gpuModel.TriangleSetSizes];
             SortedSet<CompTri> usedTriangles = [];
 
             for(int i = 0; i < loopCount;)
@@ -224,15 +268,15 @@ namespace HEIO.NET
                     continue;
                 }
 
-                for(int j = 0; j < 3; j++, i++, 
-                    t1 = t2, t2 = t3, 
+                for(int j = 0; j < 3; j++, i++,
+                    t1 = t2, t2 = t3,
                     v1 = v2, v2 = v3)
                 {
                     GPUVertex gpuVertex = gpuModel.Vertices[v1];
 
                     triangleIndices.Add(t1);
-                    normals.Add(gpuVertex.Normal);
-                    tangents.Add(gpuVertex.Tangent);
+                    polygonNormals?.Add(gpuVertex.Normal);
+                    polygonTangents?.Add(gpuVertex.Tangent);
 
                     for(int k = 0; k < gpuModel.TexcoordSets; k++)
                     {
@@ -260,8 +304,8 @@ namespace HEIO.NET
                 model.Name,
                 vertexMap.ValueArray,
                 triangleIndices,
-                normals,
-                tangents,
+                polygonNormals,
+                polygonTangents,
                 textureCoordinates,
                 byteColors,
                 floatColors,

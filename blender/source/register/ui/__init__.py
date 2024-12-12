@@ -1,6 +1,7 @@
 from . import (
     sca_parameter_panel,
     scene_panel,
+    mesh_panel,
     material_panel,
     menus,
     viewport_toolbar
@@ -10,6 +11,9 @@ to_register = [
     sca_parameter_panel.HEIO_UL_SCAParameterList,
 
     scene_panel.HEIO_PT_Scene,
+
+    mesh_panel.HEIO_UL_SpecialLayerList,
+    mesh_panel.HEIO_PT_Mesh,
 
     material_panel.HEIO_UL_ParameterList,
     material_panel.HEIO_UL_CustomParameterList,

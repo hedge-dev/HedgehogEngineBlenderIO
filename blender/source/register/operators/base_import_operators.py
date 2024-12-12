@@ -5,7 +5,8 @@ from bpy.props import (
     BoolProperty,
     EnumProperty,
     StringProperty,
-    CollectionProperty
+    CollectionProperty,
+    FloatProperty
 )
 
 from .base import HEIOBaseFileLoadOperator
@@ -224,6 +225,28 @@ class ImportModelBaseOperator(ImportMaterialOperator):
         default='ALL'
     )
 
+    vertex_merge_distance: FloatProperty(
+        name="Merge distance",
+        description="The distance two vertices have to be apart from each other to be merged",
+        default=0.001,
+        precision=3,
+        min=0,
+        soft_min=0.001,
+        soft_max=0.1,
+    )
+
+    merge_split_edges: BoolProperty(
+        name="Merge split edges",
+        description="Merge overlapping edges as sharps",
+        default=True
+    )
+
+    create_mesh_slot_attributes: BoolProperty(
+        name="Create merge slot attributes",
+        description="Mesh slots will be imported as an integer attribute on polygons",
+        default=False
+    )
+
     def draw_panel_model(self):
         header, body = self.layout.panel(
             "HEIO_import_model", default_closed=False)
@@ -235,7 +258,16 @@ class ImportModelBaseOperator(ImportMaterialOperator):
         body.use_property_split = True
         body.use_property_decorate = False
 
-        body.prop(self, "vertex_merge_mode")
+        merge_header, merge_body = body.panel("HEIO_import_model_merge", default_closed=True)
+        merge_header.prop(self, "vertex_merge_mode")
+
+        if merge_body:
+            merge_body.active = self.vertex_merge_mode != 'NONE'
+            merge_body.prop(self, "vertex_merge_distance")
+            merge_body.prop(self, "merge_split_edges")
+            body.separator()
+
+        body.prop(self, "create_mesh_slot_attributes")
 
     def draw(self, context: Context):
         super().draw(context)
@@ -247,7 +279,10 @@ class ImportModelBaseOperator(ImportMaterialOperator):
         self.mesh_converter = i_mesh.MeshConverter(
             self.target_definition,
             self.material_converter,
-            self.vertex_merge_mode
+            self.vertex_merge_mode,
+            self.vertex_merge_distance,
+            self.merge_split_edges,
+            self.create_mesh_slot_attributes
         )
 
     def import_models(self, model_sets):
