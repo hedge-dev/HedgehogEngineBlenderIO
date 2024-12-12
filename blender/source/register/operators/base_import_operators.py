@@ -242,8 +242,8 @@ class ImportModelBaseOperator(ImportMaterialOperator):
     )
 
     create_mesh_slot_attributes: BoolProperty(
-        name="Create mesh slot attributes",
-        description="Mesh slots will be imported as an integer attribute on polygons",
+        name="Create layer attributes",
+        description="Mesh slot layers will be imported as integer attributes on polygons",
         default=False
     )
 
