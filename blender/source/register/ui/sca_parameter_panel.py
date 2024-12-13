@@ -110,9 +110,9 @@ def draw_sca_editor(layout: bpy.types.UILayout, sca_parameters: HEIO_SCA_Paramet
 
 
 def draw_sca_editor_menu(layout: bpy.types.UILayout, sca_parameters: HEIO_SCA_Parameters, mode: str):
-    header, menu = layout.panel(
+    header, body = layout.panel(
         "heio_sca_param_" + mode.lower(), default_closed=True)
     header.label(text="SCA Parameters")
 
-    if menu:
-        draw_sca_editor(menu, sca_parameters, mode)
+    if body:
+        draw_sca_editor(body, sca_parameters, mode)

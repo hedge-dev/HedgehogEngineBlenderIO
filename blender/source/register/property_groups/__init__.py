@@ -16,8 +16,8 @@ to_register = [
 
     scene_properties.HEIO_Scene,
 
-    mesh_properties.HEIO_SpecialLayer,
-	mesh_properties.HEIO_SpecialLayerList,
+    mesh_properties.HEIO_Layer,
+	mesh_properties.HEIO_LayerList,
     mesh_properties.HEIO_Mesh,
 
     material_parameter_properties.HEIO_MaterialParameter,

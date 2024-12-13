@@ -12,7 +12,8 @@ to_register = [
 
     scene_panel.HEIO_PT_Scene,
 
-    mesh_panel.HEIO_UL_SpecialLayerList,
+    mesh_panel.HEIO_UL_Layers,
+	mesh_panel.HEOI_MT_LayersContextMenu,
     mesh_panel.HEIO_PT_Mesh,
 
     material_panel.HEIO_UL_ParameterList,

@@ -4,36 +4,36 @@ from bpy.types import Context
 from .base_panel import PropertiesPanel
 
 from ..property_groups.mesh_properties import HEIO_Mesh
-from ..operators import mesh_special_layer_operators as mslo
+from ..operators import mesh_layer_operators as mslo
 
 from ...utility.draw import draw_list, TOOL_PROPERTY
 
-SPECIAL_LAYER_TOOLS: list[TOOL_PROPERTY] = [
+LAYER_TOOLS: list[TOOL_PROPERTY] = [
     (
-        mslo.HEIO_OT_MeshSpecialLayer_Add.bl_idname,
+        mslo.HEIO_OT_MeshLayer_Add.bl_idname,
         "ADD",
         {}
     ),
     (
-        mslo.HEIO_OT_MeshSpecialLayer_Remove.bl_idname,
+        mslo.HEIO_OT_MeshLayer_Remove.bl_idname,
         "REMOVE",
         {}
     ),
     None,
     (
-        mslo.HEIO_OT_MeshSpecialLayer_Move.bl_idname,
+        mslo.HEIO_OT_MeshLayer_Move.bl_idname,
         "TRIA_UP",
         {"direction": "UP"}
     ),
     (
-        mslo.HEIO_OT_MeshSpecialLayer_Move.bl_idname,
+        mslo.HEIO_OT_MeshLayer_Move.bl_idname,
         "TRIA_DOWN",
         {"direction": "DOWN"}
     )
 ]
 
 
-class HEIO_UL_SpecialLayerList(bpy.types.UIList):
+class HEIO_UL_Layers(bpy.types.UIList):
 
     def draw_item(
             self,
@@ -52,7 +52,15 @@ class HEIO_UL_SpecialLayerList(bpy.types.UIList):
         else:
             icon = "NONE"
 
+        layout.active = index > 2
         layout.prop(item, "name", text="", emboss=False, icon=icon)
+
+
+class HEOI_MT_LayersContextMenu(bpy.types.Menu):
+    bl_label = "Mesh layer operations"
+
+    def draw(self, context):
+        self.layout.operator(mslo.HEIO_OT_MeshLayer_Delete.bl_idname)
 
 
 class HEIO_PT_Mesh(PropertiesPanel):
@@ -62,21 +70,42 @@ class HEIO_PT_Mesh(PropertiesPanel):
     # === overriden methods === #
 
     @staticmethod
-    def draw_special_layer_names(layout, mesh):
-        header, menu = layout.panel("heio_mesh_special_layer_names", default_closed=False)
-        header.label(text="Special layer names")
-        if not menu:
+    def draw_layers_panel(
+            layout: bpy.types.UILayout,
+            context: bpy.types.Context,
+            mesh: bpy.types.Mesh):
+
+        header, body = layout.panel("heio_mesh_layers", default_closed=False)
+        header.label(text="Layers")
+        if not body:
+            return
+
+        if len(mesh.heio_mesh.layers) == 0 or "Layer" not in mesh.attributes:
+            body.operator(mslo.HEIO_OT_MeshLayer_Initialize.bl_idname)
+            return
+
+        attribute = mesh.attributes["Layer"]
+        if attribute.domain != "FACE" or attribute.data_type != "INT":
+            box = body.box()
+            box.label(text="Invalid \"Layer\" attribute!")
+            box.label(text="Must use domain \"Face\" and type \"Integer\"!")
+            box.label(text="Please remove or convert")
             return
 
         draw_list(
-            menu,
-            HEIO_UL_SpecialLayerList,
-            None,
-            mesh.heio_mesh.special_layers,
-            SPECIAL_LAYER_TOOLS,
+            body,
+            HEIO_UL_Layers,
+            HEOI_MT_LayersContextMenu,
+            mesh.heio_mesh.layers,
+            LAYER_TOOLS,
             None
         )
 
+        if context.mode == 'EDIT_MESH':
+            row = body.row(align=True)
+            row.operator(mslo.HEIO_OT_MeshLayer_Assign.bl_idname)
+            row.operator(mslo.HEIO_OT_MeshLayer_Select.bl_idname)
+            row.operator(mslo.HEIO_OT_MeshLayer_Deselect.bl_idname)
 
     @staticmethod
     def draw_material_properties(
@@ -84,7 +113,7 @@ class HEIO_PT_Mesh(PropertiesPanel):
             context: bpy.types.Context,
             mesh: bpy.types.Mesh):
 
-        HEIO_PT_Mesh.draw_special_layer_names(layout, mesh)
+        HEIO_PT_Mesh.draw_layers_panel(layout, context, mesh)
 
     @classmethod
     def poll(cls, context: Context):

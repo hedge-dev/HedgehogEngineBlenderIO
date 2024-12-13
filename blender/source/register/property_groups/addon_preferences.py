@@ -31,14 +31,14 @@ class HEIO_AddonPreferences(bpy.types.AddonPreferences):
 
         keyword = definition.identifier.lower()
 
-        header, menu = self.layout.panel(
+        header, body = self.layout.panel(
             "heio_pref_" + keyword, default_closed=True)
         header.label(text=definition.name)
 
-        if not menu:
+        if not body:
             return
 
-        menu.prop(self, "ntsp_dir_" + keyword)
+        body.prop(self, "ntsp_dir_" + keyword)
 
     def draw(self, context):
         for definition in definitions.TARGET_DEFINITIONS.values():

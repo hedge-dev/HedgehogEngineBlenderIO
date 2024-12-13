@@ -40,7 +40,11 @@ class MaterialParameterOperator(HEIOBaseOperator):
 
     @classmethod
     def poll(cls, context):
-        return context.active_object.active_material.heio_material.custom_shader
+        return (
+            context.active_object is not None
+            and context.active_object.active_material is not None
+            and context.active_object.active_material.heio_material.custom_shader
+        )
 
 
 class HEIO_OT_MaterialParameters_Add(MaterialParameterOperator, ListAdd):

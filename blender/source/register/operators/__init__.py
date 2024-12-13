@@ -2,8 +2,8 @@ from . import (
 	import_operators,
 	export_operators,
 	filehandlers,
+	mesh_layer_operators,
 	sca_parameter_operators,
-	mesh_special_layer_operators,
 	material_operators,
 	material_parameter_operators,
 	info_operators
@@ -26,9 +26,14 @@ to_register = [
 	sca_parameter_operators.HEIO_OT_SCAParameters_Move,
 	sca_parameter_operators.HEIO_OT_SCAParameters_NewFromPreset,
 
-	mesh_special_layer_operators.HEIO_OT_MeshSpecialLayer_Add,
-	mesh_special_layer_operators.HEIO_OT_MeshSpecialLayer_Remove,
-	mesh_special_layer_operators.HEIO_OT_MeshSpecialLayer_Move,
+	mesh_layer_operators.HEIO_OT_MeshLayer_Initialize,
+	mesh_layer_operators.HEIO_OT_MeshLayer_Delete,
+	mesh_layer_operators.HEIO_OT_MeshLayer_Assign,
+	mesh_layer_operators.HEIO_OT_MeshLayer_Select,
+	mesh_layer_operators.HEIO_OT_MeshLayer_Deselect,
+	mesh_layer_operators.HEIO_OT_MeshLayer_Add,
+	mesh_layer_operators.HEIO_OT_MeshLayer_Remove,
+	mesh_layer_operators.HEIO_OT_MeshLayer_Move,
 
 	material_operators.HEIO_OT_Material_SetupNodes,
 	material_operators.HEIO_OT_Material_SetupNodes_Active,

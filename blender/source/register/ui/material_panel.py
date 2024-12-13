@@ -135,9 +135,9 @@ class HEIO_PT_Material(PropertiesPanel):
             layout: bpy.types.UILayout,
             material_properties: HEIO_Material):
 
-        header, menu = layout.panel("heio_mat_param", default_closed=True)
+        header, body = layout.panel("heio_mat_param", default_closed=True)
         header.label(text="Parameters")
-        if not menu:
+        if not body:
             return
 
         tools = MATERIAL_PARAMETER_TOOLS if material_properties.custom_shader else None
@@ -146,7 +146,7 @@ class HEIO_PT_Material(PropertiesPanel):
             operator.mode = "PARAMETER"
 
         draw_list(
-            menu,
+            body,
             HEIO_UL_CustomParameterList if material_properties.custom_shader else HEIO_UL_ParameterList,
             None,
             material_properties.parameters,
@@ -158,23 +158,23 @@ class HEIO_PT_Material(PropertiesPanel):
         if parameter is None:
             return
 
-        menu.use_property_split = True
-        menu.use_property_decorate = False
+        body.use_property_split = True
+        body.use_property_decorate = False
 
         name_icon = "ERROR" if len(parameter.name) == 0 else "NONE"
         if material_properties.custom_shader:
-            menu.prop(parameter, "name", icon=name_icon)
+            body.prop(parameter, "name", icon=name_icon)
         else:
-            split: bpy.types.UILayout = menu.split(factor=0.4)
+            split: bpy.types.UILayout = body.split(factor=0.4)
             split.alignment = "RIGHT"
             split.label(text="Name")
             split.alignment = "LEFT"
             split.label(text="  " + parameter.name, icon=name_icon)
 
         if material_properties.custom_shader:
-            menu.prop(parameter, "value_type")
+            body.prop(parameter, "value_type")
 
-        menu.row(align=True).prop(
+        body.row(align=True).prop(
             parameter, parameter.value_type.lower() + "_value")
 
     @staticmethod
@@ -182,9 +182,9 @@ class HEIO_PT_Material(PropertiesPanel):
             layout: bpy.types.UILayout,
             material_properties: HEIO_Material):
 
-        header, menu = layout.panel("heio_mat_tex", default_closed=True)
+        header, body = layout.panel("heio_mat_tex", default_closed=True)
         header.label(text="Textures")
-        if not menu:
+        if not body:
             return
 
         tools = MATERIAL_PARAMETER_TOOLS if material_properties.custom_shader else None
@@ -193,7 +193,7 @@ class HEIO_PT_Material(PropertiesPanel):
             operator.mode = "TEXTURE"
 
         draw_list(
-            menu,
+            body,
             HEIO_UL_CustomTextureList if material_properties.custom_shader else HEIO_UL_TextureList,
             None,
             material_properties.textures,
@@ -205,24 +205,24 @@ class HEIO_PT_Material(PropertiesPanel):
         if texture is None:
             return
 
-        menu.use_property_split = True
-        menu.use_property_decorate = False
+        body.use_property_split = True
+        body.use_property_decorate = False
 
         name_icon = "ERROR" if len(texture.name) == 0 else "NONE"
         if material_properties.custom_shader:
-            menu.prop(texture, "name", icon=name_icon)
+            body.prop(texture, "name", icon=name_icon)
         else:
-            split: bpy.types.UILayout = menu.split(factor=0.4)
+            split: bpy.types.UILayout = body.split(factor=0.4)
             split.alignment = "RIGHT"
             split.label(text="Name")
             split.alignment = "LEFT"
             split.label(text="  " + texture.name, icon=name_icon)
 
-        menu.prop_search(texture, "image", bpy.data, "images")
+        body.prop_search(texture, "image", bpy.data, "images")
 
-        menu.prop(texture, "texcoord_index")
-        menu.prop(texture, "wrapmode_u")
-        menu.prop(texture, "wrapmode_v")
+        body.prop(texture, "texcoord_index")
+        body.prop(texture, "wrapmode_u")
+        body.prop(texture, "wrapmode_v")
 
     @staticmethod
     def draw_general_properties(
@@ -230,18 +230,18 @@ class HEIO_PT_Material(PropertiesPanel):
             material: bpy.types.Material,
             material_properties: HEIO_Material):
 
-        header, menu = layout.panel("heio_mat_general", default_closed=True)
+        header, body = layout.panel("heio_mat_general", default_closed=True)
         header.label(text="General")
-        if not menu:
+        if not body:
             return
 
-        menu.use_property_split = True
-        menu.use_property_decorate = False
+        body.use_property_split = True
+        body.use_property_decorate = False
 
-        menu.prop(material_properties, "layer")
+        body.prop(material_properties, "layer")
 
         if material_properties.layer == 'SPECIAL':
-            menu.prop(
+            body.prop(
                 material_properties,
                 "special_layer_name",
                 icon="ERROR"
@@ -249,9 +249,9 @@ class HEIO_PT_Material(PropertiesPanel):
                 else "NONE"
             )
 
-        menu.prop(material, "alpha_threshold", slider=True)
-        menu.prop(material, "use_backface_culling")
-        menu.prop(material_properties, "use_additive_blending")
+        body.prop(material, "alpha_threshold", slider=True)
+        body.prop(material, "use_backface_culling")
+        body.prop(material_properties, "use_additive_blending")
 
     @staticmethod
     def draw_header_properties(
