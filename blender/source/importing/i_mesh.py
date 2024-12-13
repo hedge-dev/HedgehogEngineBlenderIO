@@ -100,7 +100,7 @@ class MeshConverter:
         # Polygon layer attribute
 
         if self._create_mesh_slot_attributes:
-            mesh.heio_mesh.initalize_layers()
+            mesh.heio_mesh.initialize_layers()
             set_slot_indices = []
             special_layer_map = {}
 
