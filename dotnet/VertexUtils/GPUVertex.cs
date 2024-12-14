@@ -5,6 +5,7 @@ using SharpNeedle.Structs;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Numerics;
 
 namespace HEIO.NET.VertexUtils
@@ -19,10 +20,9 @@ namespace HEIO.NET.VertexUtils
 
         public Vector2[] TextureCoordinates { get; set; }
 
-        public Vector4Int[]? ByteColors { get; set; }
-
-        public Vector4[]? FloatColors { get; set; }
-
+        public Vector4[] Colors { get; set; }
+        
+        public bool UseByteColors { get; set; }
 
         public GPUVertex(int texcoordSets, int colorSets, bool useByteColors)
         {
@@ -30,19 +30,9 @@ namespace HEIO.NET.VertexUtils
             Normal = default;
             Tangent = default;
             TextureCoordinates = new Vector2[texcoordSets];
-
-            if(useByteColors)
-            {
-                FloatColors = null;
-                ByteColors = new Vector4Int[colorSets];
-                Array.Fill(ByteColors, new(byte.MaxValue, byte.MaxValue, byte.MaxValue, byte.MaxValue));
-            }
-            else
-            {
-                ByteColors = null;
-                FloatColors = new Vector4[colorSets];
-                Array.Fill(FloatColors, new(1));
-            }
+            Colors = new Vector4[colorSets];
+            Array.Fill(Colors, new(1));
+            UseByteColors = useByteColors;
         }
 
 
@@ -90,17 +80,8 @@ namespace HEIO.NET.VertexUtils
                         break;
 
                     case VertexType.Color:
-                        if(useByteColors)
-                        {
-                            Func<BinaryObjectReader, Vector4Int> vec4intReader = VertexFormatDecoder.GetVector4IntDecoder(element.Format);
-                            callback = (BinaryObjectReader reader, ref GPUVertex vtx) => vtx.ByteColors![usageIndex] = vec4intReader(reader);
-                        }
-                        else
-                        {
-                            Func<BinaryObjectReader, Vector4Int> vec4Reader = VertexFormatDecoder.GetVector4IntDecoder(element.Format);
-                            callback = (BinaryObjectReader reader, ref GPUVertex vtx) => vtx.ByteColors![usageIndex] = vec4Reader(reader);
-                        }
-
+                        Func<BinaryObjectReader, Vector4> vec4Reader = VertexFormatDecoder.GetVector4Decoder(element.Format);
+                        callback = (BinaryObjectReader reader, ref GPUVertex vtx) => vtx.Colors![usageIndex] = vec4Reader(reader);
                         break;
                 }
             
@@ -131,7 +112,7 @@ namespace HEIO.NET.VertexUtils
                     callback(reader, ref vertex);
                 }
                 
-                result[i] = vertex;
+                result[i] = vertex; 
             }
 
             return result;

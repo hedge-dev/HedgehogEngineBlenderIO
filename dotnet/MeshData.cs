@@ -1,5 +1,6 @@
 ﻿using HEIO.NET.VertexUtils;
 using SharpNeedle.Framework.HedgehogEngine.Mirage;
+using SharpNeedle.Framework.SurfRide.Draw;
 using SharpNeedle.Resource;
 using SharpNeedle.Structs;
 using System;
@@ -87,9 +88,9 @@ namespace HEIO.NET
 
         public IList<Vector2>[] TextureCoordinates { get; set; }
 
-        public IList<IList<Vector4Int>>? ByteColors { get; set; }
+        public IList<IList<Vector4>> Colors { get; set; }
 
-        public IList<IList<Vector4>>? FloatColors { get; set; }
+        public bool UseByteColors { get; set; }
 
 
         public ResourceReference<Material>[] SetMaterials { get; set; }
@@ -99,7 +100,7 @@ namespace HEIO.NET
         public int[] SetSizes { get; set; }
 
 
-        public MeshData(string name, IList<Vertex> vertices, IList<int> triangleIndices, IList<Vector3>? polygonNormals, IList<Vector3>? polygonTangents, IList<Vector2>[] textureCoordinates, IList<IList<Vector4Int>>? byteColors, IList<IList<Vector4>>? floatColors, ResourceReference<Material>[] setMaterials, MeshSlot[] setSlots, int[] setSizes)
+        public MeshData(string name, IList<Vertex> vertices, IList<int> triangleIndices, IList<Vector3>? polygonNormals, IList<Vector3>? polygonTangents, IList<Vector2>[] textureCoordinates, IList<IList<Vector4>> colors, bool useByteColors, ResourceReference<Material>[] setMaterials, MeshSlot[] setSlots, int[] setSizes)
         {
             Name = name;
             Vertices = vertices;
@@ -107,8 +108,8 @@ namespace HEIO.NET
             PolygonNormals = polygonNormals;
             PolygonTangents = polygonTangents;
             TextureCoordinates = textureCoordinates;
-            ByteColors = byteColors;
-            FloatColors = floatColors;
+            Colors = colors;
+            UseByteColors = useByteColors;
             SetMaterials = setMaterials;
             SetSlots = setSlots;
             SetSizes = setSizes;
@@ -218,24 +219,10 @@ namespace HEIO.NET
                 textureCoordinates[i] = new(loopCount);
             }
 
-            List<Vector4Int>[]? byteColors = null;
-            List<Vector4>[]? floatColors = null;
-
-            if(gpuModel.UseByteColors)
+            List<Vector4>[] colors = new List<Vector4>[gpuModel.ColorSets];
+            for(int i = 0; i < gpuModel.ColorSets; i++)
             {
-                byteColors = new List<Vector4Int>[gpuModel.ColorSets];
-                for(int i = 0; i < gpuModel.ColorSets; i++)
-                {
-                    byteColors[i] = new(loopCount);
-                }
-            }
-            else
-            {
-                floatColors = new List<Vector4>[gpuModel.ColorSets];
-                for(int i = 0; i < gpuModel.ColorSets; i++)
-                {
-                    floatColors[i] = new(loopCount);
-                }
+                colors[i] = new(loopCount);
             }
 
             int[] triangleSetSizes = [.. gpuModel.TriangleSetSizes];
@@ -283,19 +270,9 @@ namespace HEIO.NET
                         textureCoordinates[k].Add(new(gpuVertex.TextureCoordinates[k].X, 1 - gpuVertex.TextureCoordinates[k].Y));
                     }
 
-                    if(gpuModel.UseByteColors)
+                    for(int k = 0; k < gpuModel.ColorSets; k++)
                     {
-                        for(int k = 0; k < gpuModel.ColorSets; k++)
-                        {
-                            byteColors![k].Add(gpuVertex.ByteColors![k]);
-                        }
-                    }
-                    else
-                    {
-                        for(int k = 0; k < gpuModel.ColorSets; k++)
-                        {
-                            floatColors![k].Add(gpuVertex.FloatColors![k]);
-                        }
+                        colors![k].Add(gpuVertex.Colors![k]);
                     }
                 }
             }
@@ -307,8 +284,8 @@ namespace HEIO.NET
                 polygonNormals,
                 polygonTangents,
                 textureCoordinates,
-                byteColors,
-                floatColors,
+                colors,
+                gpuModel.UseByteColors,
                 gpuModel.SetMaterials,
                 gpuModel.SetSlots,
                 triangleSetSizes);

@@ -27,12 +27,16 @@ namespace HEIO.NET.VertexUtils
 
         private static Vector4Int IntDecodeUByte4(BinaryObjectReader reader)
         {
-            return new(
+
+
+            Vector4Int result = new(
                 reader.ReadByte(),
                 reader.ReadByte(),
                 reader.ReadByte(),
                 reader.ReadByte()
             );
+
+            return result;
         }
 
         private static Vector4Int IntDecodeByte4(BinaryObjectReader reader)
