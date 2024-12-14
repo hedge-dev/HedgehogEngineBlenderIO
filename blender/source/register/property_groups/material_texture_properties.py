@@ -102,7 +102,7 @@ class HEIO_MaterialTexture(bpy.types.PropertyGroup):
 
     def get_nodes(self):
         if not isinstance(self.id_data, Material):
-            return (None, None, None)
+            return (None, None, None, None)
 
         texture_name = self.name
 
@@ -125,53 +125,34 @@ class HEIO_MaterialTexture(bpy.types.PropertyGroup):
         tiling_node: ShaderNodeGroup | None = get_node_of_type(
             self.id_data, "Tiling " + texture_name, ShaderNodeGroup)
 
-        return (texture_node, has_texture_node, tiling_node)
+        uv_node: ShaderNodeGroup | None = get_node_of_type(
+            self.id_data, "UV " + texture_name, ShaderNodeGroup)
+
+        return (texture_node, has_texture_node, tiling_node, uv_node)
 
     def update_nodes(self):
         nodes = self.get_nodes()
 
         if nodes[0] is not None:
-            nodes[0].image = self.image
-            nodes[0].extension = 'EXTEND'
-            nodes[0].interpolation = 'Cubic'
-            nodes[0].projection = 'FLAT'
+            texture = nodes[0]
+            texture.image = self.image
+            texture.extension = 'EXTEND'
+            texture.interpolation = 'Cubic'
+            texture.projection = 'FLAT'
 
         if nodes[1] is not None:
             nodes[1].outputs[0].default_value = 0 if self.image is None else 1
 
-        if nodes[2] is None:
-            return
+        if nodes[2] is not None:
+            tiling = nodes[2]
+            tiling.inputs[1].default_value, tiling.inputs[3].default_value = TEXTURE_WRAP_MAPPING[self.wrapmode_u]
+            tiling.inputs[2].default_value, tiling.inputs[4].default_value = TEXTURE_WRAP_MAPPING[self.wrapmode_v]
 
-        tiling = nodes[2]
-        tiling.inputs[1].default_value, tiling.inputs[3].default_value = TEXTURE_WRAP_MAPPING[self.wrapmode_u]
-        tiling.inputs[2].default_value, tiling.inputs[4].default_value = TEXTURE_WRAP_MAPPING[self.wrapmode_v]
+        if nodes[3] is not None:
+            uv = nodes[3]
+            for i in range(4):
+                uv.inputs[i].default_value = self.texcoord_index == i
 
-        if not tiling.label.startswith("DynamicIn;"):
-            return
-
-        from bpy.types import ShaderNodeUVMap
-        uv_node: ShaderNodeUVMap | None = get_node_of_type(
-            self.id_data, f"UV{self.texcoord_index}", ShaderNodeUVMap)
-
-        if uv_node is None:
-            try:
-                self.id_data.node_tree.links.remove(tiling.inputs[0].links[0])
-            except Exception:
-                pass
-
-        else:
-            try:
-                link: bpy.types.NodeLink = tiling.inputs[0].links[0]
-
-                if link.from_node == uv_node:
-                    return
-
-                self.id_data.node_tree.links.remove(link)
-            except Exception:
-                pass
-
-            self.id_data.node_tree.links.new(
-                uv_node.outputs[0], tiling.inputs[0])
 
     def reset_nodes(self):
         nodes = self.get_nodes()
@@ -181,6 +162,16 @@ class HEIO_MaterialTexture(bpy.types.PropertyGroup):
 
         if nodes[1] is not None:
             nodes[1].outputs[0].default_value = 0
+
+        if nodes[2] is not None:
+            tiling = nodes[2]
+            for i in range(4):
+                tiling.inputs[1 + i].default_value = False
+
+        if nodes[3] is not None:
+            uv = nodes[3]
+            for i in range(4):
+                uv.inputs[i].default_value = i == 1
 
 
 class HEIO_MaterialTextureList(BaseList):

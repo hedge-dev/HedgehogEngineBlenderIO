@@ -12,7 +12,12 @@ from .material_texture_properties import HEIO_MaterialTextureList
 from .sca_parameter_properties import HEIO_SCA_Parameters
 
 from .. import definitions
+from ..definitions.target_info import TargetDefinition
 from ..definitions.shader_definitions import ShaderDefinition, ShaderParameterType
+
+from ...utility.material_setup import (
+    get_node_of_type
+)
 
 SHADER_ERROR_FALLBACK = [("ERROR_FALLBACK", "", "")]
 VARIANT_ERROR_FALLBACK = [("ERROR_FALLBACK", "", "")]
@@ -20,7 +25,8 @@ VARIANT_ERROR_FALLBACK_EMPTY = [("ERROR_FALLBACK", "", ""), ("/", "", "")]
 
 
 def _update_blending(heio_material, context):
-    heio_material.update_material_properties()
+    target_definition = definitions.get_target_definition(context)
+    heio_material.update_material_properties(target_definition)
 
 
 def _get_shader_enum_params(context: bpy.types.Context):
@@ -327,11 +333,32 @@ class HEIO_Material(bpy.types.PropertyGroup):
         self.setup_definition_parameters(definition)
         self.setup_definition_textures(definition)
 
-    def update_material_properties(self):
-        if self.layer == 'TRANSPARENT':
+    def update_material_properties(self, target_definition: TargetDefinition | None):
+        layer = self.layer
+
+        if layer == 'AUTO':
+            if target_definition is not None and self.shader_name in target_definition.shaders.definitions:
+                layer = target_definition.shaders.definitions[self.shader_name].layer
+            else:
+                layer = 'OPAQUE'
+
+        if layer == 'TRANSPARENT':
             self.id_data.surface_render_method = 'BLENDED'
         else:
             self.id_data.surface_render_method = 'DITHERED'
+
+        from bpy.types import ShaderNodeValue
+        def update_layer_node(node_name: str, layer_types: set[str]):
+            layer_node: ShaderNodeValue | None = get_node_of_type(
+                self.id_data, "Layer " + node_name, ShaderNodeValue)
+
+            if layer_node is not None:
+                layer_node.outputs[0].default_value = 1 if layer in layer_types else 0
+
+        update_layer_node("Opaque", {'OPAQUE'})
+        update_layer_node("Transparent", {'TRANSPARENT', 'PUNCHTHROUGH'})
+        update_layer_node("Special", {'SPECIAL'})
+
 
     def update_material_nodes(self):
 
@@ -341,9 +368,9 @@ class HEIO_Material(bpy.types.PropertyGroup):
         for texture in self.textures:
             texture.update_nodes()
 
-    def update_material_all(self):
+    def update_material_all(self, target_definition: TargetDefinition | None):
         self.update_material_nodes()
-        self.update_material_properties()
+        self.update_material_properties(target_definition)
 
     @classmethod
     def register(cls):

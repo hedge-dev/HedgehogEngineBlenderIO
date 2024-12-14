@@ -201,7 +201,7 @@ def setup_and_update_materials(
             template = templates[shader_name]
 
         _setup_material(material, template)
-        material.heio_material.update_material_all()
+        material.heio_material.update_material_all(target_definition)
 
     template_materials = set(templates.values())
     for template in template_materials:

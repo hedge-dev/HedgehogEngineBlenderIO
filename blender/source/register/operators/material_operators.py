@@ -3,6 +3,7 @@ from bpy.props import EnumProperty
 from bpy.types import Context
 
 from .base import HEIOBaseOperator, HEIOBasePopupOperator
+from .. import definitions
 
 from ...utility.material_setup import (
     setup_and_update_materials
@@ -67,7 +68,8 @@ class HEIO_OT_Material_SetupNodes(MaterialOperator):
     bl_description = "Set up material nodes based on the selected shader"
 
     def mat_execute(self, context, materials):
-        setup_and_update_materials(context, materials)
+        target_definition = definitions.get_target_definition(context)
+        setup_and_update_materials(target_definition, materials)
 
 
 class HEIO_OT_Material_SetupNodes_Active(HEIOBaseOperator):
@@ -77,6 +79,7 @@ class HEIO_OT_Material_SetupNodes_Active(HEIOBaseOperator):
 
     def _execute(self, context: bpy.types.Context):
         materials = MaterialOperator.get_materials(context, 'ACTIVE')
-        setup_and_update_materials(context, materials)
+        target_definition = definitions.get_target_definition(context)
+        setup_and_update_materials(target_definition, materials)
 
         return {'FINISHED'}
