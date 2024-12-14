@@ -313,7 +313,7 @@ class HEIO_Material(bpy.types.PropertyGroup):
                 item.name = texture_name
 
             if index != current_index:
-                self.parameters.move(index, current_index)
+                textures.move(index, current_index)
 
             current_index += 1
 

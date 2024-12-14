@@ -102,7 +102,7 @@ class HEIO_MaterialTexture(bpy.types.PropertyGroup):
 
     def get_nodes(self):
         if not isinstance(self.id_data, Material):
-            return (None, None, None, None)
+            return (None, None, None)
 
         texture_name = self.name
 
@@ -113,8 +113,7 @@ class HEIO_MaterialTexture(bpy.types.PropertyGroup):
         from bpy.types import (
             ShaderNodeTexImage,
             ShaderNodeValue,
-            ShaderNodeGroup,
-            ShaderNodeUVMap
+            ShaderNodeGroup
         )
 
         texture_node: ShaderNodeTexImage | None = get_node_of_type(
@@ -126,10 +125,7 @@ class HEIO_MaterialTexture(bpy.types.PropertyGroup):
         tiling_node: ShaderNodeGroup | None = get_node_of_type(
             self.id_data, "Tiling " + texture_name, ShaderNodeGroup)
 
-        uv_node: ShaderNodeUVMap | None = get_node_of_type(
-            self.id_data, f"UV{self.texcoord_index}", ShaderNodeUVMap)
-
-        return (texture_node, has_texture_node, tiling_node, uv_node)
+        return (texture_node, has_texture_node, tiling_node)
 
     def update_nodes(self):
         nodes = self.get_nodes()
@@ -150,22 +146,32 @@ class HEIO_MaterialTexture(bpy.types.PropertyGroup):
         tiling.inputs[1].default_value, tiling.inputs[3].default_value = TEXTURE_WRAP_MAPPING[self.wrapmode_u]
         tiling.inputs[2].default_value, tiling.inputs[4].default_value = TEXTURE_WRAP_MAPPING[self.wrapmode_v]
 
-        if nodes[3] is None:
+        if not tiling.label.startswith("DynamicIn;"):
             return
 
-        uv_node = nodes[3]
+        from bpy.types import ShaderNodeUVMap
+        uv_node: ShaderNodeUVMap | None = get_node_of_type(
+            self.id_data, f"UV{self.texcoord_index}", ShaderNodeUVMap)
 
-        try:
-            link: bpy.types.NodeLink = tiling.inputs[0].links[0]
+        if uv_node is None:
+            try:
+                self.id_data.node_tree.links.remove(tiling.inputs[0].links[0])
+            except Exception:
+                pass
 
-            if link.from_node == uv_node:
-                return
+        else:
+            try:
+                link: bpy.types.NodeLink = tiling.inputs[0].links[0]
 
-            self.id_data.node_tree.links.remove(link)
-        except Exception:
-            pass
+                if link.from_node == uv_node:
+                    return
 
-        self.id_data.node_tree.links.new(uv_node.outputs[0], tiling.inputs[0])
+                self.id_data.node_tree.links.remove(link)
+            except Exception:
+                pass
+
+            self.id_data.node_tree.links.new(
+                uv_node.outputs[0], tiling.inputs[0])
 
     def reset_nodes(self):
         nodes = self.get_nodes()
