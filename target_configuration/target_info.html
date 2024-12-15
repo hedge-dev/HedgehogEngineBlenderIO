@@ -335,6 +335,15 @@ by exporters.</p>
 
 <span class="w">    </span><span class="c1">// Version of the material file sample chunk structure (1-2)</span>
 <span class="w">    </span><span class="nt">&quot;MaterialSampleChunk&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span>
+<span class="w">  </span><span class="p">},</span>
+
+<span class="w">  </span><span class="c1">// Default texture modes to use for each texture type when importing images for materials.</span>
+<span class="w">  </span><span class="c1">// Can be &quot;sRGB&quot; for color textures, &quot;Linear&quot; for non-color textures, and &quot;Normal&quot; for normal textures (enables y-channel flipping)</span>
+<span class="w">  </span><span class="nt">&quot;DefaultTextureModes&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;diffuse&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sRGB&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;specular&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Linear&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;normal&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Normal&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="cm">/*...*/</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
@@ -376,7 +385,7 @@ by exporters.</p>
             Made with 
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2024-12-05</div>
+              Last updated on 2024-12-15</div>
           </div>
           <div class="right-details">
             

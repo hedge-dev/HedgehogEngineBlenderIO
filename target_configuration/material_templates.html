@@ -314,10 +314,10 @@ each shader, copy it over to the material and fill it with textures and paramete
 it’s recommended to set up a dummy object to hold all the materials.</p>
 <p>Every templates file should also have at least a <code class="docutils literal notranslate"><span class="pre">FALLBACK</span></code> material, which is used
 whenever a shader does not have its own template set up yet.</p>
-<figure class="align-default" id="id4">
+<figure class="align-default" id="id8">
 <img alt="../_images/target_configuration_material_template_example.png" src="../_images/target_configuration_material_template_example.png" />
 <figcaption>
-<p><span class="caption-text">Example: The FALLBACK material setup for Shadow Generations</span><a class="headerlink" href="#id4" title="Link to this image">¶</a></p>
+<p><span class="caption-text">Example: The FALLBACK material setup for Shadow Generations</span><a class="headerlink" href="#id8" title="Link to this image">¶</a></p>
 </figcaption>
 </figure>
 </section>
@@ -325,9 +325,23 @@ whenever a shader does not have its own template set up yet.</p>
 <h2>Node Setups<a class="headerlink" href="#node-setups" title="Link to this heading">¶</a></h2>
 <p>First and foremost, the addon accesses and modifies nodes by their name (not their label!), so make
 sure to correctly name nodes that interface with parameters and textures!</p>
-<p>Every template must also include 4 UV map nodes named <code class="docutils literal notranslate"><span class="pre">UV0</span></code> through <code class="docutils literal notranslate"><span class="pre">UV3</span></code>.</p>
+<section id="heio-common-nodes">
+<h3>HEIO Common nodes<a class="headerlink" href="#heio-common-nodes" title="Link to this heading">¶</a></h3>
+<p>The addon provides blend files with a range of custom node groups that are meant to be used in each
+material template file.</p>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>If you add a node tree to a templates file, make sure to link and not append or copy-paste it!</p>
+</div>
+<figure class="align-default" id="id9">
+<img alt="../_images/target_configuration_material_template_common_nodes.png" src="../_images/target_configuration_material_template_common_nodes.png" />
+<figcaption>
+<p><span class="caption-text">The current common node groups as of dev version 0.1.21</span><a class="headerlink" href="#id9" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</section>
 <section id="parameter-nodes">
-<h3>Parameter Nodes<a class="headerlink" href="#parameter-nodes" title="Link to this heading">¶</a></h3>
+<h3>Parameter nodes<a class="headerlink" href="#parameter-nodes" title="Link to this heading">¶</a></h3>
 <p>Float and color parameters can be assigned to multiple different types of nodes:</p>
 <ul class="simple">
 <li><p>An <a class="reference external" href="https://docs.blender.org/manual/en/latest/render/shader_nodes/input/rgb.html">RGB node</a></p></li>
@@ -339,16 +353,38 @@ sure to correctly name nodes that interface with parameters and textures!</p>
 <p>Boolean parameters can only be assigned to <a class="reference external" href="https://docs.blender.org/manual/en/latest/render/shader_nodes/input/value.html">value node</a>,
 which receives a <code class="docutils literal notranslate"><span class="pre">1</span></code> if the parameter is set to <code class="docutils literal notranslate"><span class="pre">true</span></code>, and otherwise a <code class="docutils literal notranslate"><span class="pre">0</span></code>.</p>
 </section>
+<section id="system-nodes">
+<h3>“System” nodes<a class="headerlink" href="#system-nodes" title="Link to this heading">¶</a></h3>
+<p>Similar to parameter nodes, there exist “system” nodes that get filled based on other material properties</p>
+<dl class="simple">
+<dt>Layer Opaque</dt><dd><p>A <a class="reference external" href="https://docs.blender.org/manual/en/latest/render/shader_nodes/input/value.html">value node</a>
+with the name <code class="docutils literal notranslate"><span class="pre">Layer</span> <span class="pre">Opaque</span></code>, which receives a <code class="docutils literal notranslate"><span class="pre">1</span></code> if the material layer resolves to
+<code class="docutils literal notranslate"><span class="pre">Opaque</span></code>, otherwise <code class="docutils literal notranslate"><span class="pre">0</span></code>.</p>
+</dd>
+<dt>Layer Transparent</dt><dd><p>A <a class="reference external" href="https://docs.blender.org/manual/en/latest/render/shader_nodes/input/value.html">value node</a>
+with the name <code class="docutils literal notranslate"><span class="pre">Layer</span> <span class="pre">Transparent</span></code>, which receives a <code class="docutils literal notranslate"><span class="pre">1</span></code> if the material layer resolves to
+<code class="docutils literal notranslate"><span class="pre">Transparent</span></code> or <code class="docutils literal notranslate"><span class="pre">Punch-through</span></code>, otherwise <code class="docutils literal notranslate"><span class="pre">0</span></code>.</p>
+</dd>
+<dt>Layer Special</dt><dd><p>A <a class="reference external" href="https://docs.blender.org/manual/en/latest/render/shader_nodes/input/value.html">value node</a>
+with the name <code class="docutils literal notranslate"><span class="pre">Layer</span> <span class="pre">Special</span></code>, which receives a <code class="docutils literal notranslate"><span class="pre">1</span></code> if the material layer resolves to
+<code class="docutils literal notranslate"><span class="pre">Special</span></code>, otherwise <code class="docutils literal notranslate"><span class="pre">0</span></code>.</p>
+</dd>
+</dl>
+</section>
 <section id="texture-nodes">
 <h3>Texture Nodes<a class="headerlink" href="#texture-nodes" title="Link to this heading">¶</a></h3>
-<p>To properly make use of textures, you need to set up 3 nodes, of which their names need to end
+<p>To properly make use of textures, you need to set up several nodes, of which their names need to end
 with the <a class="reference internal" href="../user_interface/object/material_textures.html#heio-materialtexture-name"><span class="std std-ref">texture type name</span></a> they are set up for.</p>
-<figure class="align-default" id="id5">
+<figure class="align-default" id="id10">
 <img alt="../_images/target_configuration_material_template_texture_example.png" src="../_images/target_configuration_material_template_texture_example.png" />
 <figcaption>
-<p><span class="caption-text">example for a texture nodes setup</span><a class="headerlink" href="#id5" title="Link to this image">¶</a></p>
+<p><span class="caption-text">example for a texture nodes setup</span><a class="headerlink" href="#id10" title="Link to this image">¶</a></p>
 </figcaption>
 </figure>
+<p>It should be noted that all of these are optional and not required, and the setup may even vary
+based on the shader you are trying to replicate. For example, many shaders do not make use of the
+texture coordinate index of the texture, and can just be linked to the corresponding output of the
+static <code class="docutils literal notranslate"><span class="pre">HEIO</span> <span class="pre">UV</span> <span class="pre">Input</span></code> node.</p>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
 <p>If a shader has a texture type more than once, and you want to make use of the second or
@@ -359,13 +395,10 @@ second one uses <code class="docutils literal notranslate"><span class="pre">dif
 <dl>
 <dt>The Image node</dt><dd><p>An <a class="reference external" href="https://docs.blender.org/manual/en/latest/render/shader_nodes/textures/image.html">image texture node</a>
 with the name <code class="docutils literal notranslate"><span class="pre">Texture</span></code> (e.g. <code class="docutils literal notranslate"><span class="pre">Texture</span> <span class="pre">diffuse</span></code>) for sampling the actual image.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>Make sure to set the extension mode of the node to <code class="docutils literal notranslate"><span class="pre">Extend</span></code>!</p>
-</div>
-<p>The image node also has special behavior regarding its label: By default, images are loaded as
-regular sRGB images, which is often not desired. You can specify an “image type” by adding it
-to the start of a label and following it up with a <code class="docutils literal notranslate"><span class="pre">;</span></code>.</p>
+<p>The image node also has special behavior regarding its label: By default, images get laoded using
+the default “image type” in the target info file. If the default is not correct for your case,
+you can specify an “image type” by adding it to the start of a label and following it up with
+a <code class="docutils literal notranslate"><span class="pre">;</span></code>.</p>
 <p>Following texture types exist:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">sRGB</span></code>: Color texture</p></li>
@@ -380,10 +413,12 @@ with the name <code class="docutils literal notranslate"><span class="pre">Has</
 image is provided, otherwise <code class="docutils literal notranslate"><span class="pre">0</span></code>.</p>
 </dd>
 <dt>The UV Tiling node</dt><dd><p>A <a class="reference external" href="https://docs.blender.org/manual/en/latest/render/shader_nodes/groups.html">group node</a>
-with the <code class="docutils literal notranslate"><span class="pre">HEIO</span> <span class="pre">UV</span> <span class="pre">Tiling</span></code> node tree and the name <code class="docutils literal notranslate"><span class="pre">Tiling</span></code> (e.g. <code class="docutils literal notranslate"><span class="pre">Tiling</span> <span class="pre">diffuse</span></code>) that
-gets connected to the image nodes vector input.</p>
-<p>You can append the node tree it from any of the default target definitions by HEIO. It
-replaces the texture wrapping to make per-axis wrapping possible.</p>
+with the <code class="docutils literal notranslate"><span class="pre">HEIO</span> <span class="pre">UV</span> <span class="pre">Tiling</span></code> node tree and the name <code class="docutils literal notranslate"><span class="pre">Tiling</span></code> (e.g. <code class="docutils literal notranslate"><span class="pre">Tiling</span> <span class="pre">diffuse</span></code>).</p>
+<p>This node tree gets linked from the common node groups file.</p>
+</dd>
+<dt>The Indexed UV Input node</dt><dd><p>A <a class="reference external" href="https://docs.blender.org/manual/en/latest/render/shader_nodes/groups.html">group node</a>
+with the <code class="docutils literal notranslate"><span class="pre">HEIO</span> <span class="pre">Indexed</span> <span class="pre">UV</span> <span class="pre">Input</span></code> node tree and the name <code class="docutils literal notranslate"><span class="pre">UV</span></code> (e.g. <code class="docutils literal notranslate"><span class="pre">UV</span> <span class="pre">diffuse</span></code>).</p>
+<p>This node tree gets linked from the common node groups file.</p>
 </dd>
 </dl>
 </section>
@@ -424,7 +459,7 @@ replaces the texture wrapping to make per-axis wrapping possible.</p>
             Made with 
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2024-12-05</div>
+              Last updated on 2024-12-15</div>
           </div>
           <div class="right-details">
             
@@ -458,7 +493,9 @@ replaces the texture wrapping to make per-axis wrapping possible.</p>
 <li><a class="reference internal" href="#">Material Templates</a><ul>
 <li><a class="reference internal" href="#basics">Basics</a></li>
 <li><a class="reference internal" href="#node-setups">Node Setups</a><ul>
-<li><a class="reference internal" href="#parameter-nodes">Parameter Nodes</a></li>
+<li><a class="reference internal" href="#heio-common-nodes">HEIO Common nodes</a></li>
+<li><a class="reference internal" href="#parameter-nodes">Parameter nodes</a></li>
+<li><a class="reference internal" href="#system-nodes">“System” nodes</a></li>
 <li><a class="reference internal" href="#texture-nodes">Texture Nodes</a></li>
 </ul>
 </li>
