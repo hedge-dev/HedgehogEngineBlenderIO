@@ -2243,15 +2243,6 @@
   },
   "Glass_dpn": {
     "Parameters": {
-      "PBRFactor": {
-        "Type": "Float",
-        "Default": [
-          0,
-          0,
-          0,
-          0
-        ]
-      },
       "Refraction": {
         "Type": "Float",
         "Default": [
@@ -2279,15 +2270,6 @@
   },
   "GlassTone_dpnE": {
     "Parameters": {
-      "PBRFactor": {
-        "Type": "Float",
-        "Default": [
-          0,
-          0,
-          0,
-          0
-        ]
-      },
       "Refraction": {
         "Type": "Float",
         "Default": [
