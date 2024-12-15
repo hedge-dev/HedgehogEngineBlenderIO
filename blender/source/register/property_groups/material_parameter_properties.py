@@ -119,10 +119,10 @@ class HEIO_MaterialParameter(bpy.types.PropertyGroup):
                 node.inputs[2].default_value = self.float_value[2]
 
         if nodes[1] is not None:
-            nodes[1].outputs[0].default_value = self.float_value[4]
+            nodes[1].outputs[0].default_value = self.float_value[3]
 
         if nodes[2] is not None:
-            nodes[2].outputs[0].default_value = self.float_value[4]
+            nodes[2].outputs[0].default_value = self.float_value[3]
 
     def _reset_float_nodes(self):
         nodes = self._get_float_nodes()
