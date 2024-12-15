@@ -25,7 +25,7 @@ class MaterialConverter:
     _create_undefined_parameters: bool
     _import_images: bool
 
-    _converted_materials: dict[any, bpy.types.Material]
+    converted_materials: dict[any, bpy.types.Material]
     _material_name_lookup: dict[str, bpy.types.Material]
 
     def __init__(
@@ -41,7 +41,7 @@ class MaterialConverter:
         self._create_undefined_parameters = create_undefined_parameters
         self._import_images = import_images
 
-        self._converted_materials = dict()
+        self.converted_materials = dict()
         self._material_name_lookup = dict()
 
     def _convert_textures(
@@ -113,13 +113,13 @@ class MaterialConverter:
         new_converted_materials = dict()
 
         for i, sn_material in enumerate(sn_materials):
-            if sn_material in self._converted_materials:
+            if sn_material in self.converted_materials:
                 continue
 
             progress_console.update(f"Creating material \"{sn_material.Name}\"", i)
 
             material = bpy.data.materials.new(sn_material.Name)
-            self._converted_materials[sn_material] = material
+            self.converted_materials[sn_material] = material
             new_converted_materials[sn_material] = material
             self._material_name_lookup[sn_material.Name] = material
 
@@ -210,8 +210,8 @@ class MaterialConverter:
             self._material_name_lookup[key] = material
             return material
 
-        if key in self._converted_materials:
-            return self._converted_materials[key]
+        if key in self.converted_materials:
+            return self.converted_materials[key]
 
         if key.Name in self._material_name_lookup:
             return self._material_name_lookup[key.Name]
