@@ -1028,8 +1028,8 @@
     "Hide": false,
     "Textures": [
       "diffuse",
-      "normal",
-      "specular"
+      "specular",
+      "normal"
     ]
   },
   "Common_dpna": {
@@ -1037,8 +1037,8 @@
     "Layer": "Transparent",
     "Textures": [
       "diffuse",
-      "normal",
       "specular",
+      "normal",
       "transparency"
     ]
   },
