@@ -37,5 +37,14 @@ File Structure
 
 	    // Version of the material file sample chunk structure (1-2)
 	    "MaterialSampleChunk": 2
+	  },
+
+	  // Default texture modes to use for each texture type when importing images for materials.
+	  // Can be "sRGB" for color textures, "Linear" for non-color textures, and "Normal" for normal textures (enables y-channel flipping)
+	  "DefaultTextureModes": {
+	    "diffuse": "sRGB",
+	    "specular": "Linear",
+	    "normal": "Normal",
+	    /*...*/
 	  }
 	}

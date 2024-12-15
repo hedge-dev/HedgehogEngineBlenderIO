@@ -25,10 +25,24 @@ Node Setups
 First and foremost, the addon accesses and modifies nodes by their name (not their label!), so make
 sure to correctly name nodes that interface with parameters and textures!
 
-Every template must also include 4 UV map nodes named ``UV0`` through ``UV3``.
+
+HEIO Common nodes
+-----------------
+
+The addon provides blend files with a range of custom node groups that are meant to be used in each
+material template file.
+
+.. important::
+
+	If you add a node tree to a templates file, make sure to link and not append or copy-paste it!
 
 
-Parameter Nodes
+.. figure:: /images/target_configuration_material_template_common_nodes.png
+
+	The current common node groups as of dev version 0.1.21
+
+
+Parameter nodes
 ---------------
 
 Float and color parameters can be assigned to multiple different types of nodes:
@@ -42,16 +56,45 @@ Float and color parameters can be assigned to multiple different types of nodes:
 Boolean parameters can only be assigned to `value node <https://docs.blender.org/manual/en/latest/render/shader_nodes/input/value.html>`_,
 which receives a ``1`` if the parameter is set to ``true``, and otherwise a ``0``.
 
+
+"System" nodes
+--------------
+
+Similar to parameter nodes, there exist "system" nodes that get filled based on other material properties
+
+Layer Opaque
+	A `value node <https://docs.blender.org/manual/en/latest/render/shader_nodes/input/value.html>`_
+	with the name ``Layer Opaque``, which receives a ``1`` if the material layer resolves to
+	``Opaque``, otherwise ``0``.
+
+
+Layer Transparent
+	A `value node <https://docs.blender.org/manual/en/latest/render/shader_nodes/input/value.html>`_
+	with the name ``Layer Transparent``, which receives a ``1`` if the material layer resolves to
+	``Transparent`` or ``Punch-through``, otherwise ``0``.
+
+
+Layer Special
+	A `value node <https://docs.blender.org/manual/en/latest/render/shader_nodes/input/value.html>`_
+	with the name ``Layer Special``, which receives a ``1`` if the material layer resolves to
+	``Special``, otherwise ``0``.
+
+
 Texture Nodes
 -------------
 
-To properly make use of textures, you need to set up 3 nodes, of which their names need to end
+To properly make use of textures, you need to set up several nodes, of which their names need to end
 with the :ref:`texture type name <HEIO_MaterialTexture.name>` they are set up for.
 
 .. figure:: /images/target_configuration_material_template_texture_example.png
 
 	example for a texture nodes setup
 
+
+It should be noted that all of these are optional and not required, and the setup may even vary
+based on the shader you are trying to replicate. For example, many shaders do not make use of the
+texture coordinate index of the texture, and can just be linked to the corresponding output of the
+static ``HEIO UV Input`` node.
 
 .. important::
 
@@ -66,13 +109,10 @@ The Image node
 	An `image texture node <https://docs.blender.org/manual/en/latest/render/shader_nodes/textures/image.html>`_
 	with the name ``Texture`` (e.g. ``Texture diffuse``) for sampling the actual image.
 
-	.. warning::
-
-		Make sure to set the extension mode of the node to ``Extend``!
-
-	The image node also has special behavior regarding its label: By default, images are loaded as
-	regular sRGB images, which is often not desired. You can specify an "image type" by adding it
-	to the start of a label and following it up with a ``;``.
+	The image node also has special behavior regarding its label: By default, images get laoded using
+	the default "image type" in the target info file. If the default is not correct for your case,
+	you can specify an "image type" by adding it to the start of a label and following it up with
+	a ``;``.
 
 	Following texture types exist:
 
@@ -92,8 +132,13 @@ The "Has Texture" node
 
 The UV Tiling node
 	A `group node <https://docs.blender.org/manual/en/latest/render/shader_nodes/groups.html>`_
-	with the ``HEIO UV Tiling`` node tree and the name ``Tiling`` (e.g. ``Tiling diffuse``) that
-	gets connected to the image nodes vector input.
+	with the ``HEIO UV Tiling`` node tree and the name ``Tiling`` (e.g. ``Tiling diffuse``).
 
-	You can append the node tree it from any of the default target definitions by HEIO. It
-	replaces the texture wrapping to make per-axis wrapping possible.
+	This node tree gets linked from the common node groups file.
+
+
+The Indexed UV Input node
+	A `group node <https://docs.blender.org/manual/en/latest/render/shader_nodes/groups.html>`_
+	with the ``HEIO Indexed UV Input`` node tree and the name ``UV`` (e.g. ``UV diffuse``).
+
+	This node tree gets linked from the common node groups file.
