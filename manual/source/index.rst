@@ -22,30 +22,30 @@ Getting Started
 
 .. only:: builder_html and (not singlehtml)
 
-   .. container:: toc-cards
+    .. container:: toc-cards
 
-      .. container:: card
+        .. container:: card
 
-         :doc:`/getting_started/about`
+            :doc:`/getting_started/about`
 
-      .. container:: card
+        .. container:: card
 
-         :doc:`/getting_started/installation`
+            :doc:`/getting_started/installation`
 
-      .. container:: card
+        .. container:: card
 
-         :doc:`/getting_started/contact`
+            :doc:`/getting_started/contact`
 
 
 .. container:: global-index-toc
 
-   .. toctree::
-      :caption: Getting Started
-      :maxdepth: 1
+    .. toctree::
+        :caption: Getting Started
+        :maxdepth: 1
 
-      getting_started/about
-      getting_started/installation
-      getting_started/contact
+        getting_started/about
+        getting_started/installation
+        getting_started/contact
 
 
 Sections
@@ -53,38 +53,47 @@ Sections
 
 .. only:: builder_html and (not singlehtml)
 
-   .. container:: toc-cards
+    .. container:: toc-cards
 
-      .. container:: card
+        .. container:: card
 
-         .. figure:: /images/index_user_interface.png
-            :target: user_interface/index.html
+            .. figure:: /images/index_user_interface.png
+                :target: user_interface/index.html
 
-         :doc:`/user_interface/index`
-            All new panels and tools added by HEIO
+            :doc:`/user_interface/index`
+                All new panels and tools added by HEIO
 
-      .. container:: card
+        .. container:: card
 
-         .. figure:: /images/index_guides.png
-            :target: guides/index.html
+            .. figure:: /images/index_guides.png
+                :target: guides/index.html
 
-         :doc:`/guides/index`
-            Learn how to perform basic tasks with the addon
+            :doc:`/guides/index`
+                Learn how to perform basic tasks with the addon
 
-      .. container:: card
+        .. container:: card
 
-         .. figure:: /images/index_target_configuration.png
-            :target: target_configuration/index.html
+            .. figure:: /images/index_game_documentation.png
+                :target: game_documentation/index.html
 
-         :doc:`/target_configuration/index`
-            Configuring target games for HEIO
+            :doc:`/game_documentation/index`
+                Information on asset types, shaders and more for each supported game
+
+        .. container:: card
+
+            .. figure:: /images/index_target_configuration.png
+                :target: target_configuration/index.html
+
+            :doc:`/target_configuration/index`
+                Configuring target games for HEIO
 
 .. container:: global-index-toc
 
-   .. toctree::
-      :caption: Sections
-      :maxdepth: 2
+    .. toctree::
+        :caption: Sections
+        :maxdepth: 2
 
-      /user_interface/index
-      /guides/index
-      /target_configuration/index
+        /user_interface/index
+        /guides/index
+        /game_documentation/index
+        /target_configuration/index

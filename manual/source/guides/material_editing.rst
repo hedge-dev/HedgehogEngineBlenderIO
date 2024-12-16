@@ -93,15 +93,7 @@ how a model gets rendered. Materials tell the game which shader to use as well a
 options like parameters and textures to be used by the shader.
 
 Every game has its own list of shaders. A full list of the usable shaders for each game can be
-found :doc:`here <shaders/index>`.
-
-.. container:: global-index-toc
-
-   .. toctree::
-      :maxdepth: 2
-
-      shaders/index
-
+found :doc:`here </game_documentation/shaders/index>`.
 
 If you created a new material, it will be set up to use a
 :ref:`custom shader <HEIO_Material.custom_shader>` and have no shader set. Custom Shaders are only
@@ -137,15 +129,7 @@ If a shader has variants, you can select those via a second dropdown.
 
 	Available shader variants for the shader ``Common_de`` for Sonic Unleashed
 
-Each target games shader features and their purposes are documented :doc:`here <shader_features>`.
-
-.. container:: global-index-toc
-
-   .. toctree::
-      :maxdepth: 1
-
-      shader_features
-
+Each target games shader features and their purposes are documented :doc:`here </game_documentation/shader_features>`.
 
 .. _guides_material_editing_node_setup:
 
@@ -230,7 +214,7 @@ various purposes.
 For more detailed information about textures, read
 
 - :doc:`HEIO Material Textures </user_interface/object/material_textures>`
-- :doc:`Texture systems in each engine <textures/index>`
+- :doc:`Texture systems in each engine </game_documentation/textures/index>`
 
 .. important::
 
@@ -240,13 +224,6 @@ For more detailed information about textures, read
 	.. figure:: /images/guides_material_editing_dds_encoding.png
 
 		Where to find the DDS encoding settings
-
-.. container:: global-index-toc
-
-   .. toctree::
-      :maxdepth: 2
-
-      textures/index
 
 
 SCA Parameters
@@ -258,15 +235,7 @@ released after.
 For more detailed information about SCA parameters, read
 
 - :doc:`HEIO SCA Parameters </user_interface/sca_parameters>`
-- :doc:`Material SCA parameters <sca_parameters>`
-
-.. container:: global-index-toc
-
-   .. toctree::
-      :maxdepth: 2
-
-      sca_parameters
-
+- :doc:`Material SCA parameters </game_documentation/sca_parameters>`
 
 ----
 

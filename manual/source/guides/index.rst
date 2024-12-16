@@ -26,9 +26,9 @@ Guides
       .. container:: card
 
          .. figure:: /images/guides_index_material_editing.png
-            :target: material_editing/index.html
+            :target: material_editing.html
 
-         :doc:`material_editing/index`
+         :doc:`material_editing`
             Importing, editing and exporting of materials
 
 
@@ -40,4 +40,4 @@ Guides
 
       addon_config
       project_setup
-      material_editing/index
+      material_editing
