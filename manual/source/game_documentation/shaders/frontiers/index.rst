@@ -1,9 +1,9 @@
 
-==================
-Shadow Generations
-==================
+===============
+Sonic Frontiers
+===============
 
-.. include:: contribute.rst
+.. include:: ../contribute.rst
 
 
 .. list-table::
@@ -15,12 +15,6 @@ Shadow Generations
 	  - File Reference
 	  - Image Reference
 
-
-	* - Amoeba_dopnfE
-	  -
-	  -
-	  -
-
 	* - Blend_dpnbdpn
 	  -
 	  -
@@ -31,12 +25,17 @@ Shadow Generations
 	  -
 	  -
 
+	* - BlendDetail_dndnd
+	  -
+	  -
+	  -
+
 	* - BlendDetail_dpndpnn
 	  -
 	  -
 	  -
 
-	* - Bubbles_dpnE
+	* - BossCable_dpnEEa
 	  -
 	  -
 	  -
@@ -46,52 +45,22 @@ Shadow Generations
 	  -
 	  -
 
-	* - ChrAlbedoFalloff_dither_dpn
+	* - ChaosShadow_dpnnE
 	  -
 	  -
 	  -
 
-	* - ChrAlbedoFalloff_dpn
+	* - ChrEyeCDRF
 	  -
 	  -
 	  -
 
-	* - ChrAlbedoFalloff_dpnE
+	* - ChrEyeSuper
 	  -
 	  -
 	  -
 
-	* - ChrAlbedoFalloff_dpnn
-	  -
-	  -
-	  -
-
-	* - ChrEyeE_dpn
-	  -
-	  -
-	  -
-
-	* - ChrEyeE_dpna
-	  -
-	  -
-	  -
-
-	* - ChrFalloffVanish_dpna
-	  -
-	  -
-	  -
-
-	* - ChrFalloffVanish_dpnEa
-	  -
-	  -
-	  -
-
-	* - ChrFalloffVanishCyber_dpnEa
-	  -
-	  -
-	  -
-
-	* - ChrFalloffVanishEff_dpnEa
+	* - ChrEyeSuperE
 	  -
 	  -
 	  -
@@ -101,7 +70,7 @@ Shadow Generations
 	  -
 	  -
 
-	* - ChrSkinCDRF_dither_dpncf
+	* - ChrMouthFlipSuper_ddpnf
 	  -
 	  -
 	  -
@@ -116,17 +85,17 @@ Shadow Generations
 	  -
 	  -
 
+	* - Cloud_nfe
+	  -
+	  -
+	  -
+
 	* - CloudMist_dnf
 	  -
 	  -
 	  -
 
 	* - Common_d
-	  -
-	  -
-	  -
-
-	* - Common_dither_dpn
 	  -
 	  -
 	  -
@@ -151,7 +120,22 @@ Shadow Generations
 	  -
 	  -
 
+	* - Common_dpnm
+	  -
+	  -
+	  -
+
 	* - cyber
+	  -
+	  -
+	  -
+
+	* - cyber_eye
+	  -
+	  -
+	  -
+
+	* - cyber_outline
 	  -
 	  -
 	  -
@@ -161,12 +145,32 @@ Shadow Generations
 	  -
 	  -
 
-	* - DecalModel_dna
+	* - CyberSpaceNoise_dp
+	  -
+	  -
+	  -
+
+	* - CyberSpaceNoise_dpa
+	  -
+	  -
+	  -
+
+	* - CyberSpaceNoise_dpn
+	  -
+	  -
+	  -
+
+	* - CyberSpaceNoise_dpnE
 	  -
 	  -
 	  -
 
 	* - DecalModel_dpn
+	  -
+	  -
+	  -
+
+	* - DecalModel_na
 	  -
 	  -
 	  -
@@ -186,22 +190,17 @@ Shadow Generations
 	  -
 	  -
 
+	* - DirectionBlend_dpndpnn
+	  -
+	  -
+	  -
+
 	* - DirectionBlend_dpnndpn
 	  -
 	  -
 	  -
 
-	* - Dpower_dpnnEf
-	  -
-	  -
-	  -
-
-	* - DpowerVanish_dpnnEfa
-	  -
-	  -
-	  -
-
-	* - DpowerVanishEff_dpnnEfa
+	* - DistanceBlend_dpn
 	  -
 	  -
 	  -
@@ -211,7 +210,17 @@ Shadow Generations
 	  -
 	  -
 
+	* - Effaddhoc
+	  -
+	  -
+	  -
+
 	* - EffAdhoc
+	  -
+	  -
+	  -
+
+	* - Emission_d
 	  -
 	  -
 	  -
@@ -251,17 +260,17 @@ Shadow Generations
 	  -
 	  -
 
-	* - EmissionToneOpAnim_dpnE
-	  -
-	  -
-	  -
-
 	* - EnmEmissionTone_dpnE
 	  -
 	  -
 	  -
 
 	* - EnmEmissionTone_dpnEE
+	  -
+	  -
+	  -
+
+	* - EnmEmissionTone_dpnnEr
 	  -
 	  -
 	  -
@@ -276,22 +285,17 @@ Shadow Generations
 	  -
 	  -
 
-	* - FalloffEmissionTone_dpn
-	  -
-	  -
-	  -
-
 	* - FlowLava_dpnbEa
 	  -
 	  -
 	  -
 
-	* - FlowWaterParallax_ddnnf
+	* - FlowWaterLite
 	  -
 	  -
 	  -
 
-	* - FlowWaterParallax_ddnnff
+	* - FlowWaterLiteFar
 	  -
 	  -
 	  -
@@ -301,7 +305,27 @@ Shadow Generations
 	  -
 	  -
 
+	* - FlyerRoad
+	  -
+	  -
+	  -
+
 	* - Fur
+	  -
+	  -
+	  -
+
+	* - Generate_dpnEg
+	  -
+	  -
+	  -
+
+	* - GenerateIrie_dpnnrEg
+	  -
+	  -
+	  -
+
+	* - Giant
 	  -
 	  -
 	  -
@@ -312,6 +336,16 @@ Shadow Generations
 	  -
 
 	* - GlassTone_dpnE
+	  -
+	  -
+	  -
+
+	* - Grass_d
+	  -
+	  -
+	  -
+
+	* - Grass_dn
 	  -
 	  -
 	  -
@@ -336,12 +370,22 @@ Shadow Generations
 	  -
 	  -
 
-	* - Impostor_dpn
+	* - Impostor_Vegetation_dn
 	  -
 	  -
 	  -
 
 	* - Indirect_daon
+	  -
+	  -
+	  -
+
+	* - Indirect_dopn
+	  -
+	  -
+	  -
+
+	* - Indirect_dpnd
 	  -
 	  -
 	  -
@@ -356,12 +400,12 @@ Shadow Generations
 	  -
 	  -
 
-	* - InstancedWire_dpnE
+	* - Iridescence_ddpNrEa
 	  -
 	  -
 	  -
 
-	* - Iridescence_ddpNrEa
+	* - Iridescence_dpnnr
 	  -
 	  -
 	  -
@@ -371,42 +415,27 @@ Shadow Generations
 	  -
 	  -
 
+	* - IridescenceStoneTone_ddpNrEa
+	  -
+	  -
+	  -
+
+	* - IridescenceStoneTone_dpNrEam
+	  -
+	  -
+	  -
+
 	* - Jewel
 	  -
 	  -
 	  -
 
-	* - Jewel_dnE
+	* - LightMaskWeather_dpnmb
 	  -
 	  -
 	  -
 
-	* - Kaleidoscope
-	  -
-	  -
-	  -
-
-	* - MariaEye_dpnE
-	  -
-	  -
-	  -
-
-	* - MariaHair_dither_dpncfs
-	  -
-	  -
-	  -
-
-	* - MariaHair_dpncfs
-	  -
-	  -
-	  -
-
-	* - Mephiles_dpnnEE
-	  -
-	  -
-	  -
-
-	* - Mist_dn
+	* - NearVanish_da
 	  -
 	  -
 	  -
@@ -416,7 +445,12 @@ Shadow Generations
 	  -
 	  -
 
-	* - OceanParallaxLight_ddnnfm
+	* - Plush
+	  -
+	  -
+	  -
+
+	* - Plush_dpnna
 	  -
 	  -
 	  -
@@ -431,12 +465,12 @@ Shadow Generations
 	  -
 	  -
 
-	* - RingFalloff_ddpn
+	* - sage01
 	  -
 	  -
 	  -
 
-	* - RingFalloffVanish_ddpna
+	* - sage02
 	  -
 	  -
 	  -
@@ -461,12 +495,52 @@ Shadow Generations
 	  -
 	  -
 
+	* - SonicCyber01
+	  -
+	  -
+	  -
+
+	* - SonicCyber02
+	  -
+	  -
+	  -
+
+	* - SonicCyber03
+	  -
+	  -
+	  -
+
+	* - SonicCyber04
+	  -
+	  -
+	  -
+
+	* - SpeedTree_dpn
+	  -
+	  -
+	  -
+
+	* - SuperSonic_ddpf
+	  -
+	  -
+	  -
+
+	* - SuperSonic_ddpn
+	  -
+	  -
+	  -
+
+	* - SuperSonic_ddpnf
+	  -
+	  -
+	  -
+
 	* - SuperSonicShape
 	  -
 	  -
 	  -
 
-	* - TimeEater_dnn
+	* - tear_dpna
 	  -
 	  -
 	  -
@@ -481,7 +555,7 @@ Shadow Generations
 	  -
 	  -
 
-	* - unlit_da
+	* - Tree_dpn
 	  -
 	  -
 	  -
@@ -506,12 +580,27 @@ Shadow Generations
 	  -
 	  -
 
-	* - VanishDarkFalloff_dpnEa
+	* - VanishDark_dpnEEar
+	  -
+	  -
+	  -
+
+	* - Vegetation_Grass_d
+	  -
+	  -
+	  -
+
+	* - Vegetation_Grass_dn
 	  -
 	  -
 	  -
 
 	* - Vegetation_Grass_dpn
+	  -
+	  -
+	  -
+
+	* - Vegetation_Tree_d
 	  -
 	  -
 	  -
@@ -526,92 +615,7 @@ Shadow Generations
 	  -
 	  -
 
-	* - VolumeVAT_dn
-	  -
-	  -
-	  -
-
-	* - VolumeVAT_dpn
-	  -
-	  -
-	  -
-
-	* - VolumeVAT_dpnE
-	  -
-	  -
-	  -
-
-	* - VolumeVAT_dpnEa
-	  -
-	  -
-	  -
-
 	* - WaterRefraction_dnnao
-	  -
-	  -
-	  -
-
-	* - WhiteSpaceAmoeba_dopnfE
-	  -
-	  -
-	  -
-
-	* - WhiteSpaceBlend_dpndpn
-	  -
-	  -
-	  -
-
-	* - WhiteSpaceCommon_dp
-	  -
-	  -
-	  -
-
-	* - WhiteSpaceCommon_dpn
-	  -
-	  -
-	  -
-
-	* - WhiteSpaceDetail_dpnn
-	  -
-	  -
-	  -
-
-	* - WhiteSpaceDirectionBlend_dpnndpn
-	  -
-	  -
-	  -
-
-	* - WhiteSpaceEmission_dpnE
-	  -
-	  -
-	  -
-
-	* - WhiteSpaceEmission_dpnEa
-	  -
-	  -
-	  -
-
-	* - WhiteSpaceEmissionTone_dpnE
-	  -
-	  -
-	  -
-
-	* - WhiteSpaceGlass_dpn
-	  -
-	  -
-	  -
-
-	* - WhiteSpaceIridescence_ddpNrEa
-	  -
-	  -
-	  -
-
-	* - WhiteSpaceVegetation_Grass_dpn
-	  -
-	  -
-	  -
-
-	* - WhiteSpaceVegetation_Tree_dpn
 	  -
 	  -
 	  -

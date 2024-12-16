@@ -3,7 +3,7 @@
 Sonic Generations
 =================
 
-.. include:: contribute.rst
+.. include:: ../contribute.rst
 
 
 .. list-table::

@@ -3,7 +3,7 @@
 Sonic Lost World
 ================
 
-.. include:: contribute.rst
+.. include:: ../contribute.rst
 
 
 .. list-table::

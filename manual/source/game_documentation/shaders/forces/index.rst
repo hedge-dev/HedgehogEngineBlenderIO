@@ -3,7 +3,7 @@
 Sonic Forces
 ============
 
-.. include:: contribute.rst
+.. include:: ../contribute.rst
 
 
 .. list-table::

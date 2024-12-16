@@ -8,9 +8,9 @@ Hedgehog Engine 1
 
 .. container:: largertext
 
-	| :doc:`Sonic Unleashed <shaders_unleashed>`
-	| :doc:`Sonic Generations <shaders_generations>`
-	| :doc:`Sonic Lost World <shaders_lost_world>`
+	| :doc:`Sonic Unleashed <unleashed/index>`
+	| :doc:`Sonic Generations <generations/index>`
+	| :doc:`Sonic Lost World <lost_world/index>`
 
 
 .. container:: global-index-toc
@@ -18,9 +18,9 @@ Hedgehog Engine 1
 	.. toctree::
 		:maxdepth: 1
 
-		shaders_unleashed
-		shaders_generations
-		shaders_lost_world
+		unleashed/index
+		generations/index
+		lost_world/index
 
 
 Hedgehog Engine 2
@@ -28,10 +28,10 @@ Hedgehog Engine 2
 
 .. container:: largertext
 
-	| :doc:`Sonic Forces <shaders_forces>`
-	| :doc:`Sonic Origins <shaders_origins>`
-	| :doc:`Sonic Frontiers <shaders_frontiers>`
-	| :doc:`Shadow Generations <shaders_shadow_generations>`
+	| :doc:`Sonic Forces <forces/index>`
+	| :doc:`Sonic Origins <origins/index>`
+	| :doc:`Sonic Frontiers <frontiers/index>`
+	| :doc:`Shadow Generations <shadow_generations/index>`
 
 
 .. container:: global-index-toc
@@ -39,7 +39,7 @@ Hedgehog Engine 2
 	.. toctree::
 		:maxdepth: 1
 
-		shaders_forces
-		shaders_origins
-		shaders_frontiers
-		shaders_shadow_generations
+		forces/index
+		origins/index
+		frontiers/index
+		shadow_generations/index

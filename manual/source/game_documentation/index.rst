@@ -23,19 +23,19 @@ gets rendered ingame.
 
 Shaders are documented for all games natively supported by HEIO:
 
-- :doc:`Sonic Unleashed<shaders/shaders_unleashed>`
-- :doc:`Sonic Generations<shaders/shaders_generations>`
-- :doc:`Sonic Lost World<shaders/shaders_lost_world>`
-- :doc:`Sonic Forces<shaders/shaders_forces>`
-- :doc:`Sonic Origins<shaders/shaders_origins>`
-- :doc:`Sonic Frontiers<shaders/shaders_frontiers>`
-- :doc:`Shadow Generations<shaders/shaders_shadow_generations>`
+- :doc:`Sonic Unleashed<shaders/unleashed/index>`
+- :doc:`Sonic Generations<shaders/generations/index>`
+- :doc:`Sonic Lost World<shaders/lost_world/index>`
+- :doc:`Sonic Forces<shaders/forces/index>`
+- :doc:`Sonic Origins<shaders/origins/index>`
+- :doc:`Sonic Frontiers<shaders/frontiers/index>`
+- :doc:`Shadow Generations<shaders/shadow_generations/index>`
 
 Additionally, earlier titles may make use of :doc:`shader features<shader_features>`.
 
 
 :doc:`SCA Parameters<sca_parameters>`
---------------
+-------------------------------------
 
 Additional parameter data attached to selected data structures, like materials, meshes and bones of skeletons.
 

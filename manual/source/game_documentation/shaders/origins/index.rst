@@ -3,7 +3,7 @@
 Sonic Origins
 =============
 
-.. include:: contribute.rst
+.. include:: ../contribute.rst
 
 
 .. list-table::

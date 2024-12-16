@@ -3,7 +3,7 @@
 Sonic Unleashed
 ===============
 
-.. include:: contribute.rst
+.. include:: ../contribute.rst
 
 
 .. list-table::
