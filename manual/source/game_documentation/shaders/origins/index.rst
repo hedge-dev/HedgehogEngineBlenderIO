@@ -7,130 +7,105 @@ Sonic Origins
 
 
 .. list-table::
-	:widths: auto
-	:header-rows: 1
+    :widths: auto
+    :header-rows: 1
 
-	* - Shader
-	  - Description
-	  - File Reference
-	  - Image Reference
+    * - Shader
+      - blender accuracy
+      - Example usage in the game
 
-	* - ChrEye
-	  -
-	  -
-	  -
+    * - ChrEye
+      - :bdg-dark:`Missing`
+      -
 
-	* - ChrEyeCDRF
-	  -
-	  -
-	  -
+    * - ChrEyeCDRF
+      - :bdg-dark:`Missing`
+      -
 
-	* - ChrSkin_dsnf
-	  -
-	  -
-	  -
+    * - ChrSkin_dsnf
+      - :bdg-dark:`Missing`
+      -
 
-	* - ChrSkinCDRF_dpcf
-	  -
-	  -
-	  -
+    * - ChrSkinCDRF_dpcf
+      - :bdg-dark:`Missing`
+      -
 
-	* - Common_d
-	  -
-	  -
-	  -
+    * - Common_d
+      - :bdg-dark:`Missing`
+      -
 
-	* - Common_dn
-	  -
-	  -
-	  -
+    * - Common_dn
+      - :bdg-dark:`Missing`
+      -
 
-	* - Common_dp
-	  -
-	  -
-	  -
+    * - Common_dp
+      - :bdg-dark:`Missing`
+      -
 
-	* - Common_dpn
-	  -
-	  -
-	  -
+    * - Common_dpn
+      - :bdg-dark:`Missing`
+      -
 
-	* - EffAdhoc
-	  -
-	  -
-	  -
+    * - EffAdhoc
+      - :bdg-dark:`Missing`
+      -
 
-	* - Emission_d
-	  -
-	  -
-	  -
+    * - Emission_d
+      - :bdg-dark:`Missing`
+      -
 
-	* - Emission_dnE
-	  -
-	  -
-	  -
+    * - Emission_dnE
+      - :bdg-dark:`Missing`
+      -
 
-	* - Emission_dpnE
-	  -
-	  -
-	  -
+    * - Emission_dpnE
+      - :bdg-dark:`Missing`
+      -
 
-	* - FakeGlass_d
-	  -
-	  -
-	  -
+    * - FakeGlass_d
+      - :bdg-dark:`Missing`
+      -
 
-	* - Falloff_dp
-	  -
-	  -
-	  -
+    * - Falloff_dp
+      - :bdg-dark:`Missing`
+      -
 
-	* - Falloff_dpn
-	  -
-	  -
-	  -
+    * - Falloff_dpn
+      - :bdg-dark:`Missing`
+      -
 
-	* - GerstnerWave_ddna
-	  -
-	  -
-	  -
+    * - GerstnerWave_ddna
+      - :bdg-dark:`Missing`
+      -
 
-	* - GlassTone_dpnE
-	  -
-	  -
-	  -
+    * - GlassTone_dpnE
+      - :bdg-dark:`Missing`
+      -
 
-	* - IgnoreLight_d
-	  -
-	  -
-	  -
+    * - IgnoreLight_d
+      - :bdg-dark:`Missing`
+      -
 
-	* - IgnoreLight_dE
-	  -
-	  -
-	  -
+    * - IgnoreLight_dE
+      - :bdg-dark:`Missing`
+      -
 
-	* - Impostor_Vegetation_dn
-	  -
-	  -
-	  -
+    * - Impostor_Vegetation_dn
+      - :bdg-dark:`Missing`
+      -
 
-	* - Jewel
-	  -
-	  -
-	  -
+    * - Jewel
+      - :bdg-dark:`Missing`
+      -
 
-	* - Sky_d
-	  -
-	  -
-	  -
+    * - Sky_d
+      - :bdg-dark:`Missing`
+      -
 
-	* - Vegetation_Grass_d
-	  -
-	  -
-	  -
+    * - Vegetation_Grass_d
+      - :bdg-dark:`Missing`
+      -
 
-	* - Vegetation_Grass_dn
-	  -
-	  -
-	  -
+    * - Vegetation_Grass_dn
+      - :bdg-dark:`Missing`
+      -
