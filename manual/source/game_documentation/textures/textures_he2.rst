@@ -241,7 +241,7 @@ Each channel contains one PBR map:
 	* - Red
 	  - f0 Specular
 	  - 0.5
-	  -
+	  - The engine multiplies the sampled value by 0.25.
 	  - .. figure:: /images/guides_material_editing_textures_he2_prm_r.png
 
 	* - Green

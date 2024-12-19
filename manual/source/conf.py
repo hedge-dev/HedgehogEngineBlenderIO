@@ -40,6 +40,7 @@ extensions = [
 	"reference",
 	"sphinx_design",
     "sphinx.ext.todo",
+	"sphinx.ext.autosectionlabel",
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -176,3 +177,5 @@ htmlhelp_basename = "HEIO Reference Manual"
 # if not release.endswith("release"):
 todo_include_todos = True
 # todo_link_only = True
+
+autosectionlabel_prefix_document = True

@@ -3,6 +3,24 @@
 Shaders
 #######
 
+Common
+======
+
+These are shader principles reused between engines or even games:
+
+.. container:: largertext
+
+	| :doc:`Phyiscally based rendering (PBR) <common/pbr>`
+	| :doc:`Normal maps <common/normal_maps>`
+
+.. container:: global-index-toc
+
+	.. toctree::
+		:maxdepth: 1
+
+		common/index
+
+
 Hedgehog Engine 1
 =================
 
