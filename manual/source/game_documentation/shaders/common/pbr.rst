@@ -8,7 +8,8 @@ Physically based rendering is used in HE2 games and mostly associated with
 of various properties, you can create a wide range of materials to render physically accurate
 looking surfaces.
 
-PBR Values
+
+Components
 ----------
 
 Albedo
@@ -24,7 +25,7 @@ Albedo is the base color of a surface and is used with "diffuse" lighting.
 Smoothness
 ^^^^^^^^^^
 
-Smoothness refers to how reflective a surface is. The lower the smoothness, the blurrier the
+Smoothness determines how reflective a surface is. The lower the smoothness, the blurrier the
 reflection. This is represented by a value between 0 and 1.
 
 .. figure:: /images/gamedoc_shaders_pbr_smoothness.png
@@ -160,7 +161,55 @@ is more likely to get trapped in such spaces.
 Examples
 --------
 
-Now, with all the info above, especially when combined with :doc:`Normal maps<normal_maps>`, we can
+Now, with all the info above, even moreso when combined with :doc:`Normal maps<normal_mapping>`, we can
 create a wide range of materials to use!
 
 Let's look at some examples:
+
+
+Example 1: ARK Techno Panels
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. figure:: /images/gamedoc_shaders_pbr_example_1.png
+
+	``m01_techno_panel_emsa_sy1`` from the ARK in Shadow Generations
+
+
+Example 2: Rail Canyon Asphalt
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. figure:: /images/gamedoc_shaders_pbr_example_2.png
+
+	``m06_ds_asphalt_base_sy1`` from Rail Canyon in Shadow Generations
+
+
+Example 3: Kingdom Valley Wood bark
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. figure:: /images/gamedoc_shaders_pbr_example_3.png
+
+	``m03_kdv_wood02_dfsp_n_ih1`` from Kingdom Valley in Shadow Generations
+
+
+Example 4: Sunset Heights Building wall
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. figure:: /images/gamedoc_shaders_pbr_example_4.png
+
+	``m06_ds_wall_window18_fh1`` from Sunet Heights in Shadow Generations
+
+
+Example 5: Chaos Island Rock cliff
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. figure:: /images/gamedoc_shaders_pbr_example_5.png
+
+	``m05_rockcliff01_sy1`` (top layer) from Chaos Island in Shadow Generations
+
+
+Example 6: Radical Highway Tunnel Wall
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. figure:: /images/gamedoc_shaders_pbr_example_6.png
+
+	``m06_ds_tunnel_d_kk1`` from Radical Highway in Shadow Generations

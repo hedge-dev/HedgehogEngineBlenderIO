@@ -21,6 +21,11 @@ Shaders
 Lists of shaders for each game that are specified for each material and determine how the material
 gets rendered ingame.
 
+There are several shader principles that are shared between games:
+
+- :doc:`Physically based rendering (PBR)<shaders/common/pbr>`
+- :doc:`Normal mapping<shaders/common/normal_mapping>`
+
 Shaders are documented for all games natively supported by HEIO:
 
 - :doc:`Sonic Unleashed<shaders/unleashed/index>`

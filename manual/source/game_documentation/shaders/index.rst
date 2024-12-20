@@ -11,7 +11,7 @@ These are shader principles reused between engines or even games:
 .. container:: largertext
 
 	| :doc:`Phyiscally based rendering (PBR) <common/pbr>`
-	| :doc:`Normal maps <common/normal_maps>`
+	| :doc:`Normal maps <common/normal_mapping>`
 
 .. container:: global-index-toc
 

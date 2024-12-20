@@ -7,4 +7,4 @@ Common
 	:maxdepth: 1
 
 	pbr
-	normal_maps
+	normal_mapping
