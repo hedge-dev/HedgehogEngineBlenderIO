@@ -360,8 +360,4 @@ a.external:not(figure > a.external) {
 	}
 }
 
-.hidden {
-	display: none;
-}
-
 /* End footer contribute link */

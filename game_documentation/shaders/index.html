@@ -3,7 +3,7 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" /><link rel="next" title="Sonic Unleashed" href="unleashed/index.html" /><link rel="prev" title="Hedgehog engine 2" href="../textures/textures_he2.html" />
+<link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" /><link rel="next" title="Common" href="common/index.html" /><link rel="prev" title="Hedgehog engine 2" href="../textures/textures_he2.html" />
         <link rel="canonical" href="https://hedge-dev.github.io/HedgehogEngineBlenderIO/game_documentation/shaders/index.html" />
 
     <!-- Generated with Sphinx 8.1.3 and Furo 2024.08.06 -->
@@ -12,7 +12,7 @@
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=302659d7" />
-    <link rel="stylesheet" type="text/css" href="../../_static/css/theme_overrides.css?v=e6745fff" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/theme_overrides.css?v=b401e04f" />
     
     
 
@@ -247,13 +247,18 @@
 </ul>
 </li>
 <li class="toctree-l2 current has-children current-page"><a class="current reference internal" href="#">Shaders</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle navigation of Shaders</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="common/index.html">Common</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" role="switch" type="checkbox"/><label for="toctree-checkbox-10"><div class="visually-hidden">Toggle navigation of Common</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="common/pbr.html">Physically Based Rendering (PBR)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="common/normal_mapping.html">Normal Mapping</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="unleashed/index.html">Sonic Unleashed</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generations/index.html">Sonic Generations</a></li>
 <li class="toctree-l3"><a class="reference internal" href="lost_world/index.html">Sonic Lost World</a></li>
 <li class="toctree-l3"><a class="reference internal" href="forces/index.html">Sonic Forces</a></li>
 <li class="toctree-l3"><a class="reference internal" href="origins/index.html">Sonic Origins</a></li>
 <li class="toctree-l3"><a class="reference internal" href="frontiers/index.html">Sonic Frontiers</a></li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="shadow_generations/index.html">Shadow Generations</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" role="switch" type="checkbox"/><label for="toctree-checkbox-10"><div class="visually-hidden">Toggle navigation of Shadow Generations</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="shadow_generations/index.html">Shadow Generations</a><input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" role="switch" type="checkbox"/><label for="toctree-checkbox-11"><div class="visually-hidden">Toggle navigation of Shadow Generations</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="shadow_generations/amoeba.html">Amoeba shader</a></li>
 <li class="toctree-l4"><a class="reference internal" href="shadow_generations/blend.html">Blend Shaders</a></li>
 <li class="toctree-l4"><a class="reference internal" href="shadow_generations/bubbles.html">Bubbles shader</a></li>
@@ -304,7 +309,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../sca_parameters.html">SCA Parameters</a></li>
 </ul>
 </li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../../target_configuration/index.html">Target Configuration</a><input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" role="switch" type="checkbox"/><label for="toctree-checkbox-11"><div class="visually-hidden">Toggle navigation of Target Configuration</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../target_configuration/index.html">Target Configuration</a><input class="toctree-checkbox" id="toctree-checkbox-12" name="toctree-checkbox-12" role="switch" type="checkbox"/><label for="toctree-checkbox-12"><div class="visually-hidden">Toggle navigation of Target Configuration</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../target_configuration/target_info.html">Target Info</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../target_configuration/shaders.html">Shaders</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../target_configuration/material_templates.html">Material Templates</a></li>
@@ -351,6 +356,23 @@
         <article role="main" id="furo-main-content">
           <section id="shaders">
 <h1>Shaders<a class="headerlink" href="#shaders" title="Link to this heading">¶</a></h1>
+<section id="common">
+<h2>Common<a class="headerlink" href="#common" title="Link to this heading">¶</a></h2>
+<p>These are shader principles reused between engines or even games:</p>
+<div class="largertext docutils container">
+<div class="line-block">
+<div class="line"><a class="reference internal" href="common/pbr.html"><span class="doc">Phyiscally based rendering (PBR)</span></a></div>
+<div class="line"><a class="reference internal" href="common/normal_mapping.html"><span class="doc">Normal maps</span></a></div>
+</div>
+</div>
+<div class="global-index-toc docutils container">
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="common/index.html">Common</a></li>
+</ul>
+</div>
+</div>
+</section>
 <section id="hedgehog-engine-1">
 <h2>Hedgehog Engine 1<a class="headerlink" href="#hedgehog-engine-1" title="Link to this heading">¶</a></h2>
 <div class="largertext docutils container">
@@ -398,12 +420,12 @@
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="unleashed/index.html">
+          <a class="next-page" href="common/index.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Sonic Unleashed</div>
+                <div class="title">Common</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
@@ -427,7 +449,7 @@
             Made with 
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2024-12-17</div>
+              Last updated on 2024-12-20</div>
           </div>
           <div class="right-details">
             
@@ -459,6 +481,7 @@
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Shaders</a><ul>
+<li><a class="reference internal" href="#common">Common</a></li>
 <li><a class="reference internal" href="#hedgehog-engine-1">Hedgehog Engine 1</a></li>
 <li><a class="reference internal" href="#hedgehog-engine-2">Hedgehog Engine 2</a></li>
 </ul>
