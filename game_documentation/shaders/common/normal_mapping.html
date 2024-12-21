@@ -183,7 +183,7 @@
           <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
         </button>
       </div>
-      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
         <div class="visually-hidden">Toggle table of contents sidebar</div>
         <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
       </label>
@@ -348,7 +348,7 @@
               <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
             </button>
           </div>
-          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
             <div class="visually-hidden">Toggle table of contents sidebar</div>
             <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
           </label>
@@ -356,6 +356,212 @@
         <article role="main" id="furo-main-content">
           <section id="normal-mapping">
 <h1>Normal Mapping<a class="headerlink" href="#normal-mapping" title="Link to this heading">¶</a></h1>
+<p>Normal mapping, also known as “bump mapping”, is a texturing technique used alter surface normals
+and allow for more complex interaction with lighting and other rendering features.</p>
+<section id="what-are-normals">
+<h2>What are normals?<a class="headerlink" href="#what-are-normals" title="Link to this heading">¶</a></h2>
+<p>Fundamentally, normals are directions stored as unit-vectors ({x,y,z} coordinates that have a
+distance of 1 to the origin {0,0,0}). These are stored on vertices, triangles and/or triangle corners
+(also known in blender as a “split” or a “loop”) and specify which direction said element is
+pointing in.</p>
+<p>You can visualize these in blender while in edit mode by enabling any of the “Normals”
+checks in the mesh edit overlay:</p>
+<figure class="align-default" id="id1" style="width: 75%">
+<img alt="../../../_images/gamedoc_shaders_normal_mapping_blender_display.png" src="../../../_images/gamedoc_shaders_normal_mapping_blender_display.png" />
+<figcaption>
+<p><span class="caption-text">A mesh in blenders edit mode with vertex normals visualized</span><a class="headerlink" href="#id1" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="example-use-case-sunlight">
+<h2>Example use case: Sunlight<a class="headerlink" href="#example-use-case-sunlight" title="Link to this heading">¶</a></h2>
+<p>Normals have a variety of use cases, and in the case of 3D rendering, one big use case is
+“Lighting”! The most simple form of lighting can be achieved using a “<strong>sunlight</strong>”: A light
+that, at its core, is just the direction in which the light “travels”.</p>
+<p>To see how “shaded” a surface is, we check the angle*¹ between the surface normal and the
+sunlight direction:</p>
+<ul class="simple">
+<li><p>At 180° (“facing the sun”) the surface has a light influence of 1 and receives no shading.</p></li>
+<li><p>The closer we get to a 90° angle, the lower the light influence.</p></li>
+<li><p>At 90° we have a light influence of 0 and the surface is fully “shaded”.</p></li>
+<li><p>Angles between 90° and 0° have a negative light influence that gets rounded up to 0.</p></li>
+</ul>
+<figure class="align-default" id="id2" style="width: 75%">
+<img alt="../../../_images/gamedoc_shaders_normal_mapping_sunlight.png" src="../../../_images/gamedoc_shaders_normal_mapping_sunlight.png" />
+<figcaption>
+<p><span class="caption-text">A mesh in blenders edit mode with vertex normals visualized</span><a class="headerlink" href="#id2" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>*¹ It’s not actually the angle we calculate, but the dot product. The actual angle can be
+obtained by inputting the dot product into the <em>arccos</em> function.</p>
+<p>More precise info can be found below.</p>
+</div>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-icon"><svg version="1.1" width="1.0em" height="1.0em" class="sd-octicon sd-octicon-light-bulb" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 1.5c-2.363 0-4 1.69-4 3.75 0 .984.424 1.625.984 2.304l.214.253c.223.264.47.556.673.848.284.411.537.896.621 1.49a.75.75 0 0 1-1.484.211c-.04-.282-.163-.547-.37-.847a8.456 8.456 0 0 0-.542-.68c-.084-.1-.173-.205-.268-.32C3.201 7.75 2.5 6.766 2.5 5.25 2.5 2.31 4.863 0 8 0s5.5 2.31 5.5 5.25c0 1.516-.701 2.5-1.328 3.259-.095.115-.184.22-.268.319-.207.245-.383.453-.541.681-.208.3-.33.565-.37.847a.751.751 0 0 1-1.485-.212c.084-.593.337-1.078.621-1.489.203-.292.45-.584.673-.848.075-.088.147-.173.213-.253.561-.679.985-1.32.985-2.304 0-2.06-1.637-3.75-4-3.75ZM5.75 12h4.5a.75.75 0 0 1 0 1.5h-4.5a.75.75 0 0 1 0-1.5ZM6 15.25a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 0 1-.75-.75Z"></path></svg></span><span class="sd-summary-text">The math behind</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">The math to obtain the light influence is very simple:</p>
+<blockquote>
+<div><p class="sd-card-text">N.x * S.x + N.y * S.y + N.z * S.z</p>
+<div class="line-block">
+<div class="line">N = Normal vector</div>
+<div class="line">S = (Inverted) Sunlight direction vector</div>
+</div>
+</div></blockquote>
+<p class="sd-card-text">This formula is called the “<strong>Dot Product</strong>”, and is used so much in 3D computing that GPUs
+have special circuitry to calculate the dot product as fast as possible!</p>
+<p class="sd-card-text">Here is how you can calculate it in blender:</p>
+<figure class="align-default" id="id3">
+<img alt="../../../_images/gamedoc_shaders_normal_mapping_sunlight_nodes.png" src="../../../_images/gamedoc_shaders_normal_mapping_sunlight_nodes.png" />
+<figcaption>
+<p><span class="caption-text">The blender node setup for calculating the dot product using a sunlight vector</span><a class="headerlink" href="#id3" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p class="sd-card-text">Blender does not actually give us access to a sunlight direction by default, which is why
+it was “recreated” for this setup using a (0,0,-1) vector</p>
+</div>
+</div>
+</details></section>
+<section id="manipulating-normals-using-textures">
+<h2>Manipulating normals using textures<a class="headerlink" href="#manipulating-normals-using-textures" title="Link to this heading">¶</a></h2>
+<p>This is where normal mapping comes into play: We can create an image where each pixel stores
+a normal that we can “add” to the normal on a surface! This way we can alter normals in between
+vertices, instead of just interpolating the normals between vertices.</p>
+<p>A normal map uses each color channel to encode the components of a normal vector, where the
+value range from -1 to 1 gets remapped to the color channel range from 0 to 1 with the following mapping:</p>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Channel</p></th>
+<th class="head"><p>Axis</p></th>
+<th class="head"><p>Direction (0-&gt;1)</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Red</p></td>
+<td><p>X+</p></td>
+<td><p>Left-&gt;Right</p></td>
+</tr>
+<tr class="row-odd"><td><p>Green</p></td>
+<td><p>Y+</p></td>
+<td><p>Down-&gt;Up</p></td>
+</tr>
+<tr class="row-even"><td><p>Blue</p></td>
+<td><p>Z+</p></td>
+<td><p>Backward-&gt;Forward</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The default color, at which a normal map does not alter the surface normal, is #8080FF
+(the color code for {0,0,1}).</p>
+<figure class="align-default" id="id4" style="width: 75%">
+<img alt="../../../_images/gamedoc_shaders_normal_mapping_tex_lit.png" src="../../../_images/gamedoc_shaders_normal_mapping_tex_lit.png" />
+<figcaption>
+<p><span class="caption-text">A normal map image and a surface with the normal map applied and hit by a sunlight angled at 45°.</span><a class="headerlink" href="#id4" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>Blenders standard
+<a class="reference external" href="https://docs.blender.org/manual/en/latest/render/shader_nodes/vector/normal_map.html">normal map node</a>
+requires the blue channel to be provided by the input, whereas Hedgehog Engine games don’t, as they
+derive the blue channel based on the red and green channels while rendering.</p>
+<div class="line-block">
+<div class="line">This works because, as mentioned above, a normal direction has to be a unit vector.</div>
+<div class="line">If the X and Y components sampled from a normal map are not a unit away from the origin, then the
+engine calculates a Z component that makes the normal a unit vector.</div>
+</div>
+<figure class="align-default" id="id5" style="width: 75%">
+<img alt="../../../_images/gamedoc_shaders_normal_mapping_blue_calc.png" src="../../../_images/gamedoc_shaders_normal_mapping_blue_calc.png" />
+<figcaption>
+<p><span class="caption-text">A normal map without the blue channel (left) and the same one with the blue channel derived from the red and green channel (right)</span><a class="headerlink" href="#id5" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-icon"><svg version="1.1" width="1.0em" height="1.0em" class="sd-octicon sd-octicon-graph" viewBox="0 0 16 16" aria-hidden="true"><path d="M1.5 1.75V13.5h13.75a.75.75 0 0 1 0 1.5H.75a.75.75 0 0 1-.75-.75V1.75a.75.75 0 0 1 1.5 0Zm14.28 2.53-5.25 5.25a.75.75 0 0 1-1.06 0L7 7.06 4.28 9.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.25-3.25a.75.75 0 0 1 1.06 0L10 7.94l4.72-4.72a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042Z"></path></svg></span><span class="sd-summary-text">Formula for calculating the blue channel</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">B</span> <span class="pre">=</span> <span class="pre">sqrt(1</span> <span class="pre">-</span> <span class="pre">((R</span> <span class="pre">*</span> <span class="pre">2</span> <span class="pre">-</span> <span class="pre">1)²</span> <span class="pre">+</span> <span class="pre">(G</span> <span class="pre">*</span> <span class="pre">2</span> <span class="pre">-</span> <span class="pre">1)²))</span> <span class="pre">*</span> <span class="pre">0.5</span> <span class="pre">+</span> <span class="pre">0.5</span></code></p>
+<div class="line-block">
+<div class="line">R = Red</div>
+<div class="line">G = Green</div>
+<div class="line">B = Blue</div>
+<div class="line">Channels in range 0 to 1</div>
+</div>
+</div>
+</details><section id="tangent-space">
+<h3>Tangent space<a class="headerlink" href="#tangent-space" title="Link to this heading">¶</a></h3>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This is a highly technical topic and may not need to read it.</p>
+</div>
+<p>Normal maps come with a big issue: What is considered “up/down” and “left/right”? All we know
+without a doubt is that “forward/backward” is based on the normal that we want to add to, but
+how do we correctly apply the normal map?</p>
+<p>This is where tangent space becomes relevant: The tangent of a normal points to the “right” of
+the normal (and the “binormal” would be perpendicular to the normal and tangent).</p>
+<p>However, obtaining the tangent is a bit complicated. In the early days of normal maps, there was
+no consistent way to get a tangent, and there were many different ways to do so.</p>
+<p>The naive answer would be to just take whatever direction “right” is in object space, which would
+work as long as all normal maps are facing perfectly upwards, but the moment a texture gets
+slightly rotated, the lighting looks very off.</p>
+<figure class="align-default" id="id6" style="width: 75%">
+<img alt="../../../_images/gamedoc_shaders_normal_mapping_tangent_problem.png" src="../../../_images/gamedoc_shaders_normal_mapping_tangent_problem.png" />
+<figcaption>
+<p><span class="caption-text">Surfaces with normal maps and lighting applied. The top row UVs were left as is while the bottom ones have been rotated by 135°. The normal maps on the left use blender provided tangents, while the ones on the right use custom tangents based on the normal direction in object space.</span><a class="headerlink" href="#id6" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>Fortunately nowadays most 3D software (including blender and Hedgehog Engine 2) uses “MikkTSpace”,
+which was introduced in 2011 and bases the tangent off the texture coordinates, which also
+automatically aligns the tangent with how a standard normal map would be used.</p>
+<p>The easiest way to visualize MikkTSpace is by using a texture that shows “up” and “right” and
+displaying those via a material:</p>
+<figure class="align-default" id="id7" style="width: 75%">
+<img alt="../../../_images/gamedoc_shaders_normal_mapping_mikktspace.png" src="../../../_images/gamedoc_shaders_normal_mapping_mikktspace.png" />
+<figcaption>
+<p><span class="caption-text">MikkTSpace visualized using a texture. Green points “up”, red points “right”</span><a class="headerlink" href="#id7" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>Older games may have used normals that depended on the non-standard tangents, and can thus look
+weird after importing. Unfortunately, blender supports no way of importing tangents or modifying
+them beyond being calculated.</p>
+</section>
+</section>
+<section id="creating-normal-maps">
+<h2>Creating normal maps<a class="headerlink" href="#creating-normal-maps" title="Link to this heading">¶</a></h2>
+<p>There are 2 primary ways by which normal maps are created:</p>
+<section id="height-mapping">
+<h3>Height mapping<a class="headerlink" href="#height-mapping" title="Link to this heading">¶</a></h3>
+<p>Height maps are exactly what the name implies: a texture depicting a height. We can use such a
+height map to generate a normal texture:</p>
+<figure class="align-default" id="id8">
+<img alt="../../../_images/gamedoc_shaders_normal_mapping_heightmap.png" src="../../../_images/gamedoc_shaders_normal_mapping_heightmap.png" />
+<figcaption>
+<p><span class="caption-text">A height map image and a the corresponding normal map generated from it</span><a class="headerlink" href="#id8" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>There exist many tools to create normal maps from height maps, such as</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://docs.nvidia.com/texture-tools/index.html">Nvidia texture tools</a></p></li>
+<li><p><a class="reference external" href="https://www.adobe.com/products/substance3d/apps/designer.html">Substance designer</a></p></li>
+<li><p><a class="reference external" href="https://cpetry.github.io/NormalMap-Online/">Normal Map Online (Webtool)</a></p></li>
+</ul>
+<p>You can even use heightmaps in blender directly using the
+<a class="reference external" href="https://docs.blender.org/manual/en/4.3/render/shader_nodes/vector/bump.html">Bump node</a>.</p>
+</section>
+<section id="baking">
+<h3>Baking<a class="headerlink" href="#baking" title="Link to this heading">¶</a></h3>
+<p>Blender has a feature called “texture baking” with which you can project normals from a more
+detailed mesh onto a simpler one.</p>
+<figure class="align-default" id="id9" style="width: 75%">
+<img alt="../../../_images/gamedoc_shaders_normal_mapping_baking.png" src="../../../_images/gamedoc_shaders_normal_mapping_baking.png" />
+<figcaption>
+<p><span class="caption-text">A detailed mesh (top left), a low poly sphere (top right), the normal map that was baked from the detailed mesh onto the low poly sphere (bottom left) and the low poly sphere with the normal map applied (bottom right)</span><a class="headerlink" href="#id9" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</section>
+</section>
 </section>
 
         </article>
@@ -392,7 +598,7 @@
             Made with 
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2024-12-20</div>
+              Last updated on 2024-12-21</div>
           </div>
           <div class="right-details">
             
@@ -411,8 +617,37 @@
 </div>
       </footer>
     </div>
-    <aside class="toc-drawer no-toc">
+    <aside class="toc-drawer">
       
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Normal Mapping</a><ul>
+<li><a class="reference internal" href="#what-are-normals">What are normals?</a></li>
+<li><a class="reference internal" href="#example-use-case-sunlight">Example use case: Sunlight</a></li>
+<li><a class="reference internal" href="#manipulating-normals-using-textures">Manipulating normals using textures</a><ul>
+<li><a class="reference internal" href="#tangent-space">Tangent space</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#creating-normal-maps">Creating normal maps</a><ul>
+<li><a class="reference internal" href="#height-mapping">Height mapping</a></li>
+<li><a class="reference internal" href="#baking">Baking</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
       
       
     </aside>
