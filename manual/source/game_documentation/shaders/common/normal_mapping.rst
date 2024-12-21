@@ -211,7 +211,9 @@ Baking
 ^^^^^^
 
 Blender has a feature called "texture baking" with which you can project normals from a more
-detailed mesh onto a simpler one.
+detailed mesh onto a simpler one and save it to an image.
+
+You can read more about it `here <https://docs.blender.org/manual/en/latest/render/cycles/baking.html>`_.
 
 .. figure:: /images/gamedoc_shaders_normal_mapping_baking.png
     :figwidth: 75%
