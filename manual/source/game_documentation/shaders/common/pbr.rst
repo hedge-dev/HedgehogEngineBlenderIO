@@ -43,7 +43,7 @@ Seperately from diffuse lighting, specular lighting controls the visibility of s
 and reflections. You can imagine it as a "layer" on top of the diffuse lighting, with the
 specularity acting as the "layer transparency".
 
-It's represented by a value between 0 and 1; Usually a specular value of 0.5 is considered the
+It's represented by a value between 0 and 1; Usually a specular value of 0.125 is considered the
 "default".
 
 .. figure:: /images/gamedoc_shaders_pbr_specular.png
