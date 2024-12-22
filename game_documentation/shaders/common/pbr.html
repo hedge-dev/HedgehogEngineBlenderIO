@@ -250,6 +250,7 @@
 <li class="toctree-l3 current has-children"><a class="reference internal" href="index.html">Common</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" role="switch" type="checkbox"/><label for="toctree-checkbox-10"><div class="visually-hidden">Toggle navigation of Common</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
 <li class="toctree-l4 current current-page"><a class="current reference internal" href="#">Physically Based Rendering (PBR)</a></li>
 <li class="toctree-l4"><a class="reference internal" href="normal_mapping.html">Normal Mapping</a></li>
+<li class="toctree-l4"><a class="reference internal" href="weather.html">Weather</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../unleashed/index.html">Sonic Unleashed</a></li>
@@ -357,13 +358,13 @@
           <section id="physically-based-rendering-pbr">
 <h1>Physically Based Rendering (PBR)<a class="headerlink" href="#physically-based-rendering-pbr" title="Link to this heading">¶</a></h1>
 <p>Physically based rendering is used in HE2 games and mostly associated with
-<a class="reference internal" href="../../textures/textures_he2.html#prm"><span class="std std-ref">“PRM”</span></a> textures. By combining several textures
+<a class="reference internal" href="../../textures/textures_he2.html#textures-he2-prm"><span class="std std-ref">“PRM”</span></a> textures. By combining several textures
 of various properties, you can create a wide range of materials to render physically accurate
 looking surfaces.</p>
 <section id="components">
 <h2>Components<a class="headerlink" href="#components" title="Link to this heading">¶</a></h2>
 <section id="albedo">
-<h3>Albedo<a class="headerlink" href="#albedo" title="Link to this heading">¶</a></h3>
+<span id="shaders-common-pbr-albedo"></span><h3>Albedo<a class="headerlink" href="#albedo" title="Link to this heading">¶</a></h3>
 <p>Albedo is the base color of a surface and is used with “diffuse” lighting.</p>
 <figure class="align-default" id="id1">
 <img alt="../../../_images/gamedoc_shaders_pbr_albedo.png" src="../../../_images/gamedoc_shaders_pbr_albedo.png" />
@@ -373,7 +374,7 @@ looking surfaces.</p>
 </figure>
 </section>
 <section id="smoothness">
-<h3>Smoothness<a class="headerlink" href="#smoothness" title="Link to this heading">¶</a></h3>
+<span id="shaders-common-pbr-smoothness"></span><h3>Smoothness<a class="headerlink" href="#smoothness" title="Link to this heading">¶</a></h3>
 <p>Smoothness determines how reflective a surface is. The lower the smoothness, the blurrier the
 reflection. This is represented by a value between 0 and 1.</p>
 <figure class="align-default" id="id2">
@@ -384,7 +385,7 @@ reflection. This is represented by a value between 0 and 1.</p>
 </figure>
 </section>
 <section id="specular">
-<h3>Specular<a class="headerlink" href="#specular" title="Link to this heading">¶</a></h3>
+<span id="shaders-common-pbr-specular"></span><h3>Specular<a class="headerlink" href="#specular" title="Link to this heading">¶</a></h3>
 <p>Specularity is less a physical property and moreso an artistic tool for creating materials.
 Hedgehog Engine 2 specifically makes use of “F0 reflectance”.</p>
 <p>Seperately from diffuse lighting, specular lighting controls the visibility of specular lighting
@@ -407,7 +408,7 @@ with a standard image format is 0.25.</p>
 </div>
 </section>
 <section id="metallic">
-<h3>Metallic<a class="headerlink" href="#metallic" title="Link to this heading">¶</a></h3>
+<span id="shaders-common-pbr-metallic"></span><h3>Metallic<a class="headerlink" href="#metallic" title="Link to this heading">¶</a></h3>
 <p>Metallic is similar to specular, with the 2 differences:</p>
 <ul class="simple">
 <li><p>The albedo color affects the color of reflection</p></li>
@@ -428,7 +429,7 @@ lighting.</p>
 </div>
 </section>
 <section id="combining-specular-and-metallic">
-<h3>Combining Specular and Metallic<a class="headerlink" href="#combining-specular-and-metallic" title="Link to this heading">¶</a></h3>
+<span id="shaders-common-pbr-specular-and-metallic"></span><h3>Combining Specular and Metallic<a class="headerlink" href="#combining-specular-and-metallic" title="Link to this heading">¶</a></h3>
 <p>While rarely done, it is possible to use specular and metallic lighting together.</p>
 <figure class="align-default" id="id5">
 <img alt="../../../_images/gamedoc_shaders_pbr_specular_metallic.png" src="../../../_images/gamedoc_shaders_pbr_specular_metallic.png" />
@@ -438,7 +439,7 @@ lighting.</p>
 </figure>
 </section>
 <section id="emission">
-<h3>Emission<a class="headerlink" href="#emission" title="Link to this heading">¶</a></h3>
+<span id="shaders-common-pbr-emission"></span><h3>Emission<a class="headerlink" href="#emission" title="Link to this heading">¶</a></h3>
 <p>Emission is essentially the colored “glow” of the surface, like the light coming from a lamp.
 This is unaffected by any lighting that may hit the surface.</p>
 <figure class="align-default" id="id6">
@@ -459,7 +460,7 @@ the emission texture appears.</p>
 </figure>
 </section>
 <section id="ambient-occlusion">
-<h3>Ambient occlusion<a class="headerlink" href="#ambient-occlusion" title="Link to this heading">¶</a></h3>
+<span id="shaders-common-pbr-ambient-occlusion"></span><h3>Ambient occlusion<a class="headerlink" href="#ambient-occlusion" title="Link to this heading">¶</a></h3>
 <p>Ambient occlusion (often abbrivated with “AO” or “A/O”) is, as the name implies, responsible for
 occluding/removing ambient lighting.</p>
 <p>In Hedgehog Engine 2 games, ambient lighting consists of</p>
@@ -596,7 +597,7 @@ create a wide range of materials to use!</p>
             Made with 
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2024-12-21</div>
+              Last updated on 2024-12-22</div>
           </div>
           <div class="right-details">
             
