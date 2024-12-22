@@ -1,4 +1,6 @@
 
+.. include:: ../include.rst
+
 ===============
 Sonic Unleashed
 ===============
@@ -15,461 +17,461 @@ Sonic Unleashed
       - Example usage in the game
 
     * - BillboardParticle_d
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Blend_dd
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Blend_dndn
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Blend_dpdp
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Blend_dpndn
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Blend_dpndpn
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - BossDarkGaia_dnnE
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - BossDarkGaia_dpnE
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - BossMorayFreeze_dpner
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - BossPhoenix_dn
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - BossPhoenix_dnE
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - ChipFur
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - ChipJewel_def
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Cloth_dsnt
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Common_d
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Common_de
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Common_dn
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Common_dne
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Common_dp
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Common_dpe
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Common_dpn
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Common_dpne
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Common_dpnr
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Common_dpr
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Common_dsn
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Common_dsne
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - DayEnemyMetal_dspne
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - DayEnemyMetalBody_dspne
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - DayEnemyMetalSocket_dspne
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - DebugPrimitive3D
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - DebugShadingModel
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - DrawMaterialColor
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Dummysky
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - DummySky
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - EvilFur1
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - FadeOutNormal_dn
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - FallOff_df
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - FallOff_dpf
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - FallOff_dpnf
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - FallOffV_dn
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - FallOffV_dnn
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - FallOffV_dp
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Glass_de
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Glass_dpe
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Glass_dpne
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Glass_dspe
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Glass_dspne
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Hair_dpt
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Ice_der
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Ice_dnenr
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Ice_dner
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Ice_dpnenr
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Ice_dpnr
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - IgnoreLight_d
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Jihada
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Lava_dnE
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - LightSpeedDashReady
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Luminescence_d
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Luminescence_dE
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Luminescence_dnE
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Luminescence_dpE
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Luminescence_dpnE
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - MeshParticle_d
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Metal_d
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Metal_de
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Metal_dne
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Metal_dp
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Metal_dpe
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Metal_dpn
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Metal_dpne
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Metal_dse
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Metal_dsne
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Metal_dsp
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Metal_dspe
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Metal_dspn
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Metal_dspne
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Myst_d
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - NightEnemyCommon_drE
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - NPCCloth_ds
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - NPCCloth_dsn
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - NPCEye_dn
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - NpcFur
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - NPCHair_dp
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - NPCHair_dpn
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - NPCTeeth_dpn
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Parallax_dpnh
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Ring_dse
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Skin_dp
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Skin_dpn
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Sky_d
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - SonicCloth_dsn
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - SonicEnamel_dspe
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - SonicEnamel_dspne
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - SonicEye_dpne
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - SonicMetal_dpe
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - SonicSkin_dspf
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - SonicSkin_dspnf
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - SuperSonic_dspe
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - SuperSonic_dspf
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - SuperSonic_dspn
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - TempleRobo_dnno
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - TempleRobo_dno
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - test
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - test
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - TransThin_dnt
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - TransThin_dpnt
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - TransThin_dpt
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - TransThin_dt
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Water_Add
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Water_Add_SoftEdge
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Water_Add_SoftEdge_Ref
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Water_Mul
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Water_Mul_SoftEdge
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Water_Opacity
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Water_Opacity_Ref
-      - :bdg-dark:`Missing`
+      - |Missing|
       -

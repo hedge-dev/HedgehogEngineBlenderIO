@@ -1,4 +1,6 @@
 
+.. include:: ../include.rst
+
 ============
 Sonic Forces
 ============
@@ -15,345 +17,345 @@ Sonic Forces
       - Example usage in the game
 
     * - Blend_dpnbdpn
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Blend_dpndpn
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - BuddySkinCDRF_dpcfbd
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - BuddySkinCDRF_dpncfbd
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Chaos_dpnn
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - ChrCarPaint_dpnf
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - ChrDragoonWing_dpnnE
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - ChrEye
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - ChrEyeCDRF
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - ChrEyeE
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - ChrGlass_d
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - ChrGlass_dn
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - ChrGlass_dpf
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - ChrSkinCDRF_dpcf
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - ChrSkinCDRF_dpcfbd
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - ChrSkinCDRF_dpncf
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - ChrSkinCDRF_dpncfbd
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Clearcoat_dpnn
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Common_d
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Common_da
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Common_dn
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Common_dp
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Common_dpa
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Common_dpn
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Common_dpna
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Decal_d
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Dry_dpn
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Dry_dpnn
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - EffAdhoc
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Emission_d
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Emission_dE
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Emission_dnE
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Emission_dpE
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Emission_dpnE
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Emission_dpnEa
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - FakeGlass_d
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - FakeGlass_dn
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - FakeGlass_dp
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - FakeGlass_dpn
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - FakeGlass_dpnE
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Glass_d
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Glass_dp
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Glass_dpn
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Glass_dpnE
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Glass2_dn
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Glass2_dp
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Glass2_dpn
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Grass_dn
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - GrassModel_dn
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - IgnoreLight_d
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - IgnoreLight_da
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - IgnoreLight_dao
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - IgnoreLight_dE
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - IgnoreLight_E
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - IgnoreLight_E1
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - IgnoreLight_Eao
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Indirect_daopn
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Indirect_doapn
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Indirect_dopn
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Indirect2_daopn
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Infinite
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - InstancedWire_dpn
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - InstancedWire_dpnE
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - MBlend_dpndpn
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - MCommon_dp
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - MCommon_dpn
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - MEmission_dpE
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - MEmission_dpnE
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - MEmission_dpnEa
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Mist_dn
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Ocean01
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Ring_dd
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Ring_ddp
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Ring_ddpn
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - RotateIBL_dp
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Ruby01
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Ruby02
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - SearchLight
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Sky_d
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Sky_da
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - VirtronCube
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Water01
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Water03
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Water04_Overlay
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Water04_Overlay2
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Water05
-      - :bdg-dark:`Missing`
+      - |Missing|
       -

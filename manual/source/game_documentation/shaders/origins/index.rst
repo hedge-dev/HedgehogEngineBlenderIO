@@ -1,4 +1,6 @@
 
+.. include:: ../include.rst
+
 =============
 Sonic Origins
 =============
@@ -15,97 +17,97 @@ Sonic Origins
       - Example usage in the game
 
     * - ChrEye
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - ChrEyeCDRF
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - ChrSkin_dsnf
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - ChrSkinCDRF_dpcf
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Common_d
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Common_dn
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Common_dp
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Common_dpn
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - EffAdhoc
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Emission_d
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Emission_dnE
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Emission_dpnE
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - FakeGlass_d
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Falloff_dp
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Falloff_dpn
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - GerstnerWave_ddna
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - GlassTone_dpnE
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - IgnoreLight_d
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - IgnoreLight_dE
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Impostor_Vegetation_dn
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Jewel
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Sky_d
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Vegetation_Grass_d
-      - :bdg-dark:`Missing`
+      - |Missing|
       -
 
     * - Vegetation_Grass_dn
-      - :bdg-dark:`Missing`
+      - |Missing|
       -

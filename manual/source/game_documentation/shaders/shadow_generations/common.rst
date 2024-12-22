@@ -1,4 +1,6 @@
 
+.. include:: ../include.rst
+
 .. _shaders.shadow_generations.Common_d:
 .. _shaders.shadow_generations.Common_dither_dpn:
 .. _shaders.shadow_generations.Common_dn:
@@ -35,50 +37,50 @@ Shader table
         | ":ref:`diffuse<shaders.shadow_generations.common.parameters.diffuse>`"
 
     * - ``Common_d``
-      - :octicon:`x`
+      - |x|
       -
       -
       -
-      - :octicon:`x`
+      - |x|
       -
 
     * - ``Common_dp``
-      - :octicon:`x`
-      - :octicon:`x`
-      - :octicon:`x`
+      - |x|
+      - |x|
+      - |x|
       -
       -
       -
 
     * - ``Common_dn``
-      - :octicon:`x`
+      - |x|
       -
-      - :octicon:`x`
+      - |x|
       -
-      - :octicon:`x`
+      - |x|
       -
 
     * - ``Common_dpn``
-      - :octicon:`x`
-      - :octicon:`x`
-      - :octicon:`x`
+      - |x|
+      - |x|
+      - |x|
       -
       -
       -
 
     * - ``Common_dither_dpn``
-      - :octicon:`x`
-      - :octicon:`x`
-      - :octicon:`x`
+      - |x|
+      - |x|
+      - |x|
       -
       -
-      - :octicon:`x`
+      - |x|
 
     * - ``Common_dpna``
-      - :octicon:`x`
-      - :octicon:`x`
-      - :octicon:`x`
-      - :octicon:`x`
+      - |x|
+      - |x|
+      - |x|
+      - |x|
       -
       -
 
