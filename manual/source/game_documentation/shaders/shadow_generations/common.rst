@@ -88,19 +88,12 @@ Shader table
 Behavior
 --------
 
-Transparency
-    No alpha blending occurs. Pixels with a transparency below the materials transparency threshold
-    get clipped/discarded.
-
-
-Vertex colors
-    The shader combines the vertex color, including the alpha channel, with the
-    :ref:`diffuse texture <shaders.shadow_generations.common.textures.diffuse>` via multiplication.
-
-
-Weather
-    PBR properties get altered by the games
-    :ref:`weather parameters <shaders.common.weather.pbr_effect>`.
+Default behaviors
+    - Supports :doc:`deferred rendering </game_documentation/shaders/common/deferred_rendering>`
+    - Supports :ref:`transparency clipping <shaders.common.mesh_layers.punchthrough>`
+    - :doc:`Vertex colors </game_documentation/shaders/common/vertex_colors>`, including alpha,
+      get combined with the :ref:`diffuse texture <shaders.shadow_generations.common.textures.diffuse>` via multiplication
+    - Uses :ref:`weather <shaders.common.weather.pbr_effect>` effects
 
 
 Dithering
@@ -166,5 +159,6 @@ PBRFactor
 diffuse
     A float parameter containing a color.
 
-    Exclusive to the ``Common_dither_dpn`` shader, which combines the alpha channel with the
-    :ref:`diffuse texture <shaders.shadow_generations.common.textures.diffuse>` via multiplication.
+    Exclusive to the ``Common_dither_dpn`` shader, which combines the **alpha component** with the
+    :ref:`diffuse textures <shaders.shadow_generations.common.textures.diffuse>` alpha channel via
+    multiplication.

@@ -26,8 +26,11 @@ There are several shader principles that are shared between games:
 - :doc:`Physically based rendering (PBR)<shaders/common/pbr>`
 - :doc:`Normal mapping<shaders/common/normal_mapping>`
 - :doc:`Weather<shaders/common/weather>`
+- :doc:`Vertex colors <shaders/common/vertex_colors>`
+- :doc:`Mesh layers <shaders/common/mesh_layers>`
+- :doc:`Deferred rendering <shaders/common/deferred_rendering>`
 
-Shaders are documented for all games natively supported by HEIO:
+Shaders are documented for all games that are natively supported by HEIO:
 
 - :doc:`Sonic Unleashed<shaders/unleashed/index>`
 - :doc:`Sonic Generations<shaders/generations/index>`

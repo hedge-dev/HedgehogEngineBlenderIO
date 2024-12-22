@@ -9,3 +9,6 @@ Common
 	pbr
 	normal_mapping
 	weather
+	vertex_colors
+	mesh_layers
+	deferred_rendering

@@ -10,9 +10,12 @@ These are shader principles reused between engines or even games:
 
 .. container:: largertext
 
-	| :doc:`Phyiscally based rendering (PBR) <common/pbr>`
+	| :doc:`Physically based rendering (PBR) <common/pbr>`
 	| :doc:`Normal maps <common/normal_mapping>`
 	| :doc:`Weather <common/weather>`
+	| :doc:`Vertex colors <common/vertex_colors>`
+	| :doc:`Mesh layers <common/mesh_layers>`
+	| :doc:`Deferred rendering <common/deferred_rendering>`
 
 .. container:: global-index-toc
 
