@@ -3,11 +3,11 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" /><link rel="next" title="Sonic Generations" href="../generations/index.html" /><link rel="prev" title="Dithering" href="../common/dithering.html" />
-        <link rel="canonical" href="https://hedge-dev.github.io/HedgehogEngineBlenderIO/game_documentation/shaders/unleashed/index.html" />
+<link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" /><link rel="next" title="Sonic Unleashed" href="../unleashed/index.html" /><link rel="prev" title="Deferred rendering" href="deferred_rendering.html" />
+        <link rel="canonical" href="https://hedge-dev.github.io/HedgehogEngineBlenderIO/game_documentation/shaders/common/dithering.html" />
 
     <!-- Generated with Sphinx 8.1.3 and Furo 2024.08.06 -->
-        <title>Sonic Unleashed - HEIO 0.0.1 Manual</title>
+        <title>Dithering - HEIO 0.0.1 Manual</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
@@ -247,17 +247,17 @@
 </ul>
 </li>
 <li class="toctree-l2 current has-children"><a class="reference internal" href="../index.html">Shaders</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle navigation of Shaders</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
-<li class="toctree-l3 has-children"><a class="reference internal" href="../common/index.html">Common</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" role="switch" type="checkbox"/><label for="toctree-checkbox-10"><div class="visually-hidden">Toggle navigation of Common</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l4"><a class="reference internal" href="../common/pbr.html">Physically Based Rendering (PBR)</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../common/normal_mapping.html">Normal Mapping</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../common/weather.html">Weather</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../common/vertex_colors.html">Vertex colors</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../common/mesh_layers.html">Mesh Layers</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../common/deferred_rendering.html">Deferred rendering</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../common/dithering.html">Dithering</a></li>
+<li class="toctree-l3 current has-children"><a class="reference internal" href="index.html">Common</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" role="switch" type="checkbox"/><label for="toctree-checkbox-10"><div class="visually-hidden">Toggle navigation of Common</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="pbr.html">Physically Based Rendering (PBR)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="normal_mapping.html">Normal Mapping</a></li>
+<li class="toctree-l4"><a class="reference internal" href="weather.html">Weather</a></li>
+<li class="toctree-l4"><a class="reference internal" href="vertex_colors.html">Vertex colors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="mesh_layers.html">Mesh Layers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="deferred_rendering.html">Deferred rendering</a></li>
+<li class="toctree-l4 current current-page"><a class="current reference internal" href="#">Dithering</a></li>
 </ul>
 </li>
-<li class="toctree-l3 current current-page"><a class="current reference internal" href="#">Sonic Unleashed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../unleashed/index.html">Sonic Unleashed</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../generations/index.html">Sonic Generations</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../lost_world/index.html">Sonic Lost World</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../forces/index.html">Sonic Forces</a></li>
@@ -340,7 +340,7 @@
         <div class="content-icon-container">
           
 <div class="edit-this-page">
-  <a class="muted-link" href="https://github.com/hedge-dev/HedgehogEngineBlenderIO/edit/dev/manual/source/game_documentation/shaders/unleashed/index.rst" title="Edit this page">
+  <a class="muted-link" href="https://github.com/hedge-dev/HedgehogEngineBlenderIO/edit/dev/manual/source/game_documentation/shaders/common/dithering.rst" title="Edit this page">
     <svg><use href="#svg-pencil"></use></svg>
     <span class="visually-hidden">Edit this page</span>
   </a>
@@ -359,484 +359,28 @@
           </label>
         </div>
         <article role="main" id="furo-main-content">
-          <section id="sonic-unleashed">
-<h1>Sonic Unleashed<a class="headerlink" href="#sonic-unleashed" title="Link to this heading">¶</a></h1>
-<div class="admonition-todo admonition" id="id1">
-<p class="admonition-title">Todo</p>
-<p>This page is incomplete! You can help by contributing: [TODO]</p>
-</div>
-<div class="table-wrapper colwidths-auto docutils container">
-<table class="docutils align-default">
-<thead>
-<tr class="row-odd"><th class="head"><p>Shader</p></th>
-<th class="head"><p>blender accuracy</p></th>
-<th class="head"><p>Example usage in the game</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p>BillboardParticle_d</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p>Blend_dd</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p>Blend_dndn</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p>Blend_dpdp</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p>Blend_dpndn</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p>Blend_dpndpn</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p>BossDarkGaia_dnnE</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p>BossDarkGaia_dpnE</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p>BossMorayFreeze_dpner</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p>BossPhoenix_dn</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p>BossPhoenix_dnE</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p>ChipFur</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p>ChipJewel_def</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p>Cloth_dsnt</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p>Common_d</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p>Common_de</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p>Common_dn</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p>Common_dne</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p>Common_dp</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p>Common_dpe</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p>Common_dpn</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p>Common_dpne</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p>Common_dpnr</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p>Common_dpr</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p>Common_dsn</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p>Common_dsne</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p>DayEnemyMetal_dspne</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p>DayEnemyMetalBody_dspne</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p>DayEnemyMetalSocket_dspne</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p>DebugPrimitive3D</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p>DebugShadingModel</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p>DrawMaterialColor</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p>Dummysky</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p>DummySky</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p>EvilFur1</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p>FadeOutNormal_dn</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p>FallOff_df</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p>FallOff_dpf</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p>FallOff_dpnf</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p>FallOffV_dn</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p>FallOffV_dnn</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p>FallOffV_dp</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p>Glass_de</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p>Glass_dpe</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p>Glass_dpne</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p>Glass_dspe</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p>Glass_dspne</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p>Hair_dpt</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p>Ice_der</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p>Ice_dnenr</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p>Ice_dner</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p>Ice_dpnenr</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p>Ice_dpnr</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p>IgnoreLight_d</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p>Jihada</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p>Lava_dnE</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p>LightSpeedDashReady</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p>Luminescence_d</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p>Luminescence_dE</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p>Luminescence_dnE</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p>Luminescence_dpE</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p>Luminescence_dpnE</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p>MeshParticle_d</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p>Metal_d</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p>Metal_de</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p>Metal_dne</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p>Metal_dp</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p>Metal_dpe</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p>Metal_dpn</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p>Metal_dpne</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p>Metal_dse</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p>Metal_dsne</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p>Metal_dsp</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p>Metal_dspe</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p>Metal_dspn</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p>Metal_dspne</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p>Myst_d</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p>NightEnemyCommon_drE</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p>NPCCloth_ds</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p>NPCCloth_dsn</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p>NPCEye_dn</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p>NpcFur</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p>NPCHair_dp</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p>NPCHair_dpn</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p>NPCTeeth_dpn</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p>Parallax_dpnh</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p>Ring_dse</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p>Skin_dp</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p>Skin_dpn</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p>Sky_d</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p>SonicCloth_dsn</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p>SonicEnamel_dspe</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p>SonicEnamel_dspne</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p>SonicEye_dpne</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p>SonicMetal_dpe</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p>SonicSkin_dspf</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p>SonicSkin_dspnf</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p>SuperSonic_dspe</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p>SuperSonic_dspf</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p>SuperSonic_dspn</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p>TempleRobo_dnno</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p>TempleRobo_dno</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p>test</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p>test</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p>TransThin_dnt</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p>TransThin_dpnt</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p>TransThin_dpt</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p>TransThin_dt</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p>Water_Add</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p>Water_Add_SoftEdge</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p>Water_Add_SoftEdge_Ref</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p>Water_Mul</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p>Water_Mul_SoftEdge</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p>Water_Opacity</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p>Water_Opacity_Ref</p></td>
-<td><p><span class="sd-sphinx-override sd-badge sd-bg-dark sd-bg-text-dark">Missing</span></p></td>
-<td></td>
-</tr>
-</tbody>
-</table>
-</div>
+          <section id="dithering">
+<h1>Dithering<a class="headerlink" href="#dithering" title="Link to this heading">¶</a></h1>
+<figure class="align-right" id="id1" style="width: 160px">
+<a class="reference internal image-reference" href="../../../_images/gamedoc_shaders_dithering_texture.png"><img alt="../../../_images/gamedoc_shaders_dithering_texture.png" src="../../../_images/gamedoc_shaders_dithering_texture.png" style="width: 128px;" />
+</a>
+<figcaption>
+<p><span class="caption-text">The dithering texture used in Shadow Generations</span><a class="headerlink" href="#id1" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<figure class="align-right" id="id2" style="width: 288px">
+<a class="reference internal image-reference" href="../../../_images/gamedoc_shaders_dithering.gif"><img alt="../../../_images/gamedoc_shaders_dithering.gif" src="../../../_images/gamedoc_shaders_dithering.gif" style="width: 256px;" />
+</a>
+<figcaption>
+<p><span class="caption-text">A circle slowly dithering out (recreated in blender) (scaled up by 400%)</span><a class="headerlink" href="#id2" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>Dithering, specifically transparency dithering, is a technique used in shaders with alpha-clipping
+(which is usually used with the
+<a class="reference internal" href="mesh_layers.html#shaders-common-mesh-layers-punchthrough"><span class="std std-ref">punch-through mesh layer</span></a>) to make a fade-out effect
+without having to use transparency blending.</p>
+<p>All Hedgehog Engine 2 shaders have dithering code implemented (only confirmed for Shadow Generations
+right now), but more research is required to understand under which circumstances it is used.</p>
 </section>
 
         </article>
@@ -844,23 +388,23 @@
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="../generations/index.html">
+          <a class="next-page" href="../unleashed/index.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Sonic Generations</div>
+                <div class="title">Sonic Unleashed</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
-          <a class="prev-page" href="../common/dithering.html">
+          <a class="prev-page" href="deferred_rendering.html">
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">Dithering</div>
+                <div class="title">Deferred rendering</div>
                 
               </div>
             </a>
@@ -883,10 +427,10 @@
 <div class="footer-contribute">
   <ul>
     <li>
-	  <a href="https://github.com/hedge-dev/HedgehogEngineBlenderIO/tree/dev/manual/source/game_documentation/shaders/unleashed/index.rst?plain=1"> View Source</a>
+	  <a href="https://github.com/hedge-dev/HedgehogEngineBlenderIO/tree/dev/manual/source/game_documentation/shaders/common/dithering.rst?plain=1"> View Source</a>
     </li>
     <li>
-      <a href="https://github.com/hedge-dev/HedgehogEngineBlenderIO/issues/new?template=.gitea/issue_template/bug.yaml&field:body=%2A%2APage+Information%2A%2A%0D%0AFile%3A+%60manual%2Fgame_documentation/shaders/unleashed/index.rst%60%0D%0APermanent+Link%5D%28https%3A%2F%2Fdocs.blender.org%2Fmanual%2Fgame_documentation/shaders/unleashed/index.html%29%0D%0A%0D%0A%2A%2AShort+description+of+error%2A%2A%0D%0A%5BPlease+fill+out+a+short+description+of+the+error+here%5D%0D%0A"> Report issue on this page</a>
+      <a href="https://github.com/hedge-dev/HedgehogEngineBlenderIO/issues/new?template=.gitea/issue_template/bug.yaml&field:body=%2A%2APage+Information%2A%2A%0D%0AFile%3A+%60manual%2Fgame_documentation/shaders/common/dithering.rst%60%0D%0APermanent+Link%5D%28https%3A%2F%2Fdocs.blender.org%2Fmanual%2Fgame_documentation/shaders/common/dithering.html%29%0D%0A%0D%0A%2A%2AShort+description+of+error%2A%2A%0D%0A%5BPlease+fill+out+a+short+description+of+the+error+here%5D%0D%0A"> Report issue on this page</a>
     </li>
   </ul>
 </div>

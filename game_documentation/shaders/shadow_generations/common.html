@@ -254,6 +254,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../common/vertex_colors.html">Vertex colors</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../common/mesh_layers.html">Mesh Layers</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../common/deferred_rendering.html">Deferred rendering</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../common/dithering.html">Dithering</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../unleashed/index.html">Sonic Unleashed</a></li>
@@ -455,15 +456,17 @@
 <section id="behavior">
 <h2>Behavior<a class="headerlink" href="#behavior" title="Link to this heading">¶</a></h2>
 <dl class="simple">
-<dt>Default behaviors</dt><dd><ul class="simple">
+<dt>Standard behaviors</dt><dd><ul class="simple">
 <li><p>Supports <a class="reference internal" href="../common/deferred_rendering.html"><span class="doc">deferred rendering</span></a></p></li>
+<li><p>Supports <a class="reference internal" href="../common/mesh_layers.html#shaders-common-mesh-layers-transparent"><span class="std std-ref">transparency blending</span></a></p></li>
 <li><p>Supports <a class="reference internal" href="../common/mesh_layers.html#shaders-common-mesh-layers-punchthrough"><span class="std std-ref">transparency clipping</span></a></p></li>
+<li><p>Uses <a class="reference internal" href="../common/dithering.html"><span class="doc">dithering</span></a></p></li>
+<li><p>Uses <a class="reference internal" href="../common/weather.html#shaders-common-weather-pbr-effect"><span class="std std-ref">weather</span></a> effects</p></li>
 <li><p><a class="reference internal" href="../common/vertex_colors.html"><span class="doc">Vertex colors</span></a>, including alpha,
 get combined with the <a class="reference internal" href="#shaders-shadow-generations-common-textures-diffuse"><span class="std std-ref">diffuse texture</span></a> via multiplication</p></li>
-<li><p>Uses <a class="reference internal" href="../common/weather.html#shaders-common-weather-pbr-effect"><span class="std std-ref">weather</span></a> effects</p></li>
 </ul>
 </dd>
-<dt>Dithering</dt><dd><p>The <code class="docutils literal notranslate"><span class="pre">Common_dither_dpn</span></code> shader uses a different dithering texture for forced transparency
+<dt>Common_dither_dpn</dt><dd><p>The <code class="docutils literal notranslate"><span class="pre">Common_dither_dpn</span></code> shader uses a different dithering texture for forced transparency
 dithering. It also completely ignores the materials transparency threshold.</p>
 </dd>
 </dl>
