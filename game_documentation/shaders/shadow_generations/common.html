@@ -251,6 +251,9 @@
 <li class="toctree-l4"><a class="reference internal" href="../common/pbr.html">Physically Based Rendering (PBR)</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../common/normal_mapping.html">Normal Mapping</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../common/weather.html">Weather</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../common/vertex_colors.html">Vertex colors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../common/mesh_layers.html">Mesh Layers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../common/deferred_rendering.html">Deferred rendering</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../unleashed/index.html">Sonic Unleashed</a></li>
@@ -452,14 +455,13 @@
 <section id="behavior">
 <h2>Behavior<a class="headerlink" href="#behavior" title="Link to this heading">¶</a></h2>
 <dl class="simple">
-<dt>Transparency</dt><dd><p>No alpha blending occurs. Pixels with a transparency below the materials transparency threshold
-get clipped/discarded.</p>
-</dd>
-<dt>Vertex colors</dt><dd><p>The shader combines the vertex color, including the alpha channel, with the
-<a class="reference internal" href="#shaders-shadow-generations-common-textures-diffuse"><span class="std std-ref">diffuse texture</span></a> via multiplication.</p>
-</dd>
-<dt>Weather</dt><dd><p>PBR properties get altered by the games
-<a class="reference internal" href="../common/weather.html#shaders-common-weather-pbr-effect"><span class="std std-ref">weather parameters</span></a>.</p>
+<dt>Default behaviors</dt><dd><ul class="simple">
+<li><p>Supports <a class="reference internal" href="../common/deferred_rendering.html"><span class="doc">deferred rendering</span></a></p></li>
+<li><p>Supports <a class="reference internal" href="../common/mesh_layers.html#shaders-common-mesh-layers-punchthrough"><span class="std std-ref">transparency clipping</span></a></p></li>
+<li><p><a class="reference internal" href="../common/vertex_colors.html"><span class="doc">Vertex colors</span></a>, including alpha,
+get combined with the <a class="reference internal" href="#shaders-shadow-generations-common-textures-diffuse"><span class="std std-ref">diffuse texture</span></a> via multiplication</p></li>
+<li><p>Uses <a class="reference internal" href="../common/weather.html#shaders-common-weather-pbr-effect"><span class="std std-ref">weather</span></a> effects</p></li>
+</ul>
 </dd>
 <dt>Dithering</dt><dd><p>The <code class="docutils literal notranslate"><span class="pre">Common_dither_dpn</span></code> shader uses a different dithering texture for forced transparency
 dithering. It also completely ignores the materials transparency threshold.</p>
@@ -505,8 +507,9 @@ dithering. It also completely ignores the materials transparency threshold.</p>
 </dl>
 <dl id="shaders-shadow-generations-common-parameters-diffuse">
 <dt>diffuse</dt><dd><p>A float parameter containing a color.</p>
-<p>Exclusive to the <code class="docutils literal notranslate"><span class="pre">Common_dither_dpn</span></code> shader, which combines the alpha channel with the
-<a class="reference internal" href="#shaders-shadow-generations-common-textures-diffuse"><span class="std std-ref">diffuse texture</span></a> via multiplication.</p>
+<p>Exclusive to the <code class="docutils literal notranslate"><span class="pre">Common_dither_dpn</span></code> shader, which combines the <strong>alpha component</strong> with the
+<a class="reference internal" href="#shaders-shadow-generations-common-textures-diffuse"><span class="std std-ref">diffuse textures</span></a> alpha channel via
+multiplication.</p>
 </dd>
 </dl>
 </section>
