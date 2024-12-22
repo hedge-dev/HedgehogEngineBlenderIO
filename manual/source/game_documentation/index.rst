@@ -29,6 +29,7 @@ There are several shader principles that are shared between games:
 - :doc:`Vertex colors <shaders/common/vertex_colors>`
 - :doc:`Mesh layers <shaders/common/mesh_layers>`
 - :doc:`Deferred rendering <shaders/common/deferred_rendering>`
+- :doc:`Dithering <shaders/common/dithering>`
 
 Shaders are documented for all games that are natively supported by HEIO:
 

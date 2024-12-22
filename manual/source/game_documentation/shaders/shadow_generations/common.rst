@@ -88,15 +88,17 @@ Shader table
 Behavior
 --------
 
-Default behaviors
+Standard behaviors
     - Supports :doc:`deferred rendering </game_documentation/shaders/common/deferred_rendering>`
+    - Supports :ref:`transparency blending <shaders.common.mesh_layers.transparent>`
     - Supports :ref:`transparency clipping <shaders.common.mesh_layers.punchthrough>`
+    - Uses :doc:`dithering </game_documentation/shaders/common/dithering>`
+    - Uses :ref:`weather <shaders.common.weather.pbr_effect>` effects
     - :doc:`Vertex colors </game_documentation/shaders/common/vertex_colors>`, including alpha,
       get combined with the :ref:`diffuse texture <shaders.shadow_generations.common.textures.diffuse>` via multiplication
-    - Uses :ref:`weather <shaders.common.weather.pbr_effect>` effects
 
 
-Dithering
+Common_dither_dpn
     The ``Common_dither_dpn`` shader uses a different dithering texture for forced transparency
     dithering. It also completely ignores the materials transparency threshold.
 

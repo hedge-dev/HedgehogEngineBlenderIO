@@ -16,6 +16,7 @@ These are shader principles reused between engines or even games:
 	| :doc:`Vertex colors <common/vertex_colors>`
 	| :doc:`Mesh layers <common/mesh_layers>`
 	| :doc:`Deferred rendering <common/deferred_rendering>`
+	| :doc:`Dithering <common/dithering>`
 
 .. container:: global-index-toc
 

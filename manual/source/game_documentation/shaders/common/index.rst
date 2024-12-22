@@ -12,3 +12,4 @@ Common
 	vertex_colors
 	mesh_layers
 	deferred_rendering
+	dithering
