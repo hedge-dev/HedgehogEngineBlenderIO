@@ -15,7 +15,7 @@ Opaque
 The default mesh layer, which completely ignores any transparency of a material.
 
 In hedgehog Engine 2 games, this layer will attempt to use
-:doc:`deferred rendering </gamedoc/shaders/common/deferred_rendering>`.
+:doc:`deferred rendering </game_documentation/shaders/common/deferred_rendering>`.
 
 
 .. _shaders.common.mesh_layers.transparent:
@@ -35,7 +35,7 @@ When rendering a mesh, each rendered pixel will check if the sampled transparenc
 materials "clip threshold". If it is, the pixel is discarded.
 
 In hedgehog Engine 2 games, this layer will attempt to use
-:doc:`deferred rendering </gamedoc/shaders/common/deferred_rendering>`.
+:doc:`deferred rendering </game_documentation/shaders/common/deferred_rendering>`.
 
 .. figure:: /images/gamedoc_shaders_mesh_layers_punchthrough.png
 
