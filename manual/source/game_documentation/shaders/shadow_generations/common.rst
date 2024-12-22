@@ -129,7 +129,7 @@ specular
 normal
     A standard :ref:`normal map texture <textures.he2.normal_map>`.
 
-    Uses the 3rd UV channel.
+    Attempts to use the 3rd UV channel.
 
 
 .. _shaders.shadow_generations.common.textures.transparency:
@@ -139,7 +139,7 @@ transparency
 
     Combined with alpha from the diffuse texture via multiplication.
 
-    Uses the 4th UV channel.
+    Attempts to use the 4th UV channel.
 
 
 Parameters
