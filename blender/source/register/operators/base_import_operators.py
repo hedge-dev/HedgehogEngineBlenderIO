@@ -247,6 +247,12 @@ class ImportModelBaseOperator(ImportMaterialOperator):
         default=False
     )
 
+    import_tangents: BoolProperty(
+        name="Import tangents",
+        description="Import tangents instead of generating them based on the UVs",
+        default=False
+    )
+
     def draw_panel_model(self):
         header, body = self.layout.panel(
             "HEIO_import_model", default_closed=False)
@@ -268,6 +274,7 @@ class ImportModelBaseOperator(ImportMaterialOperator):
             body.separator()
 
         body.prop(self, "create_mesh_slot_attributes")
+        body.prop(self, "import_tangents")
 
     def draw(self, context: Context):
         super().draw(context)
@@ -282,7 +289,8 @@ class ImportModelBaseOperator(ImportMaterialOperator):
             self.vertex_merge_mode,
             self.vertex_merge_distance,
             self.merge_split_edges,
-            self.create_mesh_slot_attributes
+            self.create_mesh_slot_attributes,
+            self.import_tangents
         )
 
     def import_models(self, model_sets):

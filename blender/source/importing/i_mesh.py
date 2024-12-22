@@ -30,6 +30,7 @@ class MeshConverter:
     _vertex_merge_distance: float
     _merge_split_edges: bool
     _create_mesh_slot_attributes: bool
+    _import_tangents: bool
 
     _converted_models: dict[any, bpy.types.Mesh]
 
@@ -40,7 +41,8 @@ class MeshConverter:
             vertex_merge_mode: str,
             vertex_merge_distance: float,
             merge_split_edges: bool,
-            create_mesh_slot_attributes: bool):
+            create_mesh_slot_attributes: bool,
+            import_tangents: bool):
 
         self._target_definition = target_definition
         self._material_converter = material_converter
@@ -52,6 +54,7 @@ class MeshConverter:
         self._vertex_merge_distance = vertex_merge_distance
         self._merge_split_edges = merge_split_edges
         self._create_mesh_slot_attributes = create_mesh_slot_attributes
+        self._import_tangents = import_tangents
 
         self._converted_models = dict()
 
@@ -105,7 +108,6 @@ class MeshConverter:
             for l, uv in enumerate(uvmap):
                 uv_layer.uv[l].vector = (uv.X, uv.Y)
 
-
     @staticmethod
     def _convert_colors(mesh: bpy.types.Mesh, mesh_data):
         color_type = 'BYTE_COLOR' if mesh_data.UseByteColors else 'FLOAT_COLOR'
@@ -120,9 +122,23 @@ class MeshConverter:
                 color_type,
                 'CORNER')
 
-            for j, color in enumerate(color_set):
-                color_attribute.data[j].color = (
-                    color.X, color.Y, color.Z, color.W)
+            for output, color in zip(color_attribute.data, color_set):
+                output.color = (color.X, color.Y, color.Z, color.W)
+
+    @staticmethod
+    def _convert_tangents(mesh: bpy.types.Mesh, mesh_data):
+        if mesh_data.PolygonTangents is None:
+            tangents = mesh.attributes.new("Tangent", 'FLOAT_VECTOR', 'POINT')
+
+            for output, v in zip(tangents.data, mesh_data.Vertices):
+                output.vector = (v.Tangent.X, -v.Tangent.Z, v.Tangent.Y)
+
+        else:
+            tangents = mesh.attributes.new("Tangent", 'FLOAT_VECTOR', 'CORNER')
+
+            for output, t in zip(tangents.data, mesh_data.PolygonTangents):
+                output.vector = (t.X, -t.Z, t.Y)
+
 
     @staticmethod
     def _convert_normals(mesh: bpy.types.Mesh, mesh_data):
@@ -203,6 +219,10 @@ class MeshConverter:
 
         self._convert_texcords(mesh, mesh_data)
         self._convert_colors(mesh, mesh_data)
+
+        if self._import_tangents:
+            self._convert_tangents(mesh, mesh_data)
+
         self._convert_normals(mesh, mesh_data)
 
         return mesh
