@@ -1,4 +1,6 @@
 
+.. _textures.he1:
+
 #################
 Hedgehog engine 1
 #################
@@ -75,6 +77,9 @@ Kinds of textures
 
 The majority of textures used by materials are one of the following kind of textures.
 
+
+.. _textures.he1.diffuse:
+
 Diffuse
 -------
 
@@ -100,6 +105,8 @@ color of a material.
 
 	.. clear
 
+
+.. _textures.he1.opacity:
 
 Opacity
 -------
@@ -127,6 +134,8 @@ are only used when special alpha compositing happens.
 
 	.. clear
 
+
+.. _textures.he1.falloff:
 
 Falloff
 -------
@@ -168,6 +177,8 @@ controls how the falloff factor gets calculated.
 	.. clear
 
 
+.. _textures.he1.environment_map:
+
 Environment map
 ---------------
 
@@ -188,6 +199,8 @@ channel for their layer-transparency.
 Depending on the shader, these have 3 different layouts:
 
 
+.. _textures.he1.environment_map.cubemap:
+
 Cubemap
 ^^^^^^^
 
@@ -205,6 +218,8 @@ Uses 6 square areas, one for each side of a cube, to represent reflections from 
 
 	.. clear
 
+
+.. _textures.he1.environment_map.sem:
 
 Spherical environment map
 ^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -232,6 +247,8 @@ Also known as `MatCap <https://learn.foundry.com/modo/content/help/pages/shading
 	.. clear
 
 
+.. _textures.he1.environment_map.dpem:
+
 Dual paraboloid environment map
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -251,6 +268,8 @@ Covers the same area as a cubemap but with less detail.
 
 	.. clear
 
+
+.. _textures.he1.emission:
 
 Emission
 --------
@@ -275,6 +294,8 @@ Emission textures make parts of a model emit light.
 
 	.. clear
 
+
+.. _textures.he1.specular:
 
 Specular
 --------
@@ -310,6 +331,8 @@ Specular textures contain 2 different maps:
 	.. clear
 
 
+.. _textures.he1.gloss:
+
 Gloss
 -----
 
@@ -341,6 +364,8 @@ specular power.
 	.. clear
 
 
+.. _textures.he1.normal_map:
+
 Normal map
 ----------
 
@@ -358,6 +383,8 @@ Normal map
 
 Normal map textures are used for faking bumps and dents on a model to affect lighting, falloff,
 environment maps and similar.
+
+See :ref:`normal mapping <shaders.common.normal_mapping>` for reference.
 
 .. note::
 

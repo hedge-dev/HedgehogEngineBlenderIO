@@ -1,4 +1,6 @@
 
+.. _shader_features:
+
 ===============
 Shader Features
 ===============

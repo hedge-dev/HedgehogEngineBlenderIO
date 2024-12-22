@@ -3,10 +3,6 @@
 Shadow Generations
 ==================
 
-.. container:: hidden
-
-  Missing, Low, Medium, High
-
 .. container:: global-index-toc
 
     .. toctree::
@@ -63,482 +59,482 @@ Shadow Generations
       - blender accuracy
       - Example usage in the game
 
-    * - :doc:`Amoeba_dopnfE<amoeba>`
+    * - :ref:`Amoeba_dopnfE<shaders.shadow_generations.Amoeba_dopnfE>`
       - :bdg-dark:`Missing`
       - ``w09a10_trr_s00/m09_poisonswamp01_sf1.material``
 
-    * - :doc:`Blend_dpnbdpn<blend>`
+    * - :ref:`Blend_dpnbdpn<shaders.shadow_generations.Blend_dpnbdpn>`
       - :bdg-success:`High`
       - ``metaloverload/bos_mol_ship_bodya.material``
 
-    * - :doc:`Blend_dpndpn<blend>`
+    * - :ref:`Blend_dpndpn<shaders.shadow_generations.Blend_dpndpn>`
       - :bdg-success:`High`
       - ``w03a10_trr_s00/m03_kdv_stone01_dfsp_n_blend01_ih1.material``
 
-    * - :doc:`BlendDetail_dpndpnn<blend>`
+    * - :ref:`BlendDetail_dpndpnn<shaders.shadow_generations.BlendDetail_dpndpnn>`
       - :bdg-warning:`Medium`
       - ``w03a10_trr_s00/m03_rockcliff03_sy1.material``
 
-    * - :doc:`Bubbles_dpnE<bubbles>`
+    * - :ref:`Bubbles_dpnE<shaders.shadow_generations.Bubbles_dpnE>`
       - :bdg-dark:`Missing`
       - ``ObjectStage/obj_amebaobj_worm.material``
 
-    * - :doc:`Chaos_dpnnE<chaos>`
+    * - :ref:`Chaos_dpnnE<shaders.shadow_generations.Chaos_dpnnE>`
       - :bdg-dark:`Missing`
       - ``biolizard/bos_biolizard_hugeball_glass.material``
 
-    * - :doc:`ChrAlbedoFalloff_dither_dpn<character_falloff>`
+    * - :ref:`ChrAlbedoFalloff_dither_dpn<shaders.shadow_generations.ChrAlbedoFalloff_dither_dpn>`
       - :bdg-dark:`Missing`
       - ``maria/chr_maria_dith_body.material``
 
-    * - :doc:`ChrAlbedoFalloff_dpn<character_falloff>`
+    * - :ref:`ChrAlbedoFalloff_dpn<shaders.shadow_generations.ChrAlbedoFalloff_dpn>`
       - :bdg-dark:`Missing`
       - ``shadow/chr_shadow_parts.material``
 
-    * - :doc:`ChrAlbedoFalloff_dpnE<character_falloff>`
+    * - :ref:`ChrAlbedoFalloff_dpnE<shaders.shadow_generations.ChrAlbedoFalloff_dpnE>`
       - :bdg-dark:`Missing`
       - ``mephiles/bos_mephiles_body.material``
 
-    * - :doc:`ChrAlbedoFalloff_dpnn<character_falloff>`
+    * - :ref:`ChrAlbedoFalloff_dpnn<shaders.shadow_generations.ChrAlbedoFalloff_dpnn>`
       - :bdg-dark:`Missing`
       - ``biolizard/bos_biolizard_body_datail.material``
 
-    * - :doc:`ChrEyeE_dpn<character_eye>`
+    * - :ref:`ChrEyeE_dpn<shaders.shadow_generations.ChrEyeE_dpn>`
       - :bdg-dark:`Missing`
       - ``shadow/chr_shadow_eyeL.material``
 
-    * - :doc:`ChrEyeE_dpna<character_eye>`
+    * - :ref:`ChrEyeE_dpna<shaders.shadow_generations.ChrEyeE_dpna>`
       - :bdg-dark:`Missing`
       - ``mephiles/bos_mephiles_eyeL.material``
 
-    * - :doc:`ChrFalloffVanish_dpna<character_falloff>`
+    * - :ref:`ChrFalloffVanish_dpna<shaders.shadow_generations.ChrFalloffVanish_dpna>`
       - :bdg-dark:`Missing`
       - ``dcomet/enm_dcomet_body.material``
 
-    * - :doc:`ChrFalloffVanish_dpnEa<character_falloff>`
+    * - :ref:`ChrFalloffVanish_dpnEa<shaders.shadow_generations.ChrFalloffVanish_dpnEa>`
       - :bdg-dark:`Missing`
       - ``dcomet/enm_dcomet_eye.material``
 
-    * - :doc:`ChrFalloffVanishCyber_dpnEa<character_falloff>`
+    * - :ref:`ChrFalloffVanishCyber_dpnEa<shaders.shadow_generations.ChrFalloffVanishCyber_dpnEa>`
       - :bdg-dark:`Missing`
       - ``blackdoom/chr_blackdoom_body_mat_cyb.material``
 
-    * - :doc:`ChrFalloffVanishEff_dpnEa<character_falloff>`
+    * - :ref:`ChrFalloffVanishEff_dpnEa<shaders.shadow_generations.ChrFalloffVanishEff_dpnEa>`
       - :bdg-dark:`Missing`
       - ``perfectblackdoom/bos_pbd_cell.material``
 
-    * - :doc:`ChrMouthFlip_dpncf<character_skin>`
+    * - :ref:`ChrMouthFlip_dpncf<shaders.shadow_generations.ChrMouthFlip_dpncf>`
       - :bdg-dark:`Missing`
       - ``shadow/chr_shadow_mouth.material``
 
-    * - :doc:`ChrSkinCDRF_dither_dpncf<character_skin>`
+    * - :ref:`ChrSkinCDRF_dither_dpncf<shaders.shadow_generations.ChrSkinCDRF_dither_dpncf>`
       - :bdg-dark:`Missing`
       - ``maria/chr_maria_dith_bodyskin.material``
 
-    * - :doc:`ChrSkinCDRF_dpncf<character_skin>`
+    * - :ref:`ChrSkinCDRF_dpncf<shaders.shadow_generations.ChrSkinCDRF_dpncf>`
       - :bdg-dark:`Missing`
       - ``shadow/chr_shadow_skin.material``
 
-    * - :doc:`Cloud_dnf<cloud_mist>`
+    * - :ref:`Cloud_dnf<shaders.shadow_generations.Cloud_dnf>`
       - :bdg-dark:`Missing`
       - ``w01a10_trr_s00/m5_cloud01.material``
 
-    * - :doc:`CloudMist_dnf<cloud_mist>`
+    * - :ref:`CloudMist_dnf<shaders.shadow_generations.CloudMist_dnf>`
       - :bdg-dark:`Missing`
       - ``w05a10_trr_s00/m05_mist501_tk1.material``
 
-    * - :doc:`Common_d<common>`
+    * - :ref:`Common_d<shaders.shadow_generations.Common_d>`
       - :bdg-success:`High`
       - ``w01a10_trr_s00/orange_material.material``
 
-    * - :doc:`Common_dither_dpn<common>`
-      - :bdg-dark:`Missing`
+    * - :ref:`Common_dither_dpn<shaders.shadow_generations.Common_dither_dpn>`
+      - :bdg-success:`High`
       - ``gerald/chr_gerald_dith_lens.material``
 
-    * - :doc:`Common_dn<common>`
+    * - :ref:`Common_dn<shaders.shadow_generations.Common_dn>`
       - :bdg-success:`High`
       - ``w06_common/m8_rock_km1_relief02_sf1.material``
 
-    * - :doc:`Common_dp<common>`
+    * - :ref:`Common_dp<shaders.shadow_generations.Common_dp>`
       - :bdg-success:`High`
       - ``shadow/chr_shadowspin_body.material``
 
-    * - :doc:`Common_dpn<common>`
+    * - :ref:`Common_dpn<shaders.shadow_generations.Common_dpn>`
       - :bdg-success:`High`
       - ``sonic/chr_sonic_cloth.material``
 
-    * - :doc:`Common_dpna<common>`
+    * - :ref:`Common_dpna<shaders.shadow_generations.Common_dpna>`
       - :bdg-success:`High`
       - ``blackdoom/chr_blackdoom_wear_mat.material``
 
-    * - :doc:`cyber<cyber>`
+    * - :ref:`cyber<shaders.shadow_generations.cyber>`
       - :bdg-dark:`Missing`
       - ``dflash/chr_dflashfake_skin.material``
 
-    * - :doc:`CyberHologram<cyber>`
+    * - :ref:`CyberHologram<shaders.shadow_generations.CyberHologram>`
       - :bdg-dark:`Missing`
       - ``ObjectStage/cmn_obj_hangglider_body_hologram.material``
 
-    * - :doc:`DecalModel_dna<decal>`
+    * - :ref:`DecalModel_dna<shaders.shadow_generations.DecalModel_dna>`
       - :bdg-dark:`Missing`
       - ``w01_common/m06_ds_sign_heliport_decal_mh2.material``
 
-    * - :doc:`DecalModel_dpn<decal>`
+    * - :ref:`DecalModel_dpn<shaders.shadow_generations.DecalModel_dpn>`
       - :bdg-dark:`Missing`
       - ``w06a20_trr_s00/m06_ds_crack01_mh2.material``
 
-    * - :doc:`Detail_dpndpn<detail>`
+    * - :ref:`Detail_dpndpn<shaders.shadow_generations.Detail_dpndpn>`
       - :bdg-warning:`Medium`
       - ``w13b10_trr_s00/m13_dtd_floor02_dfsp_y_mm1.material``
 
-    * - :doc:`Detail_dpnn<detail>`
+    * - :ref:`Detail_dpnn<shaders.shadow_generations.Detail_dpnn>`
       - :bdg-warning:`Medium`
       - ``w02_common/m02_rockcliff_001.material``
 
-    * - :doc:`DirectionBlend_dpndpn<blend>`
+    * - :ref:`DirectionBlend_dpndpn<shaders.shadow_generations.DirectionBlend_dpndpn>`
       - :bdg-success:`High`
       - ``w05a10_trr_s00/m05_rockcliff_mashcliff01_sy1.material``
 
-    * - :doc:`DirectionBlend_dpnndpn<blend>`
+    * - :ref:`DirectionBlend_dpnndpn<shaders.shadow_generations.DirectionBlend_dpnndpn>`
       - :bdg-success:`High`
       - ``w03a10_trr_s00/m03_rockcliff01_sy1.material``
 
-    * - :doc:`Dpower_dpnnEf<dpower>`
+    * - :ref:`Dpower_dpnnEf<shaders.shadow_generations.Dpower_dpnnEf>`
       - :bdg-dark:`Missing`
       - ``devildoom/bos_devildoom_body01_mat.material``
 
-    * - :doc:`DpowerVanish_dpnnEfa<dpower>`
+    * - :ref:`DpowerVanish_dpnnEfa<shaders.shadow_generations.DpowerVanish_dpnnEfa>`
       - :bdg-dark:`Missing`
       - ``shadow/chr_shadow_dsurf_body01.material``
 
-    * - :doc:`DpowerVanishEff_dpnnEfa<dpower>`
+    * - :ref:`DpowerVanishEff_dpnnEfa<shaders.shadow_generations.DpowerVanishEff_dpnnEfa>`
       - :bdg-dark:`Missing`
       - ``perfectblackdoom/bos_pbd_doomsfloora_synbi.material``
 
-    * - :doc:`Earth_dpnEE<earth>`
+    * - :ref:`Earth_dpnEE<shaders.shadow_generations.Earth_dpnEE>`
       - :bdg-dark:`Missing`
       - ``w01a10_trr_s00/m5_earth01.material``
 
-    * - :doc:`EffAdhoc<effadhoc>`
+    * - :ref:`EffAdhoc<shaders.shadow_generations.EffAdhoc>`
       - :bdg-dark:`Missing`
       - ``EffectCommon/emm_k01_com_slash01.material``
 
-    * - :doc:`Emission_dE<emission>`
+    * - :ref:`Emission_dE<shaders.shadow_generations.Emission_dE>`
       - :bdg-success:`High`
       - ``w01_common/m01_speardoor_switch_lamp_sf1.material``
 
-    * - :doc:`Emission_dpE<emission>`
+    * - :ref:`Emission_dpE<shaders.shadow_generations.Emission_dpE>`
       - :bdg-success:`High`
       - ``ObjectCommon/cmn_obj_spearswitch_gLow.material``
 
-    * - :doc:`Emission_dpnE<emission>`
+    * - :ref:`Emission_dpnE<shaders.shadow_generations.Emission_dpnE>`
       - :bdg-success:`High`
       - ``w01_common/m01_gcylinder_light_fk1.material``
 
-    * - :doc:`Emission_dpnEa<emission>`
+    * - :ref:`Emission_dpnEa<shaders.shadow_generations.Emission_dpnEa>`
       - :bdg-success:`High`
       - ``w01_common/m01_gcylinder_lightarrow_fk1.material``
 
-    * - :doc:`EmissionTone_dapnE<emission>`
+    * - :ref:`EmissionTone_dapnE<shaders.shadow_generations.EmissionTone_dapnE>`
       - :bdg-warning:`Medium`
       - ``biolizard/bos_biolizard_hugeball_pattern.material``
 
-    * - :doc:`EmissionTone_dpnE<emission>`
+    * - :ref:`EmissionTone_dpnE<shaders.shadow_generations.EmissionTone_dpnE>`
       - :bdg-warning:`Medium`
       - ``w09_common/gearboxb_holes_ems.material``
 
-    * - :doc:`EmissionTone_E<emission>`
+    * - :ref:`EmissionTone_E<shaders.shadow_generations.EmissionTone_E>`
       - :bdg-warning:`Medium`
       - ``beetonfc/enm_beetonfc01_gLow.material``
 
-    * - :doc:`EmissionToneOpAnim_dpnE<emission>`
+    * - :ref:`EmissionToneOpAnim_dpnE<shaders.shadow_generations.EmissionToneOpAnim_dpnE>`
       - :bdg-warning:`Medium`
       - ``w14_common/m14_brk_floatingshadowfloor_transparency_mm1.material``
 
-    * - :doc:`EnmEmissionTone_dpnE<emission>`
+    * - :ref:`EnmEmissionTone_dpnE<shaders.shadow_generations.EnmEmissionTone_dpnE>`
       - :bdg-dark:`Missing`
       - ``biolizard/bos_biolizard_hugeball_core.material``
 
-    * - :doc:`EnmEmissionTone_dpnEE<emission>`
+    * - :ref:`EnmEmissionTone_dpnEE<shaders.shadow_generations.EnmEmissionTone_dpnEE>`
       - :bdg-dark:`Missing`
       - ``man/enm_man01_body.material``
 
-    * - :doc:`FakeGlass_d<glass>`
+    * - :ref:`FakeGlass_d<shaders.shadow_generations.FakeGlass_d>`
       - :bdg-dark:`Missing`
       - ``w02_common/m02_obj_ogre_train_eye_glass_mm1.material``
 
-    * - :doc:`FakeGlass_dpn<glass>`
+    * - :ref:`FakeGlass_dpn<shaders.shadow_generations.FakeGlass_dpn>`
       - :bdg-dark:`Missing`
       - ``w09a10_trr_s00/m09_m01_glass01_jh1.material``
 
-    * - :doc:`FalloffEmissionTone_dpn<emission>`
+    * - :ref:`FalloffEmissionTone_dpn<shaders.shadow_generations.FalloffEmissionTone_dpn>`
       - :bdg-dark:`Missing`
       - ``metaloverload/bos_metaloverload_body01_falloff.material``
 
-    * - :doc:`FLowLava_dpnbEa<water>`
+    * - :ref:`FLowLava_dpnbEa<shaders.shadow_generations.FLowLava_dpnbEa>`
       - :bdg-dark:`Missing`
       - ``w05a20_trr_s00/m05_lava503_tk1_mask_01.material``
 
-    * - :doc:`FLowWaterParallax_ddnnf<water>`
+    * - :ref:`FLowWaterParallax_ddnnf<shaders.shadow_generations.FLowWaterParallax_ddnnf>`
       - :bdg-dark:`Missing`
       - ``w03a10_trr_s00/m03_waterwall_sf1.material``
 
-    * - :doc:`FLowWaterParallax_ddnnff<water>`
+    * - :ref:`FLowWaterParallax_ddnnff<shaders.shadow_generations.FLowWaterParallax_ddnnff>`
       - :bdg-dark:`Missing`
       - ``w09a10_trr_s00/m09_water501_sf1.material``
 
-    * - :doc:`FLowWaterWP<water>`
+    * - :ref:`FLowWaterWP<shaders.shadow_generations.FLowWaterWP>`
       - :bdg-dark:`Missing`
       - ``w05a20_trr_s00/m05_water_fLow_tk1.material``
 
-    * - :doc:`Fur<fur>`
+    * - :ref:`Fur<shaders.shadow_generations.Fur>`
       - :bdg-dark:`Missing`
       - ``shadow/chr_shadow_fur.material``
 
-    * - :doc:`Glass_dpn<glass>`
+    * - :ref:`Glass_dpn<shaders.shadow_generations.Glass_dpn>`
       - :bdg-danger:`Low`
       - ``w02_common/m02_light_glass_mm1.material``
 
-    * - :doc:`GlassTone_dpnE<glass>`
+    * - :ref:`GlassTone_dpnE<shaders.shadow_generations.GlassTone_dpnE>`
       - :bdg-dark:`Missing`
       - ``w09_common/obj_chaossprtri_glass.material``
 
-    * - :doc:`Grass_dpn<plants>`
+    * - :ref:`Grass_dpn<shaders.shadow_generations.Grass_dpn>`
       - :bdg-warning:`Medium`
       - ``w03a10_trr_s00/m03_kdv_plant13_dfsp_k_ih1.material``
 
-    * - :doc:`IgnoreLight_d<ignorelight>`
+    * - :ref:`IgnoreLight_d<shaders.shadow_generations.IgnoreLight_d>`
       - :bdg-warning:`Medium`
       - ``w01a10_trr_s00/m_shadow_mat.material``
 
-    * - :doc:`IgnoreLight_dE<ignorelight>`
+    * - :ref:`IgnoreLight_dE<shaders.shadow_generations.IgnoreLight_dE>`
       - :bdg-warning:`Medium`
       - ``ObjectCommon/cmn_obj_goalring_rainbow.material``
 
-    * - :doc:`IgnoreLight_E<ignorelight>`
+    * - :ref:`IgnoreLight_E<shaders.shadow_generations.IgnoreLight_E>`
       - :bdg-warning:`Medium`
       - ``w09_common/gearboxb_icon.material``
 
-    * - :doc:`Impostor_dpn<imposter>`
+    * - :ref:`Impostor_dpn<shaders.shadow_generations.Impostor_dpn>`
       - :bdg-dark:`Missing`
       - ``w02a10_trr_s00/m02_bigcannon_imposter_mh2.material``
 
-    * - :doc:`Indirect_daon<indirect>`
+    * - :ref:`Indirect_daon<shaders.shadow_generations.Indirect_daon>`
       - :bdg-warning:`Medium`
       - ``w03a10_trr_s00/m03_waterfall_big_522a_tk1.material``
 
-    * - :doc:`InstancedGrind_dpnEa<instanced>`
+    * - :ref:`InstancedGrind_dpnEa<shaders.shadow_generations.InstancedGrind_dpnEa>`
       - :bdg-dark:`Missing`
       - ``w01_common/m7_obj_grindrail01_scroll_sf1.material``
 
-    * - :doc:`InstancedWire_dpn<instanced>`
+    * - :ref:`InstancedWire_dpn<shaders.shadow_generations.InstancedWire_dpn>`
       - :bdg-dark:`Missing`
       - ``w03_common/m03_obj_grindrail01_mh2.material``
 
-    * - :doc:`InstancedWire_dpnE<instanced>`
+    * - :ref:`InstancedWire_dpnE<shaders.shadow_generations.InstancedWire_dpnE>`
       - :bdg-dark:`Missing`
       - ``w03_common/m03_obj_windroad_sf1.material``
 
-    * - :doc:`Iridescence_ddpNrEa<iridescence>`
+    * - :ref:`Iridescence_ddpNrEa<shaders.shadow_generations.Iridescence_ddpNrEa>`
       - :bdg-dark:`Missing`
       - ``w09_common/m09_large_crest_poison_swamp_mm1.material``
 
-    * - :doc:`IridescenceStone_ddpNrEa<iridescence>`
+    * - :ref:`IridescenceStone_ddpNrEa<shaders.shadow_generations.IridescenceStone_ddpNrEa>`
       - :bdg-dark:`Missing`
       - ``w05a20_trr_s00/m05_ruinbiometal02_sy1.material``
 
-    * - :doc:`Jewel<jewel>`
+    * - :ref:`Jewel<shaders.shadow_generations.Jewel>`
       - :bdg-dark:`Missing`
       - ``ObjectStage/chr_emerald_in.material``
 
-    * - :doc:`Jewel_dnE<jewel>`
+    * - :ref:`Jewel_dnE<shaders.shadow_generations.Jewel_dnE>`
       - :bdg-dark:`Missing`
       - ``w03_common/m03_kdv_luminous05_sf1.material``
 
-    * - :doc:`Kaleidoscope<kaleidoscope>`
+    * - :ref:`Kaleidoscope<shaders.shadow_generations.Kaleidoscope>`
       - :bdg-dark:`Missing`
       - ``ObjectDistortion/m06_ds_wall_window03_ks_fh1.material``
 
-    * - :doc:`MariaEye_dpnE<maria>`
+    * - :ref:`MariaEye_dpnE<shaders.shadow_generations.MariaEye_dpnE>`
       - :bdg-dark:`Missing`
       - ``maria/chr_maria_eye.material``
 
-    * - :doc:`MariaHair_dither_dpncfs<maria>`
+    * - :ref:`MariaHair_dither_dpncfs<shaders.shadow_generations.MariaHair_dither_dpncfs>`
       - :bdg-dark:`Missing`
       - ``maria/chr_maria_dith_hair.material``
 
-    * - :doc:`MariaHair_dpncfs<maria>`
+    * - :ref:`MariaHair_dpncfs<shaders.shadow_generations.MariaHair_dpncfs>`
       - :bdg-dark:`Missing`
       - ``maria/chr_maria_hair.material``
 
-    * - :doc:`Mephiles_dpnnEE<mephiles>`
+    * - :ref:`Mephiles_dpnnEE<shaders.shadow_generations.Mephiles_dpnnEE>`
       - :bdg-dark:`Missing`
       - ``mephiles/bos_mephilesdiver_body.material``
 
-    * - :doc:`Mist_dn<cloud_mist>`
+    * - :ref:`Mist_dn<shaders.shadow_generations.Mist_dn>`
       - :bdg-danger:`Low`
       - ``w03a10_trr_s00/m03_fog01_sf1.material``
 
-    * - :doc:`OceanParallax_ddnnfm<water>`
+    * - :ref:`OceanParallax_ddnnfm<shaders.shadow_generations.OceanParallax_ddnnfm>`
       - :bdg-dark:`Missing`
       - ``w12_common/m1_ocean02_lk1.material``
 
-    * - :doc:`OceanParallaxLight_ddnnfm<water>`
+    * - :ref:`OceanParallaxLight_ddnnfm<shaders.shadow_generations.OceanParallaxLight_ddnnfm>`
       - :bdg-dark:`Missing`
       - ``w12_common/m1_ocean01_lk1.material``
 
-    * - :doc:`Ring_dd<ring>`
+    * - :ref:`Ring_dd<shaders.shadow_generations.Ring_dd>`
       - :bdg-dark:`Missing`
       - ``shadow/chr_shadow_ring.material``
 
-    * - :doc:`Ring_ddpn<ring>`
+    * - :ref:`Ring_ddpn<shaders.shadow_generations.Ring_ddpn>`
       - :bdg-dark:`Missing`
       - ``ObjectStage/cmn_obj_propellerspring_red.material``
 
-    * - :doc:`RingFalloff_ddpn<ring>`
+    * - :ref:`RingFalloff_ddpn<shaders.shadow_generations.RingFalloff_ddpn>`
       - :bdg-dark:`Missing`
       - ``ObjectCommon/cmn_obj_ring_body.material``
 
-    * - :doc:`RingFalloffVanish_ddpna<ring>`
+    * - :ref:`RingFalloffVanish_ddpna<shaders.shadow_generations.RingFalloffVanish_ddpna>`
       - :bdg-dark:`Missing`
       - ``ObjectIsland/cmnisl_obj_dashring_body01.material``
 
-    * - :doc:`SearchLight<search_light>`
+    * - :ref:`SearchLight<shaders.shadow_generations.SearchLight>`
       - :bdg-dark:`Missing`
       - ``w09a10_trr_s00/m09_lamp09_km2.material``
 
-    * - :doc:`Sky_d<sky>`
+    * - :ref:`Sky_d<shaders.shadow_generations.Sky_d>`
       - :bdg-dark:`Missing`
       - ``w01a10_trr_s00/m01_universe.material``
 
-    * - :doc:`Sky_da<sky>`
+    * - :ref:`Sky_da<shaders.shadow_generations.Sky_da>`
       - :bdg-dark:`Missing`
       - ``w01a10_trr_s00/m01_universe_a.material``
 
-    * - :doc:`SonicAura<sonic_aura>`
+    * - :ref:`SonicAura<shaders.shadow_generations.SonicAura>`
       - :bdg-dark:`Missing`
       - ``shadow/chr_shadow_aurabody.material``
 
-    * - :doc:`SuperSonicShape<super_sonic_shape>`
+    * - :ref:`SuperSonicShape<shaders.shadow_generations.SuperSonicShape>`
       - :bdg-dark:`Missing`
       - ``shadow/chr_shadow_shapebody.material``
 
-    * - :doc:`TimeEater_dnn<timeeater>`
+    * - :ref:`TimeEater_dnn<shaders.shadow_generations.TimeEater_dnn>`
       - :bdg-dark:`Missing`
       - ``timeeater/Boss_EVTimeEater_body01.material``
 
-    * - :doc:`Translucent_dpn<translucent>`
+    * - :ref:`Translucent_dpn<shaders.shadow_generations.Translucent_dpn>`
       - :bdg-dark:`Missing`
       - ``w05a20_trr_s00/m05_rockcliff_sulfur01_sy1.material``
 
-    * - :doc:`TransThin_dpnt<trans_thin>`
+    * - :ref:`TransThin_dpnt<shaders.shadow_generations.TransThin_dpnt>`
       - :bdg-dark:`Missing`
       - ``w03_common/m03_kdv_window01_dfsp_n_ih1.material``
 
-    * - :doc:`unlit_da<unlit>`
+    * - :ref:`unlit_da<shaders.shadow_generations.unlit_da>`
       - :bdg-dark:`Missing`
       - ``ev1310/m_falling_shadow_zoom_in.material``
 
-    * - :doc:`Vanish_dpna<vanish>`
+    * - :ref:`Vanish_dpna<shaders.shadow_generations.Vanish_dpna>`
       - :bdg-dark:`Missing`
       - ``enemycommon/enm_cmn_brk_body.material``
 
-    * - :doc:`VanishDark_dpnEa<vanish>`
+    * - :ref:`VanishDark_dpnEa<shaders.shadow_generations.VanishDark_dpnEa>`
       - :bdg-dark:`Missing`
       - ``mancommon/enm_deform_man01_body.material``
 
-    * - :doc:`VanishDark_dpnEaa<vanish>`
+    * - :ref:`VanishDark_dpnEaa<shaders.shadow_generations.VanishDark_dpnEaa>`
       - :bdg-dark:`Missing`
       - ``w09_common/m09_large_crest_skin_mm1.material``
 
-    * - :doc:`VanishDark_dpnEEa<vanish>`
+    * - :ref:`VanishDark_dpnEEa<shaders.shadow_generations.VanishDark_dpnEEa>`
       - :bdg-dark:`Missing`
       - ``w09_common/w09_obj_gearboxb_key_vanish.material``
 
-    * - :doc:`VanishDarkFalloff_dpnEa<vanish>`
+    * - :ref:`VanishDarkFalloff_dpnEa<shaders.shadow_generations.VanishDarkFalloff_dpnEa>`
       - :bdg-dark:`Missing`
       - ``egg01/enm_deform_egg01_body.material``
 
-    * - :doc:`Vegetation_Grass_dpn<plants>`
+    * - :ref:`Vegetation_Grass_dpn<shaders.shadow_generations.Vegetation_Grass_dpn>`
       - :bdg-warning:`Medium`
       - ``w03a10_trr_s00/m03_kdv_leaf05_dfpt_p_y_ih1.material``
 
-    * - :doc:`Vegetation_Tree_dpn<plants>`
+    * - :ref:`Vegetation_Tree_dpn<shaders.shadow_generations.Vegetation_Tree_dpn>`
       - :bdg-warning:`Medium`
       - ``w03a10_trr_s00/m03_kdv_leaf08_dfpt_p_k_ih1.material``
 
-    * - :doc:`VolcanicAsh_dnt<volcanic_ash>`
+    * - :ref:`VolcanicAsh_dnt<shaders.shadow_generations.VolcanicAsh_dnt>`
       - :bdg-dark:`Missing`
       - ``w05a20_trr_s00/m05_volcanosmoke_kt1.material``
 
-    * - :doc:`VolumeVAT_dn<volumevat>`
+    * - :ref:`VolumeVAT_dn<shaders.shadow_generations.VolumeVAT_dn>`
       - :bdg-dark:`Missing`
       - ``w02a10_trr_s00/m02_metal_n1_7014_warning_mh2_vat.material``
 
-    * - :doc:`VolumeVAT_dpn<volumevat>`
+    * - :ref:`VolumeVAT_dpn<shaders.shadow_generations.VolumeVAT_dpn>`
       - :bdg-dark:`Missing`
       - ``w01a10_trr_s00/v_m_et64_3.material``
 
-    * - :doc:`VolumeVAT_dpnE<volumevat>`
+    * - :ref:`VolumeVAT_dpnE<shaders.shadow_generations.VolumeVAT_dpnE>`
       - :bdg-dark:`Missing`
       - ``w01a10_trr_s00/v_m1_pillar901_nt1.material``
 
-    * - :doc:`VolumeVAT_dpnEa<volumevat>`
+    * - :ref:`VolumeVAT_dpnEa<shaders.shadow_generations.VolumeVAT_dpnEa>`
       - :bdg-dark:`Missing`
       - ``w01a10_trr_s00/m01_techno_panel_emsa_step02_sy1_vat.material``
 
-    * - :doc:`WaterRefraction_dnnao<water>`
+    * - :ref:`WaterRefraction_dnnao<shaders.shadow_generations.WaterRefraction_dnnao>`
       - :bdg-dark:`Missing`
       - ``w03a10_trr_s00/m03_waterfall_big_521a_tk1.material``
 
-    * - :doc:`WhiteSpaceAmoeba_dopnfE<whitespace>`
+    * - :ref:`WhiteSpaceAmoeba_dopnfE<shaders.shadow_generations.WhiteSpaceAmoeba_dopnfE>`
       - :bdg-dark:`Missing`
       - ``w09_common/m09_m05_lava01_sy1.material``
 
-    * - :doc:`WhiteSpaceBlend_dpndpn<whitespace>`
+    * - :ref:`WhiteSpaceBlend_dpndpn<shaders.shadow_generations.WhiteSpaceBlend_dpndpn>`
       - :bdg-dark:`Missing`
       - ``w09_common/m09_m05_rockcliff02_sy1.material``
 
-    * - :doc:`WhiteSpaceCommon_dp<whitespace>`
+    * - :ref:`WhiteSpaceCommon_dp<shaders.shadow_generations.WhiteSpaceCommon_dp>`
       - :bdg-dark:`Missing`
       - ``w09_common/m09_m04_midparts101_km1.material``
 
-    * - :doc:`WhiteSpaceCommon_dpn<whitespace>`
+    * - :ref:`WhiteSpaceCommon_dpn<shaders.shadow_generations.WhiteSpaceCommon_dpn>`
       - :bdg-dark:`Missing`
       - ``w09_common/m09_m03_kdv_brick15_dfsp_y_ih1.material``
 
-    * - :doc:`WhiteSpaceDetail_dpnn<whitespace>`
+    * - :ref:`WhiteSpaceDetail_dpnn<shaders.shadow_generations.WhiteSpaceDetail_dpnn>`
       - :bdg-dark:`Missing`
       - ``w09_common/m09_m02_rockcliff_001.material``
 
-    * - :doc:`WhiteSpaceDirectionBlend_dpnndpn<whitespace>`
+    * - :ref:`WhiteSpaceDirectionBlend_dpnndpn<shaders.shadow_generations.WhiteSpaceDirectionBlend_dpnndpn>`
       - :bdg-dark:`Missing`
       - ``w09_common/m09_m03_rockcliff01_sy1.material``
 
-    * - :doc:`WhiteSpaceEmission_dpnE<whitespace>`
+    * - :ref:`WhiteSpaceEmission_dpnE<shaders.shadow_generations.WhiteSpaceEmission_dpnE>`
       - :bdg-dark:`Missing`
       - ``w09_common/m09_m01_yelLow03_jh1.material``
 
-    * - :doc:`WhiteSpaceEmission_dpnEa<whitespace>`
+    * - :ref:`WhiteSpaceEmission_dpnEa<shaders.shadow_generations.WhiteSpaceEmission_dpnEa>`
       - :bdg-dark:`Missing`
       - ``w09_common/m09_m01_fr_metal_socc_purple01_jh1.material``
 
-    * - :doc:`WhiteSpaceEmissionTone_dpnE<whitespace>`
+    * - :ref:`WhiteSpaceEmissionTone_dpnE<shaders.shadow_generations.WhiteSpaceEmissionTone_dpnE>`
       - :bdg-dark:`Missing`
       - ``w09a10_trr_s00/m09_m01_w1_metal165_jh1.material``
 
-    * - :doc:`WhiteSpaceGlass_dpn<whitespace>`
+    * - :ref:`WhiteSpaceGlass_dpn<shaders.shadow_generations.WhiteSpaceGlass_dpn>`
       - :bdg-dark:`Missing`
       - ``w09_common/m09_m02_light_glass_mm1.material``
 
-    * - :doc:`WhiteSpaceIridescence_ddpNrEa<whitespace>`
+    * - :ref:`WhiteSpaceIridescence_ddpNrEa<shaders.shadow_generations.WhiteSpaceIridescence_ddpNrEa>`
       - :bdg-dark:`Missing`
       - ``w09_common/m09_m05_ruinbiometal01_ty1.material``
 
-    * - :doc:`WhiteSpaceVegetation_Grass_dpn<whitespace>`
+    * - :ref:`WhiteSpaceVegetation_Grass_dpn<shaders.shadow_generations.WhiteSpaceVegetation_Grass_dpn>`
       - :bdg-dark:`Missing`
       - ``w09_common/m09_m03_kdv_plant13_dfpt_p_k_ih1.material``
 
-    * - :doc:`WhiteSpaceVegetation_Tree_dpn<whitespace>`
+    * - :ref:`WhiteSpaceVegetation_Tree_dpn<shaders.shadow_generations.WhiteSpaceVegetation_Tree_dpn>`
       - :bdg-dark:`Missing`
       - ``w09_common/m09_m03_kdv_leaf08_dfpt_p_k_ih1.material``

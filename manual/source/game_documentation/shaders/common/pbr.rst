@@ -4,13 +4,15 @@ Physically Based Rendering (PBR)
 ================================
 
 Physically based rendering is used in HE2 games and mostly associated with
-:ref:`"PRM"<game_documentation/textures/textures_he2:PRM>` textures. By combining several textures
+:ref:`"PRM"<textures.he2.prm>` textures. By combining several textures
 of various properties, you can create a wide range of materials to render physically accurate
 looking surfaces.
 
 
 Components
 ----------
+
+.. _shaders.common.pbr.albedo:
 
 Albedo
 ^^^^^^
@@ -22,6 +24,8 @@ Albedo is the base color of a surface and is used with "diffuse" lighting.
 	Materials with various albedo colors in Shadow Generations
 
 
+.. _shaders.common.pbr.smoothness:
+
 Smoothness
 ^^^^^^^^^^
 
@@ -32,6 +36,8 @@ reflection. This is represented by a value between 0 and 1.
 
 	Materials with full specularity and a gradually increasing smoothness in Shadow Generations
 
+
+.. _shaders.common.pbr.specular:
 
 Specular
 ^^^^^^^^
@@ -61,6 +67,8 @@ It's represented by a value between 0 and 1; Usually a specular value of 0.125 i
 	This can be circumvented by using using an HDR image format such as ``R16G16B16A16_FLOAT``.
 
 
+.. _shaders.common.pbr.metallic:
+
 Metallic
 ^^^^^^^^
 
@@ -84,6 +92,8 @@ It too is represented by a value between 0 and 1. Usually a metallic value of 0 
 	Usually, metallic is done either 0 or 1, and rarely anything in between.
 
 
+.. _shaders.common.pbr.specular_and_metallic:
+
 Combining Specular and Metallic
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -93,6 +103,8 @@ While rarely done, it is possible to use specular and metallic lighting together
 
 	Gold-ish (#FFAA00) materials with a smoothness of 0.85 and gradually increasing specularity and metallicness in Shadow Generations
 
+
+.. _shaders.common.pbr.emission:
 
 Emission
 ^^^^^^^^
@@ -115,6 +127,8 @@ the emission texture appears.
 
 	Black materials with white emission and gradually increasing luminance in Shadow Generations
 
+
+.. _shaders.common.pbr.ambient_occlusion:
 
 Ambient occlusion
 ^^^^^^^^^^^^^^^^^

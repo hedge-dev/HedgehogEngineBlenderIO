@@ -1,4 +1,6 @@
 
+.. _textures.he2:
+
 =================
 Hedgehog engine 2
 =================
@@ -79,6 +81,8 @@ Kinds of textures
 The majority of textures used by materials are one of the following kind of textures.
 
 
+.. _textures.he2.albedo:
+
 Albedo
 -------
 
@@ -99,10 +103,14 @@ Albedo
 Albedo textures are color-transparency textures that are sampled directly for the base
 color of a material.
 
+See :ref:`albedo <shaders.common.pbr.albedo>` for reference.
+
 .. container:: lead
 
 	.. clear
 
+
+.. _textures.he2.transparency:
 
 Transparency
 ------------
@@ -129,6 +137,9 @@ are only used when special alpha compositing happens.
 .. container:: lead
 
 	.. clear
+
+
+.. _textures.he2.falloff:
 
 Falloff
 -------
@@ -170,6 +181,8 @@ controls how the falloff factor gets calculated.
 	.. clear
 
 
+.. _textures.he2.emission:
+
 Emission
 --------
 
@@ -190,10 +203,14 @@ Emission
 Emission textures make parts of a model emit light. These are usually
 `HDR <https://en.wikipedia.org/wiki/High_dynamic_range>`_ textures.
 
+See :ref:`emission <shaders.common.pbr.emission>` for reference.
+
 .. container:: lead
 
 	.. clear
 
+
+.. _textures.he2.prm:
 
 PRM
 ---
@@ -239,25 +256,25 @@ Each channel contains one PBR map:
 	    | ``chr_big_rod_prm.dds``
 
 	* - Red
-	  - f0 Specular
+	  - :ref:`Specular <shaders.common.pbr.specular>`
 	  - 0.5
 	  - The engine multiplies the sampled value by 0.25.
 	  - .. figure:: /images/guides_material_editing_textures_he2_prm_r.png
 
 	* - Green
-	  - Smoothness
+	  - :ref:`Smoothness <shaders.common.pbr.smoothness>`
 	  - 0.8
 	  - Blender uses a roughness setup, which is just the inverse of smoothness
 	  - .. figure:: /images/guides_material_editing_textures_he2_prm_g.png
 
 	* - Blue
-	  - Metallic
+	  - :ref:`Metallic <shaders.common.pbr.metallic>`
 	  - 0
 	  -
 	  - .. figure:: /images/guides_material_editing_textures_he2_prm_b.png
 
 	* - Alpha
-	  - Ambient Occlusion
+	  - :ref:`Ambient Occlusion <shaders.common.pbr.ambient_occlusion>`
 	  - 1
 	  - Many tutorials claim that AO is just multiplied into the albedo channel, which is **not** true.
 
@@ -280,20 +297,23 @@ Each channel contains one PBR map:
 		  - Notes
 
 		* - Red
-		  - f0 Specular
+		  - :ref:`Specular <shaders.common.pbr.specular>`
 		  - If the value is above 0.9, the material gets treated as completely metallic.
 
 		* - Green
-		  - Smoothness
+		  - :ref:`Smoothness <shaders.common.pbr.smoothness>`
 		  - Same as above
 
 		* - Blue
-		  - Ambient Occlusion
+		  - :ref:`Ambient Occlusion <shaders.common.pbr.ambient_occlusion>`
 		  -
 
 		* - Alpha
-		  - Metallic
+		  - :ref:`Metallic <shaders.common.pbr.metallic>`
 		  - Only used in select shaders like ``MCommon``, where the specular-above-0.9 check isnt done
+
+
+.. _textures.he2.normal_map:
 
 Normal map
 ----------
@@ -313,6 +333,8 @@ Normal map
 Normal map textures are used for faking bumps and dents on a model to affect lighting, falloff,
 environment maps and similar.
 
+See :ref:`normal mapping <shaders.common.normal_mapping>` for reference.
+
 .. note::
 
 	HE2 always automatically calculates the blue / Z channel for normal maps.
@@ -327,6 +349,8 @@ environment maps and similar.
 
 Other
 -----
+
+.. _textures.he2.flow_map:
 
 Flow map
 ^^^^^^^^
@@ -358,6 +382,8 @@ Each pixel determines the direction of "flow" to use when sampling the noise tex
 	.. clear
 
 
+.. _textures.he2.fur_noise:
+
 Fur noise
 ^^^^^^^^^
 
@@ -388,6 +414,8 @@ This allows for characters to have fine details without needing huge textures.
 	.. clear
 
 
+.. _textures.he2.iridescence:
+
 Iridescence reflection
 ^^^^^^^^^^^^^^^^^^^^^^
 
@@ -411,6 +439,8 @@ Iridescence shaders use these reflection textures to create their effect of the 
 
 	.. clear
 
+
+.. _textures.he2.offset_map:
 
 Offset map
 ^^^^^^^^^^

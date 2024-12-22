@@ -1,4 +1,6 @@
 
+.. _sca_parameters:
+
 ==============
 SCA Parameters
 ==============
@@ -6,6 +8,9 @@ SCA Parameters
 .. note::
 
     not every parameter is available in every game
+
+
+.. _sca_parameters.material:
 
 Material parameters
 -------------------
@@ -59,6 +64,8 @@ never actually used in any material:
 
 They are possibly used in another hedgehog engine game that was not looked into yet.
 
+
+.. _sca_parameters.mesh:
 
 Mesh parameters
 ---------------

@@ -8,3 +8,4 @@ Common
 
 	pbr
 	normal_mapping
+	weather

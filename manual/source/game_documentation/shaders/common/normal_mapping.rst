@@ -1,4 +1,6 @@
 
+.. _shaders.common.normal_mapping:
+
 ==============
 Normal Mapping
 ==============
@@ -201,6 +203,7 @@ There exist many tools to create normal maps from height maps, such as
 
 - `Nvidia texture tools <https://docs.nvidia.com/texture-tools/index.html>`_
 - `Substance designer <https://www.adobe.com/products/substance3d/apps/designer.html>`_
+- `Gimp <https://www.gimp.org/>`_
 - `Normal Map Online (Webtool) <https://cpetry.github.io/NormalMap-Online/>`_
 
 You can even use heightmaps in blender directly using the

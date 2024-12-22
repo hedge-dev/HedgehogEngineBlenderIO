@@ -25,6 +25,7 @@ There are several shader principles that are shared between games:
 
 - :doc:`Physically based rendering (PBR)<shaders/common/pbr>`
 - :doc:`Normal mapping<shaders/common/normal_mapping>`
+- :doc:`Weather<shaders/common/weather>`
 
 Shaders are documented for all games natively supported by HEIO:
 
