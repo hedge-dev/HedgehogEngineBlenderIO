@@ -157,6 +157,8 @@ Tone
     The shaders that include "Tone" in their name get their luminance adjusted by the average
     brightness of the screen.
 
+    This behavior is not reproducible in blender.
+
 
 Textures
 --------
@@ -184,7 +186,11 @@ specular
 normal
     A standard :ref:`normal map texture <textures.he2.normal_map>`.
 
-    Attempts to use the 3rd UV channel.
+    Attempts to use the 1st UV channel.
+
+    **Exceptions:**
+
+    - ``Emission_dpnE`` uses the 3rd UV channel
 
 
 .. _shaders.shadow_generations.emission.textures.transparency:
@@ -195,7 +201,8 @@ transparency
     - ``EmissionTone_dapnE`` uses it as a standard
       :ref:`transparency texture <textures.he2.transparency>`.
 
-      It's combined with alpha from the diffuse texture via multiplication.
+      It's combined with alpha from the
+      :ref:`diffuse texture <shaders.shadow_generations.emission.textures.diffuse>` via multiplication.
 
     - ``Emission_dpnEa`` uses it to alter the
       :ref:`luminance <shaders.shadow_generations.emission.parameters.luminance>`
