@@ -58,28 +58,34 @@ Behavior
 
 Standard behaviors
     - Uses the :doc:`PBR lighting model </game_documentation/shaders/common/pbr>`
-    - Uses :doc:`dithering </game_documentation/shaders/common/dithering>`
     - Uses :ref:`weather <shaders.common.weather.pbr_effect>` effects
+
 
 Rendering
     The shaders **only** support
     :doc:`deferred rendering </game_documentation/shaders/common/deferred_rendering>` and have not
     been compiled for forward rendering.
 
+
 Transparency
     Supports :ref:`transparency clipping <shaders.common.mesh_layers.punchthrough>`, but does
     **not** support :ref:`transparency blending <shaders.common.mesh_layers.transparent>` as the
     shaders do not support forward rendering.
 
+
 Vertex colors
     :doc:`Vertex colors </game_documentation/shaders/common/vertex_colors>`, including alpha,
     get combined with the
-    :ref:`diffuse texture <shaders.shadow_generations.emission.textures.diffuse>` via
+    :ref:`diffuse texture <shaders.shadow_generations.detail.textures.diffuse>` via
     multiplication
 
     Exceptions:
         - ``Detail_dpndpn`` also combines the vertex color alpha with ambient occlusion via
           multiplication.
+
+Dithering
+    Uses :doc:`dithering </game_documentation/shaders/common/dithering>`, although the dithering
+    for ``Detail_dpndpn`` is broken.
 
 .. _shaders.shadow_generations.detail.behavior.distance_blending:
 
@@ -88,7 +94,7 @@ Distance blending
     (:ref:`diffuse1 <shaders.shadow_generations.detail.textures.diffuse1>`,
     :ref:`specular1 <shaders.shadow_generations.detail.textures.specular1>`,
     :ref:`normal1 <shaders.shadow_generations.detail.textures.normal1>`) based on the distance
-    between the camera and surface being rendered. The game usually starts fading textures in at a
+    between the camera and surface being rendered. The game usually starts the fade-in at a
     distance of 180, and fully fades them in at a distance of 150.
 
 

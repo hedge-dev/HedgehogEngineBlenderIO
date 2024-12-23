@@ -22,6 +22,7 @@ Shadow Generations
         cyber
         decal
         detail
+        direction_blend
         dpower
         earth
         effadhoc
@@ -75,7 +76,7 @@ Shadow Generations
       - ``w03a10_trr_s00/m03_kdv_stone01_dfsp_n_blend01_ih1.material``
 
     * - :ref:`BlendDetail_dpndpnn<shaders.shadow_generations.BlendDetail_dpndpnn>`
-      - |Medium|
+      - |High|
       - ``w03a10_trr_s00/m03_rockcliff03_sy1.material``
 
     * - :ref:`Bubbles_dpnE<shaders.shadow_generations.Bubbles_dpnE>`
@@ -187,11 +188,11 @@ Shadow Generations
       - ``w06a20_trr_s00/m06_ds_crack01_mh2.material``
 
     * - :ref:`Detail_dpndpn<shaders.shadow_generations.Detail_dpndpn>`
-      - |Medium|
+      - |High|
       - ``w13b10_trr_s00/m13_dtd_floor02_dfsp_y_mm1.material``
 
     * - :ref:`Detail_dpnn<shaders.shadow_generations.Detail_dpnn>`
-      - |Medium|
+      - |High|
       - ``w02_common/m02_rockcliff_001.material``
 
     * - :ref:`DirectionBlend_dpndpn<shaders.shadow_generations.DirectionBlend_dpndpn>`
