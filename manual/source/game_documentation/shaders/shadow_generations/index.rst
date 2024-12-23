@@ -26,6 +26,7 @@ Shadow Generations
         earth
         effadhoc
         emission
+        falloff_emission
         fur
         glass
         ignorelight
