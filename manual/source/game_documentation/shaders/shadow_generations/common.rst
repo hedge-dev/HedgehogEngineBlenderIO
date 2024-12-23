@@ -12,7 +12,7 @@
 Common shaders
 ==============
 
-These are the standard, non-emission PBR shaders. For emission PBR shaders, see :doc:`Emission Shaders<emission>`.
+These are the standard non-emission PBR shaders. For emission PBR shaders, see :doc:`emission shaders<emission>`.
 
 
 Shader table
@@ -92,10 +92,13 @@ Standard behaviors
     - Supports :doc:`deferred rendering </game_documentation/shaders/common/deferred_rendering>`
     - Supports :ref:`transparency blending <shaders.common.mesh_layers.transparent>`
     - Supports :ref:`transparency clipping <shaders.common.mesh_layers.punchthrough>`
+    - Uses the :doc:`PBR lighting model </game_documentation/shaders/common/pbr>`
     - Uses :doc:`dithering </game_documentation/shaders/common/dithering>`
     - Uses :ref:`weather <shaders.common.weather.pbr_effect>` effects
     - :doc:`Vertex colors </game_documentation/shaders/common/vertex_colors>`, including alpha,
-      get combined with the :ref:`diffuse texture <shaders.shadow_generations.common.textures.diffuse>` via multiplication
+      get combined with the
+      :ref:`diffuse texture <shaders.shadow_generations.common.textures.diffuse>` via
+      multiplication
 
 
 Common_dither_dpn
