@@ -280,6 +280,7 @@
 <li class="toctree-l4"><a class="reference internal" href="earth.html">Earth shaders</a></li>
 <li class="toctree-l4"><a class="reference internal" href="effadhoc.html">Effadhoc shader</a></li>
 <li class="toctree-l4"><a class="reference internal" href="emission.html">Emission shaders</a></li>
+<li class="toctree-l4"><a class="reference internal" href="falloff_emission.html">Falloff emission shaders</a></li>
 <li class="toctree-l4"><a class="reference internal" href="fur.html">Fur shader</a></li>
 <li class="toctree-l4"><a class="reference internal" href="glass.html">Glass shaders</a></li>
 <li class="toctree-l4"><a class="reference internal" href="ignorelight.html">IgnoreLight shaders</a></li>
@@ -361,7 +362,7 @@
         <article role="main" id="furo-main-content">
           <section id="common-shaders">
 <span id="shaders-shadow-generations-common-dpna"></span><span id="shaders-shadow-generations-common-dpn"></span><span id="shaders-shadow-generations-common-dp"></span><span id="shaders-shadow-generations-common-dn"></span><span id="shaders-shadow-generations-common-dither-dpn"></span><span id="shaders-shadow-generations-common-d"></span><h1>Common shaders<a class="headerlink" href="#common-shaders" title="Link to this heading">¶</a></h1>
-<p>These are the standard, non-emission PBR shaders. For emission PBR shaders, see <a class="reference internal" href="emission.html"><span class="doc">Emission Shaders</span></a>.</p>
+<p>These are the standard non-emission PBR shaders. For emission PBR shaders, see <a class="reference internal" href="emission.html"><span class="doc">emission shaders</span></a>.</p>
 <section id="shader-table">
 <h2>Shader table<a class="headerlink" href="#shader-table" title="Link to this heading">¶</a></h2>
 <div class="table-wrapper colwidths-auto docutils container">
@@ -460,10 +461,13 @@
 <li><p>Supports <a class="reference internal" href="../common/deferred_rendering.html"><span class="doc">deferred rendering</span></a></p></li>
 <li><p>Supports <a class="reference internal" href="../common/mesh_layers.html#shaders-common-mesh-layers-transparent"><span class="std std-ref">transparency blending</span></a></p></li>
 <li><p>Supports <a class="reference internal" href="../common/mesh_layers.html#shaders-common-mesh-layers-punchthrough"><span class="std std-ref">transparency clipping</span></a></p></li>
+<li><p>Uses the <a class="reference internal" href="../common/pbr.html"><span class="doc">PBR lighting model</span></a></p></li>
 <li><p>Uses <a class="reference internal" href="../common/dithering.html"><span class="doc">dithering</span></a></p></li>
 <li><p>Uses <a class="reference internal" href="../common/weather.html#shaders-common-weather-pbr-effect"><span class="std std-ref">weather</span></a> effects</p></li>
 <li><p><a class="reference internal" href="../common/vertex_colors.html"><span class="doc">Vertex colors</span></a>, including alpha,
-get combined with the <a class="reference internal" href="#shaders-shadow-generations-common-textures-diffuse"><span class="std std-ref">diffuse texture</span></a> via multiplication</p></li>
+get combined with the
+<a class="reference internal" href="#shaders-shadow-generations-common-textures-diffuse"><span class="std std-ref">diffuse texture</span></a> via
+multiplication</p></li>
 </ul>
 </dd>
 <dt>Common_dither_dpn</dt><dd><p>The <code class="docutils literal notranslate"><span class="pre">Common_dither_dpn</span></code> shader uses a different dithering texture for forced transparency
@@ -486,13 +490,13 @@ dithering. It also completely ignores the materials transparency threshold.</p>
 </dl>
 <dl id="shaders-shadow-generations-common-textures-normal">
 <dt>normal</dt><dd><p>A standard <a class="reference internal" href="../../textures/textures_he2.html#textures-he2-normal-map"><span class="std std-ref">normal map texture</span></a>.</p>
-<p>Uses the 3rd UV channel.</p>
+<p>Attempts to use the 3rd UV channel.</p>
 </dd>
 </dl>
 <dl id="shaders-shadow-generations-common-textures-transparency">
 <dt>transparency</dt><dd><p>A standard <a class="reference internal" href="../../textures/textures_he2.html#textures-he2-transparency"><span class="std std-ref">transparency texture</span></a>.</p>
 <p>Combined with alpha from the diffuse texture via multiplication.</p>
-<p>Uses the 4th UV channel.</p>
+<p>Attempts to use the 4th UV channel.</p>
 </dd>
 </dl>
 </section>
@@ -552,7 +556,7 @@ multiplication.</p>
             Made with 
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2024-12-22</div>
+              Last updated on 2024-12-23</div>
           </div>
           <div class="right-details">
             
