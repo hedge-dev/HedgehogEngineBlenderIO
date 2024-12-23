@@ -5,8 +5,8 @@
 Normal Mapping
 ==============
 
-Normal mapping, also known as "bump mapping", is a texturing technique used alter surface normals
-and allow for more complex interaction with lighting and other rendering features.
+Normal mapping, also known as "bump mapping", is a texturing technique used for altering surface
+normals and allow for more complex interaction with lighting and other rendering features.
 
 What are normals?
 -----------------
@@ -115,7 +115,7 @@ The default color, at which a normal map does not alter the surface normal, is #
 
     A normal map image and a surface with the normal map applied and hit by a sunlight angled at 45°.
 
-Blenders standard
+Blender's standard
 `normal map node <https://docs.blender.org/manual/en/latest/render/shader_nodes/vector/normal_map.html>`_
 requires the blue channel to be provided by the input, whereas Hedgehog Engine games don't, as they
 derive the blue channel based on the red and green channels while rendering.
@@ -143,7 +143,7 @@ Tangent space
 ^^^^^^^^^^^^^
 
 .. note::
-    This is a highly technical topic and may not need to read it.
+    This is a highly technical topic and you may not need to read it.
 
 Normal maps come with a big issue: What is considered "up/down" and "left/right"? All we know
 without a doubt is that "forward/backward" is based on the normal that we want to add to, but
