@@ -124,6 +124,15 @@ Texture Blending
     A blending bias of 0.5 is considered the default.
 
 
+.. _shaders.shadow_generations.direction_blend.behavior.distance_blending:
+
+Distance blending
+    The ``DirectionBlend_dpnndpn`` shader will fade in the
+    :ref:`normal2 <shaders.shadow_generations.blend.textures.normal2>` based on the distance
+    between the camera and surface being rendered. The game usually starts the fade-in at a
+    distance of 180, and fully fades them in at a distance of 150.
+
+
 Textures
 --------
 
