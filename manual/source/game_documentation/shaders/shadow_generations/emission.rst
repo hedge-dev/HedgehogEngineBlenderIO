@@ -121,6 +121,7 @@ Shader table
       - |x|
       - |x|
 
+
 Behavior
 --------
 
@@ -186,11 +187,11 @@ specular
 normal
     A standard :ref:`normal map texture <textures.he2.normal_map>`.
 
-    Attempts to use the 1st UV channel.
+    Uses the 1st UV channel.
 
     **Exceptions:**
 
-    - ``Emission_dpnE`` uses the 3rd UV channel
+    - ``Emission_dpnE`` attempts to use the 3rd UV channel
 
 
 .. _shaders.shadow_generations.emission.textures.transparency:
