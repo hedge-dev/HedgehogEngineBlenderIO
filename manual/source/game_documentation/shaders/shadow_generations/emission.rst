@@ -140,18 +140,17 @@ Vertex colors
     :ref:`diffuse texture <shaders.shadow_generations.emission.textures.diffuse>` via
     multiplication
 
-    **Exceptions:**
-
-    - ``EmissionTone_E``, which does not have a diffuse texture, uses only the vertex color alpha
-      for transparency.
-    - ``EmissionTone_dapnE`` uses the vertex color alpha for transparency (combined with
-      :ref:`diffuse <shaders.shadow_generations.emission.textures.diffuse>` alpha via
-      multiplication)
-    - ``Emission_dpnEa`` uses the vertex color alpha for transparency (combined with
-      :ref:`diffuse <shaders.shadow_generations.emission.textures.diffuse>` alpha via
-      multiplication) **and** combines it with the
-      :ref:`luminance <shaders.shadow_generations.emission.parameters.luminance>` via
-      multiplication.
+    Exceptions:
+        - ``EmissionTone_E``, which does not have a diffuse texture, uses only the vertex color alpha
+          for transparency.
+        - ``EmissionTone_dapnE`` uses the vertex color alpha for transparency (combined with
+          :ref:`diffuse <shaders.shadow_generations.emission.textures.diffuse>` alpha via
+          multiplication)
+        - ``Emission_dpnEa`` uses the vertex color alpha for transparency (combined with
+          :ref:`diffuse <shaders.shadow_generations.emission.textures.diffuse>` alpha via
+          multiplication) **and** combines it with the
+          :ref:`luminance <shaders.shadow_generations.emission.parameters.luminance>` via
+          multiplication.
 
 
 Tone
@@ -189,9 +188,8 @@ normal
 
     Uses the 1st UV channel.
 
-    **Exceptions:**
-
-    - ``Emission_dpnE`` attempts to use the 3rd UV channel
+    Exceptions:
+        - ``Emission_dpnE`` attempts to use the 3rd UV channel
 
 
 .. _shaders.shadow_generations.emission.textures.transparency:
@@ -219,10 +217,9 @@ emission
 
     Attempts to use the 3rd UV channel.
 
-    **Exceptions:**
-
-    - ``EmissionTone_E`` uses the 1st UV channel
-    - ``Emission_dpnE`` attempts to use the 4th UV channel
+    Exceptions:
+        - ``EmissionTone_E`` uses the 1st UV channel
+        - ``Emission_dpnE`` attempts to use the 4th UV channel
 
 
 Parameters

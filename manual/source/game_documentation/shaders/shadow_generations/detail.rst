@@ -57,13 +57,29 @@ Behavior
 --------
 
 Standard behaviors
-    - **Only** uses :doc:`deferred rendering </game_documentation/shaders/common/deferred_rendering>`
-    - Does **not** support :ref:`transparency blending <shaders.common.mesh_layers.transparent>`
-    - Supports :ref:`transparency clipping <shaders.common.mesh_layers.punchthrough>`
     - Uses the :doc:`PBR lighting model </game_documentation/shaders/common/pbr>`
     - Uses :doc:`dithering </game_documentation/shaders/common/dithering>`
     - Uses :ref:`weather <shaders.common.weather.pbr_effect>` effects
 
+Rendering
+    The shaders **only** support
+    :doc:`deferred rendering </game_documentation/shaders/common/deferred_rendering>` and have not
+    been compiled for forward rendering.
+
+Transparency
+    Supports :ref:`transparency clipping <shaders.common.mesh_layers.punchthrough>`, but does
+    **not** support :ref:`transparency blending <shaders.common.mesh_layers.transparent>` as the
+    shaders do not support forward rendering.
+
+Vertex colors
+    :doc:`Vertex colors </game_documentation/shaders/common/vertex_colors>`, including alpha,
+    get combined with the
+    :ref:`diffuse texture <shaders.shadow_generations.emission.textures.diffuse>` via
+    multiplication
+
+    Exceptions:
+        - ``Detail_dpndpn`` also combines the vertex color alpha with ambient occlusion via
+          multiplication.
 
 .. _shaders.shadow_generations.detail.behavior.distance_blending:
 
