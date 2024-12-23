@@ -3,11 +3,11 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" /><link rel="next" title="Iridescence shaders" href="iridescence.html" /><link rel="prev" title="Indirect shader" href="indirect.html" />
-        <link rel="canonical" href="https://hedge-dev.github.io/HedgehogEngineBlenderIO/game_documentation/shaders/shadow_generations/instanced.html" />
+<link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" /><link rel="next" title="DPower shaders" href="dpower.html" /><link rel="prev" title="Detail shaders" href="detail.html" />
+        <link rel="canonical" href="https://hedge-dev.github.io/HedgehogEngineBlenderIO/game_documentation/shaders/shadow_generations/direction_blend.html" />
 
     <!-- Generated with Sphinx 8.1.3 and Furo 2024.08.06 -->
-        <title>Instanced shaders - HEIO 0.0.1 Manual</title>
+        <title>Direction blend shaders - HEIO 0.0.1 Manual</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
@@ -183,7 +183,7 @@
           <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
         </button>
       </div>
-      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
         <div class="visually-hidden">Toggle table of contents sidebar</div>
         <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
       </label>
@@ -276,7 +276,7 @@
 <li class="toctree-l4"><a class="reference internal" href="cyber.html">Cyber shaders</a></li>
 <li class="toctree-l4"><a class="reference internal" href="decal.html">Decal shaders</a></li>
 <li class="toctree-l4"><a class="reference internal" href="detail.html">Detail shaders</a></li>
-<li class="toctree-l4"><a class="reference internal" href="direction_blend.html">Direction blend shaders</a></li>
+<li class="toctree-l4 current current-page"><a class="current reference internal" href="#">Direction blend shaders</a></li>
 <li class="toctree-l4"><a class="reference internal" href="dpower.html">DPower shaders</a></li>
 <li class="toctree-l4"><a class="reference internal" href="earth.html">Earth shaders</a></li>
 <li class="toctree-l4"><a class="reference internal" href="effadhoc.html">Effadhoc shader</a></li>
@@ -287,7 +287,7 @@
 <li class="toctree-l4"><a class="reference internal" href="ignorelight.html">IgnoreLight shaders</a></li>
 <li class="toctree-l4"><a class="reference internal" href="imposter.html">Imposter shader</a></li>
 <li class="toctree-l4"><a class="reference internal" href="indirect.html">Indirect shader</a></li>
-<li class="toctree-l4 current current-page"><a class="current reference internal" href="#">Instanced shaders</a></li>
+<li class="toctree-l4"><a class="reference internal" href="instanced.html">Instanced shaders</a></li>
 <li class="toctree-l4"><a class="reference internal" href="iridescence.html">Iridescence shaders</a></li>
 <li class="toctree-l4"><a class="reference internal" href="jewel.html">Jewel shaders</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kaleidoscope.html">Kaleidoscope shader</a></li>
@@ -342,7 +342,7 @@
         <div class="content-icon-container">
           
 <div class="edit-this-page">
-  <a class="muted-link" href="https://github.com/hedge-dev/HedgehogEngineBlenderIO/edit/dev/manual/source/game_documentation/shaders/shadow_generations/instanced.rst" title="Edit this page">
+  <a class="muted-link" href="https://github.com/hedge-dev/HedgehogEngineBlenderIO/edit/dev/manual/source/game_documentation/shaders/shadow_generations/direction_blend.rst" title="Edit this page">
     <svg><use href="#svg-pencil"></use></svg>
     <span class="visually-hidden">Edit this page</span>
   </a>
@@ -355,14 +355,233 @@
               <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
             </button>
           </div>
-          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
             <div class="visually-hidden">Toggle table of contents sidebar</div>
             <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
           </label>
         </div>
         <article role="main" id="furo-main-content">
-          <section id="instanced-shaders">
-<span id="shaders-shadow-generations-instancedwire-dpne"></span><span id="shaders-shadow-generations-instancedwire-dpn"></span><span id="shaders-shadow-generations-instancedgrind-dpnea"></span><h1>Instanced shaders<a class="headerlink" href="#instanced-shaders" title="Link to this heading">¶</a></h1>
+          <section id="direction-blend-shaders">
+<span id="shaders-shadow-generations-directionblend-dpnndpn"></span><span id="shaders-shadow-generations-directionblend-dpndpn"></span><h1>Direction blend shaders<a class="headerlink" href="#direction-blend-shaders" title="Link to this heading">¶</a></h1>
+<p>These are standard PBR shaders that blend two sets of textures based on the meshes red vertex
+color and slope angle.</p>
+<p>They are a variation of the <a class="reference internal" href="blend.html"><span class="doc">blend shaders</span></a>.</p>
+<section id="shader-table">
+<h2>Shader table<a class="headerlink" href="#shader-table" title="Link to this heading">¶</a></h2>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Shader</p></th>
+<th class="head"><div class="line-block">
+<div class="line">Texture</div>
+<div class="line">“<a class="reference internal" href="#shaders-shadow-generations-direction-blend-textures-diffuse"><span class="std std-ref">diffuse</span></a>”</div>
+</div>
+</th>
+<th class="head"><div class="line-block">
+<div class="line">Texture</div>
+<div class="line">“<a class="reference internal" href="#shaders-shadow-generations-direction-blend-textures-specular"><span class="std std-ref">specular</span></a>”</div>
+</div>
+</th>
+<th class="head"><div class="line-block">
+<div class="line">Texture</div>
+<div class="line">“<a class="reference internal" href="#shaders-shadow-generations-direction-blend-textures-normal"><span class="std std-ref">normal</span></a>”</div>
+</div>
+</th>
+<th class="head"><div class="line-block">
+<div class="line">Texture</div>
+<div class="line">“<a class="reference internal" href="#shaders-shadow-generations-direction-blend-textures-diffuse1"><span class="std std-ref">diffuse1</span></a>”</div>
+</div>
+</th>
+<th class="head"><div class="line-block">
+<div class="line">Texture</div>
+<div class="line">“<a class="reference internal" href="#shaders-shadow-generations-direction-blend-textures-specular1"><span class="std std-ref">specular1</span></a>”</div>
+</div>
+</th>
+<th class="head"><div class="line-block">
+<div class="line">Texture</div>
+<div class="line">“<a class="reference internal" href="#shaders-shadow-generations-direction-blend-textures-normal1"><span class="std std-ref">normal1</span></a>”</div>
+</div>
+</th>
+<th class="head"><div class="line-block">
+<div class="line">Texture</div>
+<div class="line">“<a class="reference internal" href="#shaders-shadow-generations-direction-blend-textures-normal2"><span class="std std-ref">normal2</span></a>”</div>
+</div>
+</th>
+<th class="head"><div class="line-block">
+<div class="line">Parameter</div>
+<div class="line">“<a class="reference internal" href="#shaders-shadow-generations-direction-blend-parameters-directionparam"><span class="std std-ref">DirectionParam</span></a>”</div>
+</div>
+</th>
+<th class="head"><div class="line-block">
+<div class="line">Parameter</div>
+<div class="line">“<a class="reference internal" href="#shaders-shadow-generations-direction-blend-parameters-normalblendparam"><span class="std std-ref">NormalBlendParam</span></a>”</div>
+</div>
+</th>
+<th class="head"><div class="line-block">
+<div class="line">Parameter</div>
+<div class="line">“<a class="reference internal" href="#shaders-shadow-generations-direction-blend-parameters-ambient"><span class="std std-ref">ambient</span></a>”</div>
+</div>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>DirectionBlend_dpndpn</p></td>
+<td><p><svg version="1.1" width="1.0em" height="1.0em" class="sd-octicon sd-octicon-x" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.749.749 0 0 1 1.275.326.749.749 0 0 1-.215.734L9.06 8l3.22 3.22a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L8 9.06l-3.22 3.22a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06Z"></path></svg></p></td>
+<td><p><svg version="1.1" width="1.0em" height="1.0em" class="sd-octicon sd-octicon-x" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.749.749 0 0 1 1.275.326.749.749 0 0 1-.215.734L9.06 8l3.22 3.22a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L8 9.06l-3.22 3.22a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06Z"></path></svg></p></td>
+<td><p><svg version="1.1" width="1.0em" height="1.0em" class="sd-octicon sd-octicon-x" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.749.749 0 0 1 1.275.326.749.749 0 0 1-.215.734L9.06 8l3.22 3.22a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L8 9.06l-3.22 3.22a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06Z"></path></svg></p></td>
+<td><p><svg version="1.1" width="1.0em" height="1.0em" class="sd-octicon sd-octicon-x" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.749.749 0 0 1 1.275.326.749.749 0 0 1-.215.734L9.06 8l3.22 3.22a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L8 9.06l-3.22 3.22a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06Z"></path></svg></p></td>
+<td><p><svg version="1.1" width="1.0em" height="1.0em" class="sd-octicon sd-octicon-x" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.749.749 0 0 1 1.275.326.749.749 0 0 1-.215.734L9.06 8l3.22 3.22a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L8 9.06l-3.22 3.22a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06Z"></path></svg></p></td>
+<td><p><svg version="1.1" width="1.0em" height="1.0em" class="sd-octicon sd-octicon-x" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.749.749 0 0 1 1.275.326.749.749 0 0 1-.215.734L9.06 8l3.22 3.22a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L8 9.06l-3.22 3.22a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06Z"></path></svg></p></td>
+<td></td>
+<td><p><svg version="1.1" width="1.0em" height="1.0em" class="sd-octicon sd-octicon-x" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.749.749 0 0 1 1.275.326.749.749 0 0 1-.215.734L9.06 8l3.22 3.22a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L8 9.06l-3.22 3.22a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06Z"></path></svg></p></td>
+<td><p><svg version="1.1" width="1.0em" height="1.0em" class="sd-octicon sd-octicon-x" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.749.749 0 0 1 1.275.326.749.749 0 0 1-.215.734L9.06 8l3.22 3.22a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L8 9.06l-3.22 3.22a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06Z"></path></svg></p></td>
+<td><p><svg version="1.1" width="1.0em" height="1.0em" class="sd-octicon sd-octicon-x" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.749.749 0 0 1 1.275.326.749.749 0 0 1-.215.734L9.06 8l3.22 3.22a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L8 9.06l-3.22 3.22a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06Z"></path></svg></p></td>
+</tr>
+<tr class="row-odd"><td><p>DirectionBlend_dpnndpn</p></td>
+<td><p><svg version="1.1" width="1.0em" height="1.0em" class="sd-octicon sd-octicon-x" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.749.749 0 0 1 1.275.326.749.749 0 0 1-.215.734L9.06 8l3.22 3.22a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L8 9.06l-3.22 3.22a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06Z"></path></svg></p></td>
+<td><p><svg version="1.1" width="1.0em" height="1.0em" class="sd-octicon sd-octicon-x" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.749.749 0 0 1 1.275.326.749.749 0 0 1-.215.734L9.06 8l3.22 3.22a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L8 9.06l-3.22 3.22a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06Z"></path></svg></p></td>
+<td><p><svg version="1.1" width="1.0em" height="1.0em" class="sd-octicon sd-octicon-x" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.749.749 0 0 1 1.275.326.749.749 0 0 1-.215.734L9.06 8l3.22 3.22a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L8 9.06l-3.22 3.22a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06Z"></path></svg></p></td>
+<td><p><svg version="1.1" width="1.0em" height="1.0em" class="sd-octicon sd-octicon-x" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.749.749 0 0 1 1.275.326.749.749 0 0 1-.215.734L9.06 8l3.22 3.22a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L8 9.06l-3.22 3.22a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06Z"></path></svg></p></td>
+<td><p><svg version="1.1" width="1.0em" height="1.0em" class="sd-octicon sd-octicon-x" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.749.749 0 0 1 1.275.326.749.749 0 0 1-.215.734L9.06 8l3.22 3.22a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L8 9.06l-3.22 3.22a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06Z"></path></svg></p></td>
+<td><p><svg version="1.1" width="1.0em" height="1.0em" class="sd-octicon sd-octicon-x" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.749.749 0 0 1 1.275.326.749.749 0 0 1-.215.734L9.06 8l3.22 3.22a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L8 9.06l-3.22 3.22a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06Z"></path></svg></p></td>
+<td><p><svg version="1.1" width="1.0em" height="1.0em" class="sd-octicon sd-octicon-x" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.749.749 0 0 1 1.275.326.749.749 0 0 1-.215.734L9.06 8l3.22 3.22a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L8 9.06l-3.22 3.22a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06Z"></path></svg></p></td>
+<td><p><svg version="1.1" width="1.0em" height="1.0em" class="sd-octicon sd-octicon-x" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.749.749 0 0 1 1.275.326.749.749 0 0 1-.215.734L9.06 8l3.22 3.22a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L8 9.06l-3.22 3.22a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06Z"></path></svg></p></td>
+<td><p><svg version="1.1" width="1.0em" height="1.0em" class="sd-octicon sd-octicon-x" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.749.749 0 0 1 1.275.326.749.749 0 0 1-.215.734L9.06 8l3.22 3.22a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L8 9.06l-3.22 3.22a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06Z"></path></svg></p></td>
+<td><p><svg version="1.1" width="1.0em" height="1.0em" class="sd-octicon sd-octicon-x" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.749.749 0 0 1 1.275.326.749.749 0 0 1-.215.734L9.06 8l3.22 3.22a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L8 9.06l-3.22 3.22a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06Z"></path></svg></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="behavior">
+<h2>Behavior<a class="headerlink" href="#behavior" title="Link to this heading">¶</a></h2>
+<dl>
+<dt>Standard behaviors</dt><dd><ul class="simple">
+<li><p>Uses the <a class="reference internal" href="../common/pbr.html"><span class="doc">PBR lighting model</span></a></p></li>
+<li><p>Uses <a class="reference internal" href="../common/dithering.html"><span class="doc">dithering</span></a></p></li>
+<li><p>Uses <a class="reference internal" href="../common/weather.html#shaders-common-weather-pbr-effect"><span class="std std-ref">weather</span></a> effects</p></li>
+</ul>
+</dd>
+<dt>Rendering</dt><dd><p>The shaders <strong>only</strong> support
+<a class="reference internal" href="../common/deferred_rendering.html"><span class="doc">deferred rendering</span></a> and have not
+been compiled for forward rendering.</p>
+</dd>
+<dt>Transparency</dt><dd><p>Support only <a class="reference internal" href="../common/mesh_layers.html#shaders-common-mesh-layers-punchthrough"><span class="std std-ref">transparency clipping</span></a>, and
+<strong>not</strong> <a class="reference internal" href="../common/mesh_layers.html#shaders-common-mesh-layers-transparent"><span class="std std-ref">transparency blending</span></a>.</p>
+<p>The shader uses the final blending factor as the alpha.</p>
+</dd>
+</dl>
+<dl id="shaders-shadow-generations-direction-blend-behavior-texcoord">
+<dt>Texture coordinates</dt><dd><p><code class="docutils literal notranslate"><span class="pre">DirectionBlend_dpnndpn</span></code> uses each textures provided texture coordinate index, while
+<code class="docutils literal notranslate"><span class="pre">DirectionBlend_dpndpn</span></code> uses a specific one per texture.</p>
+</dd>
+<dt>Multiple Tangents</dt><dd><p>These shaders can use a second set of tangents for the second set of textures when the bool
+parameter <code class="docutils literal notranslate"><span class="pre">enable_multi_tangent_space</span></code> is set to true.</p>
+</dd>
+<dt>Vertex colors</dt><dd><p>The red <a class="reference internal" href="../common/vertex_colors.html"><span class="doc">vertex color</span></a> is used for the
+slope blending bias.</p>
+<p>Mysteriously, the <code class="docutils literal notranslate"><span class="pre">DirectionBlend_dpnndpn</span></code> shader allows the combination of the RGB channels
+by using the
+<a class="reference internal" href="#shaders-shadow-generations-direction-blend-parameters-ambient"><span class="std std-ref">ambient parameters</span></a> red
+component as a blending factor.</p>
+</dd>
+<dt>Texture Blending</dt><dd><p>These shaders rely on the meshes slope angle to determine the blending factor, which is used to
+blend the two sets of textures together.</p>
+<p>Additionally, the red vertex color is used as a “blending bias”:</p>
+<figure class="align-default" id="id1">
+<img alt="../../../_images/direction_blend_bias.png" src="../../../_images/direction_blend_bias.png" />
+<figcaption>
+<p><span class="caption-text">A sphere with two textures being blend together and a gradually increasing blending bias.</span><a class="headerlink" href="#id1" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>A blending bias of 0.5 is considered the default.</p>
+</dd>
+</dl>
+<dl class="simple" id="shaders-shadow-generations-direction-blend-behavior-distance-blending">
+<dt>Distance blending</dt><dd><p>The <code class="docutils literal notranslate"><span class="pre">DirectionBlend_dpnndpn</span></code> shader will fade in the
+<a class="reference internal" href="blend.html#shaders-shadow-generations-blend-textures-normal2"><span class="std std-ref">normal2</span></a> based on the distance
+between the camera and surface being rendered. The game usually starts the fade-in at a
+distance of 180, and fully fades them in at a distance of 150.</p>
+</dd>
+</dl>
+</section>
+<section id="textures">
+<h2>Textures<a class="headerlink" href="#textures" title="Link to this heading">¶</a></h2>
+<dl id="shaders-shadow-generations-direction-blend-textures-diffuse">
+<dt>diffuse</dt><dd><p>A standard <a class="reference internal" href="../../textures/textures_he2.html#textures-he2-albedo"><span class="std std-ref">albedo texture</span></a>.</p>
+<p>The alpha is used to adjust the slope blending factor via multiplication.</p>
+<p>Uses the 1st UV channel.
+<a class="reference internal" href="#shaders-shadow-generations-direction-blend-behavior-texcoord"><span class="std std-ref">*</span></a></p>
+</dd>
+</dl>
+<dl id="shaders-shadow-generations-direction-blend-textures-specular">
+<dt>specular</dt><dd><p>A standard <a class="reference internal" href="../../textures/textures_he2.html#textures-he2-prm"><span class="std std-ref">PRM texture</span></a>.</p>
+<p>Uses the 1st UV channel.
+<a class="reference internal" href="#shaders-shadow-generations-direction-blend-behavior-texcoord"><span class="std std-ref">*</span></a></p>
+</dd>
+</dl>
+<dl id="shaders-shadow-generations-direction-blend-textures-normal">
+<dt>normal</dt><dd><p>A standard <a class="reference internal" href="../../textures/textures_he2.html#textures-he2-normal-map"><span class="std std-ref">normal map texture</span></a>.</p>
+<p>Uses the 1st UV channel.
+<a class="reference internal" href="#shaders-shadow-generations-direction-blend-behavior-texcoord"><span class="std std-ref">*</span></a></p>
+</dd>
+</dl>
+<dl id="shaders-shadow-generations-direction-blend-textures-diffuse1">
+<dt>diffuse1</dt><dd><p>A standard <a class="reference internal" href="../../textures/textures_he2.html#textures-he2-albedo"><span class="std std-ref">albedo texture</span></a>.</p>
+<p>The alpha is used to adjust the slope blending factor via multiplication.</p>
+<p>Attempts to use the 3rd UV channel.
+<a class="reference internal" href="#shaders-shadow-generations-direction-blend-behavior-texcoord"><span class="std std-ref">*</span></a></p>
+</dd>
+</dl>
+<dl id="shaders-shadow-generations-direction-blend-textures-specular1">
+<dt>specular1</dt><dd><p>A standard <a class="reference internal" href="../../textures/textures_he2.html#textures-he2-prm"><span class="std std-ref">PRM texture</span></a>.</p>
+<p>Attempts to use the 3rd UV channel.
+<a class="reference internal" href="#shaders-shadow-generations-direction-blend-behavior-texcoord"><span class="std std-ref">*</span></a></p>
+</dd>
+</dl>
+<dl id="shaders-shadow-generations-direction-blend-textures-normal1">
+<dt>normal1</dt><dd><p>A standard <a class="reference internal" href="../../textures/textures_he2.html#textures-he2-normal-map"><span class="std std-ref">normal map texture</span></a>.</p>
+<p>Uses the 3rd UV channel.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This texture is not used in the <code class="docutils literal notranslate"><span class="pre">BlendDetail_dpndpnn</span></code> shader!</p>
+<p>Yet, a slot is required to be able to specify the
+<a class="reference internal" href="#shaders-shadow-generations-direction-blend-textures-normal2"><span class="std std-ref">normal2 texture</span></a>, even if this
+one is left empty!</p>
+</div>
+</dd>
+</dl>
+<dl id="shaders-shadow-generations-direction-blend-textures-normal2">
+<dt>normal2</dt><dd><p>A standard <a class="reference internal" href="../../textures/textures_he2.html#textures-he2-normal-map"><span class="std std-ref">normal map texture</span></a>.</p>
+<p>Attempts to use the UV channel specified by the textures texcoord index.</p>
+<p>Gets blended together with the
+<a class="reference internal" href="#shaders-shadow-generations-direction-blend-textures-normal"><span class="std std-ref">normal texture</span></a>
+(influenced by the
+<a class="reference internal" href="#shaders-shadow-generations-direction-blend-behavior-distance-blending"><span class="std std-ref">camera distance</span></a>).</p>
+</dd>
+</dl>
+</section>
+<section id="parameters">
+<h2>Parameters<a class="headerlink" href="#parameters" title="Link to this heading">¶</a></h2>
+<dl class="simple" id="shaders-shadow-generations-direction-blend-parameters-directionparam">
+<dt>DirectionParam</dt><dd><p>A normal direction that determines which direction the slope blending starts.</p>
+</dd>
+</dl>
+<dl class="simple" id="shaders-shadow-generations-direction-blend-parameters-normalblendparam">
+<dt>NormalBlendParam</dt><dd><p>A float parameter to modify the slope blend factor.</p>
+<ul class="simple">
+<li><p>The first component changes the blend factors strength (multiplicative).</p></li>
+<li><p>The second component raises the minimum blend factor (additive).</p></li>
+</ul>
+</dd>
+</dl>
+<dl id="shaders-shadow-generations-direction-blend-parameters-ambient">
+<dt>ambient</dt><dd><p>A float parameter containing a color.</p>
+<p>The <strong>red component</strong> changes the visibility of the vertex colors on the diffuse texture.</p>
+<p>A value of 1 hides the vertex colors, while a value of 0 makes them fully visible.</p>
+</dd>
+</dl>
+</section>
 </section>
 
         </article>
@@ -370,23 +589,23 @@
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="iridescence.html">
+          <a class="next-page" href="dpower.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Iridescence shaders</div>
+                <div class="title">DPower shaders</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
-          <a class="prev-page" href="indirect.html">
+          <a class="prev-page" href="detail.html">
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">Indirect shader</div>
+                <div class="title">Detail shaders</div>
                 
               </div>
             </a>
@@ -409,17 +628,39 @@
 <div class="footer-contribute">
   <ul>
     <li>
-	  <a href="https://github.com/hedge-dev/HedgehogEngineBlenderIO/tree/dev/manual/source/game_documentation/shaders/shadow_generations/instanced.rst?plain=1"> View Source</a>
+	  <a href="https://github.com/hedge-dev/HedgehogEngineBlenderIO/tree/dev/manual/source/game_documentation/shaders/shadow_generations/direction_blend.rst?plain=1"> View Source</a>
     </li>
     <li>
-      <a href="https://github.com/hedge-dev/HedgehogEngineBlenderIO/issues/new?template=.gitea/issue_template/bug.yaml&field:body=%2A%2APage+Information%2A%2A%0D%0AFile%3A+%60manual%2Fgame_documentation/shaders/shadow_generations/instanced.rst%60%0D%0APermanent+Link%5D%28https%3A%2F%2Fdocs.blender.org%2Fmanual%2Fgame_documentation/shaders/shadow_generations/instanced.html%29%0D%0A%0D%0A%2A%2AShort+description+of+error%2A%2A%0D%0A%5BPlease+fill+out+a+short+description+of+the+error+here%5D%0D%0A"> Report issue on this page</a>
+      <a href="https://github.com/hedge-dev/HedgehogEngineBlenderIO/issues/new?template=.gitea/issue_template/bug.yaml&field:body=%2A%2APage+Information%2A%2A%0D%0AFile%3A+%60manual%2Fgame_documentation/shaders/shadow_generations/direction_blend.rst%60%0D%0APermanent+Link%5D%28https%3A%2F%2Fdocs.blender.org%2Fmanual%2Fgame_documentation/shaders/shadow_generations/direction_blend.html%29%0D%0A%0D%0A%2A%2AShort+description+of+error%2A%2A%0D%0A%5BPlease+fill+out+a+short+description+of+the+error+here%5D%0D%0A"> Report issue on this page</a>
     </li>
   </ul>
 </div>
       </footer>
     </div>
-    <aside class="toc-drawer no-toc">
+    <aside class="toc-drawer">
       
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Direction blend shaders</a><ul>
+<li><a class="reference internal" href="#shader-table">Shader table</a></li>
+<li><a class="reference internal" href="#behavior">Behavior</a></li>
+<li><a class="reference internal" href="#textures">Textures</a></li>
+<li><a class="reference internal" href="#parameters">Parameters</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
       
       
     </aside>

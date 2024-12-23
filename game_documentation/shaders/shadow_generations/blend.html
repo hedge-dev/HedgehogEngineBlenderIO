@@ -7,7 +7,7 @@
         <link rel="canonical" href="https://hedge-dev.github.io/HedgehogEngineBlenderIO/game_documentation/shaders/shadow_generations/blend.html" />
 
     <!-- Generated with Sphinx 8.1.3 and Furo 2024.08.06 -->
-        <title>Blend Shaders - HEIO 0.0.1 Manual</title>
+        <title>Blend shaders - HEIO 0.0.1 Manual</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
@@ -183,7 +183,7 @@
           <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
         </button>
       </div>
-      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
         <div class="visually-hidden">Toggle table of contents sidebar</div>
         <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
       </label>
@@ -265,7 +265,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../frontiers/index.html">Sonic Frontiers</a></li>
 <li class="toctree-l3 current has-children"><a class="reference internal" href="index.html">Shadow Generations</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" role="switch" type="checkbox"/><label for="toctree-checkbox-11"><div class="visually-hidden">Toggle navigation of Shadow Generations</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
 <li class="toctree-l4"><a class="reference internal" href="amoeba.html">Amoeba shader</a></li>
-<li class="toctree-l4 current current-page"><a class="current reference internal" href="#">Blend Shaders</a></li>
+<li class="toctree-l4 current current-page"><a class="current reference internal" href="#">Blend shaders</a></li>
 <li class="toctree-l4"><a class="reference internal" href="bubbles.html">Bubbles shader</a></li>
 <li class="toctree-l4"><a class="reference internal" href="chaos.html">Chaos shader</a></li>
 <li class="toctree-l4"><a class="reference internal" href="character_eye.html">Character Eye shaders</a></li>
@@ -276,6 +276,7 @@
 <li class="toctree-l4"><a class="reference internal" href="cyber.html">Cyber shaders</a></li>
 <li class="toctree-l4"><a class="reference internal" href="decal.html">Decal shaders</a></li>
 <li class="toctree-l4"><a class="reference internal" href="detail.html">Detail shaders</a></li>
+<li class="toctree-l4"><a class="reference internal" href="direction_blend.html">Direction blend shaders</a></li>
 <li class="toctree-l4"><a class="reference internal" href="dpower.html">DPower shaders</a></li>
 <li class="toctree-l4"><a class="reference internal" href="earth.html">Earth shaders</a></li>
 <li class="toctree-l4"><a class="reference internal" href="effadhoc.html">Effadhoc shader</a></li>
@@ -354,14 +355,214 @@
               <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
             </button>
           </div>
-          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
             <div class="visually-hidden">Toggle table of contents sidebar</div>
             <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
           </label>
         </div>
         <article role="main" id="furo-main-content">
           <section id="blend-shaders">
-<span id="shaders-shadow-generations-directionblend-dpnndpn"></span><span id="shaders-shadow-generations-directionblend-dpndpn"></span><span id="shaders-shadow-generations-blenddetail-dpndpnn"></span><span id="shaders-shadow-generations-blend-dpndpn"></span><span id="shaders-shadow-generations-blend-dpnbdpn"></span><h1>Blend Shaders<a class="headerlink" href="#blend-shaders" title="Link to this heading">¶</a></h1>
+<span id="shaders-shadow-generations-blenddetail-dpndpnn"></span><span id="shaders-shadow-generations-blend-dpndpn"></span><span id="shaders-shadow-generations-blend-dpnbdpn"></span><h1>Blend shaders<a class="headerlink" href="#blend-shaders" title="Link to this heading">¶</a></h1>
+<p>These are standard PBR shaders that blend two sets of textures based on the meshes alpha vertex
+color.</p>
+<section id="shader-table">
+<h2>Shader table<a class="headerlink" href="#shader-table" title="Link to this heading">¶</a></h2>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Shader</p></th>
+<th class="head"><div class="line-block">
+<div class="line">Texture</div>
+<div class="line">“<a class="reference internal" href="#shaders-shadow-generations-blend-textures-diffuse"><span class="std std-ref">diffuse</span></a>”</div>
+</div>
+</th>
+<th class="head"><div class="line-block">
+<div class="line">Texture</div>
+<div class="line">“<a class="reference internal" href="#shaders-shadow-generations-blend-textures-specular"><span class="std std-ref">specular</span></a>”</div>
+</div>
+</th>
+<th class="head"><div class="line-block">
+<div class="line">Texture</div>
+<div class="line">“<a class="reference internal" href="#shaders-shadow-generations-blend-textures-normal"><span class="std std-ref">normal</span></a>”</div>
+</div>
+</th>
+<th class="head"><div class="line-block">
+<div class="line">Texture</div>
+<div class="line">“<a class="reference internal" href="#shaders-shadow-generations-blend-textures-transparency"><span class="std std-ref">transparency</span></a>”</div>
+</div>
+</th>
+<th class="head"><div class="line-block">
+<div class="line">Texture</div>
+<div class="line">“<a class="reference internal" href="#shaders-shadow-generations-blend-textures-diffuse1"><span class="std std-ref">diffuse1</span></a>”</div>
+</div>
+</th>
+<th class="head"><div class="line-block">
+<div class="line">Texture</div>
+<div class="line">“<a class="reference internal" href="#shaders-shadow-generations-blend-textures-specular1"><span class="std std-ref">specular1</span></a>”</div>
+</div>
+</th>
+<th class="head"><div class="line-block">
+<div class="line">Texture</div>
+<div class="line">“<a class="reference internal" href="#shaders-shadow-generations-blend-textures-normal1"><span class="std std-ref">normal1</span></a>”</div>
+</div>
+</th>
+<th class="head"><div class="line-block">
+<div class="line">Texture</div>
+<div class="line">“<a class="reference internal" href="#shaders-shadow-generations-blend-textures-normal2"><span class="std std-ref">normal2</span></a>”</div>
+</div>
+</th>
+<th class="head"><div class="line-block">
+<div class="line">Parameter</div>
+<div class="line">“<a class="reference internal" href="#shaders-shadow-generations-blend-parameters-detailfactor"><span class="std std-ref">DetailFactor</span></a>”</div>
+</div>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Blend_dpnbdpn</p></td>
+<td><p><svg version="1.1" width="1.0em" height="1.0em" class="sd-octicon sd-octicon-x" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.749.749 0 0 1 1.275.326.749.749 0 0 1-.215.734L9.06 8l3.22 3.22a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L8 9.06l-3.22 3.22a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06Z"></path></svg></p></td>
+<td><p><svg version="1.1" width="1.0em" height="1.0em" class="sd-octicon sd-octicon-x" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.749.749 0 0 1 1.275.326.749.749 0 0 1-.215.734L9.06 8l3.22 3.22a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L8 9.06l-3.22 3.22a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06Z"></path></svg></p></td>
+<td><p><svg version="1.1" width="1.0em" height="1.0em" class="sd-octicon sd-octicon-x" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.749.749 0 0 1 1.275.326.749.749 0 0 1-.215.734L9.06 8l3.22 3.22a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L8 9.06l-3.22 3.22a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06Z"></path></svg></p></td>
+<td><p><svg version="1.1" width="1.0em" height="1.0em" class="sd-octicon sd-octicon-x" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.749.749 0 0 1 1.275.326.749.749 0 0 1-.215.734L9.06 8l3.22 3.22a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L8 9.06l-3.22 3.22a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06Z"></path></svg></p></td>
+<td><p><svg version="1.1" width="1.0em" height="1.0em" class="sd-octicon sd-octicon-x" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.749.749 0 0 1 1.275.326.749.749 0 0 1-.215.734L9.06 8l3.22 3.22a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L8 9.06l-3.22 3.22a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06Z"></path></svg></p></td>
+<td><p><svg version="1.1" width="1.0em" height="1.0em" class="sd-octicon sd-octicon-x" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.749.749 0 0 1 1.275.326.749.749 0 0 1-.215.734L9.06 8l3.22 3.22a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L8 9.06l-3.22 3.22a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06Z"></path></svg></p></td>
+<td><p><svg version="1.1" width="1.0em" height="1.0em" class="sd-octicon sd-octicon-x" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.749.749 0 0 1 1.275.326.749.749 0 0 1-.215.734L9.06 8l3.22 3.22a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L8 9.06l-3.22 3.22a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06Z"></path></svg></p></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>Blend_dpndpn</p></td>
+<td><p><svg version="1.1" width="1.0em" height="1.0em" class="sd-octicon sd-octicon-x" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.749.749 0 0 1 1.275.326.749.749 0 0 1-.215.734L9.06 8l3.22 3.22a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L8 9.06l-3.22 3.22a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06Z"></path></svg></p></td>
+<td><p><svg version="1.1" width="1.0em" height="1.0em" class="sd-octicon sd-octicon-x" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.749.749 0 0 1 1.275.326.749.749 0 0 1-.215.734L9.06 8l3.22 3.22a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L8 9.06l-3.22 3.22a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06Z"></path></svg></p></td>
+<td><p><svg version="1.1" width="1.0em" height="1.0em" class="sd-octicon sd-octicon-x" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.749.749 0 0 1 1.275.326.749.749 0 0 1-.215.734L9.06 8l3.22 3.22a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L8 9.06l-3.22 3.22a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06Z"></path></svg></p></td>
+<td></td>
+<td><p><svg version="1.1" width="1.0em" height="1.0em" class="sd-octicon sd-octicon-x" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.749.749 0 0 1 1.275.326.749.749 0 0 1-.215.734L9.06 8l3.22 3.22a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L8 9.06l-3.22 3.22a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06Z"></path></svg></p></td>
+<td><p><svg version="1.1" width="1.0em" height="1.0em" class="sd-octicon sd-octicon-x" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.749.749 0 0 1 1.275.326.749.749 0 0 1-.215.734L9.06 8l3.22 3.22a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L8 9.06l-3.22 3.22a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06Z"></path></svg></p></td>
+<td><p><svg version="1.1" width="1.0em" height="1.0em" class="sd-octicon sd-octicon-x" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.749.749 0 0 1 1.275.326.749.749 0 0 1-.215.734L9.06 8l3.22 3.22a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L8 9.06l-3.22 3.22a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06Z"></path></svg></p></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>BlendDetail_dpndpnn</p></td>
+<td><p><svg version="1.1" width="1.0em" height="1.0em" class="sd-octicon sd-octicon-x" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.749.749 0 0 1 1.275.326.749.749 0 0 1-.215.734L9.06 8l3.22 3.22a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L8 9.06l-3.22 3.22a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06Z"></path></svg></p></td>
+<td><p><svg version="1.1" width="1.0em" height="1.0em" class="sd-octicon sd-octicon-x" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.749.749 0 0 1 1.275.326.749.749 0 0 1-.215.734L9.06 8l3.22 3.22a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L8 9.06l-3.22 3.22a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06Z"></path></svg></p></td>
+<td><p><svg version="1.1" width="1.0em" height="1.0em" class="sd-octicon sd-octicon-x" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.749.749 0 0 1 1.275.326.749.749 0 0 1-.215.734L9.06 8l3.22 3.22a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L8 9.06l-3.22 3.22a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06Z"></path></svg></p></td>
+<td></td>
+<td><p><svg version="1.1" width="1.0em" height="1.0em" class="sd-octicon sd-octicon-x" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.749.749 0 0 1 1.275.326.749.749 0 0 1-.215.734L9.06 8l3.22 3.22a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L8 9.06l-3.22 3.22a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06Z"></path></svg></p></td>
+<td><p><svg version="1.1" width="1.0em" height="1.0em" class="sd-octicon sd-octicon-x" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.749.749 0 0 1 1.275.326.749.749 0 0 1-.215.734L9.06 8l3.22 3.22a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L8 9.06l-3.22 3.22a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06Z"></path></svg></p></td>
+<td><p><svg version="1.1" width="1.0em" height="1.0em" class="sd-octicon sd-octicon-x" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.749.749 0 0 1 1.275.326.749.749 0 0 1-.215.734L9.06 8l3.22 3.22a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L8 9.06l-3.22 3.22a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06Z"></path></svg></p></td>
+<td><p><svg version="1.1" width="1.0em" height="1.0em" class="sd-octicon sd-octicon-x" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.749.749 0 0 1 1.275.326.749.749 0 0 1-.215.734L9.06 8l3.22 3.22a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L8 9.06l-3.22 3.22a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06Z"></path></svg></p></td>
+<td><p><svg version="1.1" width="1.0em" height="1.0em" class="sd-octicon sd-octicon-x" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.749.749 0 0 1 1.275.326.749.749 0 0 1-.215.734L9.06 8l3.22 3.22a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L8 9.06l-3.22 3.22a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06Z"></path></svg></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="behavior">
+<h2>Behavior<a class="headerlink" href="#behavior" title="Link to this heading">¶</a></h2>
+<dl>
+<dt>Standard behaviors</dt><dd><ul class="simple">
+<li><p>Uses the <a class="reference internal" href="../common/pbr.html"><span class="doc">PBR lighting model</span></a></p></li>
+<li><p>Uses <a class="reference internal" href="../common/dithering.html"><span class="doc">dithering</span></a></p></li>
+<li><p>Uses <a class="reference internal" href="../common/weather.html#shaders-common-weather-pbr-effect"><span class="std std-ref">weather</span></a> effects</p></li>
+</ul>
+</dd>
+<dt>Rendering</dt><dd><p>The shaders <strong>only</strong> support
+<a class="reference internal" href="../common/deferred_rendering.html"><span class="doc">deferred rendering</span></a> and have not
+been compiled for forward rendering.</p>
+</dd>
+<dt>Transparency</dt><dd><p>Neither <a class="reference internal" href="../common/mesh_layers.html#shaders-common-mesh-layers-punchthrough"><span class="std std-ref">transparency clipping</span></a>, nor
+<a class="reference internal" href="../common/mesh_layers.html#shaders-common-mesh-layers-transparent"><span class="std std-ref">transparency blending</span></a> are supported.</p>
+</dd>
+<dt>Multiple Tangents</dt><dd><p>These shaders can use a second set of tangents for the second set of textures when the bool
+parameter <code class="docutils literal notranslate"><span class="pre">enable_multi_tangent_space</span></code> is set to true.</p>
+</dd>
+<dt>Vertex colors</dt><dd><p><a class="reference internal" href="../common/vertex_colors.html"><span class="doc">Vertex colors</span></a> get combined with the
+<a class="reference internal" href="common.html#shaders-shadow-generations-common-textures-diffuse"><span class="std std-ref">diffuse texture</span></a> via multiplication</p>
+<p>The alpha gets combined with the blending factor via multiplication.</p>
+</dd>
+<dt>Texture Blending</dt><dd><p>The shaders use a blending factor to determine how much the two sets of textures should be blended
+together.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Blend_dpnbdpn</span></code> uses the
+<a class="reference internal" href="#shaders-shadow-generations-blend-textures-transparency"><span class="std std-ref">transparency textures</span></a> red channel.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Blend_dpndpn</span></code> and <code class="docutils literal notranslate"><span class="pre">BlendDetail_dpndpnn</span></code> rely solely on the vertex color alpha.</p></li>
+</ul>
+<p>Furthermore, the <a class="reference internal" href="#shaders-shadow-generations-blend-textures-diffuse1"><span class="std std-ref">diffuse1 textures</span></a>
+alpha channel influences how the diffuse textures get blended together by multiplying into the
+previous blending factor.</p>
+</dd>
+</dl>
+<dl class="simple" id="shaders-shadow-generations-blend-behavior-distance-blending">
+<dt>Distance blending</dt><dd><p>The <code class="docutils literal notranslate"><span class="pre">BlendDetail_dpndpnn</span></code> shader will fade in the
+<a class="reference internal" href="#shaders-shadow-generations-blend-textures-normal2"><span class="std std-ref">normal2</span></a> based on the distance
+between the camera and surface being rendered. The game usually starts the fade-in at a
+distance of 180, and fully fades them in at a distance of 150.</p>
+</dd>
+</dl>
+</section>
+<section id="textures">
+<h2>Textures<a class="headerlink" href="#textures" title="Link to this heading">¶</a></h2>
+<dl id="shaders-shadow-generations-blend-textures-diffuse">
+<dt>diffuse</dt><dd><p>A standard <a class="reference internal" href="../../textures/textures_he2.html#textures-he2-albedo"><span class="std std-ref">albedo texture</span></a>.</p>
+<p>Uses the 1st UV channel.</p>
+</dd>
+</dl>
+<dl id="shaders-shadow-generations-blend-textures-specular">
+<dt>specular</dt><dd><p>A standard <a class="reference internal" href="../../textures/textures_he2.html#textures-he2-prm"><span class="std std-ref">PRM texture</span></a>.</p>
+<p>Uses the 1st UV channel</p>
+</dd>
+</dl>
+<dl id="shaders-shadow-generations-blend-textures-normal">
+<dt>normal</dt><dd><p>A standard <a class="reference internal" href="../../textures/textures_he2.html#textures-he2-normal-map"><span class="std std-ref">normal map texture</span></a>.</p>
+<p>Uses the 1st UV channel.</p>
+</dd>
+</dl>
+<dl id="shaders-shadow-generations-blend-textures-transparency">
+<dt>transparency</dt><dd><p>The red channel is used for blending between the two texture sets.</p>
+<p>Uses the 4th UV channel.</p>
+</dd>
+</dl>
+<dl id="shaders-shadow-generations-blend-textures-diffuse1">
+<dt>diffuse1</dt><dd><p>A standard <a class="reference internal" href="../../textures/textures_he2.html#textures-he2-albedo"><span class="std std-ref">albedo texture</span></a>.</p>
+<p>The alpha influences the blending between this and the
+<a class="reference internal" href="#shaders-shadow-generations-blend-textures-diffuse"><span class="std std-ref">diffuse texture</span></a>.</p>
+<p>Uses the 3rd UV channel.</p>
+</dd>
+</dl>
+<dl id="shaders-shadow-generations-blend-textures-specular1">
+<dt>specular1</dt><dd><p>A standard <a class="reference internal" href="../../textures/textures_he2.html#textures-he2-prm"><span class="std std-ref">PRM texture</span></a>.</p>
+<p>Uses the 3rd UV channel.</p>
+</dd>
+</dl>
+<dl id="shaders-shadow-generations-blend-textures-normal1">
+<dt>normal1</dt><dd><p>A standard <a class="reference internal" href="../../textures/textures_he2.html#textures-he2-normal-map"><span class="std std-ref">normal map texture</span></a>.</p>
+<p>Uses the 3rd UV channel.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This texture is not used in the <code class="docutils literal notranslate"><span class="pre">BlendDetail_dpndpnn</span></code> shader!</p>
+<p>Yet, a slot is required to specify the
+<a class="reference internal" href="#shaders-shadow-generations-blend-textures-normal2"><span class="std std-ref">normal2 texture</span></a>, even if this
+one is left empty!</p>
+</div>
+</dd>
+</dl>
+<dl id="shaders-shadow-generations-blend-textures-normal2">
+<dt>normal2</dt><dd><p>A standard <a class="reference internal" href="../../textures/textures_he2.html#textures-he2-normal-map"><span class="std std-ref">normal map texture</span></a>.</p>
+<p>Attempts to use the 4th UV channel.</p>
+<p>Gets blended together with the
+<a class="reference internal" href="#shaders-shadow-generations-blend-textures-normal"><span class="std std-ref">normal texture</span></a>
+(influenced by the
+<a class="reference internal" href="#shaders-shadow-generations-blend-behavior-distance-blending"><span class="std std-ref">camera distance</span></a>).</p>
+</dd>
+</dl>
+</section>
+<section id="parameters">
+<h2>Parameters<a class="headerlink" href="#parameters" title="Link to this heading">¶</a></h2>
+<dl class="simple" id="shaders-shadow-generations-blend-parameters-detailfactor">
+<dt>DetailFactor</dt><dd><p>A float parameter of which the first component scales the texture coordinates of the
+<a class="reference internal" href="#shaders-shadow-generations-blend-textures-normal2"><span class="std std-ref">normal2 textures</span></a>.</p>
+</dd>
+</dl>
+</section>
 </section>
 
         </article>
@@ -417,8 +618,30 @@
 </div>
       </footer>
     </div>
-    <aside class="toc-drawer no-toc">
+    <aside class="toc-drawer">
       
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Blend shaders</a><ul>
+<li><a class="reference internal" href="#shader-table">Shader table</a></li>
+<li><a class="reference internal" href="#behavior">Behavior</a></li>
+<li><a class="reference internal" href="#textures">Textures</a></li>
+<li><a class="reference internal" href="#parameters">Parameters</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
       
       
     </aside>

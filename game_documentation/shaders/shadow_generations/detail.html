@@ -3,7 +3,7 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" /><link rel="next" title="DPower shaders" href="dpower.html" /><link rel="prev" title="Decal shaders" href="decal.html" />
+<link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" /><link rel="next" title="Direction blend shaders" href="direction_blend.html" /><link rel="prev" title="Decal shaders" href="decal.html" />
         <link rel="canonical" href="https://hedge-dev.github.io/HedgehogEngineBlenderIO/game_documentation/shaders/shadow_generations/detail.html" />
 
     <!-- Generated with Sphinx 8.1.3 and Furo 2024.08.06 -->
@@ -183,7 +183,7 @@
           <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
         </button>
       </div>
-      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
         <div class="visually-hidden">Toggle table of contents sidebar</div>
         <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
       </label>
@@ -265,7 +265,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../frontiers/index.html">Sonic Frontiers</a></li>
 <li class="toctree-l3 current has-children"><a class="reference internal" href="index.html">Shadow Generations</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" role="switch" type="checkbox"/><label for="toctree-checkbox-11"><div class="visually-hidden">Toggle navigation of Shadow Generations</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
 <li class="toctree-l4"><a class="reference internal" href="amoeba.html">Amoeba shader</a></li>
-<li class="toctree-l4"><a class="reference internal" href="blend.html">Blend Shaders</a></li>
+<li class="toctree-l4"><a class="reference internal" href="blend.html">Blend shaders</a></li>
 <li class="toctree-l4"><a class="reference internal" href="bubbles.html">Bubbles shader</a></li>
 <li class="toctree-l4"><a class="reference internal" href="chaos.html">Chaos shader</a></li>
 <li class="toctree-l4"><a class="reference internal" href="character_eye.html">Character Eye shaders</a></li>
@@ -276,6 +276,7 @@
 <li class="toctree-l4"><a class="reference internal" href="cyber.html">Cyber shaders</a></li>
 <li class="toctree-l4"><a class="reference internal" href="decal.html">Decal shaders</a></li>
 <li class="toctree-l4 current current-page"><a class="current reference internal" href="#">Detail shaders</a></li>
+<li class="toctree-l4"><a class="reference internal" href="direction_blend.html">Direction blend shaders</a></li>
 <li class="toctree-l4"><a class="reference internal" href="dpower.html">DPower shaders</a></li>
 <li class="toctree-l4"><a class="reference internal" href="earth.html">Earth shaders</a></li>
 <li class="toctree-l4"><a class="reference internal" href="effadhoc.html">Effadhoc shader</a></li>
@@ -354,7 +355,7 @@
               <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
             </button>
           </div>
-          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
             <div class="visually-hidden">Toggle table of contents sidebar</div>
             <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
           </label>
@@ -362,6 +363,185 @@
         <article role="main" id="furo-main-content">
           <section id="detail-shaders">
 <span id="shaders-shadow-generations-detail-dpnn"></span><span id="shaders-shadow-generations-detail-dpndpn"></span><h1>Detail shaders<a class="headerlink" href="#detail-shaders" title="Link to this heading">¶</a></h1>
+<p>Detail shaders are basically standard PBR shaders that blend in a second set of textures based on
+how close the camera is to the surface.</p>
+<section id="shader-table">
+<h2>Shader table<a class="headerlink" href="#shader-table" title="Link to this heading">¶</a></h2>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Shader</p></th>
+<th class="head"><div class="line-block">
+<div class="line">Texture</div>
+<div class="line">“<a class="reference internal" href="#shaders-shadow-generations-detail-textures-diffuse"><span class="std std-ref">diffuse</span></a>”</div>
+</div>
+</th>
+<th class="head"><div class="line-block">
+<div class="line">Texture</div>
+<div class="line">“<a class="reference internal" href="#shaders-shadow-generations-detail-textures-specular"><span class="std std-ref">specular</span></a>”</div>
+</div>
+</th>
+<th class="head"><div class="line-block">
+<div class="line">Texture</div>
+<div class="line">“<a class="reference internal" href="#shaders-shadow-generations-detail-textures-normal"><span class="std std-ref">normal</span></a>”</div>
+</div>
+</th>
+<th class="head"><div class="line-block">
+<div class="line">Texture</div>
+<div class="line">“<a class="reference internal" href="#shaders-shadow-generations-detail-textures-diffuse1"><span class="std std-ref">diffuse1</span></a>”</div>
+</div>
+</th>
+<th class="head"><div class="line-block">
+<div class="line">Texture</div>
+<div class="line">“<a class="reference internal" href="#shaders-shadow-generations-detail-textures-specular1"><span class="std std-ref">specular1</span></a>”</div>
+</div>
+</th>
+<th class="head"><div class="line-block">
+<div class="line">Texture</div>
+<div class="line">“<a class="reference internal" href="#shaders-shadow-generations-detail-textures-normal1"><span class="std std-ref">normal1</span></a>”</div>
+</div>
+</th>
+<th class="head"><div class="line-block">
+<div class="line">Parameter</div>
+<div class="line">“<a class="reference internal" href="#shaders-shadow-generations-detail-parameters-detailfactor"><span class="std std-ref">DetailFactor</span></a>”</div>
+</div>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Detail_dpndpn</p></td>
+<td><p><svg version="1.1" width="1.0em" height="1.0em" class="sd-octicon sd-octicon-x" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.749.749 0 0 1 1.275.326.749.749 0 0 1-.215.734L9.06 8l3.22 3.22a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L8 9.06l-3.22 3.22a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06Z"></path></svg></p></td>
+<td><p><svg version="1.1" width="1.0em" height="1.0em" class="sd-octicon sd-octicon-x" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.749.749 0 0 1 1.275.326.749.749 0 0 1-.215.734L9.06 8l3.22 3.22a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L8 9.06l-3.22 3.22a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06Z"></path></svg></p></td>
+<td><p><svg version="1.1" width="1.0em" height="1.0em" class="sd-octicon sd-octicon-x" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.749.749 0 0 1 1.275.326.749.749 0 0 1-.215.734L9.06 8l3.22 3.22a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L8 9.06l-3.22 3.22a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06Z"></path></svg></p></td>
+<td><p><svg version="1.1" width="1.0em" height="1.0em" class="sd-octicon sd-octicon-x" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.749.749 0 0 1 1.275.326.749.749 0 0 1-.215.734L9.06 8l3.22 3.22a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L8 9.06l-3.22 3.22a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06Z"></path></svg></p></td>
+<td><p><svg version="1.1" width="1.0em" height="1.0em" class="sd-octicon sd-octicon-x" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.749.749 0 0 1 1.275.326.749.749 0 0 1-.215.734L9.06 8l3.22 3.22a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L8 9.06l-3.22 3.22a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06Z"></path></svg></p></td>
+<td><p><svg version="1.1" width="1.0em" height="1.0em" class="sd-octicon sd-octicon-x" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.749.749 0 0 1 1.275.326.749.749 0 0 1-.215.734L9.06 8l3.22 3.22a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L8 9.06l-3.22 3.22a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06Z"></path></svg></p></td>
+<td><p><svg version="1.1" width="1.0em" height="1.0em" class="sd-octicon sd-octicon-x" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.749.749 0 0 1 1.275.326.749.749 0 0 1-.215.734L9.06 8l3.22 3.22a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L8 9.06l-3.22 3.22a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06Z"></path></svg></p></td>
+</tr>
+<tr class="row-odd"><td><p>Detail_dpndpn</p></td>
+<td><p><svg version="1.1" width="1.0em" height="1.0em" class="sd-octicon sd-octicon-x" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.749.749 0 0 1 1.275.326.749.749 0 0 1-.215.734L9.06 8l3.22 3.22a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L8 9.06l-3.22 3.22a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06Z"></path></svg></p></td>
+<td><p><svg version="1.1" width="1.0em" height="1.0em" class="sd-octicon sd-octicon-x" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.749.749 0 0 1 1.275.326.749.749 0 0 1-.215.734L9.06 8l3.22 3.22a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L8 9.06l-3.22 3.22a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06Z"></path></svg></p></td>
+<td><p><svg version="1.1" width="1.0em" height="1.0em" class="sd-octicon sd-octicon-x" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.749.749 0 0 1 1.275.326.749.749 0 0 1-.215.734L9.06 8l3.22 3.22a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L8 9.06l-3.22 3.22a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06Z"></path></svg></p></td>
+<td></td>
+<td></td>
+<td><p><svg version="1.1" width="1.0em" height="1.0em" class="sd-octicon sd-octicon-x" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.749.749 0 0 1 1.275.326.749.749 0 0 1-.215.734L9.06 8l3.22 3.22a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L8 9.06l-3.22 3.22a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06Z"></path></svg></p></td>
+<td><p><svg version="1.1" width="1.0em" height="1.0em" class="sd-octicon sd-octicon-x" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.749.749 0 0 1 1.275.326.749.749 0 0 1-.215.734L9.06 8l3.22 3.22a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L8 9.06l-3.22 3.22a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06Z"></path></svg></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="behavior">
+<h2>Behavior<a class="headerlink" href="#behavior" title="Link to this heading">¶</a></h2>
+<dl>
+<dt>Standard behaviors</dt><dd><ul class="simple">
+<li><p>Uses the <a class="reference internal" href="../common/pbr.html"><span class="doc">PBR lighting model</span></a></p></li>
+<li><p>Uses <a class="reference internal" href="../common/weather.html#shaders-common-weather-pbr-effect"><span class="std std-ref">weather</span></a> effects</p></li>
+</ul>
+</dd>
+<dt>Rendering</dt><dd><p>The shaders <strong>only</strong> support
+<a class="reference internal" href="../common/deferred_rendering.html"><span class="doc">deferred rendering</span></a> and have not
+been compiled for forward rendering.</p>
+</dd>
+<dt>Transparency</dt><dd><p>Supports <a class="reference internal" href="../common/mesh_layers.html#shaders-common-mesh-layers-punchthrough"><span class="std std-ref">transparency clipping</span></a>, but does
+<strong>not</strong> support <a class="reference internal" href="../common/mesh_layers.html#shaders-common-mesh-layers-transparent"><span class="std std-ref">transparency blending</span></a> as the
+shaders do not support forward rendering.</p>
+</dd>
+<dt>Vertex colors</dt><dd><p><a class="reference internal" href="../common/vertex_colors.html"><span class="doc">Vertex colors</span></a>, including alpha,
+get combined with the
+<a class="reference internal" href="#shaders-shadow-generations-detail-textures-diffuse"><span class="std std-ref">diffuse texture</span></a> via
+multiplication</p>
+<dl class="simple">
+<dt>Exceptions:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Detail_dpndpn</span></code> also combines the vertex color alpha with ambient occlusion via
+multiplication.</p></li>
+</ul>
+</dd>
+</dl>
+</dd>
+<dt>Dithering</dt><dd><p>Uses <a class="reference internal" href="../common/dithering.html"><span class="doc">dithering</span></a>, although the dithering
+for <code class="docutils literal notranslate"><span class="pre">Detail_dpndpn</span></code> is broken.</p>
+</dd>
+</dl>
+<dl class="simple" id="shaders-shadow-generations-detail-behavior-distance-blending">
+<dt>Distance blending</dt><dd><p>The shader will fade in the second set of textures
+(<a class="reference internal" href="#shaders-shadow-generations-detail-textures-diffuse1"><span class="std std-ref">diffuse1</span></a>,
+<a class="reference internal" href="#shaders-shadow-generations-detail-textures-specular1"><span class="std std-ref">specular1</span></a>,
+<a class="reference internal" href="#shaders-shadow-generations-detail-textures-normal1"><span class="std std-ref">normal1</span></a>) based on the distance
+between the camera and surface being rendered. The game usually starts the fade-in at a
+distance of 180, and fully fades them in at a distance of 150.</p>
+</dd>
+</dl>
+</section>
+<section id="textures">
+<h2>Textures<a class="headerlink" href="#textures" title="Link to this heading">¶</a></h2>
+<dl id="shaders-shadow-generations-detail-textures-diffuse">
+<dt>diffuse</dt><dd><p>A standard <a class="reference internal" href="../../textures/textures_he2.html#textures-he2-albedo"><span class="std std-ref">albedo texture</span></a>.</p>
+<p>Uses alpha channel for transparency.</p>
+<p>Uses the 1st UV channel.</p>
+</dd>
+</dl>
+<dl id="shaders-shadow-generations-detail-textures-specular">
+<dt>specular</dt><dd><p>A standard <a class="reference internal" href="../../textures/textures_he2.html#textures-he2-prm"><span class="std std-ref">PRM texture</span></a>.</p>
+<p>Uses the 1st UV channel.</p>
+</dd>
+</dl>
+<dl id="shaders-shadow-generations-detail-textures-normal">
+<dt>normal</dt><dd><p>A standard <a class="reference internal" href="../../textures/textures_he2.html#textures-he2-normal-map"><span class="std std-ref">normal map texture</span></a>.</p>
+<p>Uses the 1st UV channel.</p>
+</dd>
+</dl>
+<dl id="shaders-shadow-generations-detail-textures-diffuse1">
+<dt>diffuse1</dt><dd><p>A standard <a class="reference internal" href="../../textures/textures_he2.html#textures-he2-albedo"><span class="std std-ref">albedo texture</span></a>.</p>
+<p>Attempts to use the 3rd UV channel.</p>
+<p>The RGB channels get “overlaid” over
+<a class="reference internal" href="#shaders-shadow-generations-detail-textures-diffuse"><span class="std std-ref">diffuse</span></a>
+(influenced by the
+<a class="reference internal" href="#shaders-shadow-generations-detail-behavior-distance-blending"><span class="std std-ref">camera distance</span></a>).</p>
+<figure class="align-default" id="id1" style="width: 75%">
+<img alt="../../../_images/gamedoc_shaders_overlay_ref.png" src="../../../_images/gamedoc_shaders_overlay_ref.png" />
+<figcaption>
+<p><span class="caption-text">An image overlaid over various base colors</span><a class="headerlink" href="#id1" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</dd>
+</dl>
+<dl id="shaders-shadow-generations-detail-textures-specular1">
+<dt>specular1</dt><dd><p>A standard <a class="reference internal" href="../../textures/textures_he2.html#textures-he2-prm"><span class="std std-ref">PRM texture</span></a>.</p>
+<p>Attempts to use the 3rd UV channel.</p>
+<p>Each channel affects the base of the
+<a class="reference internal" href="#shaders-shadow-generations-detail-textures-specular"><span class="std std-ref">specular texture</span></a> differently
+(influenced by the
+<a class="reference internal" href="#shaders-shadow-generations-detail-behavior-distance-blending"><span class="std std-ref">camera distance</span></a>):</p>
+<ul class="simple">
+<li><p>Specular is ignored</p></li>
+<li><p>Smoothness is overlaid over the base (see
+<a class="reference internal" href="#shaders-shadow-generations-detail-textures-diffuse1"><span class="std std-ref">diffuse1</span></a>)</p></li>
+<li><p>Metallic is remapped to range from -1 to 1 and then added to the base</p></li>
+<li><p>Ambient occlusion is multiplied to the base</p></li>
+</ul>
+</dd>
+</dl>
+<dl id="shaders-shadow-generations-detail-textures-normal1">
+<dt>normal1</dt><dd><p>A standard <a class="reference internal" href="../../textures/textures_he2.html#textures-he2-normal-map"><span class="std std-ref">normal map texture</span></a>.</p>
+<p>Attempts to use the 3rd UV channel.</p>
+<p>Gets blended together with the
+<a class="reference internal" href="#shaders-shadow-generations-detail-textures-normal"><span class="std std-ref">normal texture</span></a>
+(influenced by the
+<a class="reference internal" href="#shaders-shadow-generations-detail-behavior-distance-blending"><span class="std std-ref">camera distance</span></a>).</p>
+</dd>
+</dl>
+</section>
+<section id="parameters">
+<h2>Parameters<a class="headerlink" href="#parameters" title="Link to this heading">¶</a></h2>
+<dl class="simple" id="shaders-shadow-generations-detail-parameters-detailfactor">
+<dt>DetailFactor</dt><dd><p>A float parameter of which the first component scales the texture coordinates of the second
+texture set (<a class="reference internal" href="#shaders-shadow-generations-detail-textures-diffuse1"><span class="std std-ref">diffuse1</span></a>,
+<a class="reference internal" href="#shaders-shadow-generations-detail-textures-specular1"><span class="std std-ref">specular1</span></a>,
+<a class="reference internal" href="#shaders-shadow-generations-detail-textures-normal1"><span class="std std-ref">normal1</span></a>).</p>
+</dd>
+</dl>
+</section>
 </section>
 
         </article>
@@ -369,12 +549,12 @@
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="dpower.html">
+          <a class="next-page" href="direction_blend.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">DPower shaders</div>
+                <div class="title">Direction blend shaders</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
@@ -417,8 +597,30 @@
 </div>
       </footer>
     </div>
-    <aside class="toc-drawer no-toc">
+    <aside class="toc-drawer">
       
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Detail shaders</a><ul>
+<li><a class="reference internal" href="#shader-table">Shader table</a></li>
+<li><a class="reference internal" href="#behavior">Behavior</a></li>
+<li><a class="reference internal" href="#textures">Textures</a></li>
+<li><a class="reference internal" href="#parameters">Parameters</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
       
       
     </aside>

@@ -265,7 +265,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../frontiers/index.html">Sonic Frontiers</a></li>
 <li class="toctree-l3 current has-children"><a class="reference internal" href="index.html">Shadow Generations</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" role="switch" type="checkbox"/><label for="toctree-checkbox-11"><div class="visually-hidden">Toggle navigation of Shadow Generations</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
 <li class="toctree-l4"><a class="reference internal" href="amoeba.html">Amoeba shader</a></li>
-<li class="toctree-l4"><a class="reference internal" href="blend.html">Blend Shaders</a></li>
+<li class="toctree-l4"><a class="reference internal" href="blend.html">Blend shaders</a></li>
 <li class="toctree-l4"><a class="reference internal" href="bubbles.html">Bubbles shader</a></li>
 <li class="toctree-l4"><a class="reference internal" href="chaos.html">Chaos shader</a></li>
 <li class="toctree-l4"><a class="reference internal" href="character_eye.html">Character Eye shaders</a></li>
@@ -276,6 +276,7 @@
 <li class="toctree-l4"><a class="reference internal" href="cyber.html">Cyber shaders</a></li>
 <li class="toctree-l4"><a class="reference internal" href="decal.html">Decal shaders</a></li>
 <li class="toctree-l4"><a class="reference internal" href="detail.html">Detail shaders</a></li>
+<li class="toctree-l4"><a class="reference internal" href="direction_blend.html">Direction blend shaders</a></li>
 <li class="toctree-l4"><a class="reference internal" href="dpower.html">DPower shaders</a></li>
 <li class="toctree-l4"><a class="reference internal" href="earth.html">Earth shaders</a></li>
 <li class="toctree-l4"><a class="reference internal" href="effadhoc.html">Effadhoc shader</a></li>
@@ -512,8 +513,8 @@
 get combined with the
 <a class="reference internal" href="#shaders-shadow-generations-emission-textures-diffuse"><span class="std std-ref">diffuse texture</span></a> via
 multiplication</p>
-<p><strong>Exceptions:</strong></p>
-<ul class="simple">
+<dl class="simple">
+<dt>Exceptions:</dt><dd><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">EmissionTone_E</span></code>, which does not have a diffuse texture, uses only the vertex color alpha
 for transparency.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">EmissionTone_dapnE</span></code> uses the vertex color alpha for transparency (combined with
@@ -525,6 +526,8 @@ multiplication) <strong>and</strong> combines it with the
 <a class="reference internal" href="#shaders-shadow-generations-emission-parameters-luminance"><span class="std std-ref">luminance</span></a> via
 multiplication.</p></li>
 </ul>
+</dd>
+</dl>
 </dd>
 <dt>Tone</dt><dd><p>The shaders that include “Tone” in their name get their luminance adjusted by the average
 brightness of the screen.</p>
@@ -547,11 +550,13 @@ brightness of the screen.</p>
 </dl>
 <dl id="shaders-shadow-generations-emission-textures-normal">
 <dt>normal</dt><dd><p>A standard <a class="reference internal" href="../../textures/textures_he2.html#textures-he2-normal-map"><span class="std std-ref">normal map texture</span></a>.</p>
-<p>Attempts to use the 1st UV channel.</p>
-<p><strong>Exceptions:</strong></p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">Emission_dpnE</span></code> uses the 3rd UV channel</p></li>
+<p>Uses the 1st UV channel.</p>
+<dl class="simple">
+<dt>Exceptions:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Emission_dpnE</span></code> attempts to use the 3rd UV channel</p></li>
 </ul>
+</dd>
+</dl>
 </dd>
 </dl>
 <dl id="shaders-shadow-generations-emission-textures-transparency">
@@ -572,11 +577,13 @@ via multiplication.</p></li>
 <dl id="shaders-shadow-generations-emission-textures-emission">
 <dt>emission</dt><dd><p>A standard <a class="reference internal" href="../../textures/textures_he2.html#textures-he2-emission"><span class="std std-ref">emission texture</span></a>.</p>
 <p>Attempts to use the 3rd UV channel.</p>
-<p><strong>Exceptions:</strong></p>
-<ul class="simple">
+<dl class="simple">
+<dt>Exceptions:</dt><dd><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">EmissionTone_E</span></code> uses the 1st UV channel</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">Emission_dpnE</span></code> attempts to use the 4th UV channel</p></li>
 </ul>
+</dd>
+</dl>
 </dd>
 </dl>
 </section>
