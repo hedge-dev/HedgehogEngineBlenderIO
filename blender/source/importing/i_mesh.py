@@ -29,7 +29,8 @@ class MeshConverter:
     _vertex_merge_mode: any
     _vertex_merge_distance: float
     _merge_split_edges: bool
-    _create_mesh_slot_attributes: bool
+    _create_mesh_layer_attributes: bool
+    _create_meshgroup_attributes: bool
     _import_tangents: bool
 
     _converted_models: dict[any, bpy.types.Mesh]
@@ -41,7 +42,8 @@ class MeshConverter:
             vertex_merge_mode: str,
             vertex_merge_distance: float,
             merge_split_edges: bool,
-            create_mesh_slot_attributes: bool,
+            create_mesh_layer_attributes: bool,
+            create_meshgroup_attributes: bool,
             import_tangents: bool):
 
         self._target_definition = target_definition
@@ -53,10 +55,41 @@ class MeshConverter:
 
         self._vertex_merge_distance = vertex_merge_distance
         self._merge_split_edges = merge_split_edges
-        self._create_mesh_slot_attributes = create_mesh_slot_attributes
+        self._create_mesh_layer_attributes = create_mesh_layer_attributes
+        self._create_meshgroup_attributes = create_meshgroup_attributes
         self._import_tangents = import_tangents
 
         self._converted_models = dict()
+
+    @staticmethod
+    def _convert_weights(mesh: bpy.types.Mesh, mesh_data, model):
+
+        if not isinstance(model, SharpNeedle.MODEL) or model.Nodes.Count == 0:
+            return
+
+        dummy_obj = bpy.data.objects.new("DUMMY", mesh)
+
+        groups: list[bpy.types.VertexGroup] = []
+
+        for node in model.Nodes:
+            groups.append(dummy_obj.vertex_groups.new(name=node.Name))
+
+        used_groups = [False] * len(groups)
+
+        for i, vertex in enumerate(mesh_data.Vertices):
+            for weight in vertex.Weights:
+                groups[weight.Index].add([i], weight.Weight, 'REPLACE')
+                used_groups[weight.Index] = True
+
+        to_remove = []
+        for i, used in enumerate(used_groups):
+            if not used:
+                to_remove.append(groups[i])
+
+        for group in to_remove:
+            dummy_obj.vertex_groups.remove(group)
+
+        bpy.data.objects.remove(dummy_obj)
 
     def _assign_materials(self, mesh: bpy.types.Mesh, mesh_data):
         for sn_material, slot in zip(mesh_data.SetMaterials, mesh_data.SetSlots):
@@ -100,6 +133,27 @@ class MeshConverter:
         mesh.attributes["Layer"].data.foreach_set("value", set_slot_indices)
 
     @staticmethod
+    def _create_polygon_meshgroup_attributes(mesh: bpy.types.Mesh, mesh_data):
+        mesh.heio_mesh.initialize_meshgroups()
+        group_indices = []
+        set_offset = 0
+
+        for group_index, group in enumerate(zip(mesh_data.GroupNames, mesh_data.GroupSizes)):
+
+            if group_index == 0:
+                meshgroup = mesh.heio_mesh.meshgroups[0]
+            else:
+                meshgroup = mesh.heio_mesh.meshgroups.new()
+
+            meshgroup.name = group[0]
+
+            for i in range(group[1]):
+                group_indices.extend([group_index] * mesh_data.SetSizes[i + set_offset])
+            set_offset += group[1]
+
+        mesh.attributes["Meshgroup"].data.foreach_set("value", group_indices)
+
+    @staticmethod
     def _convert_texcords(mesh: bpy.types.Mesh, mesh_data):
         for i, uvmap in enumerate(mesh_data.TextureCoordinates):
             uv_layer = mesh.uv_layers.new(
@@ -138,7 +192,6 @@ class MeshConverter:
 
             for output, t in zip(tangents.data, mesh_data.PolygonTangents):
                 output.vector = (t.X, -t.Z, t.Y)
-
 
     @staticmethod
     def _convert_normals(mesh: bpy.types.Mesh, mesh_data):
@@ -192,7 +245,7 @@ class MeshConverter:
             if nrm0.dot(nrm1) > 0.995 and nrm2.dot(nrm3) > 0.995:
                 edge.use_edge_sharp = False
 
-    def _convert_mesh_data(self, mesh_data: any):
+    def _convert_mesh_data(self, mesh_data: any, model: any):
 
         mesh = bpy.data.meshes.new(mesh_data.Name)
 
@@ -212,10 +265,14 @@ class MeshConverter:
 
         mesh.from_pydata(vertices, [], faces, shade_flat=False)
 
+        self._convert_weights(mesh, mesh_data, model)
         self._assign_materials(mesh, mesh_data)
 
-        if self._create_mesh_slot_attributes:
+        if self._create_mesh_layer_attributes:
             self._create_polygon_layer_attributes(mesh, mesh_data)
+
+        if self._create_meshgroup_attributes:
+            self._create_polygon_meshgroup_attributes(mesh, mesh_data)
 
         self._convert_texcords(mesh, mesh_data)
         self._convert_colors(mesh, mesh_data)
@@ -246,7 +303,7 @@ class MeshConverter:
                     self._vertex_merge_distance,
                     self._merge_split_edges)
 
-                mesh = self._convert_mesh_data(mesh_data)
+                mesh = self._convert_mesh_data(mesh_data, model)
                 self._converted_models[model] = mesh
 
             result.append(mesh)

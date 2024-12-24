@@ -22,20 +22,24 @@ class SharpNeedle:
     TERRAIN_MODEL: any = None
     '''enum SharpNeedle.FrameWork.HedgehogEngine.Mirage.TerrainModel'''
 
+    MODEL: any = None
+    '''enum SharpNeedle.FrameWork.HedgehogEngine.Mirage.Model'''
+
     @classmethod
     def load(cls):
 
-        from SharpNeedle.Resource import (
+        from SharpNeedle.Resource import ( # type: ignore
             ResourceManager,
             ResourceExtensions
         )
 
-        from SharpNeedle.Framework.HedgehogEngine.Mirage import (
+        from SharpNeedle.Framework.HedgehogEngine.Mirage import ( # type: ignore
             SampleChunkNode,
             Material,
             Texture,
             WrapMode,
-            TerrainModel
+            TerrainModel,
+            Model
         )
 
         cls.RESOURCE_MANAGER = ResourceManager
@@ -45,3 +49,4 @@ class SharpNeedle:
         cls.TEXTURE = Texture
         cls.WRAP_MODE = WrapMode
         cls.TERRAIN_MODEL = TerrainModel
+        cls.MODEL = Model

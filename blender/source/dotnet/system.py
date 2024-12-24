@@ -10,11 +10,11 @@ class System:
     @classmethod
     def load(cls):
 
-        from System import (
+        from System import ( # type: ignore
             IntPtr
         )
 
-        from System.Numerics import (
+        from System.Numerics import ( # type: ignore
             Vector4
         )
 

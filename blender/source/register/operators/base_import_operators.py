@@ -205,7 +205,6 @@ class ImportMaterialOperator(ImportOperator):
         progress_console.update("Importing data")
         return self.material_converter.convert_materials(sn_materials)
 
-
     def print_resolve_info(self, context):
         self.resolve_infos.extend(self.image_loader.resolve_infos)
         return super().print_resolve_info(context)
@@ -220,9 +219,11 @@ class ImportModelBaseOperator(ImportMaterialOperator):
             ('NONE', "None", "No merging at all"),
             ('SUBMESH', "Per Submesh",
              "Merge vertices that are part of the same submesh"),
+            ('SUBMESHGROUP', "Per Submesh group",
+             "Merge vertices that are part of the same submesh group"),
             ('ALL', "All", "Merge all"),
         ),
-        default='ALL'
+        default='SUBMESHGROUP'
     )
 
     vertex_merge_distance: FloatProperty(
@@ -241,10 +242,16 @@ class ImportModelBaseOperator(ImportMaterialOperator):
         default=True
     )
 
-    create_mesh_slot_attributes: BoolProperty(
+    create_mesh_layer_attributes: BoolProperty(
         name="Create layer attributes",
-        description="Mesh slot layers will be imported as integer attributes on polygons",
+        description="Mesh layers will be imported as an integer attribute on polygons",
         default=False
+    )
+
+    create_meshgroup_attributes: BoolProperty(
+        name="Create meshgroup attributes",
+        description="Meshgrops will be imported as an integer attribute on polygons",
+        default=True
     )
 
     import_tangents: BoolProperty(
@@ -264,7 +271,8 @@ class ImportModelBaseOperator(ImportMaterialOperator):
         body.use_property_split = True
         body.use_property_decorate = False
 
-        merge_header, merge_body = body.panel("HEIO_import_model_merge", default_closed=True)
+        merge_header, merge_body = body.panel(
+            "HEIO_import_model_merge", default_closed=True)
         merge_header.prop(self, "vertex_merge_mode")
 
         if merge_body:
@@ -273,7 +281,8 @@ class ImportModelBaseOperator(ImportMaterialOperator):
             merge_body.prop(self, "merge_split_edges")
             body.separator()
 
-        body.prop(self, "create_mesh_slot_attributes")
+        body.prop(self, "create_mesh_layer_attributes")
+        body.prop(self, "create_meshgroup_attributes")
         body.prop(self, "import_tangents")
 
     def draw(self, context: Context):
@@ -289,7 +298,8 @@ class ImportModelBaseOperator(ImportMaterialOperator):
             self.vertex_merge_mode,
             self.vertex_merge_distance,
             self.merge_split_edges,
-            self.create_mesh_slot_attributes,
+            self.create_mesh_layer_attributes,
+            self.create_meshgroup_attributes,
             self.import_tangents
         )
 
@@ -298,6 +308,29 @@ class ImportModelBaseOperator(ImportMaterialOperator):
         sn_materials = HEIO_NET.MODEL_HELPER.GetMaterials(model_sets)
         self.material_converter.convert_materials(sn_materials)
         return self.mesh_converter.convert_model_sets(model_sets)
+
+
+class ImportModelOperator(ImportModelBaseOperator):
+
+    filter_glob: StringProperty(
+        default="*.model",
+        options={'HIDDEN'},
+    )
+
+    def import_model_files(self, context: bpy.types.Context):
+        progress_console.update("Resolving & reading files")
+
+        directory = os.path.dirname(self.filepath)
+        filepaths = [os.path.join(directory, file.name) for file in self.files]
+
+        models, resolve_info = HEIO_NET.MODEL_HELPER.LoadModelFiles[SharpNeedle.MODEL](
+            filepaths, HEIO_NET.RESOLVE_INFO())
+
+        self.resolve_infos.append(resolve_info)
+
+        progress_console.update("Importing data")
+
+        meshes = self.import_models(models)
 
 
 class ImportTerrainModelOperator(ImportModelBaseOperator):
@@ -313,7 +346,7 @@ class ImportTerrainModelOperator(ImportModelBaseOperator):
         directory = os.path.dirname(self.filepath)
         filepaths = [os.path.join(directory, file.name) for file in self.files]
 
-        terrain_models, resolve_info = HEIO_NET.MODEL_HELPER.LoadTerrainFiles(
+        terrain_models, resolve_info = HEIO_NET.MODEL_HELPER.LoadModelFiles[SharpNeedle.TERRAIN_MODEL](
             filepaths, HEIO_NET.RESOLVE_INFO())
 
         self.resolve_infos.append(resolve_info)

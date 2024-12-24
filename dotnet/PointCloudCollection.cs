@@ -12,6 +12,10 @@ namespace HEIO.NET
 {
     public class PointCloudCollection
     {
+        private static readonly string[] _modelFileExtensions = [".terrain-model", ".model"];
+        private static readonly string[] _collisionFileExtensions = [".bcmesh"];
+        private static readonly string[] _lightFileExtensions = [".light"];
+
         public readonly struct Point
         {
             public string InstanceName { get; }
@@ -49,15 +53,15 @@ namespace HEIO.NET
         }
 
 
-        public TerrainModel[][] TerrainModels { get; }
+        public ModelBase[][] Models { get; }
 
-        public Collection[] TerrainCollections { get; }
+        public Collection[] ModelCollections { get; }
 
 
-        public PointCloudCollection(TerrainModel[][] terrainModels, Collection[] terrainPoints)
+        public PointCloudCollection(ModelBase[][] models, Collection[] modelCollections)
         {
-            TerrainModels = terrainModels;
-            TerrainCollections = terrainPoints;
+            Models = models;
+            ModelCollections = modelCollections;
         }
 
 
@@ -74,7 +78,7 @@ namespace HEIO.NET
                 pointClouds.Add(manager.Open<PointCloud>(file, false));
             }
 
-            List<(PointCloud, Dictionary<string, IFile>)> terrainClouds = [];
+            List<(PointCloud, Dictionary<string, IFile>)> modelClouds = [];
             List<(PointCloud, Dictionary<string, IFile>)> btmeshClouds = [];
             List<(PointCloud, Dictionary<string, IFile>)> lightClouds = [];
 
@@ -82,11 +86,13 @@ namespace HEIO.NET
                 pointClouds.Select(x => (x, x.BaseFile!)),
                 (resolvers, pointcloud, file, unresolved) =>
                 {
-                    string fileExtension = Path.GetExtension(file.Name) switch
+                    string pcExtension = Path.GetExtension(file.Name);
+
+                    string[] fileExtensions = pcExtension switch
                     {
-                        ".pcmodel" => ".terrain-model",
-                        ".pccol" => ".btmesh",
-                        ".pcrt" => ".light",
+                        ".pcmodel" => _modelFileExtensions,
+                        ".pccol" => _collisionFileExtensions,
+                        ".pcrt" => _lightFileExtensions,
                         _ => throw new InvalidOperationException("Invalid point collection file extension!"),
                     };
 
@@ -94,60 +100,77 @@ namespace HEIO.NET
 
                     foreach(string resource in pointcloud.Instances.Select(x => x.ResourceName!).Distinct())
                     {
-                        string filename = resource + fileExtension;
                         bool resolved = false;
 
-                        foreach(IResourceResolver resolver in resolvers)
+                        foreach(string fileExtension in fileExtensions)
                         {
-                            if(resolver.GetFile(filename) is IFile resourceFile)
+                            string filename = resource + fileExtension;
+
+                            foreach(IResourceResolver resolver in resolvers)
                             {
-                                resolvedFiles[resource] = resourceFile;
-                                resolved = true;
+                                if(resolver.GetFile(filename) is IFile resourceFile)
+                                {
+                                    resolvedFiles[resource] = resourceFile;
+                                    resolved = true;
+                                    break;
+                                }
+                            }
+
+                            if(resolved)
+                            {
                                 break;
                             }
                         }
 
                         if(!resolved)
                         {
-                            unresolved.Add(filename);
+                            unresolved.Add(resource);
                         }
                     }
 
-                    switch(fileExtension)
+                    switch(pcExtension)
                     {
-                        case ".terrain-model":
-                            terrainClouds.Add((pointcloud, resolvedFiles));
+                        case ".pcmodel":
+                            modelClouds.Add((pointcloud, resolvedFiles));
                             break;
-                        case ".btmesh":
+                        case ".pccol":
                             btmeshClouds.Add((pointcloud, resolvedFiles));
                             break;
-                        case ".light":
+                        case ".pcrt":
                             lightClouds.Add((pointcloud, resolvedFiles));
                             break;
                     }
                 });
 
 
-            (Collection[] terrainCollections, IFile[] terrainFiles) = ToCollections(terrainClouds);
-            TerrainModel[][] terrainModels = new TerrainModel[terrainFiles.Length][];
+            (Collection[] modelCollections, IFile[] modelFiles) = ToCollections(modelClouds);
+            ModelBase[][] models = new ModelBase[modelFiles.Length][];
 
-            for(int i = 0; i < terrainModels.Length; i++)
+            for(int i = 0; i < models.Length; i++)
             {
-                IFile file = terrainFiles[i];
-                terrainModels[i] = ModelHelper.LoadTerrainModel(file, dependencyManager);
+                IFile file = modelFiles[i];
+
+                if(Path.GetExtension(file.Name) == ".model")
+                {
+                    models[i] = ModelHelper.LoadModelFile<Model>(file, dependencyManager);
+                }
+                else
+                {
+                    models[i] = ModelHelper.LoadModelFile<TerrainModel>(file, dependencyManager);
+                }
             }
 
             ResolveInfo terrainResolveInfo = dependencyManager.ResolveDependencies(
-                Enumerable.Range(0, terrainModels.Length)
-                    .Select(x => (terrainModels[x][0], terrainFiles[x])),
+                Enumerable.Range(0, models.Length)
+                    .Select(x => (models[x][0], modelFiles[x])),
                 ModelHelper.ResolveModelMaterials);
 
 
             resolveInfo = ResolveInfo.Combine(pointCloudInfo, terrainResolveInfo);
 
             return new(
-                terrainModels.Select<TerrainModel[], TerrainModel[]>(x => [x[0]]).ToArray(),
-                terrainCollections
+                models.Select<ModelBase[], ModelBase[]>(x => [x[0]]).ToArray(),
+                modelCollections
             );
         }
 

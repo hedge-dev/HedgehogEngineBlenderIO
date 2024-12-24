@@ -3,6 +3,7 @@ from . import (
 	export_operators,
 	filehandlers,
 	mesh_layer_operators,
+	meshgroup_operators,
 	sca_parameter_operators,
 	material_operators,
 	material_parameter_operators,
@@ -13,6 +14,7 @@ to_register = [
 	import_operators.HEIO_OT_Import_Material,
 	import_operators.HEIO_OT_Import_Material_Active,
 	import_operators.HEIO_OT_Import_Material_Active_if,
+	import_operators.HEIO_OT_Import_Model,
 	import_operators.HEIO_OT_Import_TerrainModel,
 	import_operators.HEIO_OT_Import_PointCloud,
 
@@ -34,6 +36,15 @@ to_register = [
 	mesh_layer_operators.HEIO_OT_MeshLayer_Add,
 	mesh_layer_operators.HEIO_OT_MeshLayer_Remove,
 	mesh_layer_operators.HEIO_OT_MeshLayer_Move,
+
+	meshgroup_operators.HEIO_OT_Meshgroup_Initialize,
+	meshgroup_operators.HEIO_OT_Meshgroup_Delete,
+	meshgroup_operators.HEIO_OT_Meshgroup_Assign,
+	meshgroup_operators.HEIO_OT_Meshgroup_Select,
+	meshgroup_operators.HEIO_OT_Meshgroup_Deselect,
+	meshgroup_operators.HEIO_OT_Meshgroup_Add,
+	meshgroup_operators.HEIO_OT_Meshgroup_Remove,
+	meshgroup_operators.HEIO_OT_Meshgroup_Move,
 
 	material_operators.HEIO_OT_Material_SetupNodes,
 	material_operators.HEIO_OT_Material_SetupNodes_Active,

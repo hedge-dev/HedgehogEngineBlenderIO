@@ -25,7 +25,7 @@ class HEIO_NET:
     @classmethod
     def load(cls):
 
-        from HEIO.NET import (
+        from HEIO.NET import ( # type: ignore
             Image,
             PythonHelpers,
             MeshData,

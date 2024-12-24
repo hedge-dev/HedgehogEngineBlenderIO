@@ -34,6 +34,7 @@ class TOPBAR_MT_HEIO_Import(bpy.types.Menu):
 
         layout.label(text="Import...")
         layout.operator(import_operators.HEIO_OT_Import_Material.bl_idname)
+        layout.operator(import_operators.HEIO_OT_Import_Model.bl_idname)
         layout.operator(import_operators.HEIO_OT_Import_TerrainModel.bl_idname)
         layout.operator(import_operators.HEIO_OT_Import_PointCloud.bl_idname)
 

@@ -11,10 +11,10 @@ namespace HEIO.NET
 {
     public static class ModelHelper
     {
-        internal static TerrainModel[] LoadTerrainModel(IFile file, DependencyResourceManager dependencyManager)
+        internal static T[] LoadModelFile<T>(IFile file, DependencyResourceManager dependencyManager) where T : ModelBase, new()
         {
             ResourceManager manager = dependencyManager.GetResourceManagerForDirectory(file.Parent);
-            TerrainModel[] models;
+            T[] models;
 
             try
             {
@@ -24,27 +24,27 @@ namespace HEIO.NET
                 };
 
                 archive.Read(file);
-                models = archive.DataBlocks.OfType<ModelBlock>().Select(x => (TerrainModel)x.Resource!).ToArray();
+                models = archive.DataBlocks.OfType<ModelBlock>().Select(x => (T)x.Resource!).ToArray();
             }
             catch
             {
-                models = [manager.Open<TerrainModel>(file, false)];
+                models = [manager.Open<T>(file, false)];
             }
 
             return models;
         }
 
-        public static TerrainModel[][] LoadTerrainFiles(string[] filepaths, out ResolveInfo resolveInfo)
+        public static T[][] LoadModelFiles<T>(string[] filepaths, out ResolveInfo resolveInfo) where T : ModelBase, new()
         {
             DependencyResourceManager dependencyManager = new();
 
-            List<TerrainModel[]> result = [];
+            List<T[]> result = [];
             List<(ModelBase, IFile)> modelFiles = [];
 
             foreach(string filepath in filepaths)
             {
                 IFile file = FileSystem.Instance.Open(filepath)!;
-                TerrainModel[] models = LoadTerrainModel(file, dependencyManager);
+                T[] models = LoadModelFile<T>(file, dependencyManager);
 
                 result.Add([models[0]]);
                 modelFiles.Add((models[0], file));
@@ -54,6 +54,7 @@ namespace HEIO.NET
 
             return [.. result];
         }
+
 
         internal static void ResolveModelMaterials(IResourceResolver[] resolvers, ModelBase model, IFile file, HashSet<string> unresolved)
         {

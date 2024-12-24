@@ -32,7 +32,7 @@ class HEIO_OT_MeshLayer_Initialize(HEIOBaseOperator):
 
 class HEIO_OT_MeshLayer_Delete(HEIOBaseOperator):
     bl_idname = "heio.mesh_layers_delete"
-    bl_label = "Delete layers"
+    bl_label = "Delete mesh layers"
     bl_description = "Deletes the mesh layers and layer attribute"
     bl_options = {'UNDO'}
 
@@ -79,7 +79,7 @@ class MeshLayerEditOperator(HEIOBaseOperator):
 
 
 class HEIO_OT_MeshLayer_Assign(MeshLayerEditOperator):
-    bl_idname = "heio.mesh_layers_assign"
+    bl_idname = "heio.mesh_layer_assign"
     bl_label = "Assign"
     bl_description = "Assign the active layer to selected polygons"
 
@@ -99,7 +99,7 @@ class HEIO_OT_MeshLayer_Assign(MeshLayerEditOperator):
 
 
 class HEIO_OT_MeshLayer_Select(MeshLayerEditOperator):
-    bl_idname = "heio.mesh_layers_select"
+    bl_idname = "heio.mesh_layer_select"
     bl_label = "Select"
     bl_description = "Select polygons with the active layer"
 
@@ -119,7 +119,7 @@ class HEIO_OT_MeshLayer_Select(MeshLayerEditOperator):
 
 
 class HEIO_OT_MeshLayer_Deselect(MeshLayerEditOperator):
-    bl_idname = "heio.mesh_layers_deselect"
+    bl_idname = "heio.mesh_layer_deselect"
     bl_label = "Deselect"
     bl_description = "Deselect polygons with the active layer"
 

@@ -23,6 +23,9 @@ VERTEX_MERGE_MODE = {
     "SubMesh" : "SUBMESH",
     "SUBMESH" : "SubMesh",
 
+    "SubMeshGroup" : "SUBMESHGROUP",
+    "SUBMESHGROUP" : "SubMeshGroup",
+
     "All" : "ALL",
     "ALL" : "All",
 }

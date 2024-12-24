@@ -1,5 +1,6 @@
 from .base_import_operators import (
     ImportMaterialOperator,
+    ImportModelOperator,
     ImportTerrainModelOperator,
     ImportPointCloudOperator
 )
@@ -48,6 +49,15 @@ class HEIO_OT_Import_Material_Active_if(ImportMaterialOperator):
             for material in self.material_converter.converted_materials.values():
                 object.data.materials.append(material)
 
+        return {'FINISHED'}
+
+
+class HEIO_OT_Import_Model(ImportModelOperator):
+    bl_idname = "heio.import_model"
+    bl_label = "HE Model (*.model)"
+
+    def import_(self, context):
+        self.import_model_files(context)
         return {'FINISHED'}
 
 

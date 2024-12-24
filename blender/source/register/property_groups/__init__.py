@@ -18,6 +18,8 @@ to_register = [
 
     mesh_properties.HEIO_Layer,
 	mesh_properties.HEIO_LayerList,
+	mesh_properties.HEIO_Meshgroup,
+	mesh_properties.HEIO_MeshgroupList,
     mesh_properties.HEIO_Mesh,
 
     material_parameter_properties.HEIO_MaterialParameter,
