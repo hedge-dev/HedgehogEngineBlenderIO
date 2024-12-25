@@ -40,6 +40,7 @@ class ModelInfo:
                 pose_bone.matrix_basis = self.pose_matrices[i]
 
             mesh_obj = bpy.data.objects.new(name + "_mesh", self.mesh)
+            mesh_obj.parent = armature_obj
 
             armature_modifier: bpy.types.ArmatureModifier = mesh_obj.modifiers.new(
                 "Armature", 'ARMATURE')
