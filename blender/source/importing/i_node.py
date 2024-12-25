@@ -61,6 +61,9 @@ class NodeConverter:
             elif bone.parent is not None:
                 distance = bone.parent.length
 
+            else:
+                continue
+
             bone.length = distance
 
     def _correct_scales(self, model_info: i_model.ModelInfo, dummy_armature_obj: bpy.types.Object):
