@@ -25,6 +25,14 @@ namespace HEIO.NET
 
                 archive.Read(file);
                 models = archive.DataBlocks.OfType<ModelBlock>().Select(x => (T)x.Resource!).ToArray();
+
+                foreach(T model in models)
+                {
+                    if(string.IsNullOrWhiteSpace(model.Name))
+                    {
+                        model.Name = archive.Name;
+                    }
+                }
             }
             catch
             {
