@@ -26,6 +26,7 @@ class NodeConverter:
             bone = model_info.armature.edit_bones.new(node.Name)
             bone.head = (0, 0, 0)
             bone.tail = (0, 1, 0)
+            bone.inherit_scale = 'ALIGNED'
 
             node_matrix = HEIO_NET.PYTHON_HELPERS.InvertMatrix(node.Transform)
 
@@ -67,30 +68,6 @@ class NodeConverter:
 
             bone.length = distance
 
-    def _correct_scales(self, model_info: i_model.ModelInfo, dummy_armature_obj: bpy.types.Object):
-        # correcting pose bone scales. we invert them first, so that we can
-        # apply the armature modifier to get the "correct" mesh
-        for i, pose_bone in enumerate(dummy_armature_obj.pose.bones):
-            pose_bone.matrix_basis = model_info.pose_matrices[i]
-            pose_bone.matrix_basis.invert()
-
-        mesh_dummy_object = bpy.data.objects.new("DUMMY_MESH", model_info.mesh)
-        self._context.scene.collection.objects.link(mesh_dummy_object)
-        mesh_dummy_object.parent = dummy_armature_obj
-
-        armature_modifier: bpy.types.ArmatureModifier = mesh_dummy_object.modifiers.new(
-            "Armature", 'ARMATURE')
-        armature_modifier.object = dummy_armature_obj
-
-        bpy.context.view_layer.objects.active = mesh_dummy_object
-        bpy.ops.object.modifier_apply(modifier=armature_modifier.name)
-
-        bpy.data.objects.remove(mesh_dummy_object)
-
-        # correcting them after applying armature modifier
-        for pose_bone in dummy_armature_obj.pose.bones:
-            pose_bone.matrix_basis.invert()
-
     def _convert_model(self, model_info: i_model.ModelInfo):
         if model_info.sn_model.Nodes.Count == 0:
             return None
@@ -110,8 +87,6 @@ class NodeConverter:
         self._correct_bone_lengths(model_info.armature)
 
         bpy.ops.object.mode_set(mode='OBJECT')
-
-        self._correct_scales(model_info, dummy_object)
 
         self._context.view_layer.objects.active = prev_active
         bpy.data.objects.remove(dummy_object)
