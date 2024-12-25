@@ -1,19 +1,5 @@
-from mathutils import Matrix, Vector, Euler
+from mathutils import Matrix
 from ..dotnet import System
-
-
-def parse_net_to_bpy_matrix(matrix):
-    '''Casts a .NET matrix directly to a Blender matrix'''
-    return Matrix((
-        (matrix.M11, matrix.M21, matrix.M31, matrix.M41),
-        (matrix.M12, matrix.M22, matrix.M32, matrix.M42),
-        (matrix.M13, matrix.M23, matrix.M33, matrix.M43),
-        (matrix.M14, matrix.M24, matrix.M34, matrix.M44)
-    ))
-
-
-def net_matrix_to_bpy_transforms(matrix):
-    return net_to_bpy_matrix(matrix).decompose()
 
 
 def net_to_bpy_matrix(matrix):
