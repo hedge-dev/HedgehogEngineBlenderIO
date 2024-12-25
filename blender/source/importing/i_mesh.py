@@ -1,10 +1,11 @@
 import bpy
 
-from . import i_material
+from . import i_material, i_model
 
 from ..dotnet import HEIO_NET, SharpNeedle
 from ..register.definitions.target_info import TargetDefinition
 from ..utility import progress_console
+from ..exceptions import HEIOException
 
 LAYER_LUT = {
     "AUTO": -1,
@@ -33,7 +34,8 @@ class MeshConverter:
     _create_meshgroup_attributes: bool
     _import_tangents: bool
 
-    _converted_models: dict[any, bpy.types.Mesh]
+    converted_models: dict[any, i_model.ModelInfo]
+    _mesh_name_lookup: dict[str, i_model.ModelInfo]
 
     def __init__(
             self,
@@ -59,20 +61,20 @@ class MeshConverter:
         self._create_meshgroup_attributes = create_meshgroup_attributes
         self._import_tangents = import_tangents
 
-        self._converted_models = dict()
+        self.converted_models = dict()
+        self._mesh_name_lookup = dict()
 
-    @staticmethod
-    def _convert_weights(mesh: bpy.types.Mesh, mesh_data, model):
+    def _convert_weights(self, mesh: bpy.types.Mesh, mesh_data, model):
 
         if not isinstance(model, SharpNeedle.MODEL) or model.Nodes.Count == 0:
             return
 
-        dummy_obj = bpy.data.objects.new("DUMMY", mesh)
+        weight_dummy_obj = bpy.data.objects.new("DUMMY", mesh)
 
         groups: list[bpy.types.VertexGroup] = []
 
         for node in model.Nodes:
-            groups.append(dummy_obj.vertex_groups.new(name=node.Name))
+            groups.append(weight_dummy_obj.vertex_groups.new(name=node.Name))
 
         used_groups = [False] * len(groups)
 
@@ -87,9 +89,9 @@ class MeshConverter:
                 to_remove.append(groups[i])
 
         for group in to_remove:
-            dummy_obj.vertex_groups.remove(group)
+            weight_dummy_obj.vertex_groups.remove(group)
 
-        bpy.data.objects.remove(dummy_obj)
+        bpy.data.objects.remove(weight_dummy_obj)
 
     def _assign_materials(self, mesh: bpy.types.Mesh, mesh_data):
         for sn_material, slot in zip(mesh_data.SetMaterials, mesh_data.SetSlots):
@@ -148,7 +150,8 @@ class MeshConverter:
             meshgroup.name = group[0]
 
             for i in range(group[1]):
-                group_indices.extend([group_index] * mesh_data.SetSizes[i + set_offset])
+                group_indices.extend(
+                    [group_index] * mesh_data.SetSizes[i + set_offset])
             set_offset += group[1]
 
         mesh.attributes["Meshgroup"].data.foreach_set("value", group_indices)
@@ -284,7 +287,10 @@ class MeshConverter:
 
         return mesh
 
-    def convert_model_sets(self, model_sets):
+    def convert_model_sets(self, model_sets) -> list[i_model.ModelInfo]:
+        sn_materials = HEIO_NET.MODEL_HELPER.GetMaterials(model_sets)
+        self._material_converter.convert_materials(sn_materials)
+
         result = []
 
         progress_console.start("Converting Models", len(model_sets))
@@ -293,8 +299,8 @@ class MeshConverter:
             model = model_set[0]
             progress_console.update(f"Converting model \"{model.Name}\"", i)
 
-            if model in self._converted_models:
-                mesh = self._converted_models[model]
+            if model in self.converted_models:
+                model_info = self.converted_models[model]
 
             else:
                 mesh_data = HEIO_NET.MESH_DATA.FromHEModel(
@@ -304,10 +310,31 @@ class MeshConverter:
                     self._merge_split_edges)
 
                 mesh = self._convert_mesh_data(mesh_data, model)
-                self._converted_models[model] = mesh
+                model_info = i_model.ModelInfo(model.Name, model, mesh)
+                self.converted_models[model] = model_info
+                self._mesh_name_lookup[model.Name] = model_info
 
-            result.append(mesh)
+            result.append(model_info)
 
         progress_console.end()
 
         return result
+
+    def get_model_info(self, key: any):
+
+        if isinstance(key, str):
+            if key in self._mesh_name_lookup:
+                return self._mesh_name_lookup[key]
+
+            mesh = bpy.data.meshes.new(key)
+            model_info = i_model.ModelInfo(key, None, mesh)
+            self._mesh_name_lookup[key] = model_info
+            return model_info
+
+        if key in self.converted_models:
+            return self.converted_models[key]
+
+        if hasattr(key, "Name") and key.Name in self._mesh_name_lookup:
+            return self._mesh_name_lookup[key.Name]
+
+        raise HEIOException("Model lookup failed")

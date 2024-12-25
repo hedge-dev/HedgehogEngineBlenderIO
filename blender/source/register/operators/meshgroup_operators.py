@@ -171,7 +171,7 @@ class HEIO_OT_Meshgroup_Remove(MeshgroupListOperator, ListRemove):
             self.report({'ERROR'}, f"Cannot remove meshgroups during edit mode!")
             return {'CANCELLED'}
 
-        if target_list.active_index < 1:
+        if len(target_list) < 2:
             self.report(
                 {'ERROR'}, f"At least one meshgroup has to exist!")
             return {'CANCELLED'}

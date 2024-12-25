@@ -167,7 +167,7 @@ namespace HEIO.NET
             }
         }
 
-        private static Vertex[] GetVertices(GPUMesh gpuMesh, bool storeDirections)
+        private static Vertex[] GetVertices(GPUMesh gpuMesh)
         {
             Vertex[] vertices = new Vertex[gpuMesh.Vertices.Length];
 
@@ -177,8 +177,8 @@ namespace HEIO.NET
 
                 vertices[i] = new Vertex(
                     vertex.Position,
-                    storeDirections ? vertex.Normal : default,
-                    storeDirections ? vertex.Tangent : default,
+                    vertex.Normal,
+                    vertex.Tangent,
                     [.. vertex.Weights
                         .Where(x => x.Weight != 0)
                         .Select(x => new VertexWeight(gpuMesh.BoneIndices[x.Index], x.Weight))
@@ -376,8 +376,7 @@ namespace HEIO.NET
                         }
                     }
 
-                    Vertex[] vertices = GetVertices(gpuMesh, !mergeSplitEdges);
-                    tempVertices.AddRange(vertices);
+                    tempVertices.AddRange(GetVertices(gpuMesh));
 
                     if(vertexMergeMode == VertexMergeMode.SubMesh)
                     {

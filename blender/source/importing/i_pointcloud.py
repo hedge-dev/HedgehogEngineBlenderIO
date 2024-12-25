@@ -1,31 +1,38 @@
 import bpy
-from mathutils import Vector, Euler, Matrix
+
+from . import i_transform, i_model
+
 from ..utility import progress_console
 
-def _create_object_from_point(point, datalist):
-	data = None
+def _create_model_from_point(
+		point,
+		model_infos: list[i_model.ModelInfo],
+		collection: bpy.types.Collection,
+		context: bpy.types.Context):
+
 	if point.ResourceIndex > -1:
-		data = datalist[point.ResourceIndex]
+		mesh_obj, armature_obj = model_infos[point.ResourceIndex].create_object(point.InstanceName, collection, context)
+		if armature_obj is not None:
+			result = armature_obj
+		else:
+			result = mesh_obj
+	else:
+		result = bpy.data.objects.new(point.InstanceName, None)
 
-	result = bpy.data.objects.new(point.InstanceName, data)
-
-	position = Vector((point.Position.X, -point.Position.Z, point.Position.Y))
-	scale = Vector((point.Scale.X, point.Scale.Z, point.Scale.Y))
-
-	raw_rotation = Euler((point.Rotation.X, point.Rotation.Y, point.Rotation.Z))
-	proc_rotation = raw_rotation.to_quaternion().to_euler("XZY")
-	rotation = Euler((proc_rotation.x, -proc_rotation.z, proc_rotation.y))
-
-	result.matrix_world = Matrix.LocRotScale(position, rotation, scale)
+	result.matrix_world = i_transform.net_transforms_to_bpy_matrix(
+		point.Position,
+		point.Rotation,
+		point.Scale
+	)
 
 	return result
 
-def convert_point_cloud_collection(point_cloud_collection, meshes: list[bpy.types.Mesh]):
+def convert_point_cloud_collection(context: bpy.types.Context, point_cloud_collection, model_infos: list[i_model.ModelInfo]):
 	result = []
 
-	progress_console.start("Importing Point Clouds", len(point_cloud_collection.TerrainCollections))
+	progress_console.start("Importing Point Clouds", len(point_cloud_collection.ModelCollections))
 
-	for i, point_collection in enumerate(point_cloud_collection.TerrainCollections):
+	for i, point_collection in enumerate(point_cloud_collection.ModelCollections):
 		progress_console.update(f"Importing \"{point_collection.Name}\"", i)
 		collection = bpy.data.collections.new(point_collection.Name)
 		result.append(collection)
@@ -34,7 +41,7 @@ def convert_point_cloud_collection(point_cloud_collection, meshes: list[bpy.type
 
 		for j, point in enumerate(point_collection.Points):
 			progress_console.update("", j)
-			collection.objects.link(_create_object_from_point(point, meshes))
+			_create_model_from_point(point, model_infos, collection, context)
 
 		progress_console.end()
 

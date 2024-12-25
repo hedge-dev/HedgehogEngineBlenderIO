@@ -13,7 +13,7 @@ from .base import HEIOBaseFileLoadOperator
 
 from .. import definitions
 
-from ...importing import i_image, i_material, i_mesh
+from ...importing import i_image, i_material, i_mesh, i_node
 from ...dotnet import load_dotnet, SharpNeedle, HEIO_NET
 from ...utility.general import get_addon_preferences
 from ...utility import progress_console
@@ -84,6 +84,10 @@ class ImportOperator(HEIOBaseFileLoadOperator):
         context.area.type = 'TEXT_EDITOR'
         context.space_data.text = resolve_info_text
         context.space_data.top = 0
+
+    @classmethod
+    def poll(cls, context):
+        return context.mode == 'OBJECT'
 
 
 class ImportMaterialOperator(ImportOperator):
@@ -303,11 +307,29 @@ class ImportModelBaseOperator(ImportMaterialOperator):
             self.import_tangents
         )
 
-    def import_models(self, model_sets):
+        self.node_converter = i_node.NodeConverter(
+            context,
+            self.mesh_converter
+        )
 
-        sn_materials = HEIO_NET.MODEL_HELPER.GetMaterials(model_sets)
-        self.material_converter.convert_materials(sn_materials)
-        return self.mesh_converter.convert_model_sets(model_sets)
+    def _import_model_files(self, context: bpy.types.Context, type):
+        progress_console.update("Resolving & reading files")
+
+        directory = os.path.dirname(self.filepath)
+        filepaths = [os.path.join(directory, file.name) for file in self.files]
+
+        models, resolve_info = HEIO_NET.MODEL_HELPER.LoadModelFiles[type](
+            filepaths, HEIO_NET.RESOLVE_INFO())
+
+        self.resolve_infos.append(resolve_info)
+
+        progress_console.update("Importing data")
+
+        model_infos = self.node_converter.convert_model_sets(models)
+
+        for model_info in model_infos:
+            model_info.create_object(
+                model_info.name, context.scene.collection, context)
 
 
 class ImportModelOperator(ImportModelBaseOperator):
@@ -318,19 +340,7 @@ class ImportModelOperator(ImportModelBaseOperator):
     )
 
     def import_model_files(self, context: bpy.types.Context):
-        progress_console.update("Resolving & reading files")
-
-        directory = os.path.dirname(self.filepath)
-        filepaths = [os.path.join(directory, file.name) for file in self.files]
-
-        models, resolve_info = HEIO_NET.MODEL_HELPER.LoadModelFiles[SharpNeedle.MODEL](
-            filepaths, HEIO_NET.RESOLVE_INFO())
-
-        self.resolve_infos.append(resolve_info)
-
-        progress_console.update("Importing data")
-
-        meshes = self.import_models(models)
+        self._import_model_files(context, SharpNeedle.MODEL)
 
 
 class ImportTerrainModelOperator(ImportModelBaseOperator):
@@ -341,22 +351,7 @@ class ImportTerrainModelOperator(ImportModelBaseOperator):
     )
 
     def import_terrain_model_files(self, context: bpy.types.Context):
-        progress_console.update("Resolving & reading files")
-
-        directory = os.path.dirname(self.filepath)
-        filepaths = [os.path.join(directory, file.name) for file in self.files]
-
-        terrain_models, resolve_info = HEIO_NET.MODEL_HELPER.LoadModelFiles[SharpNeedle.TERRAIN_MODEL](
-            filepaths, HEIO_NET.RESOLVE_INFO())
-
-        self.resolve_infos.append(resolve_info)
-
-        progress_console.update("Importing data")
-
-        meshes = self.import_models(terrain_models)
-        for mesh in meshes:
-            obj = bpy.data.objects.new(mesh.name, mesh)
-            context.scene.collection.objects.link(obj)
+        self._import_model_files(context, SharpNeedle.TERRAIN_MODEL)
 
 
 class ImportPointCloudOperator(ImportModelBaseOperator):
@@ -378,12 +373,12 @@ class ImportPointCloudOperator(ImportModelBaseOperator):
         self.resolve_infos.append(resolve_info)
 
         progress_console.update("Importing data")
-
-        meshes = self.import_models(point_cloud_collection.TerrainModels)
+        model_infos = self.node_converter.convert_model_sets(
+            point_cloud_collection.Models)
 
         from ...importing import i_pointcloud
         collections = i_pointcloud.convert_point_cloud_collection(
-            point_cloud_collection, meshes)
+            context, point_cloud_collection, model_infos)
 
         for collection in collections:
             context.collection.children.link(collection)
