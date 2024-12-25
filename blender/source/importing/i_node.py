@@ -2,7 +2,7 @@ import bpy
 from mathutils import Matrix
 
 from . import i_transform, i_mesh, i_model
-from ..dotnet import SharpNeedle
+from ..dotnet import SharpNeedle, HEIO_NET
 from ..utility import progress_console
 
 
@@ -25,12 +25,13 @@ class NodeConverter:
         for node in model_info.sn_model.Nodes:
             bone = model_info.armature.edit_bones.new(node.Name)
             bone.head = (0, 0, 0)
-            bone.tail = (1, 0, 0)
+            bone.tail = (0, 1, 0)
 
-            inv_world_matrix = i_transform.net_to_bpy_matrix(node.Transform)
-            inv_world_matrices.append(inv_world_matrix)
+            node_matrix = HEIO_NET.PYTHON_HELPERS.InvertMatrix(node.Transform)
 
-            world_space = inv_world_matrix.inverted()
+            world_space = i_transform.net_to_bpy_bone_matrix(node_matrix)
+            inv_world_matrices.append(world_space.inverted())
+
             local_space = world_space
 
             if node.ParentIndex >= 0:

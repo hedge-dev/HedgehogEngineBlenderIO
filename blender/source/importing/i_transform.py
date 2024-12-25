@@ -1,4 +1,4 @@
-from mathutils import Matrix, Vector, Euler, Quaternion
+from mathutils import Matrix, Vector, Euler
 from ..dotnet import System
 
 
@@ -13,21 +13,25 @@ def parse_net_to_bpy_matrix(matrix):
 
 
 def net_matrix_to_bpy_transforms(matrix):
-    position, rotation, scale = parse_net_to_bpy_matrix(matrix).decompose()
-
-    new_pos = Vector((position.x, -position.z, position.y))
-    new_scale = Vector((scale.x, scale.z, scale.y))
-
-    euler_rotation: Euler = rotation.to_euler('XZY')
-    new_euler_rotation = Euler(
-        (euler_rotation.x, -euler_rotation.z, euler_rotation.y))
-
-    return new_pos, new_euler_rotation, new_scale
+    return net_to_bpy_matrix(matrix).decompose()
 
 
 def net_to_bpy_matrix(matrix):
-    pos, rot, scale = net_matrix_to_bpy_transforms(matrix)
-    return Matrix.LocRotScale(pos, rot, scale)
+    return Matrix((
+        (matrix.M11, -matrix.M31, matrix.M21, matrix.M41),
+        (-matrix.M13, matrix.M33, -matrix.M23, -matrix.M43),
+        (matrix.M12, -matrix.M32, matrix.M22, matrix.M42),
+        (0, 0, 0, 1),
+    ))
+
+
+def net_to_bpy_bone_matrix(matrix):
+    return Matrix((
+        (matrix.M31, matrix.M11, matrix.M21, matrix.M41),
+        (-matrix.M33, -matrix.M13, -matrix.M23, -matrix.M43),
+        (matrix.M32, matrix.M12, matrix.M22, matrix.M42),
+        (0, 0, 0, 1),
+    ))
 
 
 def net_transforms_to_bpy_matrix(position, rotation, scale):
