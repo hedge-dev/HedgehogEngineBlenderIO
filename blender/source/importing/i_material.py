@@ -155,7 +155,7 @@ class MaterialConverter:
             progress_console.update(f"Converting material \"{sn_material.Name}\"", i, True)
 
             sn_material = item[0]
-            material = item[1]
+            material: bpy.types.Material = item[1]
 
             material_properties: HEIO_Material = material.heio_material
             create_missing = self._create_undefined_parameters or material_properties.custom_shader
@@ -190,6 +190,13 @@ class MaterialConverter:
 
             if created_missing:
                 material_properties.custom_shader = True
+
+            if "diffuse" in material_properties.textures:
+                diffuse_tex_node = material_properties.textures["diffuse"].image_node
+                if diffuse_tex_node is not None:
+                    material.node_tree.nodes.active = diffuse_tex_node
+
+
 
         progress_console.end()
 

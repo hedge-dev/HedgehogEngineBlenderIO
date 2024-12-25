@@ -45,16 +45,6 @@ def _setup_material(
             value = getattr(tnode, property.identifier)
             setattr(node, property.identifier, value)
 
-        # node.name = tnode.name
-        # node.label = tnode.label
-        # node.height = tnode.height
-        # node.width = tnode.width
-        # node.location = tnode.location
-        # node.hide = tnode.hide
-
-        # if tnode.type == 'GROUP':
-        #     node.node_tree = tnode.node_tree
-
         for tinput in tnode.inputs:
             input_socket = _get_socket_by_identifier(
                 node.inputs, tinput.identifier)
@@ -69,6 +59,8 @@ def _setup_material(
             mapping[toutput] = output_socket
             if output_socket.type != 'SHADER':
                 output_socket.default_value = toutput.default_value
+
+        node.select = False
 
     for tlink in template.node_tree.links:
         from_socket = mapping[tlink.from_socket]
