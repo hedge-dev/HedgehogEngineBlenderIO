@@ -1,7 +1,7 @@
 schema_version = "1.0.0"
 
 id = "hedgehog_engine_io_dev"
-version = "0.1.31"
+version = "0.1.32"
 name = "Hedgehog Engine I/O DEV BUILD"
 tagline = "Import/Exporter for Hedgehog Engine 3D related formats"
 maintainer = "Justin113D, hedge-dev"
