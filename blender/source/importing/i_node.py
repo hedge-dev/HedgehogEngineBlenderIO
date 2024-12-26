@@ -1,5 +1,5 @@
 import bpy
-from mathutils import Matrix
+from mathutils import Matrix, Vector
 
 from . import i_transform, i_mesh, i_model
 from ..dotnet import SharpNeedle, HEIO_NET
@@ -20,7 +20,7 @@ class NodeConverter:
 
     @staticmethod
     def _create_bones(model_info: i_model.ModelInfo):
-        inv_world_matrices = []
+        world_space_scales = []
 
         for node in model_info.sn_model.Nodes:
             bone = model_info.armature.edit_bones.new(node.Name)
@@ -31,18 +31,22 @@ class NodeConverter:
             node_matrix = HEIO_NET.PYTHON_HELPERS.InvertMatrix(node.Transform)
 
             world_space = i_transform.net_to_bpy_bone_matrix(node_matrix)
-            inv_world_matrices.append(world_space.inverted())
 
-            local_space = world_space
+            _, _, local_space_scale = world_space.decompose()
+            world_space_scales.append(local_space_scale)
 
             if node.ParentIndex >= 0:
                 parent = model_info.armature.edit_bones[node.ParentIndex]
                 bone.parent = parent
-                local_space = inv_world_matrices[node.ParentIndex] @ local_space
 
-            _, _, local_scale = local_space.decompose()
-            local_scale_matrix = Matrix.LocRotScale(None, None, local_scale)
-            model_info.pose_matrices.append(local_scale_matrix)
+                parent_world_scale = world_space_scales[node.ParentIndex]
+                local_space_scale = Vector((
+                    local_space_scale.x / parent_world_scale.x,
+                    local_space_scale.y / parent_world_scale.y,
+                    local_space_scale.z / parent_world_scale.z,
+                ))
+
+            model_info.pose_bone_scales.append(local_space_scale)
 
             pos, rot, _ = world_space.decompose()
             bone.matrix = Matrix.LocRotScale(pos, rot, None)

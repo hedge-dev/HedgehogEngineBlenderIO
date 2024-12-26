@@ -1,5 +1,5 @@
 import bpy
-from mathutils import Matrix
+from mathutils import Vector
 
 
 class ModelInfo:
@@ -10,7 +10,7 @@ class ModelInfo:
     mesh: bpy.types.Mesh
 
     armature: bpy.types.Armature | None
-    pose_matrices: list[Matrix]
+    pose_bone_scales: list[Vector]
 
     mesh_objects: list[bpy.types.Object]
     armatures_objects: list[bpy.types.Object]
@@ -21,7 +21,7 @@ class ModelInfo:
         self.mesh = mesh
 
         self.armature = None
-        self.pose_matrices = []
+        self.pose_bone_scales = []
 
         self.mesh_objects = []
         self.armatures_objects = []
@@ -37,7 +37,7 @@ class ModelInfo:
             context.view_layer.depsgraph.update()
 
             for i, pose_bone in enumerate(armature_obj.pose.bones):
-                pose_bone.matrix_basis = self.pose_matrices[i]
+                pose_bone.scale = self.pose_bone_scales[i]
 
             mesh_obj = bpy.data.objects.new(name + "_mesh", self.mesh)
             mesh_obj.parent = armature_obj
