@@ -1,4 +1,6 @@
 
+.. |X| replace:: :octicon:`x`
+
 .. _sca_parameters:
 
 ==============
@@ -15,45 +17,94 @@ SCA Parameters
 Material parameters
 -------------------
 
+The following parameters were **found** in material files, where an |X| denotes that
+it was found in that games files:
+
 .. list-table::
     :widths: auto
+    :width: 70 em
     :header-rows: 1
 
     * - Name
       - Type
       - Description
+      - Lost World
+      - Forces
+      - Origins
+      - Frontiers
+      - Shadow Gens
 
-    * - MaxAniso
+    * - ``MaxAniso``
       - Integer
       - Maximum anisotropy filtering level
+      - |X|
+      - |X|
+      - |X|
+      - |X|
+      - |X|
 
-    * - TrnsType
+    * - ``TrnsType``
       - Boolean
       - Transparency type (?)
+      - |X|
+      - |X|
+      - |X|
+      - |X|
+      - |X|
 
-    * - TrnsPrio
+    * - ``TrnsPrio``
       - Integer
       - Transparency rendering priority. Used to adjusted drawing order.
+      - |X|
+      - |X|
+      - |X|
+      - |X|
+      - |X|
 
-    * - MipBias
+    * - ``MipBias``
       - Float
       - Mipmap selection bias
+      - |X|
+      - |X|
+      - |X|
+      - |X|
+      - |X|
 
-    * - UsePrior
+    * - ``UsePrior``
       - Boolean
-      - Use Prior (?)
+      - Use Priority (?)
+      - |X|
+      - |X|
+      -
+      - |X|
+      - |X|
 
-    * - UseGrass
+    * - ``UseGrass``
       - Integer
       - Render grass on material (?)
+      - |X|
+      - |X|
+      -
+      -
+      -
 
-    * - VertSnap
+    * - ``VertSnap``
       - Boolean
       - Vertex snapping (?)
+      -
+      -
+      -
+      - |X|
+      - |X|
 
-    * - VatVolum
+    * - ``VatVolum``
       - Boolean
       - Whether the material is affected by VAT volumes
+      -
+      -
+      -
+      -
+      - |X|
 
 
 There are also SCA parameters that we know exist, but we don't know the purpose of, as they are
@@ -70,34 +121,163 @@ They are possibly used in another hedgehog engine game that was not looked into 
 Mesh parameters
 ---------------
 
+The following parameters were **found** in model files, where an |X| denotes that
+it was found in that games files:
+
 .. list-table::
     :widths: auto
+    :width: 70 em
     :header-rows: 1
 
     * - Name
       - Type
       - Description
+      - Lost World
+      - Forces
+      - Origins
+      - Frontiers
+      - Shadow Gens
 
-    * - ShadowCa
+    * - ``ShadowCa``
       - Boolean
       - Mesh can cast shadow when enabled
+      -
+      - |X|
+      - |X|
+      - |X|
+      - |X|
 
-    * - ShadowRe
+    * - ``ShadowRe``
       - Boolean
       - Mesh can receive shadow when enabled
+      -
+      - |X|
+      - |X|
+      - |X|
+      - |X|
 
-    * - DisableC
+    * - ``DisableC``
       - Boolean
       - If enabled, mesh does not render (but can still cast shadows)
+      -
+      - |X|
+      -
+      - |X|
+      - |X|
 
-    * - GIOcclus
+    * - ``RenderPa``
+      - Integer
+      - Render pass to use(?); Values from 1 to 6 were found
+      -
+      -
+      - |X|
+      - |X|
+      - |X|
+
+    * - ``RenderCa``
+      - Integer
+      - Unknown; Values of 1, 2 and 5 were found
+      -
+      - |X|
+      -
+      - |X|
+      -
+
+    * - ``GIOcclus``
       - Boolean
       - Enable for global illumination occlusion (?)
+      -
+      -
+      - |X|
+      - |X|
+      - |X|
 
-    * - TerrainB
+    * - ``Occluder``
+      - Boolean
       - Unknown
-      - Unknown, found on terrain models
+      -
+      - |X|
+      -
+      -
+      -
 
-    * - ColorMas
+    * - ``GPUOcclu``
+      - Boolean
       - Unknown
+      -
+      -
+      -
+      - |X|
+      - |X|
+
+    * - ``CPUOcclu``
+      - Boolean
       - Unknown
+      -
+      -
+      -
+      - |X|
+      - |X|
+
+    * - ``CullType``
+      - Integer
+      - Culling type(?); Values from 1 to 3 found
+      - |X|
+      -
+      -
+      -
+      -
+
+    * - ``Peepable``
+      - Boolean
+      - Characters are visible behind the mesh
+      - |X|
+      -
+      -
+      -
+      - |X|
+
+    * - ``TerrainB``
+      - Boolean
+      - Unknown
+      -
+      -
+      - |X|
+      - |X|
+      - |X|
+
+    * - ``ColorMas``
+      - Boolean
+      - Color mask(?)
+      -
+      -
+      - |X|
+      - |X|
+      - |X|
+
+    * - ``CyberMas``
+      - Boolean
+      - Cyber mask(?)
+      -
+      -
+      -
+      - |X|
+      - |X|
+
+    * - ``UsageCPU``
+      - Boolean
+      - Unknown
+      -
+      - |X|
+      -
+      -
+      -
+
+    * - ``TrRLRPre``
+      - Boolean
+      - Unknown
+      -
+      -
+      -
+      - |X|
+      - |X|

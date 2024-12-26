@@ -309,6 +309,7 @@ class ImportModelBaseOperator(ImportMaterialOperator):
 
         self.node_converter = i_node.NodeConverter(
             context,
+            self.target_definition,
             self.mesh_converter
         )
 

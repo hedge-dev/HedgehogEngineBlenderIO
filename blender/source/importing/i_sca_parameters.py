@@ -21,14 +21,14 @@ def convert_from_node(
                 sca_parameter.name].parameter_type.name
 
 
-def convert_from_root(sn_root: any, sca_parameter_list, target_definition: TargetDefinition | None, data_type: str):
-    if sn_root is None:
+def convert_from_container(sn_container: any, sca_parameter_list, target_definition: TargetDefinition | None, data_type: str):
+    if sn_container is None:
         return
 
-    node = sn_root.FindNode("SCAParam")
+    node = sn_container.FindNode("SCAParam")
     if node is not None:
         convert_from_node(node, sca_parameter_list, target_definition, data_type)
 
 
 def convert_from_data(sn_data: any, sca_parameter_list, target_definition: TargetDefinition | None, data_type: str):
-    convert_from_root(sn_data.Root, sca_parameter_list, target_definition, data_type)
+    convert_from_container(sn_data.Root, sca_parameter_list, target_definition, data_type)

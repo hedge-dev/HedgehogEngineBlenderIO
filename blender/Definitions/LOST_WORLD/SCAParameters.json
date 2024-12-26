@@ -24,5 +24,15 @@
       "Type": "Integer",
       "Description": "Render grass on material (?)"
     }
+  },
+  "Model": {
+    "CullType": {
+      "Type": "Integer",
+      "Description": "Culling type(?); Values from 1 to 3 found"
+    },
+    "Peepable": {
+      "Type": "Boolean",
+      "Description": "Characters are visible behind the mesh"
+    }
   }
 }

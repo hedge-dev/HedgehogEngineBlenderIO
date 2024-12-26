@@ -55,12 +55,17 @@ class SCAParameterDefinitionCollection:
 
     material: dict[str, SCAParameterDefinition]
     '''[name] = (type, description)'''
+    model: dict[str, SCAParameterDefinition]
+    '''[name] = (type, description)'''
 
     material_items: list[tuple[str, str, str]]
+    model_items: list[tuple[str, str, str]]
 
     def __init__(self):
         self.material = {}
+        self.model = {}
         self.material_items = []
+        self.model_items = []
 
     @staticmethod
     def parse_json_data(data):
@@ -69,5 +74,9 @@ class SCAParameterDefinitionCollection:
         if "Material" in data:
             result.material, result.material_items = SCAParameterDefinition.dict_items_from_json_data(
                 data["Material"])
+
+        if "Model" in data:
+            result.model, result.model_items = SCAParameterDefinition.dict_items_from_json_data(
+                data["Model"])
 
         return result

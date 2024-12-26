@@ -28,5 +28,55 @@
       "Type": "Boolean",
       "Description": "Vertex snapping (?)"
     }
+  },
+  "Model": {
+    "ShadowCa": {
+      "Type": "Boolean",
+      "Description": "Mesh can cast shadow when enabled"
+    },
+    "ShadowRe": {
+      "Type": "Boolean",
+      "Description": "Mesh can receive shadow when enabled"
+    },
+    "DisableC": {
+      "Type": "Boolean",
+      "Description": "If enabled, mesh does not render (but can still cast shadows)"
+    },
+    "RenderPa": {
+      "Type": "Integer",
+      "Description": "Render pass to use(?); Values from 1 to 6 were found"
+    },
+    "GIOcclus": {
+      "Type": "Boolean",
+      "Description": "Enable for global illumination occlusion (?)"
+    },
+    "GPUOcclu": {
+      "Type": "Boolean",
+      "Description": "Unknown"
+    },
+    "CPUOcclu": {
+      "Type": "Boolean",
+      "Description": "Unknown"
+    },
+    "Peepable": {
+      "Type": "Boolean",
+      "Description": "Characters are visible behind the mesh"
+    },
+    "TerrainB": {
+      "Type": "Boolean",
+      "Description": "Unknown"
+    },
+    "ColorMas": {
+      "Type": "Boolean",
+      "Description": "Color mask(?)"
+    },
+    "CyberMas": {
+      "Type": "Boolean",
+      "Description": "Cyber mask(?)"
+    },
+    "TrRLRPre": {
+      "Type": "Boolean",
+      "Description": "Unknown"
+    }
   }
 }

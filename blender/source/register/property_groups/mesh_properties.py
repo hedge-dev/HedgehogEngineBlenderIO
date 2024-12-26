@@ -6,6 +6,7 @@ from bpy.props import (
 )
 
 from .base_list import BaseList
+from .sca_parameter_properties import HEIO_SCA_Parameters
 
 
 class HEIO_Layer(bpy.types.PropertyGroup):
@@ -52,6 +53,10 @@ class HEIO_Mesh(bpy.types.PropertyGroup):
 
     meshgroups: PointerProperty(
         type=HEIO_MeshgroupList
+    )
+
+    sca_parameters: PointerProperty(
+        type=HEIO_SCA_Parameters
     )
 
     def initialize_layers(self):

@@ -2,6 +2,7 @@ import bpy
 from bpy.types import Context
 
 from .base_panel import PropertiesPanel
+from .sca_parameter_panel import draw_sca_editor_menu
 
 from ..operators import mesh_layer_operators as mlo, meshgroup_operators as mgo
 
@@ -114,8 +115,6 @@ class HEIO_PT_Mesh(PropertiesPanel):
     bl_label = "HEIO Mesh Properties"
     bl_context = "data"
 
-    # === overriden methods === #
-
     @staticmethod
     def draw_layers_panel(
             layout: bpy.types.UILayout,
@@ -192,7 +191,6 @@ class HEIO_PT_Mesh(PropertiesPanel):
             row.operator(mgo.HEIO_OT_Meshgroup_Select.bl_idname)
             row.operator(mgo.HEIO_OT_Meshgroup_Deselect.bl_idname)
 
-
     @staticmethod
     def draw_material_properties(
             layout: bpy.types.UILayout,
@@ -201,6 +199,9 @@ class HEIO_PT_Mesh(PropertiesPanel):
 
         HEIO_PT_Mesh.draw_layers_panel(layout, context, mesh)
         HEIO_PT_Mesh.draw_meshgroups_panel(layout, context, mesh)
+        draw_sca_editor_menu(layout, mesh.heio_mesh.sca_parameters, 'MESH')
+
+    # === overriden methods === #
 
     @classmethod
     def poll(cls, context: Context):

@@ -1,7 +1,8 @@
 import bpy
 from mathutils import Matrix, Vector
 
-from . import i_transform, i_mesh, i_model
+from . import i_transform, i_mesh, i_model, i_sca_parameters
+from ..register.definitions.target_info import TargetDefinition
 from ..dotnet import SharpNeedle, HEIO_NET
 from ..utility import progress_console
 
@@ -9,10 +10,12 @@ from ..utility import progress_console
 class NodeConverter:
 
     _context: bpy.types.Context
+    _target_definition: TargetDefinition
     _mesh_converter: i_mesh.MeshConverter
 
-    def __init__(self, context: bpy.types.Context, mesh_converter: i_mesh.MeshConverter):
+    def __init__(self, context: bpy.types.Context, target_definition: TargetDefinition, mesh_converter: i_mesh.MeshConverter):
         self._context = context
+        self._target_definition = target_definition
         self._mesh_converter = mesh_converter
 
         self._converted_models = dict()
@@ -72,6 +75,16 @@ class NodeConverter:
 
             bone.length = distance
 
+    def _convert_sca_parameters(self, model_info: i_model.ModelInfo):
+        if model_info.sn_model.Root is None:
+            return
+
+        node = model_info.sn_model.Root.FindNode("NodesExt")
+        for child in node.Children:
+            bone = model_info.armature.edit_bones[child.Value]
+            i_sca_parameters.convert_from_container(
+                child, bone.heio_node.sca_parameters, self._target_definition, 'model')
+
     def _convert_model(self, model_info: i_model.ModelInfo):
         if model_info.sn_model.Nodes.Count == 0:
             return None
@@ -89,6 +102,7 @@ class NodeConverter:
 
         self._create_bones(model_info)
         self._correct_bone_lengths(model_info.armature)
+        self._convert_sca_parameters(model_info)
 
         bpy.ops.object.mode_set(mode='OBJECT')
 

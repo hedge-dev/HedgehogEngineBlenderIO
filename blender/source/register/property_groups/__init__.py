@@ -2,6 +2,7 @@ from . import (
 	addon_preferences,
 	sca_parameter_properties,
 	scene_properties,
+	node_properties,
 	mesh_properties,
 	material_parameter_properties,
 	material_texture_properties,
@@ -15,6 +16,8 @@ to_register = [
 	sca_parameter_properties.HEIO_SCA_Parameters,
 
     scene_properties.HEIO_Scene,
+
+	node_properties.HEIO_Node,
 
     mesh_properties.HEIO_Layer,
 	mesh_properties.HEIO_LayerList,

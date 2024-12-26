@@ -24,5 +24,31 @@
       "Type": "Integer",
       "Description": "Render grass on material (?)"
     }
+  },
+  "Model": {
+    "ShadowCa": {
+      "Type": "Boolean",
+      "Description": "Mesh can cast shadow when enabled"
+    },
+    "ShadowRe": {
+      "Type": "Boolean",
+      "Description": "Mesh can receive shadow when enabled"
+    },
+    "DisableC": {
+      "Type": "Boolean",
+      "Description": "If enabled, mesh does not render (but can still cast shadows)"
+    },
+    "RenderCa": {
+      "Type": "Integer",
+      "Description": "Unknown; Values of 1, 2 and 5 were found"
+    },
+    "Occluder": {
+      "Type": "Boolean",
+      "Description": "Unknown"
+    },
+    "UsageCPU": {
+      "Type": "Boolean",
+      "Description": "Unknown"
+    }
   }
 }

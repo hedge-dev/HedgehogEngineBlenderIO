@@ -20,15 +20,41 @@ class SCAParameterOperator(HEIOBaseOperator):
     mode: EnumProperty(
         name="Mode",
         items=(
-            ("MATERIAL", "Material", ""),
-            ("NODE", "Node", "")
+            ('MATERIAL', "Material", ""),
+            ('MESH', "Mesh", ""),
+            ('BONE', "Bone", ""),
+            ('NONE', "None", "Fallback")
         ),
+        default='NONE',
         options={'HIDDEN'},
     )
 
-    def get_sca_parameter_list(self, context):
+    def get_sca_parameter_list(self, context: bpy.types.Context):
+        obj = context.active_object
+        if obj is None:
+            raise HEIOException("No active object!")
+
         if self.mode == "MATERIAL":
-            return context.active_object.active_material.heio_material.sca_parameters
+            if obj.active_material is None:
+                raise HEIOException("No active material!")
+
+            return obj.active_material.heio_material.sca_parameters
+
+        elif self.mode == "MESH":
+            if obj.type != 'MESH':
+                raise HEIOException("Active object is not a mesh!")
+
+            return obj.data.heio_mesh.sca_parameters
+
+        elif self.mode == 'BONE':
+            if obj.type != 'ARMATURE':
+                raise HEIOException("Active object is not an armature!")
+
+            if context.active_bone is None:
+                raise HEIOException("No active bone!")
+
+            return context.active_bone.heio_node.sca_parameters
+
         else:
             raise HEIOException("Invalid parameter operator mode!")
 
@@ -58,7 +84,15 @@ class HEIO_OT_SCAParameters_Move(SCAParameterOperator, ListMove):
 
 
 def _get_sca_parameter_items(operator, context: bpy.types.Context):
-    return definitions.get_sca_parameter_definition_items(context, operator.mode.lower())
+    target_def = definitions.get_target_definition(context)
+    if target_def is None:
+        return []
+
+    if operator.mode == 'MATERIAL':
+        return target_def.sca_parameters.material_items
+    elif operator.mode in ['MESH', 'BONE']:
+        return target_def.sca_parameters.model_items
+    return []
 
 
 class HEIO_OT_SCAParameters_NewFromPreset(SCAParameterOperator, HEIOBasePopupOperator):
@@ -75,7 +109,18 @@ class HEIO_OT_SCAParameters_NewFromPreset(SCAParameterOperator, HEIOBasePopupOpe
         if self.preset == "":
             return
 
-        definition = definitions.get_sca_parameter_definitions(context, self.mode.lower())[self.preset]
+        target_def = definitions.get_target_definition(context)
+        if target_def is None:
+            return
+
+        if self.mode == 'MATERIAL':
+            defs = target_def.sca_parameters.material
+        elif self.mode in ['MESH', 'BONE']:
+            defs = target_def.sca_parameters.model
+        else:
+            return
+
+        definition = defs[self.preset]
 
         entry = parameter_list.new()
         entry.name = definition.name

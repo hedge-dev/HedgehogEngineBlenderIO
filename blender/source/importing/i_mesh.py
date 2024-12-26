@@ -1,6 +1,6 @@
 import bpy
 
-from . import i_material, i_model
+from . import i_material, i_model, i_sca_parameters
 
 from ..dotnet import HEIO_NET, SharpNeedle
 from ..register.definitions.target_info import TargetDefinition
@@ -310,6 +310,11 @@ class MeshConverter:
                     self._merge_split_edges)
 
                 mesh = self._convert_mesh_data(mesh_data, model)
+
+                if isinstance(model, SharpNeedle.TERRAIN_MODEL):
+                    i_sca_parameters.convert_from_data(
+                        model, mesh.heio_mesh.sca_parameters, self._target_definition, 'model')
+
                 model_info = i_model.ModelInfo(model.Name, model, mesh)
                 self.converted_models[model] = model_info
                 self._mesh_name_lookup[model.Name] = model_info
