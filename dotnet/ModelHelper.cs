@@ -66,7 +66,7 @@ namespace HEIO.NET
 
         internal static void ResolveModelMaterials(IResourceResolver[] resolvers, ModelBase model, IFile file, HashSet<string> unresolved)
         {
-            foreach(MeshGroup group in model.Groups)
+            void ResolveMeshGroup(MeshGroup group)
             {
                 foreach(Mesh mesh in group)
                 {
@@ -100,13 +100,26 @@ namespace HEIO.NET
                     }
                 }
             }
+
+            foreach(MeshGroup group in model.Groups)
+            {
+                ResolveMeshGroup(group);
+            }
+
+            if(model is Model modelmodel && modelmodel.Morphs?.Count > 0)
+            {
+                foreach(MorphModel morph in modelmodel.Morphs)
+                {
+                    ResolveMeshGroup(morph.Meshgroup!);
+                }
+            }
         }
 
         public static Material[] GetMaterials(ModelBase[][] models)
         {
             return models
                 .SelectMany(x => x)
-                .SelectMany(x => x.Groups)
+                .SelectMany(x => x.Groups.Concat((x as Model)?.Morphs?.Select(x => x.Meshgroup!) ?? []))
                 .SelectMany(x => x)
                 .Where(x => x.Material.IsValid())
                 .Select(x => x.Material.Resource!)
