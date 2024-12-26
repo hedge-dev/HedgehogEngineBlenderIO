@@ -243,7 +243,7 @@ class ImportModelBaseOperator(ImportMaterialOperator):
     merge_split_edges: BoolProperty(
         name="Merge split edges",
         description="Merge overlapping edges as sharps",
-        default=True
+        default=False
     )
 
     create_mesh_layer_attributes: BoolProperty(

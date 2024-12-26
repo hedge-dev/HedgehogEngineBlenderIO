@@ -11,11 +11,11 @@ def _create_model_from_point(
 		context: bpy.types.Context):
 
 	if point.ResourceIndex > -1:
-		mesh_obj, armature_obj = model_infos[point.ResourceIndex].create_object(point.InstanceName, collection, context)
+		mesh_objs, armature_obj = model_infos[point.ResourceIndex].create_object(point.InstanceName, collection, context)
 		if armature_obj is not None:
 			result = armature_obj
 		else:
-			result = mesh_obj
+			result = mesh_objs[0]
 	else:
 		result = bpy.data.objects.new(point.InstanceName, None)
 

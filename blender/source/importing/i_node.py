@@ -89,7 +89,7 @@ class NodeConverter:
         if model_info.sn_model.Nodes.Count == 0:
             return None
 
-        armature = bpy.data.armatures.new(model_info.sn_model.Name)
+        armature = bpy.data.armatures.new(model_info.name)
         model_info.armature = armature
 
         dummy_object = bpy.data.objects.new("DUMMY", armature)

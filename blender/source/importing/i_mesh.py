@@ -1,4 +1,5 @@
 import bpy
+from mathutils import Vector
 
 from . import i_material, i_model, i_sca_parameters
 
@@ -6,6 +7,7 @@ from ..dotnet import HEIO_NET, SharpNeedle
 from ..register.definitions.target_info import TargetDefinition
 from ..utility import progress_console
 from ..exceptions import HEIOException
+from ..exporting import o_enum
 
 LAYER_LUT = {
     "AUTO": -1,
@@ -51,7 +53,6 @@ class MeshConverter:
         self._target_definition = target_definition
         self._material_converter = material_converter
 
-        from ..exporting import o_enum
         self._vertex_merge_mode = o_enum.to_vertex_merge_mode(
             vertex_merge_mode)
 
@@ -92,6 +93,27 @@ class MeshConverter:
             weight_dummy_obj.vertex_groups.remove(group)
 
         bpy.data.objects.remove(weight_dummy_obj)
+
+    def _convert_morphs(self, mesh: bpy.types.Mesh, mesh_data, morph_model):
+        if morph_model is None or morph_model.Targets.Count == 0:
+            return
+
+        shapekey_positions = [[None] * len(mesh_data.Vertices) for _ in morph_model.Targets]
+
+        for i, vertex in enumerate(mesh_data.Vertices):
+            for s, position in enumerate(vertex.MorphPositions):
+                shapekey_positions[s][i] = Vector((position.X, -position.Z, position.Y))
+
+        shapekey_dummy_obj = bpy.data.objects.new("DUMMY", mesh)
+
+        shapekey_dummy_obj.shape_key_add(name="basis")
+        for s, morph_target in enumerate(morph_model.Targets):
+            shapekey = shapekey_dummy_obj.shape_key_add(name=morph_target.Name)
+            for i, pos in enumerate(shapekey_positions[s]):
+                shapekey.data[i].co += pos
+            #shapekey.points.foreach_set("co", shapekey_positions[s])
+
+        bpy.data.objects.remove(shapekey_dummy_obj)
 
     def _assign_materials(self, mesh: bpy.types.Mesh, mesh_data):
         for sn_material, slot in zip(mesh_data.SetMaterials, mesh_data.SetSlots):
@@ -248,7 +270,7 @@ class MeshConverter:
             if nrm0.dot(nrm1) > 0.995 and nrm2.dot(nrm3) > 0.995:
                 edge.use_edge_sharp = False
 
-    def _convert_mesh_data(self, mesh_data: any, model: any):
+    def _convert_mesh_data(self, mesh_data: any, model: any, morph_model: any):
 
         mesh = bpy.data.meshes.new(mesh_data.Name)
 
@@ -269,6 +291,7 @@ class MeshConverter:
         mesh.from_pydata(vertices, [], faces, shade_flat=False)
 
         self._convert_weights(mesh, mesh_data, model)
+        self._convert_morphs(mesh, mesh_data, morph_model)
         self._assign_materials(mesh, mesh_data)
 
         if self._create_mesh_layer_attributes:
@@ -287,6 +310,50 @@ class MeshConverter:
 
         return mesh
 
+    def _convert_model(self, model):
+        model_info = i_model.ModelInfo(model.Name, model)
+
+        if isinstance(model, SharpNeedle.TERRAIN_MODEL):
+            mesh_data = HEIO_NET.MESH_DATA.FromHEModel(
+                model,
+                self._vertex_merge_mode,
+                self._vertex_merge_distance,
+                self._merge_split_edges
+            )
+
+            mesh = self._convert_mesh_data(mesh_data, model, None)
+            model_info.meshes.append(mesh)
+
+            i_sca_parameters.convert_from_data(
+                model, mesh.heio_mesh.sca_parameters, self._target_definition, 'model')
+
+        else:  # Model
+            mesh_datas = HEIO_NET.MESH_DATA.FromHEMeshGroups(
+                model,
+                self._vertex_merge_mode,
+                self._vertex_merge_distance,
+                self._merge_split_edges
+            )
+
+            for mesh_data in mesh_datas:
+                model_info.meshes.append(
+                    self._convert_mesh_data(mesh_data, model, None))
+
+            if model.Morphs != None:
+                for morph in model.Morphs:
+                    morph_data = HEIO_NET.MESH_DATA.FromHEMorph(
+                        model,
+                        morph,
+                        self._vertex_merge_mode,
+                        self._vertex_merge_distance,
+                        self._merge_split_edges
+                    )
+
+                    morph_mesh = self._convert_mesh_data(morph_data, model, morph)
+                    model_info.meshes.append(morph_mesh)
+
+        return model_info
+
     def convert_model_sets(self, model_sets) -> list[i_model.ModelInfo]:
         sn_materials = HEIO_NET.MODEL_HELPER.GetMaterials(model_sets)
         self._material_converter.convert_materials(sn_materials)
@@ -303,19 +370,7 @@ class MeshConverter:
                 model_info = self.converted_models[model]
 
             else:
-                mesh_data = HEIO_NET.MESH_DATA.FromHEModel(
-                    model,
-                    self._vertex_merge_mode,
-                    self._vertex_merge_distance,
-                    self._merge_split_edges)
-
-                mesh = self._convert_mesh_data(mesh_data, model)
-
-                if isinstance(model, SharpNeedle.TERRAIN_MODEL):
-                    i_sca_parameters.convert_from_data(
-                        model, mesh.heio_mesh.sca_parameters, self._target_definition, 'model')
-
-                model_info = i_model.ModelInfo(model.Name, model, mesh)
+                model_info = self._convert_model(model)
                 self.converted_models[model] = model_info
                 self._mesh_name_lookup[model.Name] = model_info
 
