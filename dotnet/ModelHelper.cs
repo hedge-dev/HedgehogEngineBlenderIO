@@ -11,9 +11,9 @@ namespace HEIO.NET
 {
     public static class ModelHelper
     {
-        internal static T[] LoadModelFile<T>(IFile file, DependencyResourceManager dependencyManager) where T : ModelBase, new()
+        internal static T[] LoadModelFile<T>(IFile file, DependencyResolverManager dependencyManager) where T : ModelBase, new()
         {
-            ResourceManager manager = dependencyManager.GetResourceManagerForDirectory(file.Parent);
+            IResourceManager manager = dependencyManager.GetResourceManager(file.Parent);
             T[] models;
 
             try
@@ -42,9 +42,9 @@ namespace HEIO.NET
             return models;
         }
 
-        public static T[][] LoadModelFiles<T>(string[] filepaths, out ResolveInfo resolveInfo) where T : ModelBase, new()
+        public static T[][] LoadModelFiles<T>(string[] filepaths, bool includeLoD, out ResolveInfo resolveInfo) where T : ModelBase, new()
         {
-            DependencyResourceManager dependencyManager = new();
+            DependencyResolverManager dependencyManager = new();
 
             List<T[]> result = [];
             List<(ModelBase, IFile)> modelFiles = [];
@@ -54,8 +54,17 @@ namespace HEIO.NET
                 IFile file = FileSystem.Instance.Open(filepath)!;
                 T[] models = LoadModelFile<T>(file, dependencyManager);
 
-                result.Add([models[0]]);
-                modelFiles.Add((models[0], file));
+                if(includeLoD)
+                {
+                    result.Add(models);
+                    modelFiles.AddRange(models.Select(x => ((ModelBase)x, file)));
+                }
+                else
+                {
+                    result.Add([models[0]]);
+                    modelFiles.Add((models[0], file));
+                }
+
             }
 
             resolveInfo = dependencyManager.ResolveDependencies(modelFiles, ResolveModelMaterials);
@@ -63,8 +72,7 @@ namespace HEIO.NET
             return [.. result];
         }
 
-
-        internal static void ResolveModelMaterials(IResourceResolver[] resolvers, ModelBase model, IFile file, HashSet<string> unresolved)
+        internal static void ResolveModelMaterials(IResourceResolver resolver, ModelBase model, IFile file, HashSet<string> unresolved)
         {
             void ResolveMeshGroup(MeshGroup group)
             {
@@ -76,25 +84,12 @@ namespace HEIO.NET
                     }
 
                     string filename = $"{mesh.Material.Name}.material";
-                    bool resolved = false;
 
-                    foreach(IResourceResolver resolver in resolvers)
+                    if(resolver.Open<Material>(filename) is Material material)
                     {
-                        try
-                        {
-                            mesh.Material = resolver.Open<Material>(filename)
-                                ?? throw new InvalidDataException($"Material file \"{filename}\" failed to be read!");
-
-                            resolved = true;
-                            break;
-                        }
-                        catch(FileNotFoundException)
-                        {
-
-                        }
+                        mesh.Material = material;
                     }
-
-                    if(!resolved)
+                    else
                     {
                         unresolved.Add(filename);
                     }

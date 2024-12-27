@@ -60,11 +60,11 @@ namespace HEIO.NET
     
         public static Dictionary<string, Image> LoadMaterialImages(Material[] materials, string streamingDirectory, out ResolveInfo info)
         {
-            DependencyResourceManager dependencyManager = new();
+            DependencyResolverManager dependencyManager = new();
             Dictionary<string, Image> result = [];
             Dictionary<string, Package?> packages = [];
 
-            info = dependencyManager.ResolveDependencies(materials.Select(x => (x, x.BaseFile!)), (resolvers, material, file, unresolved) =>
+            info = dependencyManager.ResolveDependencies(materials.Select(x => (x, x.BaseFile!)), (resolver, material, file, unresolved) =>
             {
                 foreach(Texture texture in material.Texset.Textures)
                 {
@@ -75,24 +75,16 @@ namespace HEIO.NET
                     }
 
                     string imageName = texture.PictureName + ".dds";
-                    bool resolved = false;
 
-                    foreach(IResourceResolver resolver in resolvers)
+                    if(resolver.GetFile(imageName) is IFile imageFile)
                     {
-                        if(resolver.GetFile(imageName) is IFile imageFile)
+                        Image? image = LoadImage(imageFile, packages, streamingDirectory);
+                        if(image != null)
                         {
-                            Image? image = LoadImage(imageFile, packages, streamingDirectory);
-                            if(image != null)
-                            {
-                                result.Add(texture.PictureName!, image);
-                            }
-
-                            resolved = true;
-                            break;
+                            result.Add(texture.PictureName!, image);
                         }
                     }
-
-                    if(!resolved)
+                    else
                     {
                         unresolved.Add(imageName);
                     }

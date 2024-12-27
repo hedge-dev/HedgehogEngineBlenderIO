@@ -67,13 +67,13 @@ namespace HEIO.NET
 
         public static PointCloudCollection LoadPointClouds(string[] filepaths, out ResolveInfo resolveInfo)
         {
-            DependencyResourceManager dependencyManager = new();
+            DependencyResolverManager dependencyManager = new();
             List<PointCloud> pointClouds = [];
 
             foreach(string filepath in filepaths)
             {
                 IFile file = FileSystem.Instance.Open(filepath)!;
-                ResourceManager manager = dependencyManager.GetResourceManagerForDirectory(file.Parent);
+                IResourceManager manager = dependencyManager.GetResourceManager(file.Parent);
 
                 pointClouds.Add(manager.Open<PointCloud>(file, false));
             }
@@ -84,7 +84,7 @@ namespace HEIO.NET
 
             ResolveInfo pointCloudInfo = dependencyManager.ResolveDependencies(
                 pointClouds.Select(x => (x, x.BaseFile!)),
-                (resolvers, pointcloud, file, unresolved) =>
+                (resolver, pointcloud, file, unresolved) =>
                 {
                     string pcExtension = Path.GetExtension(file.Name);
 
@@ -105,19 +105,11 @@ namespace HEIO.NET
                         foreach(string fileExtension in fileExtensions)
                         {
                             string filename = resource + fileExtension;
-
-                            foreach(IResourceResolver resolver in resolvers)
+                            
+                            if(resolver.GetFile(filename) is IFile resourceFile)
                             {
-                                if(resolver.GetFile(filename) is IFile resourceFile)
-                                {
-                                    resolvedFiles[resource] = resourceFile;
-                                    resolved = true;
-                                    break;
-                                }
-                            }
-
-                            if(resolved)
-                            {
+                                resolvedFiles[resource] = resourceFile;
+                                resolved = true;
                                 break;
                             }
                         }

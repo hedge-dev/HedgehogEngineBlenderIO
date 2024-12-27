@@ -5,9 +5,7 @@ using SharpNeedle.Structs;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Numerics;
-using System.Threading.Tasks.Sources;
 
 namespace HEIO.NET.VertexUtils
 {

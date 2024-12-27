@@ -1,6 +1,5 @@
 ﻿using SharpNeedle.Framework.HedgehogEngine.Mirage;
 using SharpNeedle.Resource;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace HEIO.NET.VertexUtils

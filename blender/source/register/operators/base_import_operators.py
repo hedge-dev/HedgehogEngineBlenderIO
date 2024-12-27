@@ -320,7 +320,7 @@ class ImportModelBaseOperator(ImportMaterialOperator):
         filepaths = [os.path.join(directory, file.name) for file in self.files]
 
         models, resolve_info = HEIO_NET.MODEL_HELPER.LoadModelFiles[type](
-            filepaths, HEIO_NET.RESOLVE_INFO())
+            filepaths, False, HEIO_NET.RESOLVE_INFO())
 
         self.resolve_infos.append(resolve_info)
 
