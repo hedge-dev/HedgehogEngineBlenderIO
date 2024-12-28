@@ -39,7 +39,7 @@ Installing Blender
 ==================
 
 | The Addon is only supported on `Blender <https://blender.org/>`_ version 4.3 and above.
-| It is recommended to install blender through `Stream <https://store.steampowered.com/app/365670>`_. This will ensure you're always using the latest release version.
+| It is recommended to install blender through `Steam <https://store.steampowered.com/app/365670>`_. This will ensure you're always using the latest release version.
 
 
 Installing the Addon
