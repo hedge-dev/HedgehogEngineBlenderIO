@@ -6,6 +6,9 @@ def convert_from_node(
         target_definition: TargetDefinition | None,
         data_type: str):
 
+    if sn_node is None:
+        return
+
     sca_parameter_definitions = None
     if target_definition is not None:
         sca_parameter_definitions = getattr(
@@ -26,8 +29,7 @@ def convert_from_container(sn_container: any, sca_parameter_list, target_definit
         return
 
     node = sn_container.FindNode("SCAParam")
-    if node is not None:
-        convert_from_node(node, sca_parameter_list, target_definition, data_type)
+    convert_from_node(node, sca_parameter_list, target_definition, data_type)
 
 
 def convert_from_data(sn_data: any, sca_parameter_list, target_definition: TargetDefinition | None, data_type: str):

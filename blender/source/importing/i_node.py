@@ -80,6 +80,9 @@ class NodeConverter:
             return
 
         node = model_info.sn_model.Root.FindNode("NodesExt")
+        if node is None:
+            return
+
         for child in node.Children:
             bone = model_info.armature.edit_bones[child.Value]
             i_sca_parameters.convert_from_container(
