@@ -1,7 +1,9 @@
 from . import (
 	addon_preferences,
 	sca_parameter_properties,
+	lod_info_properties,
 	scene_properties,
+	armature_properties,
 	node_properties,
 	mesh_properties,
 	material_parameter_properties,
@@ -15,7 +17,13 @@ to_register = [
     sca_parameter_properties.HEIO_SCA_Parameter,
 	sca_parameter_properties.HEIO_SCA_Parameters,
 
+	lod_info_properties.HEIO_LODInfoLevel,
+	lod_info_properties.HEIO_LODInfoLevelList,
+	lod_info_properties.HEIO_LODInfo,
+
     scene_properties.HEIO_Scene,
+
+	armature_properties.HEIO_Armature,
 
 	node_properties.HEIO_Node,
 

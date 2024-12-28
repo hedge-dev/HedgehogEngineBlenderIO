@@ -2,16 +2,14 @@
 using SharpNeedle.Framework.HedgehogEngine.Needle.Archive;
 using SharpNeedle.IO;
 using SharpNeedle.Resource;
-using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 
 namespace HEIO.NET
 {
     public static class ModelHelper
     {
-        internal static T[] LoadModelFile<T>(IFile file, DependencyResolverManager dependencyManager) where T : ModelBase, new()
+        public static ModelSet LoadModelFile<T>(IFile file, DependencyResolverManager dependencyManager) where T : ModelBase, new()
         {
             IResourceManager manager = dependencyManager.GetResourceManager(file.Parent);
             T[] models;
@@ -33,36 +31,42 @@ namespace HEIO.NET
                         model.Name = archive.Name;
                     }
                 }
+
+                return new(
+                    models,
+                    archive.DataBlocks.OfType<LODInfoBlock>().First()
+                );
             }
             catch
             {
-                models = [manager.Open<T>(file, false)];
+                return new(
+                    [manager.Open<T>(file, false)],
+                    null
+                );
             }
-
-            return models;
         }
 
-        public static T[][] LoadModelFiles<T>(string[] filepaths, bool includeLoD, out ResolveInfo resolveInfo) where T : ModelBase, new()
+        public static ModelSet[] LoadModelFiles<T>(string[] filepaths, bool includeLoD, out ResolveInfo resolveInfo) where T : ModelBase, new()
         {
             DependencyResolverManager dependencyManager = new();
 
-            List<T[]> result = [];
+            List<ModelSet> result = [];
             List<(ModelBase, IFile)> modelFiles = [];
 
             foreach(string filepath in filepaths)
             {
                 IFile file = FileSystem.Instance.Open(filepath)!;
-                T[] models = LoadModelFile<T>(file, dependencyManager);
+                ModelSet modelSet = LoadModelFile<T>(file, dependencyManager);
 
-                if(includeLoD)
+                if(includeLoD || modelSet.LODInfo == null)
                 {
-                    result.Add(models);
-                    modelFiles.AddRange(models.Select(x => ((ModelBase)x, file)));
+                    result.Add(modelSet);
+                    modelFiles.AddRange(modelSet.Models.Select(x => ((ModelBase)x, file)));
                 }
                 else
                 {
-                    result.Add([models[0]]);
-                    modelFiles.Add((models[0], file));
+                    result.Add(new([modelSet.Models[0]], null));
+                    modelFiles.Add((modelSet.Models[0], file));
                 }
 
             }
@@ -110,10 +114,10 @@ namespace HEIO.NET
             }
         }
 
-        public static Material[] GetMaterials(ModelBase[][] models)
+        public static Material[] GetMaterials(ModelSet[] models)
         {
             return models
-                .SelectMany(x => x)
+                .SelectMany(x => x.Models)
                 .SelectMany(x => x.Groups.Concat((x as Model)?.Morphs?.Select(x => x.Meshgroup!) ?? []))
                 .SelectMany(x => x)
                 .Where(x => x.Material.IsValid())

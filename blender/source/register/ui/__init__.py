@@ -1,7 +1,9 @@
 from . import (
+    lod_info_panel,
     sca_parameter_panel,
-    scene_panel,
-	node_panel,
+	scene_panel,
+    armature_panel,
+    node_panel,
     mesh_panel,
     material_panel,
     menus,
@@ -11,7 +13,12 @@ from . import (
 to_register = [
     sca_parameter_panel.HEIO_UL_SCAParameterList,
 
+    lod_info_panel.HEIO_UL_LODInfoLevels,
+	lod_info_panel.HEIO_MT_LODInfoLevelContextMenu,
+
     scene_panel.HEIO_PT_Scene,
+
+    armature_panel.HEIO_PT_Armature,
 
     node_panel.HEIO_PT_Node_Bone,
 

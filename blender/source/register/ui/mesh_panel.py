@@ -3,6 +3,7 @@ from bpy.types import Context
 
 from .base_panel import PropertiesPanel
 from .sca_parameter_panel import draw_sca_editor_menu
+from .lod_info_panel import draw_lod_info_panel
 
 from ..operators import mesh_layer_operators as mlo, meshgroup_operators as mgo
 
@@ -121,7 +122,7 @@ class HEIO_PT_Mesh(PropertiesPanel):
             context: bpy.types.Context,
             mesh: bpy.types.Mesh):
 
-        header, body = layout.panel("heio_mesh_layers", default_closed=False)
+        header, body = layout.panel("heio_mesh_layers", default_closed=True)
         header.label(text="Layers")
         if not body:
             return
@@ -159,7 +160,7 @@ class HEIO_PT_Mesh(PropertiesPanel):
             context: bpy.types.Context,
             mesh: bpy.types.Mesh):
 
-        header, body = layout.panel("heio_meshgroups", default_closed=False)
+        header, body = layout.panel("heio_meshgroups", default_closed=True)
         header.label(text="Meshgroups")
         if not body:
             return
@@ -199,6 +200,7 @@ class HEIO_PT_Mesh(PropertiesPanel):
 
         HEIO_PT_Mesh.draw_layers_panel(layout, context, mesh)
         HEIO_PT_Mesh.draw_meshgroups_panel(layout, context, mesh)
+        draw_lod_info_panel(layout, context, mesh.heio_mesh.lod_info)
         draw_sca_editor_menu(layout, mesh.heio_mesh.sca_parameters, 'MESH')
 
     # === overriden methods === #

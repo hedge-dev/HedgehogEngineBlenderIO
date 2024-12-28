@@ -98,11 +98,13 @@ class MeshConverter:
         if morph_model is None or morph_model.Targets.Count == 0:
             return
 
-        shapekey_positions = [[None] * len(mesh_data.Vertices) for _ in morph_model.Targets]
+        shapekey_positions = [
+            [None] * len(mesh_data.Vertices) for _ in morph_model.Targets]
 
         for i, vertex in enumerate(mesh_data.Vertices):
             for s, position in enumerate(vertex.MorphPositions):
-                shapekey_positions[s][i] = Vector((position.X, -position.Z, position.Y))
+                shapekey_positions[s][i] = Vector(
+                    (position.X, -position.Z, position.Y))
 
         shapekey_dummy_obj = bpy.data.objects.new("DUMMY", mesh)
 
@@ -111,7 +113,7 @@ class MeshConverter:
             shapekey = shapekey_dummy_obj.shape_key_add(name=morph_target.Name)
             for i, pos in enumerate(shapekey_positions[s]):
                 shapekey.data[i].co += pos
-            #shapekey.points.foreach_set("co", shapekey_positions[s])
+            # shapekey.points.foreach_set("co", shapekey_positions[s])
 
         bpy.data.objects.remove(shapekey_dummy_obj)
 
@@ -270,9 +272,9 @@ class MeshConverter:
             if nrm0.dot(nrm1) > 0.995 and nrm2.dot(nrm3) > 0.995:
                 edge.use_edge_sharp = False
 
-    def _convert_mesh_data(self, mesh_data: any, model: any, morph_model: any):
+    def _convert_mesh_data(self, mesh_data: any, model: any, morph_model: any, name_suffix: str,):
 
-        mesh = bpy.data.meshes.new(mesh_data.Name)
+        mesh = bpy.data.meshes.new(mesh_data.Name + name_suffix)
 
         if mesh_data.Vertices.Count == 0:
             return mesh
@@ -310,8 +312,8 @@ class MeshConverter:
 
         return mesh
 
-    def _convert_model(self, model):
-        model_info = i_model.ModelInfo(model.Name, model)
+    def _convert_model(self, model, name_suffix: str):
+        model_info = i_model.ModelInfo(model.Name + name_suffix, model)
 
         if isinstance(model, SharpNeedle.TERRAIN_MODEL):
             mesh_data = HEIO_NET.MESH_DATA.FromHEModel(
@@ -321,7 +323,7 @@ class MeshConverter:
                 self._merge_split_edges
             )
 
-            mesh = self._convert_mesh_data(mesh_data, model, None)
+            mesh = self._convert_mesh_data(mesh_data, model, None, name_suffix)
             model_info.meshes.append(mesh)
 
             i_sca_parameters.convert_from_data(
@@ -337,7 +339,7 @@ class MeshConverter:
 
             for mesh_data in mesh_datas:
                 model_info.meshes.append(
-                    self._convert_mesh_data(mesh_data, model, None))
+                    self._convert_mesh_data(mesh_data, model, None, name_suffix))
 
             if model.Morphs != None:
                 for morph in model.Morphs:
@@ -349,10 +351,32 @@ class MeshConverter:
                         self._merge_split_edges
                     )
 
-                    morph_mesh = self._convert_mesh_data(morph_data, model, morph)
+                    morph_mesh = self._convert_mesh_data(
+                        morph_data, model, morph, name_suffix)
                     model_info.meshes.append(morph_mesh)
 
         return model_info
+
+    def _convert_lod_models(self, model_info: i_model.ModelInfo, model_set):
+        progress_console.start(
+            "Converting LOD Models",
+            len(model_set.Models) - 1)
+
+        model_info.sn_lod_info = model_set.LODInfo
+
+        for i, lod_model in enumerate(model_set.Models):
+            if i == 0:
+                continue
+
+            progress_console.update(f"Converting LOD level {i}", i - 1)
+
+            lod_model_info = self._convert_model(lod_model, f"_lv{i}")
+
+            model_info.lod_models.append(lod_model_info)
+
+        model_info.setup_lod_info()
+
+        progress_console.end()
 
     def convert_model_sets(self, model_sets) -> list[i_model.ModelInfo]:
         sn_materials = HEIO_NET.MODEL_HELPER.GetMaterials(model_sets)
@@ -363,16 +387,19 @@ class MeshConverter:
         progress_console.start("Converting Models", len(model_sets))
 
         for i, model_set in enumerate(model_sets):
-            model = model_set[0]
+            model = model_set.Models[0]
             progress_console.update(f"Converting model \"{model.Name}\"", i)
 
             if model in self.converted_models:
                 model_info = self.converted_models[model]
 
             else:
-                model_info = self._convert_model(model)
+                model_info = self._convert_model(model, "")
                 self.converted_models[model] = model_info
                 self._mesh_name_lookup[model.Name] = model_info
+
+                if model_set.LODInfo is not None:
+                    self._convert_lod_models(model_info, model_set)
 
             result.append(model_info)
 

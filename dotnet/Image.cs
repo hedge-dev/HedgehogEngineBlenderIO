@@ -6,7 +6,6 @@ using SharpNeedle.Utilities;
 using SharpNeedle.Framework.HedgehogEngine.Mirage;
 using SharpNeedle.Framework.HedgehogEngine.Needle.TextureStreaming;
 using System.Linq;
-using SharpNeedle.Resource;
 
 namespace HEIO.NET
 {

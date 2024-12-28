@@ -109,6 +109,19 @@ class NodeConverter:
         self._context.view_layer.objects.active = prev_active
         bpy.data.objects.remove(dummy_object)
 
+    def _convert_lod_models(self, model_info: i_model.ModelInfo):
+        progress_console.start(
+            "Converting LOD Armatures",
+            len(model_info.lod_models))
+
+        for i, lod_model_info in enumerate(model_info.lod_models):
+            progress_console.update(f"Converting LOD level {i}", i)
+            self._convert_model(lod_model_info)
+
+        model_info.setup_lod_info()
+
+        progress_console.end()
+
     def convert_model_sets(self, model_sets):
 
         result = self._mesh_converter.convert_model_sets(model_sets)
@@ -123,6 +136,9 @@ class NodeConverter:
                 continue
 
             self._convert_model(model_info)
+
+            if model_info.sn_lod_info is not None:
+                self._convert_lod_models(model_info)
 
         progress_console.end()
 

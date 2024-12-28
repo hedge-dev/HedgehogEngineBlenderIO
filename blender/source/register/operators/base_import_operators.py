@@ -13,7 +13,7 @@ from .base import HEIOBaseFileLoadOperator
 
 from .. import definitions
 
-from ...importing import i_image, i_material, i_mesh, i_node
+from ...importing import i_image, i_material, i_mesh, i_node, i_model
 from ...dotnet import load_dotnet, SharpNeedle, HEIO_NET
 from ...utility.general import get_addon_preferences
 from ...utility import progress_console
@@ -264,6 +264,12 @@ class ImportModelBaseOperator(ImportMaterialOperator):
         default=False
     )
 
+    import_lod_models: BoolProperty(
+        name="Import LoD models",
+        description="Import LoD models (will be stored in a separate collection)",
+        default=False
+    )
+
     def draw_panel_model(self):
         header, body = self.layout.panel(
             "HEIO_import_model", default_closed=False)
@@ -288,6 +294,7 @@ class ImportModelBaseOperator(ImportMaterialOperator):
         body.prop(self, "create_mesh_layer_attributes")
         body.prop(self, "create_meshgroup_attributes")
         body.prop(self, "import_tangents")
+        body.prop(self, "import_lod_models")
 
     def draw(self, context: Context):
         super().draw(context)
@@ -313,6 +320,26 @@ class ImportModelBaseOperator(ImportMaterialOperator):
             self.mesh_converter
         )
 
+    def _setup_lod_models(self, context: bpy.types.Context, model_infos: list[i_model.ModelInfo]):
+        if not self.import_lod_models:
+            return
+
+        col_name = "HEIO LOD Imports"
+        if col_name in bpy.data.collections:
+            lod_collection = bpy.data.collections[col_name]
+        else:
+            lod_collection = bpy.data.collections.new(col_name)
+            lod_collection.hide_render = True
+            lod_collection.hide_viewport = True
+
+        if col_name not in context.scene.collection.children:
+            context.scene.collection.children.link(lod_collection)
+
+        for model_info in model_infos:
+            for lod_model_info in model_info.lod_models:
+                lod_model_info.create_object(
+                    lod_model_info.name, lod_collection, context)
+
     def _import_model_files(self, context: bpy.types.Context, type):
         progress_console.update("Resolving & reading files")
 
@@ -320,7 +347,7 @@ class ImportModelBaseOperator(ImportMaterialOperator):
         filepaths = [os.path.join(directory, file.name) for file in self.files]
 
         models, resolve_info = HEIO_NET.MODEL_HELPER.LoadModelFiles[type](
-            filepaths, False, HEIO_NET.RESOLVE_INFO())
+            filepaths, self.import_lod_models, HEIO_NET.RESOLVE_INFO())
 
         self.resolve_infos.append(resolve_info)
 
@@ -331,6 +358,8 @@ class ImportModelBaseOperator(ImportMaterialOperator):
         for model_info in model_infos:
             model_info.create_object(
                 model_info.name, context.scene.collection, context)
+
+        self._setup_lod_models(context, model_infos)
 
 
 class ImportModelOperator(ImportModelBaseOperator):
@@ -369,7 +398,7 @@ class ImportPointCloudOperator(ImportModelBaseOperator):
         filepaths = [os.path.join(directory, file.name) for file in self.files]
 
         point_cloud_collection, resolve_info = HEIO_NET.POINT_CLOUD_COLLECTION.LoadPointClouds(
-            filepaths, HEIO_NET.RESOLVE_INFO())
+            filepaths, self.import_lod_models, HEIO_NET.RESOLVE_INFO())
 
         self.resolve_infos.append(resolve_info)
 
@@ -383,3 +412,5 @@ class ImportPointCloudOperator(ImportModelBaseOperator):
 
         for collection in collections:
             context.collection.children.link(collection)
+
+        self._setup_lod_models(context, model_infos)

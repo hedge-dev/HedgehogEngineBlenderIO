@@ -1,6 +1,10 @@
 import bpy
 from mathutils import Vector
+
+from ..dotnet import SharpNeedle
+
 from ..exceptions import HEIOException
+
 
 class ModelInfo:
 
@@ -15,6 +19,10 @@ class ModelInfo:
     mesh_objects: list[bpy.types.Object]
     armatures_objects: list[bpy.types.Object]
 
+    sn_lod_info: any
+    lod_models: list['ModelInfo']
+    lod_info_set_up: bool
+
     def __init__(self, name: str, sn_model):
         self.name = name
         self.sn_model = sn_model
@@ -26,9 +34,14 @@ class ModelInfo:
         self.mesh_objects = []
         self.armatures_objects = []
 
+        self.sn_lod_info = None
+        self.lod_models = []
+        self.lod_info_set_up = False
+
     def create_object(self, name: str, collection: bpy.types.Collection, context: bpy.types.Context):
 
         mesh_objs = []
+
         def add_mesh(obj):
             mesh_objs.append(obj)
             collection.objects.link(obj)
@@ -75,3 +88,36 @@ class ModelInfo:
             HEIOException("Model has too many meshes!")
 
         return mesh_objs, armature_obj
+
+    def setup_lod_info(self):
+        if self.sn_lod_info is None or self.lod_info_set_up:
+            return
+
+        if isinstance(self.sn_model, SharpNeedle.TERRAIN_MODEL):
+            lod_info = self.meshes[0].heio_mesh.lod_info
+        elif self.armature is not None:
+            lod_info = self.armature.heio_armature.lod_info
+        else:
+            return
+
+        self.lod_info_set_up = True
+        lod_info.unknown = self.sn_lod_info.Unknown1
+        lod_info.initialize()
+
+        for i, sn_lod_info_item in enumerate(self.sn_lod_info.Items):
+            if i == 0:
+                lod_info_level = lod_info.levels[0]
+                lod_info_level.cascade = sn_lod_info_item.CascadeLevel
+                lod_info_level.unknown = sn_lod_info_item.Unknown2
+                continue
+
+            lod_info_level = lod_info.levels.new()
+            lod_info_level.cascade = sn_lod_info_item.CascadeLevel
+            lod_info_level.unknown = sn_lod_info_item.Unknown2
+
+            lod_model = self.lod_models[i - 1]
+
+            if self.armature is not None:
+                lod_info_level.armature = lod_model.armature
+            else:
+                lod_info_level.mesh = lod_model.meshes[0]

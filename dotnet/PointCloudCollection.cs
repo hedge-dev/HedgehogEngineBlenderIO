@@ -53,19 +53,19 @@ namespace HEIO.NET
         }
 
 
-        public ModelBase[][] Models { get; }
+        public ModelSet[] Models { get; }
 
         public Collection[] ModelCollections { get; }
 
 
-        public PointCloudCollection(ModelBase[][] models, Collection[] modelCollections)
+        public PointCloudCollection(ModelSet[] models, Collection[] modelCollections)
         {
             Models = models;
             ModelCollections = modelCollections;
         }
 
 
-        public static PointCloudCollection LoadPointClouds(string[] filepaths, out ResolveInfo resolveInfo)
+        public static PointCloudCollection LoadPointClouds(string[] filepaths, bool includeLoD, out ResolveInfo resolveInfo)
         {
             DependencyResolverManager dependencyManager = new();
             List<PointCloud> pointClouds = [];
@@ -135,35 +135,41 @@ namespace HEIO.NET
                 });
 
 
-            (Collection[] modelCollections, IFile[] modelFiles) = ToCollections(modelClouds);
-            ModelBase[][] models = new ModelBase[modelFiles.Length][];
+            (Collection[] modelCollections, IFile[] modelSetFiles) = ToCollections(modelClouds);
+            ModelSet[] modelSets = new ModelSet[modelSetFiles.Length];
+            List<(ModelBase, IFile)> modelFiles = [];
 
-            for(int i = 0; i < models.Length; i++)
+            for(int i = 0; i < modelSets.Length; i++)
             {
-                IFile file = modelFiles[i];
+                IFile file = modelSetFiles[i];
+                ModelSet modelSet;
 
                 if(Path.GetExtension(file.Name) == ".model")
                 {
-                    models[i] = ModelHelper.LoadModelFile<Model>(file, dependencyManager);
+                    modelSet = ModelHelper.LoadModelFile<Model>(file, dependencyManager);
                 }
                 else
                 {
-                    models[i] = ModelHelper.LoadModelFile<TerrainModel>(file, dependencyManager);
+                    modelSet = ModelHelper.LoadModelFile<TerrainModel>(file, dependencyManager);
+                }
+
+                if(includeLoD || modelSet.LODInfo == null)
+                {
+                    modelSets[i] = modelSet;
+                    modelFiles.AddRange(modelSet.Models.Select(x => ((ModelBase)x, file)));
+                }
+                else
+                {
+                    modelSets[i] = new([modelSet.Models[0]], null);
+                    modelFiles.Add((modelSet.Models[0], file));
                 }
             }
 
-            ResolveInfo terrainResolveInfo = dependencyManager.ResolveDependencies(
-                Enumerable.Range(0, models.Length)
-                    .Select(x => (models[x][0], modelFiles[x])),
-                ModelHelper.ResolveModelMaterials);
-
+            ResolveInfo terrainResolveInfo = dependencyManager.ResolveDependencies(modelFiles, ModelHelper.ResolveModelMaterials);
 
             resolveInfo = ResolveInfo.Combine(pointCloudInfo, terrainResolveInfo);
 
-            return new(
-                models.Select<ModelBase[], ModelBase[]>(x => [x[0]]).ToArray(),
-                modelCollections
-            );
+            return new(modelSets, modelCollections);
         }
 
         private static (Collection[], IFile[]) ToCollections(List<(PointCloud, Dictionary<string, IFile>)> clouds)

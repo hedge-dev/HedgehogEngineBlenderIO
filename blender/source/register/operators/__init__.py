@@ -5,6 +5,7 @@ from . import (
 	mesh_layer_operators,
 	meshgroup_operators,
 	sca_parameter_operators,
+	lod_operators,
 	material_operators,
 	material_parameter_operators,
 	info_operators
@@ -27,6 +28,12 @@ to_register = [
 	sca_parameter_operators.HEIO_OT_SCAParameters_Remove,
 	sca_parameter_operators.HEIO_OT_SCAParameters_Move,
 	sca_parameter_operators.HEIO_OT_SCAParameters_NewFromPreset,
+
+	lod_operators.HEIO_OT_LODInfo_Initialize,
+	lod_operators.HEIO_OT_LODInfo_Delete,
+	lod_operators.HEIO_OT_LODInfo_Add,
+	lod_operators.HEIO_OT_LODInfo_Remove,
+	lod_operators.HEIO_OT_LODInfo_Move,
 
 	mesh_layer_operators.HEIO_OT_MeshLayer_Initialize,
 	mesh_layer_operators.HEIO_OT_MeshLayer_Delete,
