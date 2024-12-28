@@ -12,7 +12,7 @@ from .material_texture_properties import HEIO_MaterialTextureList
 from .sca_parameter_properties import HEIO_SCA_Parameters
 
 from .. import definitions
-from ..definitions.target_info import TargetDefinition
+from ..definitions.target_definition import TargetDefinition
 from ..definitions.shader_definitions import ShaderDefinition, ShaderParameterType
 
 from ...utility.material_setup import (
@@ -71,16 +71,17 @@ def _get_shader_definition(material_properties):
     show_all, sdc = _get_shader_enum_params(
         bpy.context)
 
-    if sdc is not None and material_properties.shader_name in sdc.definitions:
-        definition = sdc.definitions[material_properties.shader_name]
-        if show_all:
-            return definition.all_items_index
-        elif definition.visible_items_index == -1:
-            return 0
-        else:
-            return definition.visible_items_index
-    else:
+    if sdc is None or material_properties.shader_name not in sdc.definitions:
         return 0
+
+    definition = sdc.definitions[material_properties.shader_name]
+
+    if show_all:
+        return definition.all_items_index
+    elif definition.visible_items_index == -1:
+        return 0
+    else:
+        return definition.visible_items_index
 
 
 def _set_shader_definition(material_properties, value):

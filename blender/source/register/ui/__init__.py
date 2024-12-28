@@ -1,10 +1,11 @@
 from . import (
     lod_info_panel,
     sca_parameter_panel,
-	scene_panel,
+    scene_panel,
     armature_panel,
     node_panel,
     mesh_panel,
+    collision_mesh_panel,
     material_panel,
     menus,
     viewport_toolbar
@@ -14,7 +15,7 @@ to_register = [
     sca_parameter_panel.HEIO_UL_SCAParameterList,
 
     lod_info_panel.HEIO_UL_LODInfoLevels,
-	lod_info_panel.HEIO_MT_LODInfoLevelContextMenu,
+    lod_info_panel.HEIO_MT_LODInfoLevelContextMenu,
 
     scene_panel.HEIO_PT_Scene,
 
@@ -27,6 +28,12 @@ to_register = [
     mesh_panel.HEIO_UL_Meshgroups,
     mesh_panel.HEIO_MT_MeshgroupsContextMenu,
     mesh_panel.HEIO_PT_Mesh,
+
+    collision_mesh_panel.HEIO_UL_CollisionInfoList,
+	collision_mesh_panel.HEIO_MT_CollisionLayersContextMenu,
+    collision_mesh_panel.HEIO_MT_CollisionTypesContextMenu,
+    collision_mesh_panel.HEIO_MT_CollisionFlagsContextMenu,
+    collision_mesh_panel.HEIO_PT_CollisionMesh,
 
     material_panel.HEIO_UL_ParameterList,
     material_panel.HEIO_UL_CustomParameterList,

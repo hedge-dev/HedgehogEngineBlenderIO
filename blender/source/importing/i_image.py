@@ -2,7 +2,7 @@ import bpy
 import numpy
 
 from ..dotnet import HEIO_NET, System
-from ..register.definitions.target_info import TargetDefinition
+from ..register.definitions import TargetDefinition
 from ..utility.material_setup import get_first_connected_socket
 from ..utility import progress_console
 

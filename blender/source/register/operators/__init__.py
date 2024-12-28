@@ -4,6 +4,7 @@ from . import (
 	filehandlers,
 	mesh_layer_operators,
 	meshgroup_operators,
+	collision_mesh_operators,
 	sca_parameter_operators,
 	lod_operators,
 	material_operators,
@@ -52,6 +53,12 @@ to_register = [
 	meshgroup_operators.HEIO_OT_Meshgroup_Add,
 	meshgroup_operators.HEIO_OT_Meshgroup_Remove,
 	meshgroup_operators.HEIO_OT_Meshgroup_Move,
+
+	collision_mesh_operators.HEIO_OT_CollisionMeshInfo_Initialize,
+	collision_mesh_operators.HEIO_OT_CollisionMeshInfo_Delete,
+	collision_mesh_operators.HEIO_OT_CollisionMeshInfo_Add,
+	collision_mesh_operators.HEIO_OT_CollisionMeshInfo_Remove,
+	collision_mesh_operators.HEIO_OT_CollisionMeshInfo_Move,
 
 	material_operators.HEIO_OT_Material_SetupNodes,
 	material_operators.HEIO_OT_Material_SetupNodes_Active,

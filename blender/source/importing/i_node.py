@@ -2,7 +2,7 @@ import bpy
 from mathutils import Matrix, Vector
 
 from . import i_transform, i_mesh, i_model, i_sca_parameters
-from ..register.definitions.target_info import TargetDefinition
+from ..register.definitions import TargetDefinition
 from ..dotnet import SharpNeedle, HEIO_NET
 from ..utility import progress_console
 

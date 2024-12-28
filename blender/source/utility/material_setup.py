@@ -1,7 +1,7 @@
 import os
 import bpy
 from typing import Iterable
-from ..register.definitions.target_info import TargetDefinition
+from ..register.definitions import TargetDefinition
 
 NODE_IGNORE_PROPERTIES = [
     "parent",

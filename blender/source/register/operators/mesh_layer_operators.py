@@ -30,6 +30,7 @@ class HEIO_OT_MeshLayer_Initialize(HEIOBaseOperator):
         context.active_object.data.heio_mesh.initialize_layers()
         return {'FINISHED'}
 
+
 class HEIO_OT_MeshLayer_Delete(HEIOBaseOperator):
     bl_idname = "heio.mesh_layers_delete"
     bl_label = "Delete mesh layers"
@@ -43,7 +44,7 @@ class HEIO_OT_MeshLayer_Delete(HEIOBaseOperator):
             or context.active_object is None
             or context.active_object.type != 'MESH'
             or (len(context.active_object.data.heio_mesh.layers) == 0
-            and "Layer" not in context.active_object.data.attributes)
+                and "Layer" not in context.active_object.data.attributes)
         ):
             return False
 
@@ -61,6 +62,7 @@ class HEIO_OT_MeshLayer_Delete(HEIOBaseOperator):
                 mesh.attributes.remove(attribute)
 
         return {'FINISHED'}
+
 
 class MeshLayerEditOperator(HEIOBaseOperator):
     bl_options = {'UNDO'}
@@ -164,7 +166,7 @@ class HEIO_OT_MeshLayer_Add(MeshLayerListOperator, ListAdd):
 class HEIO_OT_MeshLayer_Remove(MeshLayerListOperator, ListRemove):
     bl_idname = "heio.mesh_layer_remove"
     bl_label = "Remove mesh layer"
-    bl_description = "Removes the selected layer from the its mesh"
+    bl_description = "Removes the selected layer from the mesh"
 
     def list_execute(self, context: bpy.types.Context, target_list):
         if context.mode == "EDIT_MESH":

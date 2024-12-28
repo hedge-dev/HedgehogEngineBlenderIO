@@ -3,7 +3,7 @@ from typing import Iterable
 
 from . import i_enum, i_image, i_sca_parameters
 
-from ..register.definitions.target_info import TargetDefinition
+from ..register.definitions import TargetDefinition
 from ..register.property_groups.material_properties import (
     HEIO_Material,
     HEIO_MaterialTextureList,

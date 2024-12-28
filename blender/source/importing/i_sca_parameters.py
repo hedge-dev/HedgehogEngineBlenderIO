@@ -1,4 +1,4 @@
-from ..register.definitions.target_info import TargetDefinition
+from ..register.definitions import TargetDefinition
 
 def convert_from_node(
         sn_node: any,

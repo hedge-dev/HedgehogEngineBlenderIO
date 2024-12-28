@@ -39,7 +39,7 @@ class BaseList(bpy.types.PropertyGroup):
     def _get_index_comparator(cls, value):
         raise NotImplementedError()
 
-    def _on_created(self, value, **args):
+    def _on_created(self, element, **args):
         pass
 
     def _on_clear(self):
@@ -60,8 +60,8 @@ class BaseList(bpy.types.PropertyGroup):
 
     def new(self, **args):
         result = self.elements.add()
-        self._on_created(result, **args)
         self.active_index = len(self) - 1
+        self._on_created(result, **args)
         return result
 
     def remove(self, value):

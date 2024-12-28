@@ -2,7 +2,8 @@ import os
 from .json_util import JSONWrapper
 from . import (
     shader_definitions,
-    sca_parameter_definitions
+    sca_parameter_definitions,
+    collision_definitions
 )
 
 
@@ -45,6 +46,7 @@ class TargetDefinition:
 
     shaders: shader_definitions.ShaderDefinitionCollection
     sca_parameters: sca_parameter_definitions.SCAParameterDefinitionCollection | None
+    collision_info: collision_definitions.CollisionInfoDefinition | None
 
     def __init__(
             self,
@@ -71,6 +73,7 @@ class TargetDefinition:
 
         self.shaders = None
         self.sca_parameters = None
+        self.collision_info = None
 
     @staticmethod
     def parse_json_data(data: JSONWrapper, directory: str, identifier: str):
@@ -104,12 +107,20 @@ class TargetDefinition:
 
         shaders_filepath = os.path.join(directory, "Shaders.json")
         shaders_data = JSONWrapper.read_file(shaders_filepath)
-        result.shaders = shaders_data.parse(shader_definitions.ShaderDefinitionCollection)
+        result.shaders = shaders_data.parse(
+            shader_definitions.ShaderDefinitionCollection)
 
         sca_parameter_filepath = os.path.join(directory, "SCAParameters.json")
         if os.path.exists(sca_parameter_filepath):
             sca_parameter_data = JSONWrapper.read_file(sca_parameter_filepath)
             result.sca_parameters = sca_parameter_data.parse(
                 sca_parameter_definitions.SCAParameterDefinitionCollection)
+
+        collision_info_filepath = os.path.join(directory, "CollisionInfo.json")
+        if os.path.exists(collision_info_filepath):
+            collision_info_data = JSONWrapper.read_file(
+                collision_info_filepath)
+            result.collision_info = collision_info_data.parse(
+                collision_definitions.CollisionInfoDefinition)
 
         return result

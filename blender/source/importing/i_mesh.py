@@ -4,7 +4,7 @@ from mathutils import Vector
 from . import i_material, i_model, i_sca_parameters
 
 from ..dotnet import HEIO_NET, SharpNeedle
-from ..register.definitions.target_info import TargetDefinition
+from ..register.definitions import TargetDefinition
 from ..utility import progress_console
 from ..exceptions import HEIOException
 from ..exporting import o_enum

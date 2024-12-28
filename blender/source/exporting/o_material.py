@@ -5,7 +5,7 @@ from . import o_enum, o_sca_parameters
 
 from ..dotnet import SharpNeedle, System, HEIO_NET
 from ..register.property_groups.material_properties import HEIO_Material
-from ..register.definitions.target_info import TargetDefinition
+from ..register.definitions import TargetDefinition
 
 def convert_to_sharpneedle_materials(
         target_definition: TargetDefinition,

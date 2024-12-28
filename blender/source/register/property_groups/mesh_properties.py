@@ -10,22 +10,22 @@ from .sca_parameter_properties import HEIO_SCA_Parameters
 from .lod_info_properties import HEIO_LODInfo
 
 
-class HEIO_Layer(bpy.types.PropertyGroup):
+class HEIO_MeshLayer(bpy.types.PropertyGroup):
     name: StringProperty(
         name="Layer name",
         description="Name of the layer"
     )
 
 
-class HEIO_LayerList(BaseList):
+class HEIO_MeshLayerList(BaseList):
 
     elements: CollectionProperty(
-        type=HEIO_Layer
+        type=HEIO_MeshLayer
     )
 
-    def _on_created(self, value, **args):
+    def _on_created(self, element, **args):
         if "name" in args:
-            value.name = args["name"]
+            element.name = args["name"]
 
 
 class HEIO_Meshgroup(bpy.types.PropertyGroup):
@@ -41,15 +41,15 @@ class HEIO_MeshgroupList(BaseList):
         type=HEIO_Meshgroup
     )
 
-    def _on_created(self, value, **args):
+    def _on_created(self, element, **args):
         if "name" in args:
-            value.name = args["name"]
+            element.name = args["name"]
 
 
 class HEIO_Mesh(bpy.types.PropertyGroup):
 
     layers: PointerProperty(
-        type=HEIO_LayerList
+        type=HEIO_MeshLayerList
     )
 
     meshgroups: PointerProperty(

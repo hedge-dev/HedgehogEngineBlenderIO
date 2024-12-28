@@ -1,7 +1,7 @@
 import bpy
 from bpy.props import StringProperty
 from .. import definitions
-from ..definitions.target_info import TargetDefinition
+from ..definitions.target_definition import TargetDefinition
 
 
 class HEIO_AddonPreferences(bpy.types.AddonPreferences):

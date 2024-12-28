@@ -1,12 +1,12 @@
 import os
 import bpy
 
-from . import target_info
+from .target_definition import TargetDefinition
 from .json_util import HEIOJSONException
 from ...utility import general
 from ...exceptions import HEIOException
 
-TARGET_DEFINITIONS: dict[str, target_info.TargetDefinition] = None
+TARGET_DEFINITIONS: dict[str, TargetDefinition] = None
 TARGET_ENUM_ITEMS: list[tuple[str, str, str]] = None
 TARGET_ENUM_ITEMS_INVALID: list[tuple[str, str, str]] = None
 
@@ -16,7 +16,7 @@ def register_definition(directory: str, identifier: str | None = None):
         identifier = os.path.basename(directory)
 
     try:
-        target_definition = target_info.TargetDefinition.from_directory(
+        target_definition = TargetDefinition.from_directory(
             directory, identifier)
         TARGET_DEFINITIONS[target_definition.identifier] = target_definition
 
