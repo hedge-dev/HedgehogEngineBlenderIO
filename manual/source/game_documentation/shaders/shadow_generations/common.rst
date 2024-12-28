@@ -47,7 +47,7 @@ Shader table
     * - ``Common_dp``
       - |x|
       - |x|
-      - |x|
+      -
       -
       -
       -
