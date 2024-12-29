@@ -59,7 +59,7 @@ class CollisionMeshConverter:
             if layer.is_convex:
                 layer.convex_type.value = mesh_layer.Type
 
-                for i, value in enumerate(layer.FlagValues):
+                for i, value in enumerate(mesh_layer.FlagValues):
                     layer.convex_flags.new(value=value)
 
             set_slot_indices.extend([i] * mesh_layer.Size)

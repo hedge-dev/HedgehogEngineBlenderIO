@@ -1,4 +1,5 @@
 ﻿using SharpNeedle.Framework.HedgehogEngine.Mirage;
+using SharpNeedle.Framework.HedgehogEngine.Mirage.Bullet;
 using SharpNeedle.Framework.HedgehogEngine.Needle.Archive;
 using SharpNeedle.IO;
 using SharpNeedle.Resource;
@@ -9,9 +10,8 @@ namespace HEIO.NET
 {
     public static class ModelHelper
     {
-        public static ModelSet LoadModelFile<T>(IFile file, DependencyResolverManager dependencyManager) where T : ModelBase, new()
+        public static ModelSet LoadModelFile<T>(IFile file) where T : ModelBase, new()
         {
-            IResourceManager manager = dependencyManager.GetResourceManager(file.Parent);
             T[] models;
 
             try
@@ -39,24 +39,22 @@ namespace HEIO.NET
             }
             catch
             {
-                return new(
-                    [manager.Open<T>(file, false)],
-                    null
-                );
+                T model = new();
+                model.Read(file);
+
+                return new([model], null);
             }
         }
 
         public static ModelSet[] LoadModelFiles<T>(string[] filepaths, bool includeLoD, out ResolveInfo resolveInfo) where T : ModelBase, new()
         {
-            DependencyResolverManager dependencyManager = new();
-
             List<ModelSet> result = [];
             List<(ModelBase, IFile)> modelFiles = [];
 
             foreach(string filepath in filepaths)
             {
                 IFile file = FileSystem.Instance.Open(filepath)!;
-                ModelSet modelSet = LoadModelFile<T>(file, dependencyManager);
+                ModelSet modelSet = LoadModelFile<T>(file);
 
                 if(includeLoD || modelSet.LODInfo == null)
                 {
@@ -71,9 +69,25 @@ namespace HEIO.NET
 
             }
 
+            DependencyResolverManager dependencyManager = new();
             resolveInfo = dependencyManager.ResolveDependencies(modelFiles, ResolveModelMaterials);
 
             return [.. result];
+        }
+
+        public static BulletMesh[] LoadBulletMeshFiles(string[] filepaths)
+        {
+            BulletMesh[] result = new BulletMesh[filepaths.Length];
+
+            for(int i = 0; i < filepaths.Length; i++)
+            {
+                BulletMesh mesh = new();
+                IFile file = FileSystem.Instance.Open(filepaths[i])!;
+                mesh.Read(file);
+                result[i] = mesh;
+            }
+
+            return result;
         }
 
         internal static void ResolveModelMaterials(IResourceResolver resolver, ModelBase model, IFile file, HashSet<string> unresolved)

@@ -146,11 +146,11 @@ namespace HEIO.NET
 
                 if(Path.GetExtension(file.Name) == ".model")
                 {
-                    modelSet = ModelHelper.LoadModelFile<Model>(file, dependencyManager);
+                    modelSet = ModelHelper.LoadModelFile<Model>(file);
                 }
                 else
                 {
-                    modelSet = ModelHelper.LoadModelFile<TerrainModel>(file, dependencyManager);
+                    modelSet = ModelHelper.LoadModelFile<TerrainModel>(file);
                 }
 
                 if(includeLoD || modelSet.LODInfo == null)
