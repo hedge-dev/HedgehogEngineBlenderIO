@@ -233,8 +233,8 @@ PRM
 PRM textures, an abbreviation for "Parameter", are the defacto PBR textures
 of Hedgehg Engine 2 games.
 
-If you are unfamiliar with Physically based rendering, it is recommended to
-`read up on that <https://marmoset.co/posts/physically-based-rendering-and-you-can-too/>`_ before
+If you are unfamiliar with Physically based rendering, you should look into the
+:doc:`Physically based rendering guide </game_documentation/shaders/common/pbr>` before
 trying to edit materials.
 
 .. container:: lead
