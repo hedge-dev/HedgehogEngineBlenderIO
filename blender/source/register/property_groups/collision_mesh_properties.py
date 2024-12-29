@@ -93,7 +93,6 @@ class BaseCollisionInfoList(BaseList):
     def _on_created(self, element, **args):
         if "value" in args:
             element.value = args["value"]
-            self.sort_element(element)
 
     def initialize(self):
         if len(self) == 0:

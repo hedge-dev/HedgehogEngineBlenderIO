@@ -2,7 +2,8 @@ from .base_import_operators import (
     ImportMaterialOperator,
     ImportModelOperator,
     ImportTerrainModelOperator,
-    ImportPointCloudOperator
+    ImportBulletMeshOperator,
+    ImportPointCloudModelOperator
 )
 
 
@@ -70,8 +71,17 @@ class HEIO_OT_Import_TerrainModel(ImportTerrainModelOperator):
         return {'FINISHED'}
 
 
-class HEIO_OT_Import_PointCloud(ImportPointCloudOperator):
-    bl_idname = "heio.import_pointcloud"
+class HEIO_OT_Import_CollisionMesh(ImportBulletMeshOperator):
+    bl_idname = "heio.import_collisionmesh"
+    bl_label = "HE Collision model (*.btmesh)"
+
+    def import_(self, context):
+        self.import_collision_mesh_files(context)
+        return {'FINISHED'}
+
+
+class HEIO_OT_Import_PointCloud_Model(ImportPointCloudModelOperator):
+    bl_idname = "heio.import_pointcloud_model"
     bl_label = "HE Point cloud (*.pcmodel)"
 
     def import_(self, context):

@@ -46,10 +46,13 @@ class HEIO_UL_CollisionInfoList(bpy.types.UIList):
             index,
             flt_flag):
 
+        split = layout.split(factor=0.1)
+        split.label(text=str(index))
+
         if item.custom or item.value_enum == 'ERROR_FALLBACK':
-            layout.label(text=f"Custom: {item.value}")
+            split.label(text=f"Custom: {item.value}")
         else:
-            layout.label(text=item.value_enum)
+            split.label(text=item.value_enum)
 
 
 class HEIO_MT_CollisionLayersContextMenu(bpy.types.Menu):

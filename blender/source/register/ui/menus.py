@@ -36,7 +36,8 @@ class TOPBAR_MT_HEIO_Import(bpy.types.Menu):
         layout.operator(import_operators.HEIO_OT_Import_Material.bl_idname)
         layout.operator(import_operators.HEIO_OT_Import_Model.bl_idname)
         layout.operator(import_operators.HEIO_OT_Import_TerrainModel.bl_idname)
-        layout.operator(import_operators.HEIO_OT_Import_PointCloud.bl_idname)
+        layout.operator(import_operators.HEIO_OT_Import_CollisionMesh.bl_idname)
+        layout.operator(import_operators.HEIO_OT_Import_PointCloud_Model.bl_idname)
 
     @staticmethod
     def menu_func(self, context):

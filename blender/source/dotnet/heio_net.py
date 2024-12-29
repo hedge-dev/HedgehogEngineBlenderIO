@@ -10,6 +10,9 @@ class HEIO_NET:
     MESH_DATA: any = None
     '''class HEIO.NET.MeshData'''
 
+    COLLISION_MESH_DATA: any = None
+    '''class HEIO.NET.CollisionMeshData'''
+
     VERTEX_MERGE_MODE: any = None
     '''enum HEIO.NET.VertexMergeMode'''
 
@@ -29,6 +32,7 @@ class HEIO_NET:
             Image,
             PythonHelpers,
             MeshData,
+            CollisionMeshData,
             VertexMergeMode,
             ResolveInfo,
             ModelHelper,
@@ -38,6 +42,7 @@ class HEIO_NET:
         cls.IMAGE = Image
         cls.PYTHON_HELPERS = PythonHelpers
         cls.MESH_DATA = MeshData
+        cls.COLLISION_MESH_DATA = CollisionMeshData
         cls.VERTEX_MERGE_MODE = VertexMergeMode
         cls.RESOLVE_INFO = ResolveInfo
         cls.MODEL_HELPER = ModelHelper

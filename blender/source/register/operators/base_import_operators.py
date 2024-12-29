@@ -13,7 +13,15 @@ from .base import HEIOBaseFileLoadOperator
 
 from .. import definitions
 
-from ...importing import i_image, i_material, i_mesh, i_node, i_model
+from ...importing import (
+    i_image,
+    i_material,
+    i_mesh,
+    i_node,
+    i_model,
+    i_collision_mesh
+)
+
 from ...dotnet import load_dotnet, SharpNeedle, HEIO_NET
 from ...utility.general import get_addon_preferences
 from ...utility import progress_console
@@ -384,7 +392,38 @@ class ImportTerrainModelOperator(ImportModelBaseOperator):
         self._import_model_files(context, SharpNeedle.TERRAIN_MODEL)
 
 
-class ImportPointCloudOperator(ImportModelBaseOperator):
+class ImportBulletMeshOperator(ImportOperator):
+
+    filter_glob: StringProperty(
+        default="*.btmesh",
+        options={'HIDDEN'},
+    )
+
+    def _setup(self, context):
+        super()._setup(context)
+
+        self.collision_mesh_converter = i_collision_mesh.CollisionMeshConverter(
+            self.target_definition
+        )
+
+    def import_collision_mesh_files(self, context: bpy.types.Context):
+        progress_console.update("Resolving & reading files")
+
+        directory = os.path.dirname(self.filepath)
+        filepaths = [os.path.join(directory, file.name) for file in self.files]
+
+        collision_meshes = HEIO_NET.MODEL_HELPER.LoadBulletMeshFiles(filepaths)
+
+        progress_console.update("Importing data")
+
+        meshes = self.collision_mesh_converter.convert_collision_meshes(collision_meshes)
+
+        for mesh in meshes:
+            obj = bpy.data.objects.new(mesh.name, mesh)
+            context.scene.collection.objects.link(obj)
+
+
+class ImportPointCloudModelOperator(ImportModelBaseOperator):
 
     filter_glob: StringProperty(
         default="*.pcmodel",
