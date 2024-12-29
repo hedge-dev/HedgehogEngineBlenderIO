@@ -1,5 +1,6 @@
 import bpy
 import bmesh
+from bpy.props import BoolProperty
 
 from .base import (
     HEIOBaseOperator,
@@ -7,6 +8,8 @@ from .base import (
     ListRemove,
     ListMove
 )
+
+from ...utility import attribute_utils
 
 
 class HEIO_OT_MeshLayer_Initialize(HEIOBaseOperator):
@@ -82,7 +85,7 @@ class MeshLayerEditOperator(HEIOBaseOperator):
 
 class HEIO_OT_MeshLayer_Assign(MeshLayerEditOperator):
     bl_idname = "heio.mesh_layer_assign"
-    bl_label = "Assign"
+    bl_label = "Assign mesh layer"
     bl_description = "Assign the active layer to selected polygons"
 
     def _execute(self, context):
@@ -100,30 +103,12 @@ class HEIO_OT_MeshLayer_Assign(MeshLayerEditOperator):
         return {'FINISHED'}
 
 
-class HEIO_OT_MeshLayer_Select(MeshLayerEditOperator):
-    bl_idname = "heio.mesh_layer_select"
-    bl_label = "Select"
+class HEIO_OT_MeshLayer_DeSelect(MeshLayerEditOperator):
+    bl_idname = "heio.mesh_layer_de_select"
+    bl_label = "De/Select mesh layer"
     bl_description = "Select polygons with the active layer"
 
-    def _execute(self, context):
-        active_index = bpy.context.edit_object.data.heio_mesh.layers.active_index
-        mesh = bpy.context.edit_object.data
-
-        bm = bmesh.from_edit_mesh(mesh)
-        layer = bm.faces.layers.int["Layer"]
-
-        for face in bm.faces:
-            if face[layer] == active_index:
-                face.select = True
-
-        bmesh.update_edit_mesh(mesh)
-        return {'FINISHED'}
-
-
-class HEIO_OT_MeshLayer_Deselect(MeshLayerEditOperator):
-    bl_idname = "heio.mesh_layer_deselect"
-    bl_label = "Deselect"
-    bl_description = "Deselect polygons with the active layer"
+    select: BoolProperty(options={'HIDDEN'})
 
     def _execute(self, context):
         active_index = bpy.context.edit_object.data.heio_mesh.layers.active_index
@@ -134,7 +119,7 @@ class HEIO_OT_MeshLayer_Deselect(MeshLayerEditOperator):
 
         for face in bm.faces:
             if face[layer] == active_index:
-                face.select = False
+                face.select = self.select
 
         bmesh.update_edit_mesh(mesh)
         return {'FINISHED'}
@@ -178,7 +163,23 @@ class HEIO_OT_MeshLayer_Remove(MeshLayerListOperator, ListRemove):
                 {'ERROR'}, f"The {target_list.active_element.name} layer is required!")
             return {'CANCELLED'}
 
-        return super().list_execute(context, target_list)
+        removed_index = super().list_execute(context, target_list)
+
+        if removed_index == 3:
+            attribute_utils.change_int_values(
+                context,
+                context.active_object.data,
+                "Layer",
+                removed_index,
+                0
+            )
+
+        attribute_utils.decrease_int_values(
+            context,
+            context.active_object.data,
+            "Layer",
+            removed_index,
+        )
 
 
 class HEIO_OT_MeshLayer_Move(MeshLayerListOperator, ListMove):
@@ -201,4 +202,15 @@ class HEIO_OT_MeshLayer_Move(MeshLayerListOperator, ListMove):
                 {'ERROR'}, f"The {target_list.active_element.name} layer cannot be moved up here!")
             return {'CANCELLED'}
 
-        return super().list_execute(context, target_list)
+        old_index, new_index = super().list_execute(context, target_list)
+
+        if old_index is not None:
+            attribute_utils.swap_int_values(
+                context,
+                context.active_object.data,
+                "Layer",
+                old_index,
+                new_index
+            )
+
+

@@ -1,13 +1,13 @@
 from typing import Union, Iterable
 import os
 import json
-from ...exceptions import HEIOException
+from ...exceptions import HEIODevException
 
 
 JSON_VALUE = Union[None, int, str, 'JSONWrapper']
 
 
-class HEIOJSONException(HEIOException):
+class HEIOJSONException(HEIODevException):
 
     json_data: 'JSONWrapper'
 

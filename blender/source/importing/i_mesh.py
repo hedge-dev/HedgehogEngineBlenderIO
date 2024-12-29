@@ -6,7 +6,7 @@ from . import i_material, i_model, i_sca_parameters
 from ..dotnet import HEIO_NET, SharpNeedle
 from ..register.definitions import TargetDefinition
 from ..utility import progress_console
-from ..exceptions import HEIOException
+from ..exceptions import HEIODevException
 from ..exporting import o_enum
 
 LAYER_LUT = {
@@ -424,4 +424,4 @@ class MeshConverter:
         if hasattr(key, "Name") and key.Name in self._mesh_name_lookup:
             return self._mesh_name_lookup[key.Name]
 
-        raise HEIOException("Model lookup failed")
+        raise HEIODevException("Model lookup failed")

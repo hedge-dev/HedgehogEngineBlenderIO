@@ -1,6 +1,5 @@
 from enum import Enum
 from .json_util import HEIOJSONException, JSONWrapper
-from ...exceptions import HEIOException
 
 
 class ShaderLayer(Enum):

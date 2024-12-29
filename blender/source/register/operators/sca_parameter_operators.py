@@ -11,7 +11,7 @@ from .base import (
 
 from .. import definitions
 
-from ...exceptions import HEIOException
+from ...exceptions import HEIODevException, HEIOUserException
 
 
 class SCAParameterOperator(HEIOBaseOperator):
@@ -32,31 +32,31 @@ class SCAParameterOperator(HEIOBaseOperator):
     def get_sca_parameter_list(self, context: bpy.types.Context):
         obj = context.active_object
         if obj is None:
-            raise HEIOException("No active object!")
+            raise HEIODevException("No active object!")
 
         if self.mode == "MATERIAL":
             if obj.active_material is None:
-                raise HEIOException("No active material!")
+                raise HEIODevException("No active material!")
 
             return obj.active_material.heio_material.sca_parameters
 
         elif self.mode == "MESH":
             if obj.type != 'MESH':
-                raise HEIOException("Active object is not a mesh!")
+                raise HEIODevException("Active object is not a mesh!")
 
             return obj.data.heio_mesh.sca_parameters
 
         elif self.mode == 'BONE':
             if obj.type != 'ARMATURE':
-                raise HEIOException("Active object is not an armature!")
+                raise HEIODevException("Active object is not an armature!")
 
             if context.active_bone is None:
-                raise HEIOException("No active bone!")
+                raise HEIODevException("No active bone!")
 
             return context.active_bone.heio_node.sca_parameters
 
         else:
-            raise HEIOException("Invalid parameter operator mode!")
+            raise HEIOUserException("Invalid parameter operator mode!")
 
     def _execute(self, context):
         parameter_list = self.get_sca_parameter_list(context)

@@ -149,10 +149,10 @@ class HEIO_PT_Mesh(PropertiesPanel):
         )
 
         if context.mode == 'EDIT_MESH':
-            row = body.row(align=True)
-            row.operator(mlo.HEIO_OT_MeshLayer_Assign.bl_idname)
-            row.operator(mlo.HEIO_OT_MeshLayer_Select.bl_idname)
-            row.operator(mlo.HEIO_OT_MeshLayer_Deselect.bl_idname)
+            row: bpy.types.UILayout = body.row(align=True)
+            row.operator(mlo.HEIO_OT_MeshLayer_Assign.bl_idname, text="Assign")
+            row.operator(mlo.HEIO_OT_MeshLayer_DeSelect.bl_idname, text="Select").select = True
+            row.operator(mlo.HEIO_OT_MeshLayer_DeSelect.bl_idname, text="Deselect").select = False
 
     @staticmethod
     def draw_meshgroups_panel(
@@ -187,10 +187,10 @@ class HEIO_PT_Mesh(PropertiesPanel):
         )
 
         if context.mode == 'EDIT_MESH':
-            row = body.row(align=True)
-            row.operator(mgo.HEIO_OT_Meshgroup_Assign.bl_idname)
-            row.operator(mgo.HEIO_OT_Meshgroup_Select.bl_idname)
-            row.operator(mgo.HEIO_OT_Meshgroup_Deselect.bl_idname)
+            row: bpy.types.UILayout = body.row(align=True)
+            row.operator(mgo.HEIO_OT_Meshgroup_Assign.bl_idname, text="Assign")
+            row.operator(mgo.HEIO_OT_Meshgroup_DeSelect.bl_idname, text="Select").select = True
+            row.operator(mgo.HEIO_OT_Meshgroup_DeSelect.bl_idname, text="Deselect").select = False
 
     @staticmethod
     def draw_material_properties(

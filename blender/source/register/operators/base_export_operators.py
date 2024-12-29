@@ -9,7 +9,7 @@ from bpy.props import (
 
 from .base import HEIOBaseDirectorySaveOperator
 from .. import definitions
-from ...exceptions import UserException
+from ...exceptions import HEIOUserException
 
 
 class ExportOperator(HEIOBaseDirectorySaveOperator):
@@ -24,7 +24,7 @@ class ExportOperator(HEIOBaseDirectorySaveOperator):
 
         self.target_definition = definitions.get_target_definition(context)
         if self.target_definition is None:
-            raise UserException("Invalid target game!")
+            raise HEIOUserException("Invalid target game!")
 
         return self.export(context)
 

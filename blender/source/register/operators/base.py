@@ -3,7 +3,7 @@ import bpy
 from bpy.props import EnumProperty, StringProperty, BoolProperty
 from bpy.types import Context, Event
 
-from ...exceptions import UserException
+from ...exceptions import HEIOUserException
 
 
 class HEIOBaseOperator(bpy.types.Operator):
@@ -14,7 +14,7 @@ class HEIOBaseOperator(bpy.types.Operator):
     def invoke(self, context: Context, event: Event):
         try:
             return self._invoke(context, event)
-        except UserException as e:
+        except HEIOUserException as e:
             self.report({'ERROR'}, e.message)
             return {'CANCELLED'}
 
@@ -24,7 +24,7 @@ class HEIOBaseOperator(bpy.types.Operator):
     def execute(self, context):
         try:
             return self._execute(context)
-        except UserException as e:
+        except HEIOUserException as e:
             self.report({'ERROR'}, e.message)
             return {'CANCELLED'}
 
@@ -154,7 +154,9 @@ class ListAdd:
 class ListRemove:
 
     def list_execute(self, context, target_list):  # pylint: disable=unused-argument
-        target_list.remove(target_list.active_index)
+        index = target_list.active_index
+        target_list.remove(index)
+        return index
 
 
 class ListMove:
@@ -171,7 +173,7 @@ class ListMove:
         old_index = target_list.active_index
 
         if old_index == -1:
-            return
+            return None, None
 
         new_index = (
             target_list.active_index
@@ -180,11 +182,13 @@ class ListMove:
         )
 
         if new_index < 0 or new_index >= len(target_list):
-            return
+            return None, None
 
         target_list.move(
             old_index,
             new_index)
+
+        return old_index, new_index
 
 
 class ListClear:

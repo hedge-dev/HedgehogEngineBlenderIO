@@ -10,7 +10,7 @@ from ..register.property_groups.material_properties import (
     HEIO_MaterialParameterList
 )
 
-from ..exceptions import HEIOException
+from ..exceptions import HEIODevException
 from ..utility.material_setup import (
     setup_and_update_materials
 )
@@ -223,4 +223,4 @@ class MaterialConverter:
         if key.Name in self._material_name_lookup:
             return self._material_name_lookup[key.Name]
 
-        raise HEIOException("Material lookup failed")
+        raise HEIODevException("Material lookup failed")

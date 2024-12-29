@@ -17,7 +17,7 @@ from ...importing import i_image, i_material, i_mesh, i_node, i_model
 from ...dotnet import load_dotnet, SharpNeedle, HEIO_NET
 from ...utility.general import get_addon_preferences
 from ...utility import progress_console
-from ...exceptions import UserException
+from ...exceptions import HEIOUserException
 
 
 class ImportOperator(HEIOBaseFileLoadOperator):
@@ -33,7 +33,7 @@ class ImportOperator(HEIOBaseFileLoadOperator):
 
         self.target_definition = definitions.get_target_definition(context)
         if self.target_definition is None:
-            raise UserException("Invalid target game!")
+            raise HEIOUserException("Invalid target game!")
 
         self.addon_preference = get_addon_preferences(context)
         self._setup(context)

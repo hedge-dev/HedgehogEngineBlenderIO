@@ -3,7 +3,7 @@ from mathutils import Vector
 
 from ..dotnet import SharpNeedle
 
-from ..exceptions import HEIOException
+from ..exceptions import HEIODevException
 
 
 class ModelInfo:
@@ -82,10 +82,10 @@ class ModelInfo:
             add_mesh(bpy.data.objects.new(name, self.meshes[0]))
 
         elif len(self.meshes) == 0:
-            HEIOException("Model has no meshes!")
+            raise HEIODevException("Model has no meshes!")
 
         else:
-            HEIOException("Model has too many meshes!")
+            raise HEIODevException("Model has too many meshes!")
 
         return mesh_objs, armature_obj
 

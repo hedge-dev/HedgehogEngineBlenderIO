@@ -69,27 +69,6 @@ def _set_item(collision_info, enum_index):
     collision_info.value = info_set.item_index_to_value[enum_index]
 
 
-def _get_list_from_collision_info(collision_info):
-    props = collision_info.id_data.heio_collision_mesh
-    if collision_info.type == 1:
-        return props.types
-
-    path = repr(collision_info)
-    if path.count("[") == 2:
-        return props.flags
-
-    index_start = path.find("[", 17) + 1
-    index_end = path.find("]", index_start)
-    layer_index = int(path[index_start:index_end])
-    return props.layers[layer_index].convex_flags
-
-
-def _update_collision_info(collision_info, context):
-    list = _get_list_from_collision_info(collision_info)
-    index = list.get_index(collision_info)
-    list.sort_element(index)
-
-
 class BaseCollisionInfo:
 
     custom: BoolProperty(
@@ -105,8 +84,7 @@ class BaseCollisionInfo:
 
     value: IntProperty(
         name="Value",
-        min=0,
-        update=_update_collision_info
+        min=0
     )
 
 
@@ -129,25 +107,6 @@ class BaseCollisionInfoList(BaseList):
         attribute = self.attribute
         if not self._check_attribute_invalid(attribute):
             self.id_data.attributes.remove(attribute)
-
-    def sort_element(self, index):
-        element = self[index]
-        if element.type == 0:
-            return
-
-        for i, other_element in enumerate(self):
-            if i == index:
-                continue
-
-            if other_element.value > element.value:
-                if i > index:
-                    i -= 1
-                break
-
-        if i < 0 or i == index or self[i].value == element.value:
-            return
-
-        self.move(index, i)
 
     @staticmethod
     def _check_attribute_invalid(attribute: bpy.types.Attribute | None):

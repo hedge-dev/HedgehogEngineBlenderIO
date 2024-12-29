@@ -31,19 +31,6 @@ COLLISION_MESH_INFO_TOOLS: list[TOOL_PROPERTY] = [
     )
 ]
 
-COLLISION_MESH_INFO_TOOLS_NO_MOVE: list[TOOL_PROPERTY] = [
-    (
-        cmo.HEIO_OT_CollisionMeshInfo_Add.bl_idname,
-        "ADD",
-        {}
-    ),
-    (
-        cmo.HEIO_OT_CollisionMeshInfo_Remove.bl_idname,
-        "REMOVE",
-        {}
-    )
-]
-
 
 class HEIO_UL_CollisionInfoList(bpy.types.UIList):
 
@@ -70,7 +57,7 @@ class HEIO_MT_CollisionLayersContextMenu(bpy.types.Menu):
 
     def draw(self, context):
         op = self.layout.operator(
-            cmo.HEIO_OT_CollisionMeshInfo_Delete.bl_idname)
+            cmo.HEIO_OT_CollisionMeshInfo_Delete.bl_idname, text="Delete collision layer information")
         op.type = 'LAYERS'
 
 
@@ -79,7 +66,7 @@ class HEIO_MT_CollisionTypesContextMenu(bpy.types.Menu):
 
     def draw(self, context):
         op = self.layout.operator(
-            cmo.HEIO_OT_CollisionMeshInfo_Delete.bl_idname)
+            cmo.HEIO_OT_CollisionMeshInfo_Delete.bl_idname, text="Delete collision type information")
         op.type = 'TYPES'
 
 
@@ -88,7 +75,7 @@ class HEIO_MT_CollisionFlagsContextMenu(bpy.types.Menu):
 
     def draw(self, context):
         op = self.layout.operator(
-            cmo.HEIO_OT_CollisionMeshInfo_Delete.bl_idname)
+            cmo.HEIO_OT_CollisionMeshInfo_Delete.bl_idname, text="Delete collision flag information")
         op.type = 'FLAGS'
 
 
@@ -99,7 +86,31 @@ class HEIO_PT_CollisionMesh(PropertiesPanel):
     @staticmethod
     def _draw_collision_info_editor(
             layout: bpy.types.UILayout,
-            collision_info):
+            context: bpy.types.Context,
+            collision_info,
+            type: str):
+
+        if type is not None and context.mode == 'EDIT_MESH':
+
+            row = layout.row(align=True)
+            def setup_op(operator, text):
+                op = row.operator(operator.bl_idname, text=text)
+                op.type = type
+                return op
+
+            if collision_info.type == 2:
+                setup_op(cmo.HEIO_OT_CollisionMeshInfo_Assign, "Assign")
+                setup_op(cmo.HEIO_OT_CollisionFlag_Remove, "Remove")
+
+                row = layout.row(align=True)
+                setup_op(cmo.HEIO_OT_CollisionMeshInfo_DeSelect, "Select").select = True
+                setup_op(cmo.HEIO_OT_CollisionMeshInfo_DeSelect, "Deselect").select = False
+
+            else:
+                setup_op(cmo.HEIO_OT_CollisionMeshInfo_Assign, "Assign")
+                setup_op(cmo.HEIO_OT_CollisionMeshInfo_DeSelect, "Select").select = True
+                setup_op(cmo.HEIO_OT_CollisionMeshInfo_DeSelect, "Deselect").select = False
+
 
         layout.use_property_split = True
         layout.use_property_decorate = False
@@ -111,7 +122,6 @@ class HEIO_PT_CollisionMesh(PropertiesPanel):
         else:
             layout.prop(collision_info, "value_enum")
 
-
     @staticmethod
     def _draw_collision_info_list(
             layout: bpy.types.UILayout,
@@ -119,7 +129,7 @@ class HEIO_PT_CollisionMesh(PropertiesPanel):
             collision_info_list: BaseCollisionInfoList,
             type: str,
             menu: bpy.types.Menu | None,
-            tools : list[TOOL_PROPERTY]):
+            tools: list[TOOL_PROPERTY]):
 
         lower = type.lower()
         upper = type.upper()
@@ -160,7 +170,7 @@ class HEIO_PT_CollisionMesh(PropertiesPanel):
         if collision_info is None:
             return None
 
-        HEIO_PT_CollisionMesh._draw_collision_info_editor(body, collision_info)
+        HEIO_PT_CollisionMesh._draw_collision_info_editor(body, context, collision_info, upper)
         return body
 
     @staticmethod
@@ -183,7 +193,8 @@ class HEIO_PT_CollisionMesh(PropertiesPanel):
             "heio_collision_mesh_info_layer_type", default_closed=False)
         header.label(text="Convex layer type")
         if body:
-            HEIO_PT_CollisionMesh._draw_collision_info_editor(body, layer.convex_type)
+            HEIO_PT_CollisionMesh._draw_collision_info_editor(
+                body, context, layer.convex_type, None)
 
         header, body = layout.panel(
             "heio_collision_mesh_info_layer_flags", default_closed=False)
@@ -198,19 +209,17 @@ class HEIO_PT_CollisionMesh(PropertiesPanel):
                 HEIO_UL_CollisionInfoList,
                 None,
                 layer.convex_flags,
-                COLLISION_MESH_INFO_TOOLS_NO_MOVE,
+                COLLISION_MESH_INFO_TOOLS,
                 set_op_type
             )
 
             flag_info = layer.convex_flags.active_element
             if flag_info is not None:
-                 HEIO_PT_CollisionMesh._draw_collision_info_editor(body, flag_info)
-
-
-    # === overriden methods === #
+                HEIO_PT_CollisionMesh._draw_collision_info_editor(
+                    body, context, flag_info, None)
 
     @staticmethod
-    def draw_material_properties(
+    def draw_collision_mesh_properties(
             layout: bpy.types.UILayout,
             context: bpy.types.Context,
             mesh: bpy.types.Mesh):
@@ -236,7 +245,7 @@ class HEIO_PT_CollisionMesh(PropertiesPanel):
             collision_mesh.types,
             'Types',
             HEIO_MT_CollisionTypesContextMenu,
-            COLLISION_MESH_INFO_TOOLS_NO_MOVE
+            COLLISION_MESH_INFO_TOOLS
         )
 
         HEIO_PT_CollisionMesh._draw_collision_info_list(
@@ -245,8 +254,10 @@ class HEIO_PT_CollisionMesh(PropertiesPanel):
             collision_mesh.flags,
             'Flags',
             HEIO_MT_CollisionFlagsContextMenu,
-            COLLISION_MESH_INFO_TOOLS_NO_MOVE
+            COLLISION_MESH_INFO_TOOLS
         )
+
+    # === overriden methods === #
 
     @classmethod
     def poll(cls, context: bpy.types.Context):
@@ -265,7 +276,7 @@ class HEIO_PT_CollisionMesh(PropertiesPanel):
 
     def draw_panel(self, context):
 
-        HEIO_PT_CollisionMesh.draw_material_properties(
+        HEIO_PT_CollisionMesh.draw_collision_mesh_properties(
             self.layout,
             context,
             context.active_object.data)

@@ -8,7 +8,6 @@ from .base import (
 )
 
 from ..property_groups.material_properties import HEIO_Material
-from ...exceptions import HEIOException
 
 
 class MaterialParameterOperator(HEIOBaseOperator):
@@ -28,10 +27,8 @@ class MaterialParameterOperator(HEIOBaseOperator):
 
         if self.mode == "PARAMETER":
             return material.parameters
-        elif self.mode == "TEXTURE":
+        else: # TEXTURE
             return material.textures
-        else:
-            raise HEIOException("Invalid parameter operator mode!")
 
     def _execute(self, context):
         parameter_list = self.get_parameter_list(context)

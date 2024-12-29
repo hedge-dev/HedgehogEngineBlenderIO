@@ -1,5 +1,6 @@
 import bpy
 import bmesh
+from bpy.props import BoolProperty
 
 from .base import (
     HEIOBaseOperator,
@@ -7,6 +8,8 @@ from .base import (
     ListRemove,
     ListMove
 )
+
+from ...utility import attribute_utils
 
 
 class HEIO_OT_Meshgroup_Initialize(HEIOBaseOperator):
@@ -80,7 +83,7 @@ class MeshgroupEditOperator(HEIOBaseOperator):
 
 class HEIO_OT_Meshgroup_Assign(MeshgroupEditOperator):
     bl_idname = "heio.meshgroup_assign"
-    bl_label = "Assign"
+    bl_label = "Assign mesh group"
     bl_description = "Assign the activegroup to selected polygons"
 
     def _execute(self, context):
@@ -98,30 +101,12 @@ class HEIO_OT_Meshgroup_Assign(MeshgroupEditOperator):
         return {'FINISHED'}
 
 
-class HEIO_OT_Meshgroup_Select(MeshgroupEditOperator):
-    bl_idname = "heio.meshgroup_select"
-    bl_label = "Select"
+class HEIO_OT_Meshgroup_DeSelect(MeshgroupEditOperator):
+    bl_idname = "heio.meshgroup_de_select"
+    bl_label = "De/Select mesh group"
     bl_description = "Select polygons with the active meshgroup"
 
-    def _execute(self, context):
-        active_index = bpy.context.edit_object.data.heio_mesh.meshgroups.active_index
-        mesh = bpy.context.edit_object.data
-
-        bm = bmesh.from_edit_mesh(mesh)
-        meshgroup = bm.faces.layers.int["Meshgroup"]
-
-        for face in bm.faces:
-            if face[meshgroup] == active_index:
-                face.select = True
-
-        bmesh.update_edit_mesh(mesh)
-        return {'FINISHED'}
-
-
-class HEIO_OT_Meshgroup_Deselect(MeshgroupEditOperator):
-    bl_idname = "heio.meshgroup_deselect"
-    bl_label = "Deselect"
-    bl_description = "Deselect polygons with the active meshgroup"
+    select: BoolProperty(options={'HIDDEN'})
 
     def _execute(self, context):
         active_index = bpy.context.edit_object.data.heio_mesh.meshgroups.active_index
@@ -132,7 +117,7 @@ class HEIO_OT_Meshgroup_Deselect(MeshgroupEditOperator):
 
         for face in bm.faces:
             if face[meshgroup] == active_index:
-                face.select = False
+                face.select = self.select
 
         bmesh.update_edit_mesh(mesh)
         return {'FINISHED'}
@@ -171,12 +156,19 @@ class HEIO_OT_Meshgroup_Remove(MeshgroupListOperator, ListRemove):
             self.report({'ERROR'}, f"Cannot remove meshgroups during edit mode!")
             return {'CANCELLED'}
 
-        if len(target_list) < 2:
+        if len(target_list) <= 1:
             self.report(
                 {'ERROR'}, f"At least one meshgroup has to exist!")
             return {'CANCELLED'}
 
-        return super().list_execute(context, target_list)
+        removed_index = super().list_execute(context, target_list)
+
+        attribute_utils.decrease_int_values(
+            context,
+            context.active_object.data,
+            "Meshgroup",
+            max(removed_index, 1),
+        )
 
 
 class HEIO_OT_Meshgroup_Move(MeshgroupListOperator, ListMove):
@@ -189,4 +181,13 @@ class HEIO_OT_Meshgroup_Move(MeshgroupListOperator, ListMove):
             self.report({'ERROR'}, f"Cannot move meshgroups during edit mode!")
             return {'CANCELLED'}
 
-        return super().list_execute(context, target_list)
+        old_index, new_index = super().list_execute(context, target_list)
+
+        if old_index is not None:
+            attribute_utils.swap_int_values(
+                context,
+                context.active_object.data,
+                "Meshgroup",
+                old_index,
+                new_index
+            )

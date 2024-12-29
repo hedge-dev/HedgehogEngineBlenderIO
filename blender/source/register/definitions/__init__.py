@@ -58,6 +58,6 @@ def get_target_definition(context: bpy.types.Context | None):
 
     target_game = context.scene.heio_scene.target_game
     if target_game not in TARGET_DEFINITIONS:
-        raise HEIOException(f"Target game \"{target_game}\" is not defined")
+        return None
 
     return TARGET_DEFINITIONS[target_game]
