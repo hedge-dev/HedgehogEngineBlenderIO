@@ -19,7 +19,8 @@ from ...importing import (
     i_mesh,
     i_node,
     i_model,
-    i_collision_mesh
+    i_collision_mesh,
+    i_pointcloud
 )
 
 from ...dotnet import load_dotnet, SharpNeedle, HEIO_NET
@@ -416,19 +417,42 @@ class ImportBulletMeshOperator(ImportOperator):
 
         progress_console.update("Importing data")
 
-        meshes = self.collision_mesh_converter.convert_collision_meshes(collision_meshes)
+        meshes = self.collision_mesh_converter.convert_collision_meshes(
+            collision_meshes)
 
         for mesh in meshes:
             obj = bpy.data.objects.new(mesh.name, mesh)
             context.scene.collection.objects.link(obj)
 
 
-class ImportPointCloudModelOperator(ImportModelBaseOperator):
+class ImportPointCloudOperator(ImportModelBaseOperator, ImportBulletMeshOperator):
 
     filter_glob: StringProperty(
-        default="*.pcmodel",
+        default="*.pcmodel;*.pccol",
         options={'HIDDEN'},
     )
+
+    def _import_point_cloud_models(self, context: bpy.types.Context, point_cloud_collection):
+        progress_console.update("Importing Models")
+
+        model_infos = self.node_converter.convert_model_sets(
+            point_cloud_collection.Models)
+
+        collections = i_pointcloud.convert_point_clouds(
+            context, point_cloud_collection.ModelCollections, model_infos)
+
+        self._setup_lod_models(context, model_infos)
+
+        return collections
+
+    def _import_point_cloud_collision_meshes(self, context: bpy.types.Context, point_cloud_collection):
+        progress_console.update("Importing Collision Meshes")
+
+        collision_meshes = self.collision_mesh_converter.convert_collision_meshes(
+            point_cloud_collection.CollisionMeshes)
+
+        return i_pointcloud.convert_point_clouds(
+            context, point_cloud_collection.CollisionMeshCollections, collision_meshes)
 
     def import_point_cloud_files(self, context: bpy.types.Context):
         progress_console.update("Resolving & reading files")
@@ -441,15 +465,12 @@ class ImportPointCloudModelOperator(ImportModelBaseOperator):
 
         self.resolve_infos.append(resolve_info)
 
-        progress_console.update("Importing data")
-        model_infos = self.node_converter.convert_model_sets(
-            point_cloud_collection.Models)
+        collections = []
 
-        from ...importing import i_pointcloud
-        collections = i_pointcloud.convert_point_cloud_collection(
-            context, point_cloud_collection, model_infos)
+        collections += self._import_point_cloud_models(
+            context, point_cloud_collection)
+        collections += self._import_point_cloud_collision_meshes(
+            context, point_cloud_collection)
 
         for collection in collections:
             context.collection.children.link(collection)
-
-        self._setup_lod_models(context, model_infos)

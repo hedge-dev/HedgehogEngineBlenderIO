@@ -1,4 +1,5 @@
 ﻿using SharpNeedle.Framework.HedgehogEngine.Mirage;
+using SharpNeedle.Framework.HedgehogEngine.Mirage.Bullet;
 using SharpNeedle.Framework.SonicTeam;
 using SharpNeedle.IO;
 using SharpNeedle.Resource;
@@ -13,7 +14,7 @@ namespace HEIO.NET
     public class PointCloudCollection
     {
         private static readonly string[] _modelFileExtensions = [".terrain-model", ".model"];
-        private static readonly string[] _collisionFileExtensions = [".bcmesh"];
+        private static readonly string[] _collisionFileExtensions = [".btmesh", "_col.btmesh"];
         private static readonly string[] _lightFileExtensions = [".light"];
 
         public readonly struct Point
@@ -57,11 +58,17 @@ namespace HEIO.NET
 
         public Collection[] ModelCollections { get; }
 
+        public BulletMesh[] CollisionMeshes { get; }
 
-        public PointCloudCollection(ModelSet[] models, Collection[] modelCollections)
+        public Collection[] CollisionMeshCollections { get; }
+
+
+        public PointCloudCollection(ModelSet[] models, Collection[] modelCollections, BulletMesh[] collisionMeshes, Collection[] collisionMeshCollections)
         {
             Models = models;
             ModelCollections = modelCollections;
+            CollisionMeshes = collisionMeshes;
+            CollisionMeshCollections = collisionMeshCollections;
         }
 
 
@@ -166,10 +173,21 @@ namespace HEIO.NET
             }
 
             ResolveInfo terrainResolveInfo = dependencyManager.ResolveDependencies(modelFiles, ModelHelper.ResolveModelMaterials);
-
             resolveInfo = ResolveInfo.Combine(pointCloudInfo, terrainResolveInfo);
 
-            return new(modelSets, modelCollections);
+
+            (Collection[] collisionMeshCollections, IFile[] bulletMeshFiles) = ToCollections(btmeshClouds);
+            BulletMesh[] bulletMeshes = new BulletMesh[bulletMeshFiles.Length];
+
+            for(int i = 0; i < bulletMeshes.Length; i++)
+            {
+                IFile file = bulletMeshFiles[i];
+                BulletMesh mesh = new();
+                mesh.Read(file);
+                bulletMeshes[i] = mesh;
+            }
+
+            return new(modelSets, modelCollections, bulletMeshes, collisionMeshCollections);
         }
 
         private static (Collection[], IFile[]) ToCollections(List<(PointCloud, Dictionary<string, IFile>)> clouds)
