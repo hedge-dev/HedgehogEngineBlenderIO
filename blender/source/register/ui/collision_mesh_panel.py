@@ -46,7 +46,7 @@ class HEIO_UL_CollisionInfoList(bpy.types.UIList):
             index,
             flt_flag):
 
-        if item.custom:
+        if item.custom or item.value_enum == 'ERROR_FALLBACK':
             layout.label(text=f"Custom: {item.value}")
         else:
             layout.label(text=item.value_enum)
@@ -115,7 +115,8 @@ class HEIO_PT_CollisionMesh(PropertiesPanel):
         layout.use_property_split = True
         layout.use_property_decorate = False
 
-        layout.prop(collision_info, "custom")
+        if collision_info.custom or not context.scene.heio_scene.hide_custom_mesh_collision_info_toggle:
+            layout.prop(collision_info, "custom")
 
         if collision_info.custom:
             layout.prop(collision_info, "value")
@@ -223,6 +224,8 @@ class HEIO_PT_CollisionMesh(PropertiesPanel):
             layout: bpy.types.UILayout,
             context: bpy.types.Context,
             mesh: bpy.types.Mesh):
+
+        layout.prop(context.scene.heio_scene, "hide_custom_mesh_collision_info_toggle")
 
         collision_mesh: HEIO_CollisionMesh = mesh.heio_collision_mesh
 

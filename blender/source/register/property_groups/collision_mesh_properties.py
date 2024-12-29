@@ -64,7 +64,7 @@ def _set_item(collision_info, enum_index):
     prev_value = collision_info.value
 
     if not info_set.has_value(prev_value):
-        enum_index += 1
+        enum_index -= 1
 
     collision_info.value = info_set.item_index_to_value[enum_index]
 

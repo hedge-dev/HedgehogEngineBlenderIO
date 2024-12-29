@@ -54,6 +54,12 @@ class HEIO_Scene(bpy.types.PropertyGroup):
         description="Show all shaders defined, instead of only the commonly used ones."
     )
 
+    hide_custom_mesh_collision_info_toggle: BoolProperty(
+        name="Hide custom mesh collision info toggle",
+        description="Whether to hide the \"use custom value\" toggles on collision mesh info (when they are unchecked)",
+        default=True
+    )
+
     @classmethod
     def register(cls):
         bpy.types.Scene.heio_scene = bpy.props.PointerProperty(type=cls)
