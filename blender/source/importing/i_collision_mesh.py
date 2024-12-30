@@ -1,7 +1,6 @@
 import bpy
-from mathutils import Vector
 
-from ..dotnet import HEIO_NET, SharpNeedle
+from ..dotnet import HEIO_NET
 from ..register.definitions import TargetDefinition
 from ..register.property_groups.collision_mesh_properties import HEIO_CollisionMesh
 from ..utility import progress_console
@@ -12,19 +11,36 @@ class CollisionMeshConverter:
 
     _target_definition: TargetDefinition
 
+    _merge_vertices: bool
+    _vertex_merge_distance: float
+    _remove_unused_vertices: bool
+
     converted_meshes: dict[any, bpy.types.Mesh]
     _mesh_name_lookup: dict[str, bpy.types.Mesh]
 
-    def __init__(self, target_definition: TargetDefinition):
+    def __init__(
+            self,
+            target_definition: TargetDefinition,
+            merge_vertices: bool,
+            vertex_merge_distance: float,
+            remove_unused_vertices: bool):
 
         self._target_definition = target_definition
+
+        self._merge_vertices = merge_vertices
+        self._vertex_merge_distance = vertex_merge_distance
+        self._remove_unused_vertices = remove_unused_vertices
 
         self.converted_meshes = {}
         self._mesh_name_lookup = {}
 
     def _convert_mesh(self, collision_mesh):
 
-        mesh_data = HEIO_NET.COLLISION_MESH_DATA.FromBulletMesh(collision_mesh)
+        mesh_data = HEIO_NET.COLLISION_MESH_DATA.FromBulletMesh(
+            collision_mesh,
+            self._merge_vertices,
+            self._vertex_merge_distance,
+            self._remove_unused_vertices)
 
         mesh = bpy.data.meshes.new(collision_mesh.Name)
 

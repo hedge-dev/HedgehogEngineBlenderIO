@@ -135,7 +135,8 @@ class MeshConverter:
 
     @staticmethod
     def _create_polygon_layer_attributes(mesh: bpy.types.Mesh, mesh_data):
-        mesh.heio_mesh.initialize_layers()
+        layers = mesh.heio_mesh.layers
+        layers.initialize()
         set_slot_indices = []
         special_layer_map = {}
 
@@ -148,7 +149,7 @@ class MeshConverter:
 
                     special_layer_map[layer.Name] = layer_index
 
-                    special_layer_name = mesh.heio_mesh.special_layer_names.new()
+                    special_layer_name = layers.new()
                     special_layer_name.name = layer.Name
 
                 else:
@@ -156,20 +157,21 @@ class MeshConverter:
 
             set_slot_indices.extend([layer_index] * size)
 
-        mesh.attributes["Layer"].data.foreach_set("value", set_slot_indices)
+        layers.attribute.data.foreach_set("value", set_slot_indices)
 
     @staticmethod
     def _create_polygon_meshgroup_attributes(mesh: bpy.types.Mesh, mesh_data):
-        mesh.heio_mesh.initialize_meshgroups()
+        groups = mesh.heio_mesh.groups
+        groups.initialize()
         group_indices = []
         set_offset = 0
 
         for group_index, group in enumerate(zip(mesh_data.GroupNames, mesh_data.GroupSizes)):
 
             if group_index == 0:
-                meshgroup = mesh.heio_mesh.meshgroups[0]
+                meshgroup = groups[0]
             else:
-                meshgroup = mesh.heio_mesh.meshgroups.new()
+                meshgroup = groups.new()
 
             meshgroup.name = group[0]
 
@@ -178,7 +180,7 @@ class MeshConverter:
                     [group_index] * mesh_data.SetSizes[i + set_offset])
             set_offset += group[1]
 
-        mesh.attributes["Meshgroup"].data.foreach_set("value", group_indices)
+        groups.attribute.data.foreach_set("value", group_indices)
 
     @staticmethod
     def _convert_texcords(mesh: bpy.types.Mesh, mesh_data):

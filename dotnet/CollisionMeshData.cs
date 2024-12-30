@@ -1,6 +1,7 @@
 ﻿using HEIO.NET.VertexUtils;
 using SharpNeedle.Framework.HedgehogEngine.Mirage.Bullet;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
@@ -66,7 +67,7 @@ namespace HEIO.NET
         }
 
 
-        public static CollisionMeshData FromBulletMesh(BulletMesh mesh)
+        public static CollisionMeshData FromBulletMesh(BulletMesh mesh, bool mergeVertices, float vertexMergeDistance, bool removeUnusedVertices)
         {
             CollisionMeshData result = new([], [], [], [], []);
 
@@ -108,7 +109,6 @@ namespace HEIO.NET
                     layer = new((uint)(shape.Faces!.Length / 3), shape.Layer, shape.IsConvex);
 
                     SortedSet<CompTri> usedTriangles = [];
-
                     for(int i = 0; i < shape.Faces.Length; i+= 3)
                     {
                         uint t1 = shape.Faces[i];
@@ -191,6 +191,56 @@ namespace HEIO.NET
                     }
 
                     result.Flags[i] = flag;
+                }
+            }
+
+            if(mergeVertices)
+            {
+                float mergeDistanceSquared = vertexMergeDistance * vertexMergeDistance;
+                EqualityComparer<Vector3> mergeComparer = EqualityComparer<Vector3>.Create((v1, v2) =>
+                        Vector3.DistanceSquared(v1, v2) < mergeDistanceSquared);
+
+                if(DistinctMap.TryCreateDistinctMap(result.Vertices, mergeComparer, out DistinctMap<Vector3> map))
+                {
+                    result.Vertices = map.ValueArray;
+                    for(int i = 0; i < result.TriangleIndices.Count; i++)
+                    {
+                        result.TriangleIndices[i] = map[result.TriangleIndices[i]];
+                    }
+                }
+            }
+
+            if(removeUnusedVertices)
+            {
+                bool[] useChecks = new bool[result.Vertices.Count];
+                for(int i = 0; i < result.TriangleIndices.Count; i++)
+                {
+                    useChecks[result.TriangleIndices[i]] = true;
+                }
+
+                int unused = useChecks.Count(x => !x);
+                if(unused > 0)
+                {
+                    Vector3[] usedVertices = new Vector3[result.Vertices.Count - unused];
+                    uint[] map = new uint[result.Vertices.Count];
+                    uint targetIndex = 0;
+
+                    for(int i = 0; i < result.Vertices.Count; i++)
+                    {
+                        if(!useChecks[i])
+                        {
+                            continue;
+                        }
+
+                        usedVertices[targetIndex] = result.Vertices[i];
+                        map[i] = targetIndex;
+                        targetIndex++;
+                    }
+
+                    for(int i = 0; i < result.TriangleIndices.Count; i++)
+                    {
+                        result.TriangleIndices[i] = map[result.TriangleIndices[i]];
+                    }
                 }
             }
 

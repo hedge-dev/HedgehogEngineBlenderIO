@@ -98,6 +98,8 @@ class ImportOperator(HEIOBaseFileLoadOperator):
     def poll(cls, context):
         return context.mode == 'OBJECT'
 
+    def draw(self, context):
+        self.layout.use_property_decorate = False
 
 class ImportMaterialOperator(ImportOperator):
 
@@ -149,7 +151,6 @@ class ImportMaterialOperator(ImportOperator):
             return
 
         body.use_property_split = False
-        body.use_property_decorate = False
 
         body.prop(self, "create_undefined_parameters")
         body.prop(self, "import_images")
@@ -242,10 +243,10 @@ class ImportModelBaseOperator(ImportMaterialOperator):
     vertex_merge_distance: FloatProperty(
         name="Merge distance",
         description="The distance two vertices have to be apart from each other to be merged",
-        default=0.001,
-        precision=3,
+        default=0.0001,
+        precision=4,
         min=0,
-        soft_min=0.001,
+        soft_min=0.0001,
         soft_max=0.1,
     )
 
@@ -288,11 +289,11 @@ class ImportModelBaseOperator(ImportMaterialOperator):
             return
 
         body.use_property_split = True
-        body.use_property_decorate = False
 
         merge_header, merge_body = body.panel(
             "HEIO_import_model_merge", default_closed=True)
         merge_header.prop(self, "vertex_merge_mode")
+
 
         if merge_body:
             merge_body.active = self.vertex_merge_mode != 'NONE'
@@ -300,6 +301,7 @@ class ImportModelBaseOperator(ImportMaterialOperator):
             merge_body.prop(self, "merge_split_edges")
             body.separator()
 
+        body.use_property_split = False
         body.prop(self, "create_mesh_layer_attributes")
         body.prop(self, "create_meshgroup_attributes")
         body.prop(self, "import_tangents")
@@ -393,19 +395,70 @@ class ImportTerrainModelOperator(ImportModelBaseOperator):
         self._import_model_files(context, SharpNeedle.TERRAIN_MODEL)
 
 
-class ImportBulletMeshOperator(ImportOperator):
+class ImportCollisionMeshOperator(ImportOperator):
 
     filter_glob: StringProperty(
         default="*.btmesh",
         options={'HIDDEN'},
     )
 
+    merge_collision_verts: BoolProperty(
+        name="Merge vertices",
+        description="Merge vertices by distance",
+        default=True
+    )
+
+    merge_collision_vert_distance: FloatProperty(
+        name="Merge distance",
+        description="The distance two vertices have to be apart from each other to be merged",
+        default=0.0001,
+        precision=4,
+        min=0,
+        soft_min=0.0001,
+        soft_max=0.1
+    )
+
+    remove_unused_vertices: BoolProperty(
+        name="Remove unused vertices",
+        description="Removes vertices that do not affect convex shapes or are not referenced by polygons",
+        default=True
+    )
+
     def _setup(self, context):
         super()._setup(context)
 
         self.collision_mesh_converter = i_collision_mesh.CollisionMeshConverter(
-            self.target_definition
+            self.target_definition,
+            self.merge_collision_verts,
+            self.merge_collision_vert_distance,
+            self.remove_unused_vertices
         )
+
+    def draw_panel_collision_mesh(self):
+        header, body = self.layout.panel(
+            "HEIO_import_collision_mesh", default_closed=False)
+        header.label(text="Collision mesh")
+
+        if not body:
+            return
+
+        body.use_property_split = True
+
+        merge_header, merge_body = body.panel(
+            "HEIO_import_collision_mesh_merge", default_closed=True)
+        merge_header.row(heading="Merge vertices").prop(self, "merge_collision_verts", text="")
+
+        if merge_body:
+            merge_body.active = self.merge_collision_verts
+            merge_body.prop(self, "merge_collision_vert_distance")
+            body.separator()
+
+        body.use_property_split = False
+        body.prop(self, "remove_unused_vertices")
+
+    def draw(self, context: Context):
+        super().draw(context)
+        self.draw_panel_collision_mesh()
 
     def import_collision_mesh_files(self, context: bpy.types.Context):
         progress_console.update("Resolving & reading files")
@@ -425,7 +478,7 @@ class ImportBulletMeshOperator(ImportOperator):
             context.scene.collection.objects.link(obj)
 
 
-class ImportPointCloudOperator(ImportModelBaseOperator, ImportBulletMeshOperator):
+class ImportPointCloudOperator(ImportCollisionMeshOperator, ImportModelBaseOperator):
 
     filter_glob: StringProperty(
         default="*.pcmodel;*.pccol",
