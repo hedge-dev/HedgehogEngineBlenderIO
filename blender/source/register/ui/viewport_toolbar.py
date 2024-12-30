@@ -1,13 +1,9 @@
 import bpy
 
-from ..operators.material_operators import (
-    HEIO_OT_Material_SetupNodes
-)
-
-from ..operators.info_operators import (
-    HEIO_OT_Info_Manual,
-    HEIO_OT_Info_Discord,
-    HEIO_OT_Info_Report
+from .. operators import (
+    mesh_split_merge_operators,
+    material_operators,
+    info_operators
 )
 
 class ViewportToolPanel(bpy.types.Panel):
@@ -15,6 +11,18 @@ class ViewportToolPanel(bpy.types.Panel):
     bl_region_type = 'UI'
     bl_category = "HEIO Tools"
     bl_options = {'DEFAULT_CLOSED'}
+
+class HEIO_PT_VTP_Mesh(bpy.types.Panel):
+    bl_label = "Mesh"
+    bl_space_type = 'VIEW_3D'
+    bl_region_type = 'UI'
+    bl_category = "HEIO Tools"
+
+    def draw(self, context):
+        layout = self.layout
+
+        layout.operator(mesh_split_merge_operators.HEIO_OT_SplitMeshGroups.bl_idname)
+        layout.operator(mesh_split_merge_operators.HEIO_OT_SplitCollisionMeshLayers.bl_idname)
 
 
 class HEIO_PT_VTP_Material(bpy.types.Panel):
@@ -26,7 +34,7 @@ class HEIO_PT_VTP_Material(bpy.types.Panel):
     def draw(self, context):
         layout = self.layout
 
-        layout.operator(HEIO_OT_Material_SetupNodes.bl_idname)
+        layout.operator(material_operators.HEIO_OT_Material_SetupNodes.bl_idname)
 
 
 class HEIO_PT_VTP_Info(bpy.types.Panel):
@@ -44,6 +52,6 @@ class HEIO_PT_VTP_Info(bpy.types.Panel):
         box.label(text="addon and click \"Online Manual\"")
         box.label(text="to read about it.")
 
-        layout.operator(HEIO_OT_Info_Manual.bl_idname)
-        layout.operator(HEIO_OT_Info_Discord.bl_idname)
-        layout.operator(HEIO_OT_Info_Report.bl_idname)
+        layout.operator(info_operators.HEIO_OT_Info_Manual.bl_idname)
+        layout.operator(info_operators.HEIO_OT_Info_Discord.bl_idname)
+        layout.operator(info_operators.HEIO_OT_Info_Report.bl_idname)

@@ -28,10 +28,9 @@ to_register = [
 
 	node_properties.HEIO_Node,
 
-    mesh_properties.HEIO_MeshLayer,
+    mesh_properties.HEIO_MeshInfo,
 	mesh_properties.HEIO_MeshLayerList,
-	mesh_properties.HEIO_Meshgroup,
-	mesh_properties.HEIO_MeshgroupList,
+	mesh_properties.HEIO_MeshGroupList,
     mesh_properties.HEIO_Mesh,
 
 	collision_mesh_properties.HEIO_CollisionType,

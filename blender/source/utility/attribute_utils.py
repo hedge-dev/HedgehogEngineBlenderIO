@@ -8,7 +8,7 @@ def _process_attribute_if(
         attribute_name: str,
         get_func):
 
-    if context.mode == 'EDIT_MESH' and context.active_object.data == mesh:
+    if context is not None and context.mode == 'EDIT_MESH' and context.active_object.data == mesh:
         mesh = context.edit_object.data
         bm = bmesh.from_edit_mesh(mesh)
         layer = bm.faces.layers.int[attribute_name]
@@ -34,7 +34,7 @@ def _process_attribute(
         attribute_name: str,
         get_func):
 
-    if context.mode == 'EDIT_MESH' and context.active_object.data == mesh:
+    if context is not None and context.mode == 'EDIT_MESH' and context.active_object.data == mesh:
         mesh = context.edit_object.data
         bm = bmesh.from_edit_mesh(mesh)
         layer = bm.faces.layers.int[attribute_name]
@@ -180,3 +180,107 @@ def rightshift_int_flags(
         attribute_name,
         lambda x: ((x & shift_mask) >> bits_count) | (x & retain_mask)
     )
+
+
+class AttributeUtility:
+
+    context: bpy.types.Context | None
+    mesh: bpy.types.Mesh
+    attribute_name: str
+
+    def __init__(
+            self,
+            context: bpy.types.Context | None,
+            mesh: bpy.types.Mesh,
+            attribute_name: str):
+
+        self.context = context
+        self.mesh = mesh
+        self.attribute_name = attribute_name
+
+    def swap_int_values(
+            self,
+            a: int,
+            b: int):
+
+        swap_int_values(
+            self.context,
+            self.mesh,
+            self.attribute_name,
+            a,
+            b
+        )
+
+    def change_int_values(
+            self,
+            from_value: int,
+            to_value: int):
+
+        change_int_values(
+            self.context,
+            self.mesh,
+            self.attribute_name,
+            from_value,
+            to_value
+        )
+
+    def decrease_int_values(
+            self,
+            threshold_value: int):
+
+        decrease_int_values(
+            self.context,
+            self.mesh,
+            self.attribute_name,
+            threshold_value
+        )
+
+    def swap_int_flags(
+            self,
+            a: int,
+            b: int):
+
+        swap_int_flags(
+            self.context,
+            self.mesh,
+            self.attribute_name,
+            a,
+            b
+        )
+
+    def change_int_flags(
+            self,
+            from_flag: int,
+            to_flag: int):
+
+        change_int_flags(
+            self.context,
+            self.mesh,
+            self.attribute_name,
+            from_flag,
+            to_flag
+        )
+
+    def remove_int_flags(
+            self,
+            flag: int):
+
+        remove_int_flags(
+            self.context,
+            self.mesh,
+            self.attribute_name,
+            flag
+        )
+
+    def rightshift_int_flags(
+            self,
+            bit_offset: int,
+            bits_count: int):
+
+        rightshift_int_flags(
+            self.context,
+            self.mesh,
+            self.attribute_name,
+            bit_offset,
+            bits_count
+        )

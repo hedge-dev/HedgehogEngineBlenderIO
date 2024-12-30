@@ -4,61 +4,13 @@ from bpy.types import Context
 from .base_panel import PropertiesPanel
 from .sca_parameter_panel import draw_sca_editor_menu
 from .lod_info_panel import draw_lod_info_panel
-
-from ..operators import mesh_layer_operators as mlo, meshgroup_operators as mgo
-
-from ...utility.draw import draw_list, TOOL_PROPERTY
-
-LAYER_TOOLS: list[TOOL_PROPERTY] = [
-    (
-        mlo.HEIO_OT_MeshLayer_Add.bl_idname,
-        "ADD",
-        {}
-    ),
-    (
-        mlo.HEIO_OT_MeshLayer_Remove.bl_idname,
-        "REMOVE",
-        {}
-    ),
-    None,
-    (
-        mlo.HEIO_OT_MeshLayer_Move.bl_idname,
-        "TRIA_UP",
-        {"direction": "UP"}
-    ),
-    (
-        mlo.HEIO_OT_MeshLayer_Move.bl_idname,
-        "TRIA_DOWN",
-        {"direction": "DOWN"}
-    )
-]
-
-MESHGROUP_TOOLS: list[TOOL_PROPERTY] = [
-    (
-        mgo.HEIO_OT_Meshgroup_Add.bl_idname,
-        "ADD",
-        {}
-    ),
-    (
-        mgo.HEIO_OT_Meshgroup_Remove.bl_idname,
-        "REMOVE",
-        {}
-    ),
-    None,
-    (
-        mgo.HEIO_OT_Meshgroup_Move.bl_idname,
-        "TRIA_UP",
-        {"direction": "UP"}
-    ),
-    (
-        mgo.HEIO_OT_Meshgroup_Move.bl_idname,
-        "TRIA_DOWN",
-        {"direction": "DOWN"}
-    )
-]
+from .mesh_info_ui import (
+    BaseMeshInfoContextMenu,
+    draw_mesh_info_panel
+)
 
 
-class HEIO_UL_Layers(bpy.types.UIList):
+class HEIO_UL_MeshLayers(bpy.types.UIList):
 
     def draw_item(
             self,
@@ -81,14 +33,12 @@ class HEIO_UL_Layers(bpy.types.UIList):
         layout.prop(item, "name", text="", emboss=False, icon=icon)
 
 
-class HEIO_MT_LayersContextMenu(bpy.types.Menu):
+class HEIO_MT_MeshLayersContextMenu(BaseMeshInfoContextMenu):
     bl_label = "Mesh layer operations"
-
-    def draw(self, context):
-        self.layout.operator(mlo.HEIO_OT_MeshLayer_Delete.bl_idname)
+    type = 'MESH_LAYERS'
 
 
-class HEIO_UL_Meshgroups(bpy.types.UIList):
+class HEIO_UL_MeshGroups(bpy.types.UIList):
 
     def draw_item(
             self,
@@ -102,14 +52,13 @@ class HEIO_UL_Meshgroups(bpy.types.UIList):
             index,
             flt_flag):
 
-        layout.prop(item, "name", text="", placeholder="empty name", emboss=False)
+        layout.prop(item, "name", text="",
+                    placeholder="empty name", emboss=False)
 
 
-class HEIO_MT_MeshgroupsContextMenu(bpy.types.Menu):
-    bl_label = "Mesh layer operations"
-
-    def draw(self, context):
-        self.layout.operator(mgo.HEIO_OT_Meshgroup_Delete.bl_idname)
+class HEIO_MT_MeshGroupsContextMenu(BaseMeshInfoContextMenu):
+    bl_label = "Mesh group operations"
+    type = 'MESH_GROUPS'
 
 
 class HEIO_PT_Mesh(PropertiesPanel):
@@ -117,89 +66,31 @@ class HEIO_PT_Mesh(PropertiesPanel):
     bl_context = "data"
 
     @staticmethod
-    def draw_layers_panel(
-            layout: bpy.types.UILayout,
-            context: bpy.types.Context,
-            mesh: bpy.types.Mesh):
-
-        header, body = layout.panel("heio_mesh_layers", default_closed=True)
-        header.label(text="Layers")
-        if not body:
-            return
-
-        if len(mesh.heio_mesh.layers) == 0 or "Layer" not in mesh.attributes:
-            body.operator(mlo.HEIO_OT_MeshLayer_Initialize.bl_idname)
-            return
-
-        attribute = mesh.attributes["Layer"]
-        if attribute.domain != "FACE" or attribute.data_type != "INT":
-            box = body.box()
-            box.label(text="Invalid \"Layer\" attribute!")
-            box.label(text="Must use domain \"Face\" and type \"Integer\"!")
-            box.label(text="Please remove or convert")
-            return
-
-        draw_list(
-            body,
-            HEIO_UL_Layers,
-            HEIO_MT_LayersContextMenu,
-            mesh.heio_mesh.layers,
-            LAYER_TOOLS,
-            None
-        )
-
-        if context.mode == 'EDIT_MESH':
-            row: bpy.types.UILayout = body.row(align=True)
-            row.operator(mlo.HEIO_OT_MeshLayer_Assign.bl_idname, text="Assign")
-            row.operator(mlo.HEIO_OT_MeshLayer_DeSelect.bl_idname, text="Select").select = True
-            row.operator(mlo.HEIO_OT_MeshLayer_DeSelect.bl_idname, text="Deselect").select = False
-
-    @staticmethod
-    def draw_meshgroups_panel(
-            layout: bpy.types.UILayout,
-            context: bpy.types.Context,
-            mesh: bpy.types.Mesh):
-
-        header, body = layout.panel("heio_meshgroups", default_closed=True)
-        header.label(text="Meshgroups")
-        if not body:
-            return
-
-        if len(mesh.heio_mesh.meshgroups) == 0 or "Meshgroup" not in mesh.attributes:
-            body.operator(mgo.HEIO_OT_Meshgroup_Initialize.bl_idname)
-            return
-
-        attribute = mesh.attributes["Meshgroup"]
-        if attribute.domain != "FACE" or attribute.data_type != "INT":
-            box = body.box()
-            box.label(text="Invalid \"Meshgroup\" attribute!")
-            box.label(text="Must use domain \"Face\" and type \"Integer\"!")
-            box.label(text="Please remove or convert")
-            return
-
-        draw_list(
-            body,
-            HEIO_UL_Meshgroups,
-            HEIO_MT_MeshgroupsContextMenu,
-            mesh.heio_mesh.meshgroups,
-            MESHGROUP_TOOLS,
-            None
-        )
-
-        if context.mode == 'EDIT_MESH':
-            row: bpy.types.UILayout = body.row(align=True)
-            row.operator(mgo.HEIO_OT_Meshgroup_Assign.bl_idname, text="Assign")
-            row.operator(mgo.HEIO_OT_Meshgroup_DeSelect.bl_idname, text="Select").select = True
-            row.operator(mgo.HEIO_OT_Meshgroup_DeSelect.bl_idname, text="Deselect").select = False
-
-    @staticmethod
     def draw_material_properties(
             layout: bpy.types.UILayout,
             context: bpy.types.Context,
             mesh: bpy.types.Mesh):
 
-        HEIO_PT_Mesh.draw_layers_panel(layout, context, mesh)
-        HEIO_PT_Mesh.draw_meshgroups_panel(layout, context, mesh)
+        draw_mesh_info_panel(
+            layout,
+            context,
+            mesh.heio_mesh.groups,
+            HEIO_UL_MeshGroups,
+            HEIO_MT_MeshGroupsContextMenu,
+            'MESH_GROUPS',
+            'Groups'
+        )
+
+        draw_mesh_info_panel(
+            layout,
+            context,
+            mesh.heio_mesh.layers,
+            HEIO_UL_MeshLayers,
+            HEIO_MT_MeshLayersContextMenu,
+            'MESH_LAYERS',
+            'Layers'
+        )
+
         draw_lod_info_panel(layout, context, mesh.heio_mesh.lod_info)
         draw_sca_editor_menu(layout, mesh.heio_mesh.sca_parameters, 'MESH')
 

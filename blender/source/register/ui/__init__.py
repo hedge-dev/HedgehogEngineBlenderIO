@@ -23,10 +23,10 @@ to_register = [
 
     node_panel.HEIO_PT_Node_Bone,
 
-    mesh_panel.HEIO_UL_Layers,
-    mesh_panel.HEIO_MT_LayersContextMenu,
-    mesh_panel.HEIO_UL_Meshgroups,
-    mesh_panel.HEIO_MT_MeshgroupsContextMenu,
+    mesh_panel.HEIO_UL_MeshLayers,
+    mesh_panel.HEIO_MT_MeshLayersContextMenu,
+    mesh_panel.HEIO_UL_MeshGroups,
+    mesh_panel.HEIO_MT_MeshGroupsContextMenu,
     mesh_panel.HEIO_PT_Mesh,
 
     collision_mesh_panel.HEIO_UL_CollisionInfoList,
@@ -45,6 +45,7 @@ to_register = [
     menus.TOPBAR_MT_HEIO_Import,
     menus.NativeHooks,
 
+    viewport_toolbar.HEIO_PT_VTP_Mesh,
     viewport_toolbar.HEIO_PT_VTP_Material,
     viewport_toolbar.HEIO_PT_VTP_Info
 ]

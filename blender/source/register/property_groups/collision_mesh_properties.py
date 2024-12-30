@@ -140,7 +140,7 @@ class HEIO_CollisionTypeList(BaseCollisionInfoList):
 
     @property
     def attribute_name(self):
-        return 'BTType'
+        return 'HEIOCollisionType'
 
 
 class HEIO_CollisionFlag(bpy.types.PropertyGroup, BaseCollisionInfo):
@@ -155,7 +155,7 @@ class HEIO_CollisionFlagList(BaseCollisionInfoList):
 
     @property
     def attribute_name(self):
-        return 'BTFlags'
+        return 'HEIOCollisionFlags'
 
 
 class HEIO_CollisionLayer(bpy.types.PropertyGroup, BaseCollisionInfo):
@@ -183,7 +183,7 @@ class HEIO_CollisionLayerList(BaseCollisionInfoList):
 
     @property
     def attribute_name(self):
-        return 'BTLayer'
+        return 'HEIOCollisionLayer'
 
 
 class HEIO_CollisionMesh(bpy.types.PropertyGroup):
