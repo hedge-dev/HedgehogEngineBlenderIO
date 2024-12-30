@@ -30,6 +30,7 @@ to_register = [
     mesh_panel.HEIO_PT_Mesh,
 
     collision_mesh_panel.HEIO_UL_CollisionInfoList,
+	collision_mesh_panel.HEIO_UL_CollisionPrimitiveList,
 	collision_mesh_panel.HEIO_MT_CollisionLayersContextMenu,
     collision_mesh_panel.HEIO_MT_CollisionTypesContextMenu,
     collision_mesh_panel.HEIO_MT_CollisionFlagsContextMenu,

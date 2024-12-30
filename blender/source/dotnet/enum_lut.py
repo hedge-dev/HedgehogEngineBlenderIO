@@ -1,31 +1,45 @@
 WRAP_MODE = {
-    "Repeat": "REPEAT",
-    "REPEAT": "Repeat",
+    'Repeat': 'REPEAT',
+    'REPEAT': 'Repeat',
 
-    "Mirror": "MIRROR",
-    "MIRROR": "Mirror",
+    'Mirror': 'MIRROR',
+    'MIRROR': 'Mirror',
 
-    "Clamp": "CLAMP",
-    "CLAMP": "Clamp",
+    'Clamp': 'CLAMP',
+    'CLAMP': 'Clamp',
 
-    "MirrorOnce": "MIRRORONCE",
-    "MIRRORONCE": "MirrorOnce",
+    'MirrorOnce': 'MIRRORONCE',
+    'MIRRORONCE': 'MirrorOnce',
 
-    "Border": "BORDER",
-    "BORDER": "Border"
+    'Border': 'BORDER',
+    'BORDER': 'Border'
 
 }
 
 VERTEX_MERGE_MODE = {
-	"None" : "NONE",
-    "NONE" : "None",
+    'None': 'NONE',
+    'NONE': 'None',
 
-    "SubMesh" : "SUBMESH",
-    "SUBMESH" : "SubMesh",
+    'SubMesh': 'SUBMESH',
+    'SUBMESH': 'SubMesh',
 
-    "SubMeshGroup" : "SUBMESHGROUP",
-    "SUBMESHGROUP" : "SubMeshGroup",
+    'SubMeshGroup': 'SUBMESHGROUP',
+    'SUBMESHGROUP': 'SubMeshGroup',
 
-    "All" : "ALL",
-    "ALL" : "All",
+    'All': 'ALL',
+    'ALL': 'All',
+}
+
+BULLET_PRIMITIVE_SHAPE_TYPE = {
+    'Sphere': 'SPHERE',
+    'SPHERE': 'Sphere',
+
+    'Box': 'BOX',
+    'BOX': 'Box',
+
+    'Capsule': 'CAPSULE',
+    'CAPSULE': 'Capsule',
+
+    'Cylinder': 'CYLINDER',
+    'CYLINDER': 'Cylinder'
 }

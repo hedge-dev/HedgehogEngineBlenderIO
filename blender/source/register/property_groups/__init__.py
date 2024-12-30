@@ -39,6 +39,8 @@ to_register = [
 	collision_mesh_properties.HEIO_CollisionFlagList,
 	collision_mesh_properties.HEIO_CollisionLayer,
 	collision_mesh_properties.HEIO_CollisionLayerList,
+	collision_mesh_properties.HEIO_CollisionPrimitive,
+	collision_mesh_properties.HEIO_CollisionPrimitiveList,
 	collision_mesh_properties.HEIO_CollisionMesh,
 
     material_parameter_properties.HEIO_MaterialParameter,

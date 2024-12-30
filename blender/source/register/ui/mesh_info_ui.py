@@ -1,6 +1,7 @@
 import bpy
 
 from ..operators.mesh_info_operators import (
+    NO_ATTRIB,
     HEIO_OT_MeshInfo_Initialize,
     HEIO_OT_MeshInfo_Delete,
     HEIO_OT_MeshInfo_Add,
@@ -62,18 +63,22 @@ def draw_mesh_info_panel(
     if not body:
         return None
 
-    if not mesh_info_list.initialized:
-        op = body.operator(HEIO_OT_MeshInfo_Initialize.bl_idname)
-        op.type = type
-        return None
+    no_attrib = type in NO_ATTRIB
 
-    if mesh_info_list.attribute_invalid:
-        box = body.box()
-        box.label(
-            text=f"Invalid \"{mesh_info_list.attribute_name}\" attribute!")
-        box.label(text="Must use domain \"Face\" and type \"Integer\"!")
-        box.label(text="Please remove or convert")
-        return None
+    if not no_attrib:
+
+        if not mesh_info_list.initialized:
+            op = body.operator(HEIO_OT_MeshInfo_Initialize.bl_idname)
+            op.type = type
+            return None
+
+        if mesh_info_list.attribute_invalid:
+            box = body.box()
+            box.label(
+                text=f"Invalid \"{mesh_info_list.attribute_name}\" attribute!")
+            box.label(text="Must use domain \"Face\" and type \"Integer\"!")
+            box.label(text="Please remove or convert")
+            return None
 
     def set_op_type(operator, i):
         operator.type = type
@@ -87,7 +92,7 @@ def draw_mesh_info_panel(
         set_op_type
     )
 
-    if context.mode == 'EDIT_MESH' and type != 'COLLISION_CONVEXFLAGS':
+    if context.mode == 'EDIT_MESH' and not no_attrib:
         row = layout.row(align=True)
 
         def setup_op(operator, text):
@@ -107,5 +112,8 @@ def draw_mesh_info_panel(
             setup_op(HEIO_OT_MeshInfo_Assign, "Assign")
             setup_op(HEIO_OT_MeshInfo_DeSelect, "Select").select = True
             setup_op(HEIO_OT_MeshInfo_DeSelect, "Deselect").select = False
+
+    elif no_attrib and mesh_info_list.active_element is None:
+        return None
 
     return body

@@ -1,8 +1,8 @@
 import bpy
 
+from . import i_enum, i_transform
 from ..dotnet import HEIO_NET
 from ..register.definitions import TargetDefinition
-from ..register.property_groups.collision_mesh_properties import HEIO_CollisionMesh
 from ..utility import progress_console
 from ..exceptions import HEIODevException
 
@@ -34,6 +34,92 @@ class CollisionMeshConverter:
         self.converted_meshes = {}
         self._mesh_name_lookup = {}
 
+    @staticmethod
+    def _convert_layers(mesh, mesh_data):
+        layers = mesh.heio_collision_mesh.layers
+        layers.initialize()
+
+        set_slot_indices = []
+        for i, mesh_layer in enumerate(mesh_data.Layers):
+            if i == 0:
+                layer = layers[0]
+                layer.value = mesh_layer.Value
+            else:
+                layer = layers.new(value=mesh_layer.Value)
+
+            layer.is_convex = mesh_layer.IsConvex
+
+            if layer.is_convex:
+                layer.convex_type.value = mesh_layer.Type
+
+                for i, value in enumerate(mesh_layer.FlagValues):
+                    layer.convex_flags.new(value=value)
+
+            set_slot_indices.extend([i] * mesh_layer.Size)
+
+        layers.attribute.data.foreach_set("value", set_slot_indices)
+
+    @staticmethod
+    def _convert_types(mesh, mesh_data):
+        if mesh_data.TypeValues is None:
+            return
+
+        types = mesh.heio_collision_mesh.types
+        types.initialize()
+        types.attribute.data.foreach_set("value", [x for x in mesh_data.Types])
+
+        for i, value in enumerate(mesh_data.TypeValues):
+            if i == 0:
+                types[0].value = value
+            else:
+                types.new(value=value)
+
+    @staticmethod
+    def _convert_flags(mesh, mesh_data):
+        if mesh_data.FlagValues is None:
+            return
+
+        flags = mesh.heio_collision_mesh.flags
+        flags.initialize()
+        flags.attribute.data.foreach_set("value", [x for x in mesh_data.Flags])
+
+        for i, value in enumerate(mesh_data.FlagValues):
+            if i == 0:
+                flags[0].value = value
+            else:
+                flags.new(value=value)
+
+    @staticmethod
+    def _convert_primitives(mesh, collision_mesh):
+        primitives = mesh.heio_collision_mesh.primitives
+
+        for sn_primitive in collision_mesh.Primitives:
+            primitive = primitives.new()
+
+            primitive.shape_type = i_enum.from_bullet_shape_type(
+                sn_primitive.ShapeType)
+
+            primitive.position = (
+                sn_primitive.Position.X, -sn_primitive.Position.Z, sn_primitive.Position.Y)
+
+            primitive.rotation = i_transform.net_to_bpy_quaternion(
+                sn_primitive.Rotation)
+
+            if primitive.shape_type == 'BOX':
+                primitive.dimensions = (
+                    sn_primitive.Dimensions.X, sn_primitive.Dimensions.Z, sn_primitive.Dimensions.Y)
+            else:
+                primitive.dimensions = (
+                    sn_primitive.Dimensions.X, sn_primitive.Dimensions.Y, sn_primitive.Dimensions.Z)
+
+            primitive.surface_type.value = sn_primitive.SurfaceType
+
+            flags = sn_primitive.SurfaceFlags
+            for i in range(32):
+                if (flags & 1) != 0:
+                    primitive.surface_flags.new(value=i)
+                flags >> 1
+
     def _convert_mesh(self, collision_mesh):
 
         mesh_data = HEIO_NET.COLLISION_MESH_DATA.FromBulletMesh(
@@ -59,52 +145,10 @@ class CollisionMeshConverter:
 
         mesh.from_pydata(vertices, [], faces, shade_flat=True)
 
-        col_mesh: HEIO_CollisionMesh = mesh.heio_collision_mesh
-
-        col_mesh.layers.initialize()
-        set_slot_indices = []
-        for i, mesh_layer in enumerate(mesh_data.Layers):
-            if i == 0:
-                layer = col_mesh.layers[0]
-                layer.value = mesh_layer.Value
-            else:
-                layer = col_mesh.layers.new(value=mesh_layer.Value)
-
-            layer.is_convex = mesh_layer.IsConvex
-
-            if layer.is_convex:
-                layer.convex_type.value = mesh_layer.Type
-
-                for i, value in enumerate(mesh_layer.FlagValues):
-                    layer.convex_flags.new(value=value)
-
-            set_slot_indices.extend([i] * mesh_layer.Size)
-
-        col_mesh.layers.attribute.data.foreach_set("value", set_slot_indices)
-
-        if mesh_data.TypeValues is not None:
-            col_mesh.types.initialize()
-
-            attribute = col_mesh.types.attribute
-            attribute.data.foreach_set("value", [x for x in mesh_data.Types])
-
-            for i, value in enumerate(mesh_data.TypeValues):
-                if i == 0:
-                    col_mesh.types[0].value = value
-                else:
-                    col_mesh.types.new(value=value)
-
-        if mesh_data.FlagValues is not None:
-            col_mesh.flags.initialize()
-
-            attribute = col_mesh.flags.attribute
-            attribute.data.foreach_set("value", [x for x in mesh_data.Flags])
-
-            for i, value in enumerate(mesh_data.FlagValues):
-                if i == 0:
-                    col_mesh.flags[0].value = value
-                else:
-                    col_mesh.flags.new(value=value)
+        self._convert_layers(mesh, mesh_data)
+        self._convert_types(mesh, mesh_data)
+        self._convert_flags(mesh, mesh_data)
+        self._convert_primitives(mesh, collision_mesh)
 
         return mesh
 

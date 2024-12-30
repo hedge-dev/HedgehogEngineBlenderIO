@@ -3,6 +3,8 @@ from bpy.props import (
     EnumProperty,
     BoolProperty,
     IntProperty,
+    FloatProperty,
+    FloatVectorProperty,
     PointerProperty,
     CollectionProperty
 )
@@ -186,6 +188,91 @@ class HEIO_CollisionLayerList(BaseCollisionInfoList):
         return 'HEIOCollisionLayer'
 
 
+def _set_radius(collision_primitive, value):
+    dim = collision_primitive.dimensions
+    collision_primitive.dimensions = (value, dim[1], dim[2])
+
+
+def _get_radius(collision_primitive):
+    return collision_primitive.dimensions[0]
+
+
+def _set_height(collision_primitive, value):
+    dim = collision_primitive.dimensions
+    collision_primitive.dimensions = (dim[0], value, dim[2])
+
+
+def _get_height(collision_primitive):
+    return collision_primitive.dimensions[1]
+
+
+class HEIO_CollisionPrimitive(bpy.types.PropertyGroup):
+
+    shape_type: EnumProperty(
+        name="Shape type",
+        description="The shape of the primitive",
+        items=(
+            ('SPHERE', "Sphere", ""),
+            ('BOX', "Box", ""),
+            ('CAPSULE', "Capsule", ""),
+            ('CYLINDER', "Cylinder", ""),
+        )
+    )
+
+    position: FloatVectorProperty(
+        name="Position",
+        description="Local position of the primitive",
+        precision=3
+    )
+
+    rotation: FloatVectorProperty(
+        name="Rotation",
+        description="Local rotation of the primitive",
+        default=(0, 0, 0, 1),
+        size=4,
+        subtype="QUATERNION",
+        precision=3
+    )
+
+    dimensions: FloatVectorProperty(
+        name="Dimensions",
+        description="Dimensions of the primitive",
+        default=(1, 1, 1),
+        precision=3
+    )
+
+    radius: FloatProperty(
+        name="Radius",
+        description="Radius of the sphere/cylinder/capsule",
+        get=_get_radius,
+        set=_set_radius,
+        precision=3
+    )
+
+    height: FloatProperty(
+        name="Height",
+        description="Height of the cylinder/capsule",
+        get=_get_height,
+        set=_set_height,
+        precision=3
+    )
+
+    surface_type: PointerProperty(
+        type=HEIO_CollisionType
+    )
+
+    surface_flags: PointerProperty(
+        type=HEIO_CollisionFlagList
+    )
+
+
+class HEIO_CollisionPrimitiveList(BaseList):
+
+    elements: CollectionProperty(
+        type=HEIO_CollisionPrimitive
+    )
+
+
 class HEIO_CollisionMesh(bpy.types.PropertyGroup):
 
     layers: PointerProperty(
@@ -198,6 +285,10 @@ class HEIO_CollisionMesh(bpy.types.PropertyGroup):
 
     flags: PointerProperty(
         type=HEIO_CollisionFlagList
+    )
+
+    primitives: PointerProperty(
+        type=HEIO_CollisionPrimitiveList
     )
 
     @classmethod

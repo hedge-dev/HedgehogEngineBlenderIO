@@ -3,11 +3,8 @@ import bpy
 from .base_panel import PropertiesPanel
 from .mesh_info_ui import (
     BaseMeshInfoContextMenu,
-    draw_mesh_info_panel,
-    MESH_INFO_TOOLS
+    draw_mesh_info_panel
 )
-
-from ...utility.draw import draw_list
 
 
 class HEIO_UL_CollisionInfoList(bpy.types.UIList):
@@ -31,6 +28,25 @@ class HEIO_UL_CollisionInfoList(bpy.types.UIList):
             split.label(text=f"Custom: {item.value}")
         else:
             split.label(text=item.value_enum)
+
+
+class HEIO_UL_CollisionPrimitiveList(bpy.types.UIList):
+
+    def draw_item(
+            self,
+            context: bpy.types.Context,
+            layout: bpy.types.UILayout,
+            data,
+            item,
+            icon: str,
+            active_data,
+            active_property,
+            index,
+            flt_flag):
+
+        split = layout.split(factor=0.1)
+        split.label(text=str(index))
+        split.label(text=item.shape_type)
 
 
 class HEIO_MT_CollisionLayersContextMenu(BaseMeshInfoContextMenu):
@@ -73,42 +89,41 @@ class HEIO_PT_CollisionMesh(PropertiesPanel):
             layout.prop(collision_info, "value_enum")
 
     @staticmethod
-    def _draw_layer_type_panel(layout, context, layer):
+    def _draw_mesh_info_panel(
+            layout: bpy.types.UILayout,
+            context: bpy.types.Context,
+            mesh_info_list,
+            menu: bpy.types.Menu,
+            type: str,
+            label: str):
+
+        body = draw_mesh_info_panel(
+            layout,
+            context,
+            mesh_info_list,
+            HEIO_UL_CollisionInfoList,
+            menu,
+            type,
+            label
+        )
+
+        HEIO_PT_CollisionMesh._draw_collision_info_editor(
+            body,
+            context,
+            mesh_info_list.active_element
+        )
+
+    @staticmethod
+    def _draw_type_panel(layout, context, type, label, typename):
         header, body = layout.panel(
-            "heio_mesh_info_collision_layer_type", default_closed=False)
-        header.label(text="Convex layer type")
+            "heio_mesh_info_collision_" + typename, default_closed=False)
+        header.label(text=label)
 
         if not body:
             return
 
         HEIO_PT_CollisionMesh._draw_collision_info_editor(
-            body, context, layer.convex_type)
-
-    @staticmethod
-    def _draw_layer_flags_panel(layout, context, layer):
-        header, body = layout.panel(
-            "heio_mesh_info_collision_layer_flags", default_closed=False)
-        header.label(text="Convex layer flags")
-
-        if not body:
-            return
-
-        def set_op_type(operator, i):
-            operator.type = 'COLLISION_CONVEXFLAGS'
-
-        draw_list(
-            body,
-            HEIO_UL_CollisionInfoList,
-            None,
-            layer.convex_flags,
-            MESH_INFO_TOOLS,
-            set_op_type
-        )
-
-        flag_info = layer.convex_flags.active_element
-        if flag_info is not None:
-            HEIO_PT_CollisionMesh._draw_collision_info_editor(
-                body, context, flag_info)
+            body, context, type)
 
     @staticmethod
     def _draw_layer_editor(
@@ -130,8 +145,63 @@ class HEIO_PT_CollisionMesh(PropertiesPanel):
         if not layer.is_convex:
             return
 
-        HEIO_PT_CollisionMesh._draw_layer_type_panel(layout, context, layer)
-        HEIO_PT_CollisionMesh._draw_layer_flags_panel(layout, context, layer)
+        HEIO_PT_CollisionMesh._draw_type_panel(
+            layout,
+            context,
+            layer.convex_type,
+            "Convex layer type",
+            "layer_type")
+
+        HEIO_PT_CollisionMesh._draw_mesh_info_panel(
+            layout,
+            context,
+            layer.convex_flags,
+            None,
+            'COLLISION_CONVEXFLAGS',
+            'Convex layer flags'
+        )
+
+    @staticmethod
+    def _draw_primitive_editor(
+            layout: bpy.types.UILayout | None,
+            context: bpy.types.Context,
+            primitive):
+
+        if layout is None:
+            return
+
+        layout.use_property_split = True
+        layout.use_property_decorate = False
+
+        layout.prop(primitive, "shape_type")
+        layout.separator()
+        layout.prop(primitive, "position")
+        layout.prop(primitive, "rotation")
+
+        if primitive.shape_type == 'SPHERE':
+            layout.prop(primitive, "radius")
+        elif primitive.shape_type == 'BOX':
+            layout.prop(primitive, "dimensions")
+        else:
+            column = layout.column(align=True)
+            column.prop(primitive, "radius")
+            column.prop(primitive, "height")
+
+        HEIO_PT_CollisionMesh._draw_type_panel(
+            layout,
+            context,
+            primitive.surface_type,
+            "Surface type",
+            "primitive_type")
+
+        HEIO_PT_CollisionMesh._draw_mesh_info_panel(
+            layout,
+            context,
+            primitive.surface_flags,
+            None,
+            'COLLISION_PRIMITIVEFLAGS',
+            'Surface flags'
+        )
 
     @staticmethod
     def draw_collision_mesh_properties(
@@ -158,36 +228,38 @@ class HEIO_PT_CollisionMesh(PropertiesPanel):
             mesh.heio_collision_mesh.layers.active_element
         )
 
-        types_body = draw_mesh_info_panel(
+        HEIO_PT_CollisionMesh._draw_mesh_info_panel(
             layout,
             context,
             mesh.heio_collision_mesh.types,
-            HEIO_UL_CollisionInfoList,
             HEIO_MT_CollisionTypesContextMenu,
             'COLLISION_TYPES',
             'Types'
         )
 
-        HEIO_PT_CollisionMesh._draw_collision_info_editor(
-            types_body,
-            context,
-            mesh.heio_collision_mesh.types.active_element
-        )
-
-        flags_body = draw_mesh_info_panel(
+        HEIO_PT_CollisionMesh._draw_mesh_info_panel(
             layout,
             context,
             mesh.heio_collision_mesh.flags,
-            HEIO_UL_CollisionInfoList,
             HEIO_MT_CollisionFlagsContextMenu,
             'COLLISION_FLAGS',
             'Flags'
         )
 
-        HEIO_PT_CollisionMesh._draw_collision_info_editor(
-            flags_body,
+        primitive_body = draw_mesh_info_panel(
+            layout,
             context,
-            mesh.heio_collision_mesh.flags.active_element
+            mesh.heio_collision_mesh.primitives,
+            HEIO_UL_CollisionPrimitiveList,
+            None,
+            'COLLISION_PRIMITIVES',
+            'Primitives'
+        )
+
+        HEIO_PT_CollisionMesh._draw_primitive_editor(
+            primitive_body,
+            context,
+            mesh.heio_collision_mesh.primitives.active_element
         )
 
     # === overriden methods === #

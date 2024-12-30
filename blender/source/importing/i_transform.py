@@ -1,4 +1,4 @@
-from mathutils import Matrix
+from mathutils import Matrix, Quaternion
 from ..dotnet import System
 
 
@@ -32,3 +32,7 @@ def net_transforms_to_bpy_matrix(position, rotation, scale):
     matrix = scale_mtx * rotation_matrix * position_mtx
 
     return net_to_bpy_matrix(matrix)
+
+
+def net_to_bpy_quaternion(quat):
+    return net_to_bpy_matrix(System.MATRIX4X4.CreateFromQuaternion(quat)).to_quaternion()
