@@ -188,24 +188,6 @@ class HEIO_CollisionLayerList(BaseCollisionInfoList):
         return 'HEIOCollisionLayer'
 
 
-def _set_radius(collision_primitive, value):
-    dim = collision_primitive.dimensions
-    collision_primitive.dimensions = (value, dim[1], dim[2])
-
-
-def _get_radius(collision_primitive):
-    return collision_primitive.dimensions[0]
-
-
-def _set_height(collision_primitive, value):
-    dim = collision_primitive.dimensions
-    collision_primitive.dimensions = (dim[0], value, dim[2])
-
-
-def _get_height(collision_primitive):
-    return collision_primitive.dimensions[1]
-
-
 class HEIO_CollisionPrimitive(bpy.types.PropertyGroup):
 
     shape_type: EnumProperty(
@@ -238,22 +220,6 @@ class HEIO_CollisionPrimitive(bpy.types.PropertyGroup):
         name="Dimensions",
         description="Dimensions of the primitive",
         default=(1, 1, 1),
-        precision=3
-    )
-
-    radius: FloatProperty(
-        name="Radius",
-        description="Radius of the sphere/cylinder/capsule",
-        get=_get_radius,
-        set=_set_radius,
-        precision=3
-    )
-
-    height: FloatProperty(
-        name="Height",
-        description="Height of the cylinder/capsule",
-        get=_get_height,
-        set=_set_height,
         precision=3
     )
 

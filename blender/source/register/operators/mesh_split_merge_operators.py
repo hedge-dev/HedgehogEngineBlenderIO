@@ -1,7 +1,7 @@
 import bpy
 import bmesh
 from bpy.props import BoolProperty
-from mathutils import Vector
+from mathutils import Vector, Matrix
 
 from .base import HEIOBasePopupOperator
 from ..property_groups.collision_mesh_properties import HEIO_CollisionLayerList
@@ -56,8 +56,97 @@ class MeshBaseSplitOperator(HEIOBasePopupOperator):
     def _get_split_name_suffixes(self, mesh_info) -> list[str]:
         raise HEIODevException("Not implemented")
 
-    def _remove_empty_info(self, split_mesh):
-        return
+    def _remove_unused_collision_types(self, split_mesh):
+        types = split_mesh.heio_collision_mesh.types
+
+        if not types.initialized or types.attribute_invalid:
+            return
+
+        used_types = set()
+
+        for type in types.attribute.data:
+            used_types.add(type.value)
+
+        if len(used_types) == 0 and 0 in used_types:
+            types.delete()
+            return
+
+        has_any = False
+        for i in reversed(range(len(types))):
+            if i in used_types:
+                has_any = True
+                continue
+
+            types.remove(i)
+
+            if has_any:
+                attribute_utils.decrease_int_values(
+                    None, split_mesh, types.attribute_name, i)
+
+    def _remove_unused_collision_flags(self, split_mesh):
+        flags = split_mesh.heio_collision_mesh.flags
+
+        if not flags.initialized or flags.attribute_invalid:
+            return
+
+        used_flags = 0
+        for flag in flags.attribute.data:
+            used_flags |= flag.value
+
+        if used_flags == 0:
+            flags.delete()
+            return
+
+        used_flag_values = []
+        for i in range(32):
+            if (used_flags & 1) != 0:
+                used_flag_values.append(i)
+            used_flags >> 1
+
+        has_any = False
+        for i in reversed(range(len(flags))):
+            if i in used_flag_values:
+                has_any = True
+                continue
+
+            flags.remove(i)
+
+            if has_any:
+                attribute_utils.rightshift_int_flags(
+                    None, split_mesh, flags.attribute_name, i, 1)
+
+    def _remove_unused_mesh_layers(self, split_mesh):
+        layers = split_mesh.heio_mesh.layers
+
+        if not layers.initialized or layers.attribute_invalid:
+            return
+
+        used_layers = set()
+
+        for layer in layers.attribute.data:
+            used_layers.add(layer.value)
+
+        has_any = False
+        for i in reversed(range(3, len(layers))):
+            if i in used_layers:
+                has_any = True
+                continue
+
+            layers.remove(i)
+
+            if not has_any:
+                continue
+
+            if i == 3:
+                attribute_utils.change_int_values(
+                    None, split_mesh, layers.attribute_name, i, 0)
+
+            if len(layers) > 3:
+                attribute_utils.decrease_int_values(
+                    None, split_mesh, layers.attribute_name, i)
+
+    def _post_split(self, context, parent):
+        pass
 
     def _execute(self, context):
         name = context.active_object.name
@@ -73,9 +162,16 @@ class MeshBaseSplitOperator(HEIOBasePopupOperator):
         if len(mesh_info) < 2:
             raise HEIOUserException(f"Mesh has less than 2 {self.type_name}s!")
 
-        parent = bpy.data.objects.new(name + "_split", None)
-        parent.matrix_world = context.active_object.matrix_world
-        context.collection.objects.link(parent)
+        parent = context.active_object.parent
+        base_matrix = context.active_object.matrix_world
+        created_parent = False
+
+        if parent is None:
+            created_parent = True
+            parent = bpy.data.objects.new(name + "_split", None)
+            parent.matrix_world = base_matrix
+            base_matrix = Matrix.Identity(4)
+            context.collection.objects.link(parent)
 
         for i, suffix in enumerate(self._get_split_name_suffixes(mesh_info)):
             split_mesh = mesh.copy()
@@ -131,7 +227,7 @@ class MeshBaseSplitOperator(HEIOBasePopupOperator):
             split_mesh.name = f"{mesh.name}_{suffix}"
             split_obj = bpy.data.objects.new(f"{name}_{i}", split_mesh)
             split_obj.parent = parent
-            split_obj.location = center
+            split_obj.matrix_world = base_matrix @ Matrix.Translation(center)
             context.collection.objects.link(split_obj)
 
             split_mesh_info = self._get_mesh_info(split_mesh)
@@ -142,14 +238,24 @@ class MeshBaseSplitOperator(HEIOBasePopupOperator):
             while len(split_mesh_info) > 1:
                 split_mesh_info.remove(1)
 
+            split_mesh.heio_collision_mesh.primitives.clear()
+            split_mesh.heio_mesh.lod_info.delete()
+            split_mesh.heio_mesh.sca_parameters.clear()
+
             if self.remove_empty_info:
-                self._remove_empty_info(split_mesh)
+                self._remove_unused_collision_types(split_mesh)
+                self._remove_unused_collision_flags(split_mesh)
+                self._remove_unused_mesh_layers(split_mesh)
+
+        self._post_split(context, parent)
 
         if self.delete_original:
             original = context.active_object
-            context.view_layer.objects.active = parent
             bpy.data.objects.remove(original)
-            parent.name = name
+
+            if created_parent:
+                context.view_layer.objects.active = parent
+                parent.name = name
 
         return {'FINISHED'}
 
@@ -166,37 +272,6 @@ class HEIO_OT_SplitMeshGroups(MeshBaseSplitOperator):
     def _get_split_name_suffixes(self, mesh_info):
         return [item.name for item in mesh_info]
 
-    def _remove_empty_info(self, split_mesh):
-        # remove unused layers
-        layers = split_mesh.heio_mesh.layers
-
-        if not layers.initialized or layers.attribute_invalid:
-            return
-
-        used_layers = set()
-
-        for layer in layers.attribute.data:
-            used_layers.add(layer.value)
-
-        has_any = False
-        for i in reversed(range(3, len(layers))):
-            if i in used_layers:
-                has_any = True
-                continue
-
-            layers.remove(i)
-
-            if not has_any:
-                continue
-
-            if i == 3:
-                attribute_utils.change_int_values(
-                    None, split_mesh, layers.attribute_name, i, 0)
-
-            if len(layers) > 3:
-                attribute_utils.decrease_int_values(
-                    None, split_mesh, layers.attribute_name, i)
-
 
 class HEIO_OT_SplitCollisionMeshLayers(MeshBaseSplitOperator):
     bl_idname = "heio.split_collisionmeshlayers"
@@ -210,65 +285,34 @@ class HEIO_OT_SplitCollisionMeshLayers(MeshBaseSplitOperator):
     def _get_split_name_suffixes(self, mesh_info):
         return [str(i) for i, _ in enumerate(mesh_info)]
 
-    def _remove_empty_info(self, split_mesh):
-        self._remove_unused_types(split_mesh)
-        self._remove_unused_flags(split_mesh)
+    def _post_split(self, context, parent):
+        name = context.active_object.name
+        mesh = context.active_object.data
 
-    def _remove_unused_types(self, split_mesh):
-        types = split_mesh.heio_collision_mesh.types
+        for i, primitive in enumerate(mesh.heio_collision_mesh.primitives):
+            split_mesh = bpy.data.meshes.new(f"{mesh.name}_primitive{i}")
+            split_object = bpy.data.objects.new(f"{name}_primitive{i}", split_mesh)
+            split_object.parent = parent
+            context.collection.objects.link(split_object)
 
-        if not types.initialized or types.attribute_invalid:
-            return
+            split_primitive = split_mesh.heio_collision_mesh.primitives.new()
+            split_primitive.shape_type = primitive.shape_type
+            split_primitive.dimensions = split_primitive.dimensions
 
-        used_types = set()
+            split_primitive.surface_type.value = primitive.surface_type.value
 
-        for type in types.attribute.data:
-            used_types.add(type.value)
+            for flag in primitive.surface_flags:
+                split_flag = split_primitive.surface_flags.new(value=flag.value)
+                split_flag.custom = flag.custom
 
-        if len(used_types) == 0 and 0 in used_types:
-            types.delete()
-            return
+            if self.origins_to_bounding_box_centers:
+                split_object.matrix_local = Matrix.LocRotScale(
+                    primitive.position,
+                    primitive.rotation,
+                    None
+                )
 
-        has_any = False
-        for i in reversed(range(len(types))):
-            if i in used_types:
-                has_any = True
-                continue
+            else:
+                split_primitive.position = primitive.position
+                split_primitive.rotation = primitive.rotation
 
-            types.remove(i)
-
-            if has_any:
-                attribute_utils.decrease_int_values(
-                    None, split_mesh, types.attribute_name, i)
-
-    def _remove_unused_flags(self, split_mesh):
-        flags = split_mesh.heio_collision_mesh.flags
-
-        if not flags.initialized or flags.attribute_invalid:
-            return
-
-        used_flags = 0
-        for flag in flags.attribute.data:
-            used_flags |= flag.value
-
-        if used_flags == 0:
-            flags.delete()
-            return
-
-        used_flag_values = []
-        for i in range(32):
-            if (used_flags & 1) != 0:
-                used_flag_values.append(i)
-            used_flags >> 1
-
-        has_any = False
-        for i in reversed(range(len(flags))):
-            if i in used_flag_values:
-                has_any = True
-                continue
-
-            flags.remove(i)
-
-            if has_any:
-                attribute_utils.rightshift_int_flags(
-                    None, split_mesh, flags.attribute_name, i, 1)

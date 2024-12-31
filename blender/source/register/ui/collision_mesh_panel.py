@@ -179,13 +179,13 @@ class HEIO_PT_CollisionMesh(PropertiesPanel):
         layout.prop(primitive, "rotation")
 
         if primitive.shape_type == 'SPHERE':
-            layout.prop(primitive, "radius")
+            layout.prop(primitive, "dimensions", text="Radius", index=0)
         elif primitive.shape_type == 'BOX':
             layout.prop(primitive, "dimensions")
         else:
             column = layout.column(align=True)
-            column.prop(primitive, "radius")
-            column.prop(primitive, "height")
+            column.prop(primitive, "dimensions", text="Radius", index=0)
+            column.prop(primitive, "dimensions", text="Height", index=1)
 
         HEIO_PT_CollisionMesh._draw_type_panel(
             layout,

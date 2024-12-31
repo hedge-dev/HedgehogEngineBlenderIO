@@ -51,7 +51,7 @@ class TOPBAR_MT_HEIO_Import(bpy.types.Menu):
     def unregister(cls):
         bpy.types.TOPBAR_MT_file_import.remove(TOPBAR_MT_HEIO_Import.menu_func)
 
-class NativeHooks:
+class MenuAppends:
 
     DONT_REGISTER_CLASS = True
 
@@ -63,8 +63,8 @@ class NativeHooks:
 
     @classmethod
     def register(cls):
-        bpy.types.MATERIAL_MT_context_menu.append(NativeHooks.material_context_menu_func)
+        bpy.types.MATERIAL_MT_context_menu.append(MenuAppends.material_context_menu_func)
 
     @classmethod
     def unregister(cls):
-        bpy.types.MATERIAL_MT_context_menu.remove(NativeHooks.material_context_menu_func)
+        bpy.types.MATERIAL_MT_context_menu.remove(MenuAppends.material_context_menu_func)

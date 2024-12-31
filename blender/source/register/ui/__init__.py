@@ -1,14 +1,15 @@
 from . import (
-    lod_info_panel,
     sca_parameter_panel,
+    lod_info_panel,
     scene_panel,
     armature_panel,
     node_panel,
     mesh_panel,
     collision_mesh_panel,
     material_panel,
-    menus,
-    viewport_toolbar
+    viewport_toolbar,
+    view3d_overlay_panel,
+    menu_appends
 )
 
 to_register = [
@@ -42,11 +43,13 @@ to_register = [
     material_panel.HEIO_UL_CustomTextureList,
     material_panel.HEIO_PT_Material,
 
-    menus.TOPBAR_MT_HEIO_Export,
-    menus.TOPBAR_MT_HEIO_Import,
-    menus.NativeHooks,
-
     viewport_toolbar.HEIO_PT_VTP_Mesh,
     viewport_toolbar.HEIO_PT_VTP_Material,
-    viewport_toolbar.HEIO_PT_VTP_Info
+    viewport_toolbar.HEIO_PT_VTP_Info,
+
+    view3d_overlay_panel.HEIO_VIEW3D_PT_overlay_collision_primitives,
+
+    menu_appends.TOPBAR_MT_HEIO_Export,
+    menu_appends.TOPBAR_MT_HEIO_Import,
+    menu_appends.MenuAppends,
 ]

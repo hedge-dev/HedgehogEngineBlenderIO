@@ -5,6 +5,7 @@ from . import (
     property_groups,
     operators,
     ui,
+    rendering,
     definitions,
     manual
 )
@@ -14,6 +15,7 @@ classes = []
 classes.extend(property_groups.to_register)
 classes.extend(operators.to_register)
 classes.extend(ui.to_register)
+classes.extend(rendering.to_register)
 
 
 def register():
