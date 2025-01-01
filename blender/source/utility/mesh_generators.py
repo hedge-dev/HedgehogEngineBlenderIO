@@ -2,16 +2,16 @@ from mathutils import Vector
 import math
 
 
-def generate_icosphere(subdivisions: int):
-    x1 = 0.7236
-    x2 = 0.276385
-    x3 = 0.894425
-    y1 = 0.525731112119133606
-    y2 = 0.85064
-    z = 0.447215
+def generate_icosphere(subdivisions: int, scale = 1):
+    x1 = scale * 0.7236
+    x2 = scale * 0.276385
+    x3 = scale * 0.894425
+    y1 = scale * 0.525731112119133606
+    y2 = scale * 0.85064
+    z = scale * 0.447215
 
     vertices = [
-        Vector((0, 0, -1)),
+        Vector((0, 0, -scale)),
 
         Vector((x3, 0, -z)),
         Vector((x2, -y2, -z)),
@@ -26,7 +26,7 @@ def generate_icosphere(subdivisions: int):
         Vector((x1, y1, z)),
 
 
-        Vector((0, 0, 1)),
+        Vector((0, 0, scale)),
     ]
 
     triangles = [
@@ -48,7 +48,7 @@ def generate_icosphere(subdivisions: int):
 
         if result is None:
             result = len(vertices)
-            vertices.append((vertices[a] + vertices[b]).normalized())
+            vertices.append((vertices[a] + vertices[b]).normalized() * scale)
             lookup[key] = result
 
         return result
@@ -104,9 +104,9 @@ def generate_sphere_lines(segments: int):
     return result
 
 
-def generate_cube():
-    p = 1.0
-    n = -1.0
+def generate_cube(scale = 1):
+    p = scale
+    n = -scale
     return [
         (p, n, n),
         (n, n, n),
@@ -145,12 +145,12 @@ def generate_cube_lines():
     ]
 
 
-def generate_capsule(subdivisions: int):
+def generate_capsule_parts(subdivisions: int, add_offsets: bool, scale = 1):
     subdivisions = max(subdivisions, 1)
-    sphere = generate_icosphere(subdivisions)
+    sphere = generate_icosphere(subdivisions, scale)
 
-    result = []
-    z = 1
+    top_dome = []
+    bottom_dome = []
 
     for i in range(0, len(sphere), 3):
         v1 = sphere[i]
@@ -158,37 +158,55 @@ def generate_capsule(subdivisions: int):
         v3 = sphere[i + 2]
 
         if v1[2] > 0 or v2[2] > 0 or v3[2] > 0:
-            offset = z
+            offset = scale
+            output = top_dome
         else:
-            offset = -z
+            offset = -scale
+            output = bottom_dome
 
-        result.append((v1[0], v1[1], v1[2] + offset))
-        result.append((v2[0], v2[1], v2[2] + offset))
-        result.append((v3[0], v3[1], v3[2] + offset))
+        if not add_offsets:
+            offset = 0
+
+        output.append((v1[0], v1[1], v1[2] + offset))
+        output.append((v2[0], v2[1], v2[2] + offset))
+        output.append((v3[0], v3[1], v3[2] + offset))
 
     segments = int(math.pow(2, subdivisions)) * 5
 
-    prev_top = (0, 1, z)
-    prev_bottom = (0, 1, -z)
+    prev_top = (0, scale, scale)
+    prev_bottom = (0, scale, -scale)
+
+    cylinder = []
 
     for i in range(segments):
         fac = ((i + 1) / segments) * math.tau
         s = math.sin(fac)
         c = math.cos(fac)
 
-        top = (s, c, z)
-        bottom = (s, c, -z)
+        top = (s * scale, c * scale, scale)
+        bottom = (s * scale, c * scale, -scale)
 
-        result.append(prev_top)
-        result.append(top)
-        result.append(bottom)
+        cylinder.append(prev_top)
+        cylinder.append(top)
+        cylinder.append(bottom)
 
-        result.append(prev_top)
-        result.append(bottom)
-        result.append(prev_bottom)
+        cylinder.append(prev_top)
+        cylinder.append(bottom)
+        cylinder.append(prev_bottom)
 
         prev_top = top
         prev_bottom = bottom
+
+    return top_dome, cylinder, bottom_dome
+
+
+def generate_capsule(subdivisions: int):
+    top, cylinder, bottom = generate_capsule_parts(subdivisions, True)
+
+    result = []
+    result.extend(top)
+    result.extend(cylinder)
+    result.extend(bottom)
 
     return result
 
@@ -238,7 +256,7 @@ def generate_capsule_lines(segments: int):
     return result
 
 
-def generate_cylinder(segments: int):
+def generate_cylinder(segments: int, scale = 1):
     remainder = segments % 4
     if remainder > 0:
         segments += 4 - remainder
@@ -248,20 +266,19 @@ def generate_cylinder(segments: int):
 
     result = []
 
-    z = 1
-    prev_top = (0, 1, z)
-    prev_bottom = (0, 1, -z)
+    prev_top = (0, scale, scale)
+    prev_bottom = (0, scale, -scale)
 
     for i in range(segments):
         fac = ((i + 1) / segments) * math.tau
         s = math.sin(fac)
         c = math.cos(fac)
 
-        top = (s, c, z)
-        bottom = (s, c, -z)
+        top = (s * scale, c * scale, scale)
+        bottom = (s * scale, c * scale, -scale)
 
-        vertices_top.append((s, c, z))
-        vertices_bottom.append((s, c, -z))
+        vertices_top.append(top)
+        vertices_bottom.append(bottom)
 
         result.append(prev_top)
         result.append(top)

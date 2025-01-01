@@ -230,6 +230,8 @@ class MeshListOperator(BaseMeshInfoOperator):
             self.attribute_utility = None
 
         self.list_execute(context, list)
+
+        context.active_object.data.update()
         return {'FINISHED'}
 
 

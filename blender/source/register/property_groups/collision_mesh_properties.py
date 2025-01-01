@@ -210,7 +210,7 @@ class HEIO_CollisionPrimitive(bpy.types.PropertyGroup):
     rotation: FloatVectorProperty(
         name="Rotation",
         description="Local rotation of the primitive",
-        default=(0, 0, 0, 1),
+        default=(1, 0, 0, 0),
         size=4,
         subtype="QUATERNION",
         precision=3
@@ -220,6 +220,7 @@ class HEIO_CollisionPrimitive(bpy.types.PropertyGroup):
         name="Dimensions",
         description="Dimensions of the primitive",
         default=(1, 1, 1),
+        min=0,
         precision=3
     )
 

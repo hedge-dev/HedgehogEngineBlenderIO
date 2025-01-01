@@ -5,7 +5,7 @@ from mathutils import Matrix, Vector
 import colorsys
 from random import Random
 
-from . import mesh_generators
+from ...utility import mesh_generators
 
 SHAPE_COLORS = {
     "SPHERE": (1, 0.5, 0.5),
@@ -134,41 +134,41 @@ class CollisionMeshRenderer:
 
         for obj, obj_eval in zip(depsgraph.view_layer.objects, depsgraph.view_layer_eval.objects):
 
-            if (obj.type != 'MESH' or not obj_eval.visible_in_viewport_get(view)):
+            if obj.type != 'MESH' or not obj_eval.visible_in_viewport_get(view):
                 continue
 
             for primitive in obj.data.heio_collision_mesh.primitives:
 
+                # transformation matrix
+                matrix = obj.matrix_world.normalized() @ Matrix.LocRotScale(primitive.position, primitive.rotation, None).normalized()
+
+                r = primitive.dimensions[0]
+                h = primitive.dimensions[1]
+
                 if primitive.shape_type == 'SPHERE':
-                    scale = Vector((
-                        primitive.dimensions[0],
-                        primitive.dimensions[0],
-                        primitive.dimensions[0]
-                    ))
+                    matrix = matrix @ Matrix.Scale(r, 4)
                 elif primitive.shape_type == 'BOX':
-                    scale = primitive.dimensions
-                elif primitive.shape_type == 'CAPSULE':
-                    scale = None
-                else:  # Cylinder
-                    scale = Vector((
-                        primitive.dimensions[0],
-                        primitive.dimensions[0],
-                        primitive.dimensions[1]
-                    ))
+                    matrix = matrix @ Matrix.LocRotScale(None, None, primitive.dimensions)
+                elif primitive.shape_type == 'CYLINDER':
+                    matrix = matrix @ Matrix.LocRotScale(None, None, (r, r, h))
 
-                pos, rot, _ = Matrix.decompose(obj.matrix_world)
-                matrix = Matrix.LocRotScale(
-                    pos, rot, None) @ Matrix.LocRotScale(primitive.position, primitive.rotation, scale)
                 mvp_matrix = bpy.context.region_data.perspective_matrix @ matrix
-                mv_center = bpy.context.region_data.view_matrix @ matrix @ Vector()
 
+                # distance for basic transparency sorting
+                mv_matrix = bpy.context.region_data.view_matrix @ matrix
+                x = mv_matrix[0][3]
+                y = mv_matrix[1][3]
+                z = mv_matrix[2][3]
+                distance = x * x + y * y + z * z
+
+                # colors
                 if overlay_props.random_colors:
                     color = colorsys.hsv_to_rgb(rand.random(), 0.5, 1)
                 else:
                     color = SHAPE_COLORS[primitive.shape_type]
 
                 batches.append(
-                    (primitive.shape_type, mvp_matrix, mv_center.magnitude, color, primitive.dimensions))
+                    (primitive.shape_type, mvp_matrix, distance, color, primitive.dimensions))
 
         if len(batches) == 0:
             return

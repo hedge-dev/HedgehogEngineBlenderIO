@@ -9,6 +9,7 @@ NODE_IGNORE_PROPERTIES = [
     "select",
 ]
 
+
 def _get_socket_by_identifier(
         sockets: list[bpy.types.NodeSocket],
         identifier: str) -> bpy.types.NodeSocket:

@@ -4,6 +4,7 @@ import bpy
 from . import (
     property_groups,
     operators,
+    gizmos,
     ui,
     rendering,
     definitions,
@@ -13,6 +14,7 @@ from . import (
 classes = []
 
 classes.extend(property_groups.to_register)
+classes.extend(gizmos.to_register)
 classes.extend(operators.to_register)
 classes.extend(ui.to_register)
 classes.extend(rendering.to_register)

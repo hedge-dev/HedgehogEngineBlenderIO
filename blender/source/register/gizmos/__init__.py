@@ -1,0 +1,13 @@
+from . import (
+	collision_primitive_select_gizmo,
+	collision_primitive_edit_gizmo
+)
+
+to_register = [
+	collision_primitive_select_gizmo.HEIO_GGT_CollisionPrimitive_Select,
+	collision_primitive_select_gizmo.HEIO_GT_CollisionPrimitive_Select,
+	collision_primitive_select_gizmo.HEIO_OT_CollisionPrimitive_GizmoClicked,
+
+	collision_primitive_edit_gizmo.HEIO_GGT_CollisionPrimitive_Edit,
+	collision_primitive_edit_gizmo.HEIO_OT_CollisionPrimitive_GizmoMove
+]

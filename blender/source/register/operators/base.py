@@ -29,6 +29,22 @@ class HEIOBaseOperator(bpy.types.Operator):
             return {'CANCELLED'}
 
 
+class HEIOBaseModalOperator(HEIOBaseOperator):
+
+    def _modal(self, context, event):
+        self._execute(context)
+        return {'RUNNING_MODAL'}
+
+    def modal(self, context, event):
+        try:
+            return self._modal(context, event)
+        except HEIOUserException as e:
+            self.report({'ERROR'}, e.message)
+            return {'CANCELLED'}
+
+    def _invoke(self, context, event):
+        return {'RUNNING_MODAL'}
+
 class HEIOBasePopupOperator(HEIOBaseOperator):
 
     def _invoke(self, context: Context, event: Event):
