@@ -35,6 +35,14 @@ def register():
         elif hasattr(cls, "register"):
             cls.register()
 
+    # kc = bpy.context.window_manager.keyconfigs.addon
+    # if kc is not None:
+    #     km = kc.keymaps.new(name="Hedgehog Engine I/O", space_type='EMPTY')
+
+    #     for cls in classes:
+    #         if hasattr(cls, "register_keymap"):
+    #             cls.register_keymap(km)
+
     bpy.utils.register_manual_map(manual.add_manual_map)
 
 
@@ -48,6 +56,12 @@ def unregister():
             bpy.utils.unregister_class(cls)
         elif hasattr(cls, "unregister"):
             cls.unregister()
+
+    # kc = bpy.context.window_manager.keyconfigs.addon
+    # if kc is not None:
+    #     keymap = kc.keymaps.get("Hedgehog Engine I/O", None)
+    #     if keymap is not None:
+    #         kc.keymaps.remove(keymap)
 
 
 def reload_package(module_dict_main):
