@@ -87,6 +87,9 @@ class HEIO_OT_CollisionPrimitive_GizmoMove(HEIOBaseModalOperator):
             if not context.region_data.is_perspective and context.region_data.is_orthographic_side_view:
                 snap_level = -int(math.floor(math.log10(context.region_data.view_distance / 18.8)))
 
+            if self.precision:
+                snap_level += 1
+
             world_pos.x = round(world_pos.x, snap_level)
             world_pos.y = round(world_pos.y, snap_level)
             world_pos.z = round(world_pos.z, snap_level)
@@ -98,6 +101,7 @@ class HEIO_OT_CollisionPrimitive_GizmoMove(HEIOBaseModalOperator):
     def _modal(self, context: bpy.types.Context, event: bpy.types.Event):
         if event.type == 'MOUSEMOVE':
             self.snap = event.ctrl
+            self.precision = event.shift
 
             delta_x = ((event.mouse_x - self._previous_mouse.x) /
                        context.region.width * 2)
@@ -141,6 +145,7 @@ class HEIO_OT_CollisionPrimitive_GizmoMove(HEIOBaseModalOperator):
     def _invoke(self, context, event):
         self.offset = (0, 0, 0)
         self.snap = False
+        self.precision = False
 
         self._previous_mouse = Vector((event.mouse_x, event.mouse_y))
         self._initial_location = Vector(self._get_primitive(context).position)
