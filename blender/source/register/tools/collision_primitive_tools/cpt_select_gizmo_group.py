@@ -10,7 +10,7 @@ from .cpt_select_gizmo import (
 class BaseCollisionPrimitiveSelectGizmoGroup(bpy.types.GizmoGroup):
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'WINDOW'
-    bl_options = {'3D', 'SCALE'}
+    bl_options = {'3D'}
 
     primitive_gizmos: list[bpy.types.Gizmo]
     current_object: bpy.types.Object | None
@@ -45,7 +45,7 @@ class BaseCollisionPrimitiveSelectGizmoGroup(bpy.types.GizmoGroup):
             gizmo.alpha = 0
             gizmo.color_highlight = 1, 1, 1
             gizmo.alpha_highlight = 0.15
-            gizmo.use_draw_modal = True
+            gizmo.use_draw_scale = False
 
             self.primitive_gizmos.append(gizmo)
 

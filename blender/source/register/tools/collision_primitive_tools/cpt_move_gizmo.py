@@ -14,41 +14,23 @@ class HEIO_GT_CollisionPrimitive_Move(bpy.types.Gizmo):
 
     shape_circle: any
 
-    def _get_scale(self, context: bpy.types.Context, matrix_world):
-        matrix = self.matrix_space @ matrix_world
-        persp_matrix = context.region_data.perspective_matrix
-
-        return (
-            (persp_matrix[3][0] * matrix[0][3])
-            + (persp_matrix[3][1] * matrix[1][3])
-            + (persp_matrix[3][2] * matrix[2][3])
-            + persp_matrix[3][3]
-        ) * context.preferences.system.pixel_size
-
     def _draw(self, context: bpy.types.Context, select_id):
         modal = cpt_gizmo_state.CURRENT_MODAL
         if modal is not None and not isinstance(modal, HEIO_OT_CollisionPrimitive_Move):
             return
 
-        obj = context.object
-        primitive = obj.data.heio_collision_mesh.primitives.active_element
+        primitive = context.object.data.heio_collision_mesh.primitives.active_element
         batch, shader = self.shape_circle
 
-        scale = self._get_scale(context, obj.matrix_world)
-        scale = (scale, scale, scale)
-
-        obj_matrix = obj.matrix_world.normalized()
         rot = context.region_data.view_rotation.normalized()
-
-        pos = obj_matrix @ Vector(primitive.position)
-        matrix = Matrix.LocRotScale(pos, rot, scale)
+        matrix = Matrix.LocRotScale(primitive.position, rot, None)
 
         if select_id is not None:
             gpu.select.load_id(select_id)
 
         if modal is not None and isinstance(modal, HEIO_OT_CollisionPrimitive_Move):
-            pos = obj_matrix @ modal._initial_location
-            matrix_transparent = Matrix.LocRotScale(pos, rot, scale)
+            matrix_transparent = Matrix.LocRotScale(
+                modal._initial_location, rot, None)
             matrix_opaque = matrix
 
         elif self.is_highlight:
@@ -60,16 +42,21 @@ class HEIO_GT_CollisionPrimitive_Move(bpy.types.Gizmo):
             matrix_opaque = None
 
         if matrix_opaque is not None:
+
             shader.uniform_float("color", (1, 1, 1, 1))
             with gpu.matrix.push_pop():
-                gpu.matrix.multiply_matrix(matrix_opaque)
+                # taking advantage of the internal scaling system
+                self.matrix_offset = matrix_opaque
+                gpu.matrix.multiply_matrix(self.matrix_world)
                 batch.draw()
 
         if matrix_transparent is not None:
             gpu.state.blend_set('ALPHA')
             shader.uniform_float("color", (1, 1, 1, 0.5))
             with gpu.matrix.push_pop():
-                gpu.matrix.multiply_matrix(matrix_transparent)
+                # taking advantage of the internal scaling system
+                self.matrix_offset = matrix_transparent
+                gpu.matrix.multiply_matrix(self.matrix_world)
                 batch.draw()
             gpu.state.blend_set('NONE')
 
@@ -85,7 +72,7 @@ class HEIO_GT_CollisionPrimitive_Move(bpy.types.Gizmo):
 
     @classmethod
     def register(cls):
-        circle_verts = mesh_generators.generate_circle(16, 0.02)
+        circle_verts = mesh_generators.generate_circle(16, 0.15)
         cls.shape_circle = cls.new_custom_shape('TRI_STRIP', circle_verts)
 
 
@@ -128,31 +115,45 @@ class HEIO_OT_CollisionPrimitive_Move(HEIOBaseModalOperator):
         primitive.position = position
         return {'FINISHED'}
 
+    @staticmethod
+    def _get_view_delta(context: bpy.types.Context, event, pos):
+        # Logic taken from blender source:
+        # source/blender/editors/gizmo_library/gizmo_types/move3d_gizmo.cc -> move3d_get_translate(...)
+
+        mat = context.region_data.perspective_matrix.copy()
+
+        zfac = (
+            (mat[3][0] * pos[0])
+            + (mat[3][1] * pos[1])
+            + (mat[3][2] * pos[2])
+            + mat[3][3]
+        )
+
+        if zfac < 1.e-6 and zfac > -1.e-6:
+            zfac = 1
+        elif zfac < 0:
+            zfac = -zfac
+
+        delta_x = (event.mouse_x - event.mouse_prev_x) * \
+            2 * zfac / context.region.width
+        delta_y = (event.mouse_y - event.mouse_prev_y) * \
+            2 * zfac / context.region.height
+
+        mat.invert()
+        return Vector((
+            mat[0][0] * delta_x + mat[0][1] * delta_y,
+            mat[1][0] * delta_x + mat[1][1] * delta_y,
+            mat[2][0] * delta_x + mat[2][1] * delta_y,
+        ))
+
     def _modal(self, context: bpy.types.Context, event: bpy.types.Event):
 
         if event.type == 'MOUSEMOVE':
             self.snap = event.ctrl
             self.precision = event.shift
 
-            delta_x = ((event.mouse_x - event.mouse_prev_x) /
-                       context.region.width * 2)
-            delta_y = ((event.mouse_y - event.mouse_prev_y) /
-                       context.region.height * 2)
-            delta = Vector((delta_x, delta_y, 0, 0))
-
-            if event.shift:
-                delta *= 0.1
-
-            matrix = context.region_data.perspective_matrix @ context.object.matrix_world.normalized()
-
-            persp_pos = matrix @ (self._initial_location +
-                                  Vector(self.offset)).to_4d()
-            persp_pos += delta * persp_pos.w
-
-            new_pos = matrix.inverted() @ persp_pos
-            new_pos = new_pos / new_pos.w
-
-            self.offset = new_pos.to_3d() - self._initial_location
+            self.offset = Vector(
+                self.offset) + self._get_view_delta(context, event, self.offset)
 
             self._execute(context)
 

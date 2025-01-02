@@ -1,4 +1,5 @@
 import bpy
+from mathutils import Matrix
 
 from . import cpt_gizmo_state
 from .cpt_move_gizmo import (
@@ -28,5 +29,10 @@ class HEIO_GGT_CollisionPrimitive_Transform(BaseCollisionPrimitiveSelectGizmoGro
     def draw_prepare(self, context):
         hide = not cpt_gizmo_state.MANUAL_SELECT_MODE
         self.move_gizmo.hide = hide
+
+        obj = context.object
+
+        pos = obj.matrix_world.normalized().to_translation()
+        self.move_gizmo.matrix_basis = Matrix.Translation(pos)
 
 
