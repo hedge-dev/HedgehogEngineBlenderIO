@@ -22,12 +22,6 @@ class HEIO_GT_CollisionPrimitive_Select(bpy.types.Gizmo):
     rotation: Quaternion
     dimensions: Vector
 
-    def _draw_with_ui_scaling(self, shape, matrix, select_id=None):
-        scale_matrix = Matrix.Scale(
-            1 / bpy.context.preferences.system.ui_scale, 4)
-        world_matrix = self.matrix_world.normalized() @ scale_matrix @ matrix
-        self.draw_custom_shape(shape, matrix=world_matrix, select_id=select_id)
-
     def _draw(self, select_id=None):
         pos = self.position
         rot = self.rotation

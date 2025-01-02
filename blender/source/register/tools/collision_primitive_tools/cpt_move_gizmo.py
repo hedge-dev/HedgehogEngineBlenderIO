@@ -13,24 +13,20 @@ class HEIO_GT_CollisionPrimitive_Move(bpy.types.Gizmo):
     bl_idname = "heio.gt.collision_primitive_move"
 
     shape_circle: any
+    position: Vector
+    invoke_position: Vector
 
     def _draw(self, context: bpy.types.Context, select_id):
-        modal = cpt_gizmo_state.CURRENT_MODAL
-        if modal is not None and not isinstance(modal, HEIO_OT_CollisionPrimitive_Move):
-            return
-
-        primitive = context.object.data.heio_collision_mesh.primitives.active_element
-        batch, shader = self.shape_circle
 
         rot = context.region_data.view_rotation.normalized()
-        matrix = Matrix.LocRotScale(primitive.position, rot, None)
+        matrix = Matrix.LocRotScale(self.position, rot, None)
 
         if select_id is not None:
             gpu.select.load_id(select_id)
 
-        if modal is not None and isinstance(modal, HEIO_OT_CollisionPrimitive_Move):
+        if self.invoke_position is not None:
             matrix_transparent = Matrix.LocRotScale(
-                modal._initial_location, rot, None)
+                self.invoke_position, rot, None)
             matrix_opaque = matrix
 
         elif self.is_highlight:
@@ -41,6 +37,7 @@ class HEIO_GT_CollisionPrimitive_Move(bpy.types.Gizmo):
             matrix_transparent = matrix
             matrix_opaque = None
 
+        batch, shader = self.shape_circle
         if matrix_opaque is not None:
 
             shader.uniform_float("color", (1, 1, 1, 1))
@@ -66,9 +63,23 @@ class HEIO_GT_CollisionPrimitive_Move(bpy.types.Gizmo):
     def draw_select(self, context, select_id):
         self._draw(context, select_id)
 
+    def setup(self):
+        if hasattr(self, 'position'):
+            return
+
+        self.position = Vector()
+        self.invoke_position = Vector()
+
+    def invoke(self, context, event):
+        self.invoke_position = self.position.copy()
+        return {'RUNNING_MODAL'}
+
     def modal(self, context, event, tweak):
         context.region.tag_redraw()
         return {'RUNNING_MODAL'}
+
+    def exit(self, context, cancel):
+        self.invoke_position = None
 
     @classmethod
     def register(cls):
@@ -113,6 +124,7 @@ class HEIO_OT_CollisionPrimitive_Move(HEIOBaseModalOperator):
             position = matrix.inverted() @ world_pos
 
         primitive.position = position
+        self.applied_offset = position - self._initial_location
         return {'FINISHED'}
 
     @staticmethod
@@ -146,19 +158,38 @@ class HEIO_OT_CollisionPrimitive_Move(HEIOBaseModalOperator):
             mat[2][0] * delta_x + mat[2][1] * delta_y,
         ))
 
+    def _update_header_text(self, context):
+        context.area.header_text_set(
+            "Offset {:.4f} {:.4f} {:.4f}".format(*self.applied_offset))
+
     def _modal(self, context: bpy.types.Context, event: bpy.types.Event):
 
         if event.type == 'MOUSEMOVE':
             self.snap = event.ctrl
             self.precision = event.shift
 
-            self.offset = Vector(
-                self.offset) + self._get_view_delta(context, event, self.offset)
+            delta = + self._get_view_delta(
+                context,
+                event,
+                self.offset)
+
+            if self.precision:
+                delta *= 0.1
+
+            self.offset = Vector(self.offset) + delta
 
             self._execute(context)
+            self._update_header_text(context)
 
-            context.area.header_text_set(
-                "Offset {:.4f} {:.4f} {:.4f}".format(*self.offset))
+        elif event.type in {'LEFT_CTRL', 'RIGHT_CTRL', 'CTRL'}:
+            self.snap = event.ctrl
+            self._execute(context)
+            self._update_header_text(context)
+
+        elif event.type in {'LEFT_SHIFT', 'RIGHT_SHIFT', 'SHIFT'}:
+            self.precision = event.shift
+            self._execute(context)
+            self._update_header_text(context)
 
         elif event.type == 'LEFTMOUSE':
             context.area.header_text_set(None)
@@ -173,18 +204,11 @@ class HEIO_OT_CollisionPrimitive_Move(HEIOBaseModalOperator):
             cpt_gizmo_state.CURRENT_MODAL = None
             return {'CANCELLED'}
 
-        elif event.type in {'LEFT_CTRL', 'RIGHT_CTRL', 'CTRL'}:
-            self.snap = event.ctrl
-            self._execute(context)
-
-        elif event.type in {'LEFT_SHIFT', 'RIGHT_SHIFT', 'SHIFT'}:
-            self.precision = event.shift
-            self._execute(context)
-
         return {'RUNNING_MODAL'}
 
     def _invoke(self, context: bpy.types.Context, event):
         self.offset = (0, 0, 0)
+        self.applied_offset = (0, 0, 0)
         self.snap = False
         self.precision = False
 

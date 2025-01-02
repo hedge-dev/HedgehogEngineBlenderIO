@@ -1,5 +1,5 @@
 import bpy
-from mathutils import Matrix
+from mathutils import Matrix, Vector
 
 from . import cpt_gizmo_state
 from .cpt_move_gizmo import (
@@ -14,7 +14,7 @@ class HEIO_GGT_CollisionPrimitive_Transform(BaseCollisionPrimitiveSelectGizmoGro
     bl_idname = "heio.ggt.collision_primitive_edit"
     bl_label = "HEIO Collision Primitive edit"
 
-    move_gizmo: bpy.types.Gizmo
+    move_gizmo: HEIO_GT_CollisionPrimitive_Move
 
     def setup(self, context):
         super().setup(context)
@@ -26,13 +26,28 @@ class HEIO_GGT_CollisionPrimitive_Transform(BaseCollisionPrimitiveSelectGizmoGro
         self.move_gizmo.target_set_operator(HEIO_OT_CollisionPrimitive_Move.bl_idname)
         self.move_gizmo.use_draw_modal = True
 
-    def draw_prepare(self, context):
+    def refresh(self, context: bpy.types.Context):
+        super().refresh(context)
+
         hide = not cpt_gizmo_state.MANUAL_SELECT_MODE
         self.move_gizmo.hide = hide
 
-        obj = context.object
+        if not cpt_gizmo_state.MANUAL_SELECT_MODE:
+            return
 
+        obj = context.object
         pos = obj.matrix_world.normalized().to_translation()
         self.move_gizmo.matrix_basis = Matrix.Translation(pos)
+
+
+    def draw_prepare(self, context):
+        if not cpt_gizmo_state.MANUAL_SELECT_MODE:
+            return
+
+        obj = context.object
+        primitive = obj.data.heio_collision_mesh.primitives.active_element
+
+        self.move_gizmo.position = Vector(primitive.position)
+
 
 
