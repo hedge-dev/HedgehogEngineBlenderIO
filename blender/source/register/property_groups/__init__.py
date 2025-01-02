@@ -9,8 +9,7 @@ from . import (
     collision_mesh_properties,
     material_parameter_properties,
     material_texture_properties,
-    material_properties,
-    view3d_overlay_properties
+    material_properties
 )
 
 to_register = [
@@ -50,7 +49,5 @@ to_register = [
     material_texture_properties.HEIO_MaterialTexture,
     material_texture_properties.HEIO_MaterialTextureList,
 
-    material_properties.HEIO_Material,
-
-    view3d_overlay_properties.HEIO_View3DOverlay_CollisionPrimitive
+    material_properties.HEIO_Material
 ]

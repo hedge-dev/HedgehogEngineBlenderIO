@@ -46,7 +46,7 @@ def load_definitions():
     TARGET_ENUM_ITEMS = []
     TARGET_ENUM_ITEMS_INVALID = [("ERROR_FALLBACK", "", "")]
 
-    definitions_path = os.path.join(general.get_path(), "Definitions")
+    definitions_path = os.path.join(general.ADDON_DIR, "Definitions")
     for root, directories, _ in os.walk(definitions_path):
         for directory in directories:
             register_definition(os.path.join(root, directory))

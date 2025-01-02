@@ -1,11 +1,11 @@
 import bpy
 import gpu
 from gpu_extras.batch import batch_for_shader
-from mathutils import Matrix, Vector
+from mathutils import Matrix
 import colorsys
 from random import Random
 
-from ...utility import mesh_generators
+from ....utility import mesh_generators
 
 SHAPE_COLORS = {
     "SPHERE": (1, 0.5, 0.5),
@@ -14,7 +14,8 @@ SHAPE_COLORS = {
     "CYLINDER": (0.5, 1, 1),
 }
 
-class CollisionMeshRenderer:
+
+class HEIO_3D_CollisionPrimitiveRenderer:
 
     DONT_REGISTER_CLASS = True
 
@@ -140,7 +141,8 @@ class CollisionMeshRenderer:
             for primitive in obj.data.heio_collision_mesh.primitives:
 
                 # transformation matrix
-                matrix = obj.matrix_world.normalized() @ Matrix.LocRotScale(primitive.position, primitive.rotation, None).normalized()
+                matrix = obj.matrix_world.normalized() @ Matrix.LocRotScale(primitive.position,
+                                                                            primitive.rotation, None).normalized()
 
                 r = primitive.dimensions[0]
                 h = primitive.dimensions[1]
@@ -148,7 +150,8 @@ class CollisionMeshRenderer:
                 if primitive.shape_type == 'SPHERE':
                     matrix = matrix @ Matrix.Scale(r, 4)
                 elif primitive.shape_type == 'BOX':
-                    matrix = matrix @ Matrix.LocRotScale(None, None, primitive.dimensions)
+                    matrix = matrix @ Matrix.LocRotScale(
+                        None, None, primitive.dimensions)
                 elif primitive.shape_type == 'CYLINDER':
                     matrix = matrix @ Matrix.LocRotScale(None, None, (r, r, h))
 

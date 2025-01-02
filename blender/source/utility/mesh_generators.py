@@ -2,7 +2,56 @@ from mathutils import Vector
 import math
 
 
-def generate_icosphere(subdivisions: int, scale = 1):
+def generate_circle(segments: int, scale: float=1):
+
+    vertices = []
+
+    for i in range(segments):
+        fac = ((i + 1) / segments) * math.tau
+        s = math.sin(fac)
+        c = math.cos(fac)
+
+        top = (s * scale, c * scale, scale)
+
+        vertices.append(top)
+
+    cw = 1
+    ccw = segments - 1
+    result = []
+
+    result.append(vertices[0])
+
+    while True:
+        result.append(vertices[cw])
+
+        cw += 1
+        if cw == ccw:
+            break
+
+        result.append(vertices[ccw])
+
+        ccw -= 1
+        if cw == ccw:
+            break
+
+    result.append(vertices[cw])
+
+    return result
+
+def generate_circle_lines(segments: int):
+    result = []
+    for i in range(segments):
+        fac = (i / segments) * math.tau
+        s = math.sin(fac)
+        c = math.cos(fac)
+
+        result.append((c, s, 0))
+
+    result.append(result[0])
+    return result
+
+
+def generate_icosphere(subdivisions: int, scale=1):
     x1 = scale * 0.7236
     x2 = scale * 0.276385
     x3 = scale * 0.894425
@@ -104,7 +153,7 @@ def generate_sphere_lines(segments: int):
     return result
 
 
-def generate_cube(scale = 1):
+def generate_cube(scale=1):
     p = scale
     n = -scale
     return [
@@ -145,7 +194,7 @@ def generate_cube_lines():
     ]
 
 
-def generate_capsule_parts(subdivisions: int, add_offsets: bool, scale = 1):
+def generate_capsule_parts(subdivisions: int, add_offsets: bool, scale=1):
     subdivisions = max(subdivisions, 1)
     sphere = generate_icosphere(subdivisions, scale)
 
@@ -256,7 +305,7 @@ def generate_capsule_lines(segments: int):
     return result
 
 
-def generate_cylinder(segments: int, scale = 1):
+def generate_cylinder(segments: int, scale=1):
     remainder = segments % 4
     if remainder > 0:
         segments += 4 - remainder

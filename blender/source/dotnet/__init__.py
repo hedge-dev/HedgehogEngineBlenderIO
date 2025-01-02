@@ -3,7 +3,7 @@ from .sharp_needle import SharpNeedle
 from .heio_net import HEIO_NET
 from .system import System
 
-from ..utility.general import get_path
+from ..utility import general
 
 _LOADED = False
 
@@ -18,7 +18,7 @@ def load_dotnet():
     if _LOADED:
         return
 
-    path = os.path.join(get_path(), "DLL")
+    path = os.path.join(general.ADDON_DIR, "DLL")
     dll_names = [
         "SharpNeedle.dll",
         "HEIO.NET.dll"
