@@ -1,7 +1,7 @@
 import bpy
 from bpy.props import FloatVectorProperty
-import gpu
 from mathutils import Vector, Matrix
+import gpu
 import math
 
 from . import cpt_gizmo_state
@@ -13,7 +13,9 @@ class HEIO_GT_CollisionPrimitive_Move(bpy.types.Gizmo):
     bl_idname = "heio.gt.collision_primitive_move"
 
     shape_circle: any
+
     position: Vector
+
     invoke_position: Vector
 
     def _draw(self, context: bpy.types.Context, select_id):
@@ -72,6 +74,7 @@ class HEIO_GT_CollisionPrimitive_Move(bpy.types.Gizmo):
 
     def invoke(self, context, event):
         self.invoke_position = self.position.copy()
+        context.region.tag_redraw()
         return {'RUNNING_MODAL'}
 
     def modal(self, context, event, tweak):
