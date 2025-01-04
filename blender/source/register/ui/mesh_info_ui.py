@@ -46,34 +46,25 @@ class BaseMeshInfoContextMenu(bpy.types.Menu):
         op.type = self.type
 
 
-def draw_mesh_info_panel(
+def draw_mesh_info_layout(
         layout: bpy.types.UILayout,
         context: bpy.types.Context,
         mesh_info_list,
         ui_list: bpy.types.UIList,
         menu: bpy.types.Menu,
-        type: str,
-        label: str):
-
-    header, body = layout.panel(
-        "heio_mesh_info_" + type.lower(),
-        default_closed=True)
-
-    header.label(text=label)
-    if not body:
-        return None
+        type: str):
 
     no_attrib = type in NO_ATTRIB
 
     if not no_attrib:
 
         if not mesh_info_list.initialized:
-            op = body.operator(HEIO_OT_MeshInfo_Initialize.bl_idname)
+            op = layout.operator(HEIO_OT_MeshInfo_Initialize.bl_idname)
             op.type = type
             return None
 
         if mesh_info_list.attribute_invalid:
-            box = body.box()
+            box = layout.box()
             box.label(
                 text=f"Invalid \"{mesh_info_list.attribute_name}\" attribute!")
             box.label(text="Must use domain \"Face\" and type \"Integer\"!")
@@ -84,7 +75,7 @@ def draw_mesh_info_panel(
         operator.type = type
 
     draw_list(
-        body,
+        layout,
         ui_list,
         menu,
         mesh_info_list,
@@ -116,4 +107,31 @@ def draw_mesh_info_panel(
     elif no_attrib and mesh_info_list.active_element is None:
         return None
 
-    return body
+    return layout
+
+
+def draw_mesh_info_panel(
+        layout: bpy.types.UILayout,
+        context: bpy.types.Context,
+        mesh_info_list,
+        ui_list: bpy.types.UIList,
+        menu: bpy.types.Menu,
+        type: str,
+        label: str):
+
+    header, body = layout.panel(
+        "heio_mesh_info_" + type.lower(),
+        default_closed=True)
+
+    header.label(text=label)
+    if not body:
+        return None
+
+    return draw_mesh_info_layout(
+        body,
+        context,
+        mesh_info_list,
+        ui_list,
+        menu,
+        type
+    )

@@ -4,7 +4,6 @@ from mathutils import Vector, Matrix
 import gpu
 import math
 
-from . import cpt_gizmo_state
 from ...operators.base import HEIOBaseModalOperator
 from ....utility import mesh_generators
 
@@ -40,24 +39,26 @@ class HEIO_GT_CollisionPrimitive_Move(bpy.types.Gizmo):
             matrix_transparent = matrix
             matrix_opaque = None
 
-        with gpu.matrix.push_pop():
-            batch, shader = self.shape_circle
+        batch, shader = self.shape_circle
 
-            if matrix_opaque is not None:
-                shader.uniform_float("color", (1, 1, 1, 1))
-                # taking advantage of the internal scaling system
+        if matrix_opaque is not None:
+
+            shader.uniform_float("color", (1, 1, 1, 1))
+            # taking advantage of the internal scaling system
+            with gpu.matrix.push_pop():
                 self.matrix_offset = matrix_opaque
                 gpu.matrix.multiply_matrix(self.matrix_world)
                 batch.draw()
 
-            if matrix_transparent is not None:
-                gpu.state.blend_set('ALPHA')
-                shader.uniform_float("color", (1, 1, 1, 0.5))
-                # taking advantage of the internal scaling system
+        if matrix_transparent is not None:
+            gpu.state.blend_set('ALPHA')
+            shader.uniform_float("color", (1, 1, 1, 0.5))
+            # taking advantage of the internal scaling system
+            with gpu.matrix.push_pop():
                 self.matrix_offset = matrix_transparent
                 gpu.matrix.multiply_matrix(self.matrix_world)
                 batch.draw()
-                gpu.state.blend_set('NONE')
+            gpu.state.blend_set('NONE')
 
     def draw(self, context):
         self._draw(context, None)
@@ -71,7 +72,7 @@ class HEIO_GT_CollisionPrimitive_Move(bpy.types.Gizmo):
 
         self.position = Vector()
         self.base_hide = False
-        self._invoke_position = Vector()
+        self._invoke_position = None
 
     def invoke(self, context, event):
         self._invoke_position = self.position.copy()
@@ -79,7 +80,9 @@ class HEIO_GT_CollisionPrimitive_Move(bpy.types.Gizmo):
         return {'RUNNING_MODAL'}
 
     def modal(self, context, event, tweak):
-        context.region.tag_redraw()
+        # so that the ui list updates too
+        for area in context.screen.areas:
+            area.tag_redraw()
         return {'RUNNING_MODAL'}
 
     def exit(self, context, cancel):
@@ -172,13 +175,15 @@ class HEIO_OT_CollisionPrimitive_Move(HEIOBaseModalOperator):
             self._snap = event.ctrl
             self._precision = event.shift
 
-            delta = + self._get_view_delta(
+            delta = self._get_view_delta(
                 context,
                 event,
                 self._offset)
 
             if self._precision:
                 delta *= 0.1
+
+            delta = self._object_rotation @ delta
 
             self._offset = Vector(self._offset) + delta
 
@@ -198,14 +203,12 @@ class HEIO_OT_CollisionPrimitive_Move(HEIOBaseModalOperator):
         elif event.type == 'LEFTMOUSE':
             context.area.header_text_set(None)
             context.workspace.status_text_set(None)
-            cpt_gizmo_state.CURRENT_MODAL = None
             return {'FINISHED'}
 
         elif event.type in {'RIGHTMOUSE', 'ESC'}:
             self._get_primitive(context).position = self._initial_location
             context.area.header_text_set(None)
             context.workspace.status_text_set(None)
-            cpt_gizmo_state.CURRENT_MODAL = None
             return {'CANCELLED'}
 
         return {'RUNNING_MODAL'}
@@ -217,6 +220,7 @@ class HEIO_OT_CollisionPrimitive_Move(HEIOBaseModalOperator):
         self._precision = False
 
         self._initial_location = Vector(self._get_primitive(context).position)
+        self._object_rotation = context.object.matrix_world.inverted().normalized().to_quaternion()
 
         global CURRENT_MODAL
         CURRENT_MODAL = self

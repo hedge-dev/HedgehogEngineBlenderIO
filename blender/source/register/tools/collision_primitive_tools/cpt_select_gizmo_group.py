@@ -55,6 +55,7 @@ class BaseCollisionPrimitiveSelectGizmoGroup(bpy.types.GizmoGroup):
             return
 
         self.current_object = obj
+        cpt_gizmo_state.MANUAL_SELECT_MODE = False
 
     def refresh(self, context):
         obj = context.object

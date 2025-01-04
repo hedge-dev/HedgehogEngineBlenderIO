@@ -83,7 +83,9 @@ class HEIO_GT_CollisionPrimitive_ViewRotate(bpy.types.Gizmo):
         return {'RUNNING_MODAL'}
 
     def modal(self, context, event, tweak):
-        context.region.tag_redraw()
+        # so that the ui list updates too
+        for area in context.screen.areas:
+            area.tag_redraw()
         return {'RUNNING_MODAL'}
 
     def exit(self, context, cancel):
