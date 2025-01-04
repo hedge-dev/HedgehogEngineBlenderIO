@@ -1,11 +1,48 @@
 import bpy
 import bmesh
-from bpy.props import BoolProperty
+from bpy.props import BoolProperty, IntProperty
 from mathutils import Vector, Matrix
+import math
+import bmesh
 
-from .base import HEIOBasePopupOperator
+from .base import HEIOBaseOperator, HEIOBasePopupOperator
 from ...exceptions import HEIOUserException, HEIODevException
-from ...utility import attribute_utils
+from ...utility import attribute_utils, mesh_generators
+
+
+def _ensure_mesh_info_values(lists, force_zero, out_list):
+
+    lut = {}
+    for list in lists:
+        for element in list:
+            if element.value in lut:
+                continue
+
+            found = False
+            for index, out_type in enumerate(out_list):
+                if element.value == out_type.value:
+                    found = True
+                    break
+
+            if not found:
+                index = -2 if element.custom else -1
+
+            lut[element.value] = index
+
+    lutn = len(lut)
+    if lutn == 0 or (lutn == 1 and 0 in lut and not force_zero):
+        return None
+
+    for v, i in lut.items():
+        if i >= 0:
+            continue
+
+        lut[v] = len(out_list)
+        out_element = out_list.new(value=v)
+        out_element.custom = i == -2
+
+    out_list.initialize()
+    return lut
 
 
 class MeshBaseSplitOperator(HEIOBasePopupOperator):
@@ -294,7 +331,8 @@ class HEIO_OT_SplitCollisionMeshLayers(MeshBaseSplitOperator):
 
         for i, primitive in enumerate(base.data.heio_collision_mesh.primitives):
             split_mesh = bpy.data.meshes.new(f"{base.data.name}_primitive{i}")
-            split_object = bpy.data.objects.new(f"{base.name}_primitive{i}", split_mesh)
+            split_object = bpy.data.objects.new(
+                f"{base.name}_primitive{i}", split_mesh)
             split_object.parent = base
             context.collection.objects.link(split_object)
 
@@ -305,7 +343,8 @@ class HEIO_OT_SplitCollisionMeshLayers(MeshBaseSplitOperator):
             split_primitive.surface_type.value = primitive.surface_type.value
 
             for flag in primitive.surface_flags:
-                split_flag = split_primitive.surface_flags.new(value=flag.value)
+                split_flag = split_primitive.surface_flags.new(
+                    value=flag.value)
                 split_flag.custom = flag.custom
 
             if self.origins_to_bounding_box_centers:
@@ -320,3 +359,158 @@ class HEIO_OT_SplitCollisionMeshLayers(MeshBaseSplitOperator):
                 split_primitive.rotation = primitive.rotation
 
         base.data.heio_collision_mesh.primitives.clear()
+
+
+class HEIO_OT_CollisionPrimitivesToGeometry(HEIOBaseOperator):
+    bl_idname = "heio.collision_primitives_to_geometry"
+    bl_label = "Collision primitives to geometry"
+    bl_description = "Convert collision primitives to actual geometry on the mesh"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    resolution: IntProperty(
+        name="Resolution",
+        description="Resolution of the generated meshes",
+        min=0,
+        default=2
+    )
+
+    mesh_copy: BoolProperty(
+        name="Root mesh copy",
+        description="Create a copy of the original, instead of overwriting the original"
+    )
+
+    @classmethod
+    def poll(cls, context: bpy.types.Context):
+        return (
+            context.mode == 'OBJECT'
+            and context.active_object is not None
+            and context.active_object.type == 'MESH'
+        )
+
+    def _check_valid(self, context):
+        obj = context.active_object
+        colmesh = obj.data.heio_collision_mesh
+
+        if len(colmesh.primitives) == 0:
+            raise HEIOUserException("Mesh has no collision primitives")
+
+        def check_attributes(list):
+            if list.initialized and list.attribute_invalid:
+                raise HEIOUserException((
+                    f"Invalid \"{list.attribute_name}\" attribute!"
+                    " Must use domain \"Face\" and type \"Integer\"!"
+                    " Please remove or convert"
+                ))
+
+        check_attributes(colmesh.layers)
+        check_attributes(colmesh.types)
+        check_attributes(colmesh.flags)
+
+    def _execute(self, context):
+        self._check_valid(context)
+
+        sphere = mesh_generators.icosphere(self.resolution)
+        cube = mesh_generators.cube(strips=False)
+        capsule = mesh_generators.capsule(self.resolution)
+        cylinder = mesh_generators.cylinder(
+            int(math.pow(2, self.resolution)) * 5, True)
+
+        obj = context.active_object
+
+        mesh = obj.data
+        if self.mesh_copy:
+            mesh = mesh.copy()
+            mesh.name = obj.data.name
+            obj.data = mesh
+
+        colmesh = mesh.heio_collision_mesh
+        primitives = colmesh.primitives
+
+        layer_lut = _ensure_mesh_info_values(
+            [[prim.surface_layer for prim in primitives]],
+            False, colmesh.layers)
+
+        type_lut = _ensure_mesh_info_values(
+            [[prim.surface_type for prim in primitives]],
+            False, colmesh.types)
+
+        flags_lut = _ensure_mesh_info_values(
+            [prim.surface_flags for prim in primitives],
+            True, colmesh.flags)
+
+        bm = bmesh.new()
+        bm.from_mesh(mesh)
+
+        fli = bm.faces.layers.int
+        bm_layer = None if layer_lut is None else fli[colmesh.layers.attribute_name]
+        bm_type = None if type_lut is None else fli[colmesh.types.attribute_name]
+        bm_flags = None if flags_lut is None else fli[colmesh.flags.attribute_name]
+
+        for primitive in primitives:
+            r = primitive.dimensions[0]
+            h = primitive.dimensions[2]
+
+            if primitive.shape_type == 'CAPSULE':
+                shape_mesh = capsule
+
+                verts = []
+                matrix = Matrix.LocRotScale(
+                    primitive.position, primitive.rotation, None)
+
+                for vert in shape_mesh.vertices:
+
+                    offset = Vector((0, 0, 1))
+                    if vert.z < 0:
+                        offset = -offset
+
+                    capsule_vert = (vert - offset) * r + offset * h
+                    verts.append(bm.verts.new(matrix @ capsule_vert))
+
+            else:
+
+                if primitive.shape_type == 'SPHERE':
+                    shape_mesh = sphere
+                    size = Vector((r, r, r))
+                elif primitive.shape_type == 'BOX':
+                    shape_mesh = cube
+                    size = Vector(primitive.dimensions)
+                else:  # CYLINDER
+                    shape_mesh = cylinder
+                    size = Vector((r, r, h))
+
+                matrix = Matrix.LocRotScale(
+                    primitive.position, primitive.rotation, size)
+
+                verts = [bm.verts.new(matrix @ vert)
+                         for vert in shape_mesh.vertices]
+
+            attribs = []
+            if bm_layer is not None:
+                attribs.append(
+                    (bm_layer, layer_lut[primitive.surface_layer.value]))
+
+            if bm_type is not None:
+                attribs.append(
+                    (bm_type, type_lut[primitive.surface_type.value]))
+
+            if bm_flags is not None:
+                flags = 0
+                for flag in primitive.surface_flags:
+                    flags |= 1 << flags_lut[flag.value]
+                attribs.append((bm_flags, flags))
+
+            for face in shape_mesh.get_absolute_polygons():
+                bm_face = bm.faces.new([verts[f] for f in face])
+                for attrib in attribs:
+                    bm_face[attrib[0]] = attrib[1]
+
+        bm.to_mesh(mesh)
+        bm.free()
+
+        mesh.heio_collision_mesh.primitives.clear()
+
+        # so that the ui list updates too
+        for area in context.screen.areas:
+            area.tag_redraw()
+
+        return {'FINISHED'}

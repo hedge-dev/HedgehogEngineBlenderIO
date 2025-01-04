@@ -1,7 +1,7 @@
 import bpy
 
 from .. operators import (
-    mesh_split_merge_operators,
+    mesh_geometry_operators,
     material_operators,
     info_operators
 )
@@ -21,8 +21,9 @@ class HEIO_PT_VTP_Mesh(bpy.types.Panel):
     def draw(self, context):
         layout = self.layout
 
-        layout.operator(mesh_split_merge_operators.HEIO_OT_SplitMeshGroups.bl_idname)
-        layout.operator(mesh_split_merge_operators.HEIO_OT_SplitCollisionMeshLayers.bl_idname)
+        layout.operator(mesh_geometry_operators.HEIO_OT_SplitMeshGroups.bl_idname)
+        layout.operator(mesh_geometry_operators.HEIO_OT_SplitCollisionMeshLayers.bl_idname)
+        layout.operator(mesh_geometry_operators.HEIO_OT_CollisionPrimitivesToGeometry.bl_idname)
 
 
 class HEIO_PT_VTP_Material(bpy.types.Panel):

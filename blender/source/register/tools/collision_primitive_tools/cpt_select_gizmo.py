@@ -4,7 +4,7 @@ from mathutils import Matrix, Quaternion, Vector
 
 from . import cpt_gizmo_state
 from ...operators.base import HEIOBaseOperator
-from ....utility import mesh_generators
+from ....utility import mesh_generators as meshgen
 
 
 class HEIO_GT_CollisionPrimitive_Select(bpy.types.Gizmo):
@@ -84,20 +84,17 @@ class HEIO_GT_CollisionPrimitive_Select(bpy.types.Gizmo):
 
     @classmethod
     def register(cls):
-        spere_verts = mesh_generators.generate_icosphere(3)
-        cube_verts = mesh_generators.generate_cube()
-        cube_cylinder = mesh_generators.generate_cylinder(20)
-        capsule_verts_top, capsule_verts_middle, capsule_verts_bottom = mesh_generators.generate_capsule_parts(
-            3, False)
 
-        cls.shape_sphere = cls.new_custom_shape('TRIS', spere_verts)
-        cls.shape_box = cls.new_custom_shape('TRI_STRIP', cube_verts)
-        cls.shape_cylinder = cls.new_custom_shape('TRIS', cube_cylinder)
-        cls.shape_capsule_top = cls.new_custom_shape('TRIS', capsule_verts_top)
-        cls.shape_capsule_middle = cls.new_custom_shape(
-            'TRIS', capsule_verts_middle)
-        cls.shape_capsule_bottom = cls.new_custom_shape(
-            'TRIS', capsule_verts_bottom)
+        cls.shape_sphere = meshgen.icosphere(3).to_custom_shape()
+        cls.shape_box = meshgen.cube().to_custom_shape()
+        cls.shape_cylinder = meshgen.cylinder(20, True).to_custom_shape()
+
+        capsule_verts_top, capsule_verts_middle, capsule_verts_bottom = \
+            meshgen.capsule_parts(3)
+
+        cls.shape_capsule_top = capsule_verts_top.to_custom_shape()
+        cls.shape_capsule_middle = capsule_verts_middle.to_custom_shape()
+        cls.shape_capsule_bottom = capsule_verts_bottom.to_custom_shape()
 
 
 class HEIO_OT_CollisionPrimitive_GizmoClicked(HEIOBaseOperator):

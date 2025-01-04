@@ -190,6 +190,13 @@ class HEIO_PT_CollisionMesh(PropertiesPanel):
         HEIO_PT_CollisionMesh._draw_type_panel(
             layout,
             context,
+            primitive.surface_layer,
+            "Surface layer",
+            "primitive_layer")
+
+        HEIO_PT_CollisionMesh._draw_type_panel(
+            layout,
+            context,
             primitive.surface_type,
             "Surface type",
             "primitive_type")

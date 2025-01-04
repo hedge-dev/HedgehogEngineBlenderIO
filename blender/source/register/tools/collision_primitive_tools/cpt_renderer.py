@@ -27,40 +27,35 @@ class HEIO_3D_CollisionPrimitiveRenderer:
             cls.draw_callback, (), "WINDOW", "POST_VIEW"
         )
 
-        sphere_verts = mesh_generators.generate_icosphere(3)
-        sphere_lines = mesh_generators.generate_sphere_lines(32)
-        cube_verts = mesh_generators.generate_cube()
-        cube_lines = mesh_generators.generate_cube_lines()
-        cylinder_verts = mesh_generators.generate_cylinder(20)
-        cylinder_lines = mesh_generators.generate_cylinder_lines(32)
-        capsule_verts = mesh_generators.generate_capsule(3)
-        capsule_lines = mesh_generators.generate_capsule_lines(32)
+        sphere_verts = mesh_generators.icosphere(3)
+        sphere_lines = mesh_generators.sphere_lines(40)
+        cube_verts = mesh_generators.cube()
+        cube_lines = mesh_generators.cube_lines()
+        cylinder_verts = mesh_generators.cylinder(40, True)
+        cylinder_lines = mesh_generators.cylinder_lines(40)
+        capsule_verts = mesh_generators.capsule(3)
+        capsule_lines = mesh_generators.capsule_lines(40)
 
         cls.shader = gpu.shader.from_builtin('UNIFORM_COLOR')
         cls.capsule_shader = CollisionMeshShaders.capsule_shader
 
-        def get_batch(type, pos, shader=None):
-            if shader is None:
-                shader = cls.shader
-            return batch_for_shader(shader, type, {"pos": pos})
-
         cls.batch_shapes = {
             "SPHERE": (
                 cls.shader,
-                get_batch('TRIS', sphere_verts),
-                get_batch('LINE_STRIP', sphere_lines)),
+                sphere_verts.to_batch(cls.shader),
+                sphere_lines.to_batch(cls.shader)),
             "BOX": (
                 cls.shader,
-                get_batch('TRI_STRIP', cube_verts),
-                get_batch('LINES', cube_lines)),
+                cube_verts.to_batch(cls.shader),
+                cube_lines.to_batch(cls.shader)),
             "CAPSULE": (
                 cls.capsule_shader,
-                get_batch('TRIS', capsule_verts, cls.capsule_shader),
-                get_batch('LINE_STRIP', capsule_lines, cls.capsule_shader)),
+                capsule_verts.to_batch(cls.capsule_shader),
+                capsule_lines.to_batch(cls.capsule_shader)),
             "CYLINDER": (
                 cls.shader,
-                get_batch('TRIS', cylinder_verts),
-                get_batch('LINES', cylinder_lines)),
+                cylinder_verts.to_batch(cls.shader),
+                cylinder_lines.to_batch(cls.shader)),
         }
 
     @classmethod

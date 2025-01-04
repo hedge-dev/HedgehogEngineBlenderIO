@@ -37,26 +37,21 @@ class CollisionMeshConverter:
     @staticmethod
     def _convert_layers(mesh, mesh_data):
         layers = mesh.heio_collision_mesh.layers
-        layers.initialize()
 
         set_slot_indices = []
         for i, mesh_layer in enumerate(mesh_data.Layers):
-            if i == 0:
-                layer = layers[0]
-                layer.value = mesh_layer.Value
-            else:
-                layer = layers.new(value=mesh_layer.Value)
-
+            layer = layers.new(value=mesh_layer.Value)
             layer.is_convex = mesh_layer.IsConvex
 
             if layer.is_convex:
                 layer.convex_type.value = mesh_layer.Type
 
-                for i, value in enumerate(mesh_layer.FlagValues):
+                for value in mesh_layer.FlagValues:
                     layer.convex_flags.new(value=value)
 
             set_slot_indices.extend([i] * mesh_layer.Size)
 
+        layers.initialize()
         layers.attribute.data.foreach_set("value", set_slot_indices)
 
     @staticmethod
@@ -65,14 +60,13 @@ class CollisionMeshConverter:
             return
 
         types = mesh.heio_collision_mesh.types
+
+        for value in mesh_data.TypeValues:
+            types.new(value=value)
         types.initialize()
+
         types.attribute.data.foreach_set("value", [x for x in mesh_data.Types])
 
-        for i, value in enumerate(mesh_data.TypeValues):
-            if i == 0:
-                types[0].value = value
-            else:
-                types.new(value=value)
 
     @staticmethod
     def _convert_flags(mesh, mesh_data):
@@ -80,14 +74,12 @@ class CollisionMeshConverter:
             return
 
         flags = mesh.heio_collision_mesh.flags
+
+        for value in mesh_data.FlagValues:
+            flags.new(value=value)
+
         flags.initialize()
         flags.attribute.data.foreach_set("value", [x for x in mesh_data.Flags])
-
-        for i, value in enumerate(mesh_data.FlagValues):
-            if i == 0:
-                flags[0].value = value
-            else:
-                flags.new(value=value)
 
     @staticmethod
     def _convert_primitives(mesh, collision_mesh):
@@ -108,6 +100,7 @@ class CollisionMeshConverter:
             primitive.dimensions = (
                 sn_primitive.Dimensions.X, sn_primitive.Dimensions.Z, sn_primitive.Dimensions.Y)
 
+            primitive.surface_layer.value = sn_primitive.SurfaceLayer
             primitive.surface_type.value = sn_primitive.SurfaceType
 
             flags = sn_primitive.SurfaceFlags

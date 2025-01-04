@@ -219,8 +219,7 @@ class HEIO_GT_CollisionPrimitive_Rotate(bpy.types.Gizmo):
 
     @classmethod
     def register(cls):
-        circle_lines = mesh_generators.generate_circle_lines(32)
-        batch, shader = cls.new_custom_shape('LINE_STRIP', circle_lines)
+        batch, shader = mesh_generators.circle_lines(32).to_custom_shape()
         shader_clipped = gpu.shader.from_builtin(
             'UNIFORM_COLOR', config='CLIPPED')
         cls.shape_circle = (batch, shader, shader_clipped)
@@ -253,7 +252,8 @@ class HEIO_OT_CollisionPrimitive_Rotate(BaseCollisionPrimitiveRotateOperator):
     def _invoke(self, context, event):
         super()._invoke(context, event)
 
-        matrix = context.object.matrix_world.to_quaternion().normalized() @ self._initial_rotation
+        matrix = context.object.matrix_world.to_quaternion(
+        ).normalized() @ self._initial_rotation
 
         if self.mode == 'X':
             normal = Vector((1, 0, 0))
@@ -271,4 +271,3 @@ class HEIO_OT_CollisionPrimitive_Rotate(BaseCollisionPrimitiveRotateOperator):
         self._flip_angle = view_dir.dot(matrix @ normal) < 0
 
         return {'RUNNING_MODAL'}
-

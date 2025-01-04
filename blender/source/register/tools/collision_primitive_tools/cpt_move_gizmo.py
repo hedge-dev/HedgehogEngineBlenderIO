@@ -90,8 +90,7 @@ class HEIO_GT_CollisionPrimitive_Move(bpy.types.Gizmo):
 
     @classmethod
     def register(cls):
-        circle_verts = mesh_generators.generate_circle(16, 0.15)
-        cls.shape_circle = cls.new_custom_shape('TRI_STRIP', circle_verts)
+        cls.shape_circle = mesh_generators.circle(16, 0.15).to_custom_shape()
 
 
 class HEIO_OT_CollisionPrimitive_Move(HEIOBaseModalOperator):
@@ -100,7 +99,7 @@ class HEIO_OT_CollisionPrimitive_Move(HEIOBaseModalOperator):
     bl_description = "Move the collision primitive"
     bl_options = {'REGISTER', 'UNDO', 'INTERNAL'}
 
-    _offset: FloatVectorProperty(
+    offset: FloatVectorProperty(
         name="Offset",
         size=3
     )
@@ -110,7 +109,7 @@ class HEIO_OT_CollisionPrimitive_Move(HEIOBaseModalOperator):
 
     def _execute(self, context):
         primitive = self._get_primitive(context)
-        position = self._initial_location + Vector(self._offset)
+        position = self._initial_location + Vector(self.offset)
 
         if self._snap:
             matrix = context.object.matrix_world.normalized()
@@ -178,14 +177,14 @@ class HEIO_OT_CollisionPrimitive_Move(HEIOBaseModalOperator):
             delta = self._get_view_delta(
                 context,
                 event,
-                self._offset)
+                self.offset)
 
             if self._precision:
                 delta *= 0.1
 
             delta = self._object_rotation @ delta
 
-            self._offset = Vector(self._offset) + delta
+            self.offset = Vector(self.offset) + delta
 
             self._execute(context)
             self._update_header_text(context)
@@ -214,7 +213,7 @@ class HEIO_OT_CollisionPrimitive_Move(HEIOBaseModalOperator):
         return {'RUNNING_MODAL'}
 
     def _invoke(self, context: bpy.types.Context, event):
-        self._offset = (0, 0, 0)
+        self.offset = (0, 0, 0)
         self._applied_offset = (0, 0, 0)
         self._snap = False
         self._precision = False

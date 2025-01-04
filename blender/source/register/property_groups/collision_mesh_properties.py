@@ -224,6 +224,10 @@ class HEIO_CollisionPrimitive(bpy.types.PropertyGroup):
         precision=3
     )
 
+    surface_layer: PointerProperty(
+        type=HEIO_CollisionLayer
+    )
+
     surface_type: PointerProperty(
         type=HEIO_CollisionType
     )

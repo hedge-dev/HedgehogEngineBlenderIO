@@ -7,7 +7,7 @@ from . import (
     lod_operators,
     material_operators,
     material_parameter_operators,
-    mesh_split_merge_operators,
+    mesh_geometry_operators,
     info_operators
 )
 
@@ -52,8 +52,9 @@ to_register = [
     material_parameter_operators.HEIO_OT_MaterialParameters_Remove,
     material_parameter_operators.HEIO_OT_MaterialParameters_Move,
 
-    mesh_split_merge_operators.HEIO_OT_SplitMeshGroups,
-    mesh_split_merge_operators.HEIO_OT_SplitCollisionMeshLayers,
+    mesh_geometry_operators.HEIO_OT_SplitMeshGroups,
+    mesh_geometry_operators.HEIO_OT_SplitCollisionMeshLayers,
+	mesh_geometry_operators.HEIO_OT_CollisionPrimitivesToGeometry,
 
     info_operators.HEIO_OT_Info_Manual,
     info_operators.HEIO_OT_Info_Discord,
