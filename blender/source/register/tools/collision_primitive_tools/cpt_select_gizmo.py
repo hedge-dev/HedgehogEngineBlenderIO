@@ -32,7 +32,7 @@ class HEIO_GT_CollisionPrimitive_Select(bpy.types.Gizmo):
         )
 
         r = self.dimensions[0]
-        h = self.dimensions[1]
+        h = self.dimensions[2]
 
         if self.shape_type == 'SPHERE':
             matrix = base_matrix @ Matrix.Scale(r, 4)
@@ -86,7 +86,7 @@ class HEIO_GT_CollisionPrimitive_Select(bpy.types.Gizmo):
     def register(cls):
         spere_verts = mesh_generators.generate_icosphere(3)
         cube_verts = mesh_generators.generate_cube()
-        cube_cylinder = mesh_generators.generate_cylinder(32)
+        cube_cylinder = mesh_generators.generate_cylinder(20)
         capsule_verts_top, capsule_verts_middle, capsule_verts_bottom = mesh_generators.generate_capsule_parts(
             3, False)
 

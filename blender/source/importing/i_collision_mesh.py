@@ -105,12 +105,8 @@ class CollisionMeshConverter:
             primitive.rotation = i_transform.net_to_bpy_quaternion(
                 sn_primitive.Rotation)
 
-            if primitive.shape_type == 'BOX':
-                primitive.dimensions = (
-                    sn_primitive.Dimensions.X, sn_primitive.Dimensions.Z, sn_primitive.Dimensions.Y)
-            else:
-                primitive.dimensions = (
-                    sn_primitive.Dimensions.X, sn_primitive.Dimensions.Y, sn_primitive.Dimensions.Z)
+            primitive.dimensions = (
+                sn_primitive.Dimensions.X, sn_primitive.Dimensions.Z, sn_primitive.Dimensions.Y)
 
             primitive.surface_type.value = sn_primitive.SurfaceType
 

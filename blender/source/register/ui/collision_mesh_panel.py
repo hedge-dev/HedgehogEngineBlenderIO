@@ -185,7 +185,7 @@ class HEIO_PT_CollisionMesh(PropertiesPanel):
         else:
             column = layout.column(align=True)
             column.prop(primitive, "dimensions", text="Radius", index=0)
-            column.prop(primitive, "dimensions", text="Height", index=1)
+            column.prop(primitive, "dimensions", text="Height", index=2)
 
         HEIO_PT_CollisionMesh._draw_type_panel(
             layout,

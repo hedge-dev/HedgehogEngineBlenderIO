@@ -2,7 +2,7 @@ from mathutils import Vector
 import math
 
 
-def generate_circle(segments: int, scale: float=1):
+def generate_circle(segments: int, scale: float = 1):
 
     vertices = []
 
@@ -37,6 +37,7 @@ def generate_circle(segments: int, scale: float=1):
     result.append(vertices[cw])
 
     return result
+
 
 def generate_circle_lines(segments: int):
     result = []

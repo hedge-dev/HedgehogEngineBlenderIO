@@ -31,7 +31,7 @@ class HEIO_3D_CollisionPrimitiveRenderer:
         sphere_lines = mesh_generators.generate_sphere_lines(32)
         cube_verts = mesh_generators.generate_cube()
         cube_lines = mesh_generators.generate_cube_lines()
-        cylinder_verts = mesh_generators.generate_cylinder(32)
+        cylinder_verts = mesh_generators.generate_cylinder(20)
         cylinder_lines = mesh_generators.generate_cylinder_lines(32)
         capsule_verts = mesh_generators.generate_capsule(3)
         capsule_lines = mesh_generators.generate_capsule_lines(32)
@@ -94,7 +94,7 @@ class HEIO_3D_CollisionPrimitiveRenderer:
                                                                             primitive.rotation, None).normalized()
 
                 r = primitive.dimensions[0]
-                h = primitive.dimensions[1]
+                h = primitive.dimensions[2]
 
                 if primitive.shape_type == 'SPHERE':
                     matrix = matrix @ Matrix.Scale(r, 4)
@@ -151,7 +151,7 @@ class HEIO_3D_CollisionPrimitiveRenderer:
             shader.uniform_float("ModelViewProjectionMatrix", batch[1])
             if batch[0] == 'CAPSULE':
                 shader.uniform_float("radius", batch[4][0])
-                shader.uniform_float("height", batch[4][1])
+                shader.uniform_float("height", batch[4][2])
 
             col = batch[3]
 
@@ -180,7 +180,7 @@ class HEIO_3D_CollisionPrimitiveRenderer:
             shader.uniform_float("ModelViewProjectionMatrix", batch[1])
             if batch[0] == 'CAPSULE':
                 shader.uniform_float("radius", batch[4][0])
-                shader.uniform_float("height", batch[4][1])
+                shader.uniform_float("height", batch[4][2])
 
             col = batch[3]
 
