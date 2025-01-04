@@ -6,6 +6,7 @@ from . import (
 	cpt_select_gizmo_group,
 	cpt_move_gizmo,
 	cpt_rotate_gizmo,
+	cpt_viewrotate_gizmo,
 	cpt_transform_gizmo_group,
 	cpt_workspace_tools,
 )
@@ -27,6 +28,9 @@ to_register = [
 
 	cpt_rotate_gizmo.HEIO_OT_CollisionPrimitive_Rotate,
 	cpt_rotate_gizmo.HEIO_GT_CollisionPrimitive_Rotate,
+
+	cpt_viewrotate_gizmo.HEIO_OT_CollisionPrimitive_ViewRotate,
+	cpt_viewrotate_gizmo.HEIO_GT_CollisionPrimitive_ViewRotate,
 
 	cpt_transform_gizmo_group.HEIO_GGT_CollisionPrimitive_Transform,
 

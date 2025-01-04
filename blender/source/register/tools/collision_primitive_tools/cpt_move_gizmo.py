@@ -15,8 +15,9 @@ class HEIO_GT_CollisionPrimitive_Move(bpy.types.Gizmo):
     shape_circle: any
 
     position: Vector
+    base_hide: bool
 
-    invoke_position: Vector
+    _invoke_position: Vector
 
     def _draw(self, context: bpy.types.Context, select_id):
 
@@ -26,9 +27,9 @@ class HEIO_GT_CollisionPrimitive_Move(bpy.types.Gizmo):
         if select_id is not None:
             gpu.select.load_id(select_id)
 
-        if self.invoke_position is not None:
+        if self._invoke_position is not None:
             matrix_transparent = Matrix.LocRotScale(
-                self.invoke_position, rot, None)
+                self._invoke_position, rot, None)
             matrix_opaque = matrix
 
         elif self.is_highlight:
@@ -70,10 +71,11 @@ class HEIO_GT_CollisionPrimitive_Move(bpy.types.Gizmo):
             return
 
         self.position = Vector()
-        self.invoke_position = Vector()
+        self.base_hide = False
+        self._invoke_position = Vector()
 
     def invoke(self, context, event):
-        self.invoke_position = self.position.copy()
+        self._invoke_position = self.position.copy()
         context.region.tag_redraw()
         return {'RUNNING_MODAL'}
 
@@ -82,7 +84,7 @@ class HEIO_GT_CollisionPrimitive_Move(bpy.types.Gizmo):
         return {'RUNNING_MODAL'}
 
     def exit(self, context, cancel):
-        self.invoke_position = None
+        self._invoke_position = None
 
     @classmethod
     def register(cls):
