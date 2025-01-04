@@ -9,6 +9,7 @@ from . import (
 	cpt_viewrotate_gizmo,
 	cpt_transform_gizmo_group,
 	cpt_workspace_tools,
+	cpt_cursor
 )
 
 to_register = [
@@ -34,5 +35,9 @@ to_register = [
 
 	cpt_transform_gizmo_group.HEIO_GGT_CollisionPrimitive_Transform,
 
-	cpt_workspace_tools.CollisionPrimitiveWSTRegister
+	cpt_workspace_tools.CollisionPrimitiveWSTRegister,
+
+	cpt_cursor.HEIO_OT_View3D_SnapActiveCollisionPrimitiveToCursor,
+	cpt_cursor.HEIO_OT_View3D_SnapCursorToActiveCollisionPrimitive,
+	cpt_cursor.CPTMenuAppends
 ]
