@@ -4,7 +4,6 @@ from bpy.props import BoolProperty
 from mathutils import Vector, Matrix
 
 from .base import HEIOBasePopupOperator
-from ..property_groups.collision_mesh_properties import HEIO_CollisionLayerList
 from ...exceptions import HEIOUserException, HEIODevException
 from ...utility import attribute_utils
 
@@ -12,10 +11,9 @@ from ...utility import attribute_utils
 class MeshBaseSplitOperator(HEIOBasePopupOperator):
     bl_options = {'UNDO'}
 
-    delete_original: BoolProperty(
-        name="Delete original",
-        description="Delete the original object after splitting",
-        default=True
+    root_mesh_copy: BoolProperty(
+        name="Root mesh copy",
+        description="Create a copy of the original mesh as the root, instead of clearing the original"
     )
 
     origins_to_bounding_box_centers: BoolProperty(
@@ -45,7 +43,7 @@ class MeshBaseSplitOperator(HEIOBasePopupOperator):
         )
 
     def draw(self, context):
-        self.layout.prop(self, "delete_original")
+        self.layout.prop(self, "root_mesh_copy")
         self.layout.prop(self, "origins_to_bounding_box_centers")
         self.layout.prop(self, "remove_empty_splits")
         self.layout.prop(self, "remove_empty_info")
@@ -145,12 +143,12 @@ class MeshBaseSplitOperator(HEIOBasePopupOperator):
                 attribute_utils.decrease_int_values(
                     None, split_mesh, layers.attribute_name, i)
 
-    def _post_split(self, context, parent):
+    def _post_split(self, context, base):
         pass
 
     def _execute(self, context):
-        name = context.active_object.name
-        mesh = context.active_object.data
+        obj = context.active_object
+        mesh: bpy.types.Mesh = obj.data
         mesh_info = self._get_mesh_info(mesh)
 
         if not mesh_info.initialized:
@@ -162,16 +160,7 @@ class MeshBaseSplitOperator(HEIOBasePopupOperator):
         if len(mesh_info) < 2:
             raise HEIOUserException(f"Mesh has less than 2 {self.type_name}s!")
 
-        parent = context.active_object.parent
         base_matrix = context.active_object.matrix_world
-        created_parent = False
-
-        if parent is None:
-            created_parent = True
-            parent = bpy.data.objects.new(name + "_split", None)
-            parent.matrix_world = base_matrix
-            base_matrix = Matrix.Identity(4)
-            context.collection.objects.link(parent)
 
         for i, suffix in enumerate(self._get_split_name_suffixes(mesh_info)):
             split_mesh = mesh.copy()
@@ -225,8 +214,8 @@ class MeshBaseSplitOperator(HEIOBasePopupOperator):
                 continue
 
             split_mesh.name = f"{mesh.name}_{suffix}"
-            split_obj = bpy.data.objects.new(f"{name}_{i}", split_mesh)
-            split_obj.parent = parent
+            split_obj = bpy.data.objects.new(f"{obj.name}_{i}", split_mesh)
+            split_obj.parent = obj
             split_obj.matrix_world = base_matrix @ Matrix.Translation(center)
             context.collection.objects.link(split_obj)
 
@@ -247,15 +236,19 @@ class MeshBaseSplitOperator(HEIOBasePopupOperator):
                 self._remove_unused_collision_flags(split_mesh)
                 self._remove_unused_mesh_layers(split_mesh)
 
-        self._post_split(context, parent)
+        if self.root_mesh_copy:
+            obj.data = mesh.copy()
+            obj.data.name = mesh.name + "_split"
 
-        if self.delete_original:
-            original = context.active_object
-            bpy.data.objects.remove(original)
+        self._post_split(context, obj)
+        obj.data.clear_geometry()
 
-            if created_parent:
-                context.view_layer.objects.active = parent
-                parent.name = name
+        if self.remove_empty_info:
+            obj.data.heio_mesh.groups.delete()
+            obj.data.heio_mesh.layers.delete()
+            obj.data.heio_collision_mesh.layers.delete()
+            obj.data.heio_collision_mesh.types.delete()
+            obj.data.heio_collision_mesh.flags.delete()
 
         return {'FINISHED'}
 
@@ -279,20 +272,30 @@ class HEIO_OT_SplitCollisionMeshLayers(MeshBaseSplitOperator):
 
     type_name = 'Collision layer'
 
+    split_primitives: BoolProperty(
+        name="Split primitives",
+        description="Split primitives into seperate objects",
+        default=True
+    )
+
+    def draw(self, context):
+        super().draw(context)
+        self.layout.prop(self, "split_primitives")
+
     def _get_mesh_info(self, mesh):
         return mesh.heio_collision_mesh.layers
 
     def _get_split_name_suffixes(self, mesh_info):
         return [str(i) for i, _ in enumerate(mesh_info)]
 
-    def _post_split(self, context, parent):
-        name = context.active_object.name
-        mesh = context.active_object.data
+    def _post_split(self, context, base):
+        if not self.split_primitives:
+            return
 
-        for i, primitive in enumerate(mesh.heio_collision_mesh.primitives):
-            split_mesh = bpy.data.meshes.new(f"{mesh.name}_primitive{i}")
-            split_object = bpy.data.objects.new(f"{name}_primitive{i}", split_mesh)
-            split_object.parent = parent
+        for i, primitive in enumerate(base.data.heio_collision_mesh.primitives):
+            split_mesh = bpy.data.meshes.new(f"{base.data.name}_primitive{i}")
+            split_object = bpy.data.objects.new(f"{base.name}_primitive{i}", split_mesh)
+            split_object.parent = base
             context.collection.objects.link(split_object)
 
             split_primitive = split_mesh.heio_collision_mesh.primitives.new()
@@ -316,3 +319,4 @@ class HEIO_OT_SplitCollisionMeshLayers(MeshBaseSplitOperator):
                 split_primitive.position = primitive.position
                 split_primitive.rotation = primitive.rotation
 
+        base.data.heio_collision_mesh.primitives.clear()

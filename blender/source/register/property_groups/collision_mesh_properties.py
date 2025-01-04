@@ -106,7 +106,7 @@ class BaseCollisionInfoList(BaseList):
     def delete(self):
         self.clear()
         attribute = self.attribute
-        if not self._check_attribute_invalid(attribute):
+        if attribute is not None and not self._check_attribute_invalid(attribute):
             self.id_data.attributes.remove(attribute)
 
     @staticmethod
