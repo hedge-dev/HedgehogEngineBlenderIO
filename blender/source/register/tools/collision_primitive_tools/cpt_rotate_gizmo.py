@@ -90,29 +90,26 @@ class HEIO_GT_CollisionPrimitive_Rotate(bpy.types.Gizmo):
             gpu.matrix.multiply_matrix(self.matrix_world)
             batch.draw()
 
-        gpu.state.clip_distances_set(0)
+            gpu.state.clip_distances_set(0)
 
-        if self._line_matrix is None:
-            gpu.state.blend_set('NONE')
-            return
+            if self._line_matrix is None:
+                gpu.state.blend_set('NONE')
+                return
 
-        line_batch, line_shader = self.shape_line
-        line_shader.uniform_float("color", color)
+            line_batch, line_shader = self.shape_line
+            line_shader.uniform_float("color", color)
 
-        with gpu.matrix.push_pop():
-            gpu.matrix.multiply_matrix(self.matrix_world @ self._line_matrix)
+            gpu.matrix.multiply_matrix(self._line_matrix)
             line_batch.draw()
 
-            with gpu.matrix.push_pop():
+            rotation = self.matrix_world.to_quaternion().normalized()
+            difference = rotation.rotation_difference(
+                self._initial_rotation)
+            line_offset_matrix = difference.to_matrix().to_4x4()
+            gpu.matrix.multiply_matrix(line_offset_matrix)
 
-                rotation = self.matrix_world.to_quaternion().normalized()
-                difference = rotation.rotation_difference(
-                    self._initial_rotation)
-                line_offset_matrix = difference.to_matrix().to_4x4()
-                gpu.matrix.multiply_matrix(line_offset_matrix)
-
-                gpu.state.line_width_set(1)
-                line_batch.draw()
+            gpu.state.line_width_set(1)
+            line_batch.draw()
 
         gpu.state.blend_set('NONE')
 

@@ -31,16 +31,15 @@ class HEIO_GT_CollisionPrimitive_ViewRotate(bpy.types.Gizmo):
             gpu.matrix.multiply_matrix(self.matrix_world)
             batch.draw()
 
-        if self._line_matrix is None:
-            gpu.state.blend_set('NONE')
-            return
+            if self._line_matrix is None:
+                gpu.state.blend_set('NONE')
+                return
 
-        line_batch, line_shader = self.shape_line
-        line_shader.uniform_float("color", color)
-        gpu.state.line_width_set(1)
+            line_batch, line_shader = self.shape_line
+            line_shader.uniform_float("color", color)
+            gpu.state.line_width_set(1)
 
-        with gpu.matrix.push_pop():
-            gpu.matrix.multiply_matrix(self.matrix_world @ self._line_matrix)
+            gpu.matrix.multiply_matrix(self._line_matrix)
             line_batch.draw()
 
             gpu.state.line_width_set(3)
@@ -109,6 +108,6 @@ class HEIO_OT_CollisionPrimitive_ViewRotate(BaseCollisionPrimitiveRotateOperator
 
         obj_rot = context.object.matrix_world.to_quaternion().inverted().normalized()
         axis = obj_rot @ context.region_data.view_rotation @ Vector((0, 0, -1))
-        primitive.rotation = self._initial_rotation @ Matrix.Rotation(self.rotation, 4, axis).to_quaternion()
+        primitive.rotation = Matrix.Rotation(self.rotation, 4, axis).to_quaternion() @ self._initial_rotation
 
         return {'FINISHED'}

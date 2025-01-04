@@ -40,25 +40,24 @@ class HEIO_GT_CollisionPrimitive_Move(bpy.types.Gizmo):
             matrix_transparent = matrix
             matrix_opaque = None
 
-        batch, shader = self.shape_circle
-        if matrix_opaque is not None:
+        with gpu.matrix.push_pop():
+            batch, shader = self.shape_circle
 
-            shader.uniform_float("color", (1, 1, 1, 1))
-            with gpu.matrix.push_pop():
+            if matrix_opaque is not None:
+                shader.uniform_float("color", (1, 1, 1, 1))
                 # taking advantage of the internal scaling system
                 self.matrix_offset = matrix_opaque
                 gpu.matrix.multiply_matrix(self.matrix_world)
                 batch.draw()
 
-        if matrix_transparent is not None:
-            gpu.state.blend_set('ALPHA')
-            shader.uniform_float("color", (1, 1, 1, 0.5))
-            with gpu.matrix.push_pop():
+            if matrix_transparent is not None:
+                gpu.state.blend_set('ALPHA')
+                shader.uniform_float("color", (1, 1, 1, 0.5))
                 # taking advantage of the internal scaling system
                 self.matrix_offset = matrix_transparent
                 gpu.matrix.multiply_matrix(self.matrix_world)
                 batch.draw()
-            gpu.state.blend_set('NONE')
+                gpu.state.blend_set('NONE')
 
     def draw(self, context):
         self._draw(context, None)
