@@ -103,11 +103,11 @@ class HEIO_OT_CollisionPrimitive_ViewRotate(BaseCollisionPrimitiveRotateOperator
     bl_label = "View-Rotate collision primitive"
     bl_description = "Rotate the collision primitive based on the viewing angle"
 
-    def _execute(self, context):
+    def _apply_rotation(self, context, rotation):
         primitive = self._get_primitive(context)
 
         obj_rot = context.object.matrix_world.to_quaternion().inverted().normalized()
         axis = obj_rot @ context.region_data.view_rotation @ Vector((0, 0, -1))
-        primitive.rotation = Matrix.Rotation(self.rotation, 4, axis).to_quaternion() @ self._initial_rotation
+        primitive.rotation = Matrix.Rotation(rotation, 4, axis).to_quaternion() @ self._initial_rotation
 
         return {'FINISHED'}

@@ -97,7 +97,7 @@ class HEIO_OT_CollisionPrimitive_Move(HEIOBaseModalOperator):
     bl_description = "Move the collision primitive"
     bl_options = {'REGISTER', 'UNDO', 'INTERNAL'}
 
-    offset: FloatVectorProperty(
+    _offset: FloatVectorProperty(
         name="Offset",
         size=3
     )
@@ -107,9 +107,9 @@ class HEIO_OT_CollisionPrimitive_Move(HEIOBaseModalOperator):
 
     def _execute(self, context):
         primitive = self._get_primitive(context)
-        position = self._initial_location + Vector(self.offset)
+        position = self._initial_location + Vector(self._offset)
 
-        if self.snap:
+        if self._snap:
             matrix = context.object.matrix_world.normalized()
             world_pos = matrix @ position
 
@@ -118,7 +118,7 @@ class HEIO_OT_CollisionPrimitive_Move(HEIOBaseModalOperator):
                 snap_level = - \
                     int(math.floor(math.log10(context.region_data.view_distance / 18.8)))
 
-            if self.precision:
+            if self._precision:
                 snap_level += 1
 
             world_pos.x = round(world_pos.x, snap_level)
@@ -128,7 +128,7 @@ class HEIO_OT_CollisionPrimitive_Move(HEIOBaseModalOperator):
             position = matrix.inverted() @ world_pos
 
         primitive.position = position
-        self.applied_offset = position - self._initial_location
+        self._applied_offset = position - self._initial_location
         return {'FINISHED'}
 
     @staticmethod
@@ -164,34 +164,34 @@ class HEIO_OT_CollisionPrimitive_Move(HEIOBaseModalOperator):
 
     def _update_header_text(self, context):
         context.area.header_text_set(
-            "Offset {:.4f} {:.4f} {:.4f}".format(*self.applied_offset))
+            "Offset {:.4f} {:.4f} {:.4f}".format(*self._applied_offset))
 
     def _modal(self, context: bpy.types.Context, event: bpy.types.Event):
 
         if event.type == 'MOUSEMOVE':
-            self.snap = event.ctrl
-            self.precision = event.shift
+            self._snap = event.ctrl
+            self._precision = event.shift
 
             delta = + self._get_view_delta(
                 context,
                 event,
-                self.offset)
+                self._offset)
 
-            if self.precision:
+            if self._precision:
                 delta *= 0.1
 
-            self.offset = Vector(self.offset) + delta
+            self._offset = Vector(self._offset) + delta
 
             self._execute(context)
             self._update_header_text(context)
 
         elif event.type in {'LEFT_CTRL', 'RIGHT_CTRL', 'CTRL'}:
-            self.snap = event.ctrl
+            self._snap = event.ctrl
             self._execute(context)
             self._update_header_text(context)
 
         elif event.type in {'LEFT_SHIFT', 'RIGHT_SHIFT', 'SHIFT'}:
-            self.precision = event.shift
+            self._precision = event.shift
             self._execute(context)
             self._update_header_text(context)
 
@@ -211,10 +211,10 @@ class HEIO_OT_CollisionPrimitive_Move(HEIOBaseModalOperator):
         return {'RUNNING_MODAL'}
 
     def _invoke(self, context: bpy.types.Context, event):
-        self.offset = (0, 0, 0)
-        self.applied_offset = (0, 0, 0)
-        self.snap = False
-        self.precision = False
+        self._offset = (0, 0, 0)
+        self._applied_offset = (0, 0, 0)
+        self._snap = False
+        self._precision = False
 
         self._initial_location = Vector(self._get_primitive(context).position)
 

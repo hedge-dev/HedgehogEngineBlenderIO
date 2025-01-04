@@ -241,10 +241,10 @@ class HEIO_OT_CollisionPrimitive_Rotate(BaseCollisionPrimitiveRotateOperator):
         )
     )
 
-    def _execute(self, context):
+    def _apply_rotation(self, context, rotation):
         primitive = self._get_primitive(context)
         primitive.rotation = self._initial_rotation @ Matrix.Rotation(
-            self.rotation, 4, self.mode).to_quaternion()
+            rotation, 4, self.mode).to_quaternion()
 
         return {'FINISHED'}
 
