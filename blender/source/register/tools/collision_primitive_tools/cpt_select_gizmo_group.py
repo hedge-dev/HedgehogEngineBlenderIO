@@ -19,8 +19,11 @@ class BaseCollisionPrimitiveSelectGizmoGroup(bpy.types.GizmoGroup):
     def poll(cls, context):
         obj = context.object
         return (
-            context.mode == 'OBJECT'
+            context.space_data.overlay.show_overlays
+            and context.screen.heio_collision_primitives.show_primitives
+            and context.mode == 'OBJECT'
             and obj is not None
+            and obj.visible_get(view_layer=context.view_layer)
             and obj.type == 'MESH'
             and len(obj.data.heio_collision_mesh.primitives) > 0
         )
