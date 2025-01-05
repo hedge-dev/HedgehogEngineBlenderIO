@@ -53,7 +53,7 @@ to_register = [
     material_parameter_operators.HEIO_OT_MaterialParameters_Move,
 
     mesh_geometry_operators.HEIO_OT_SplitMeshGroups,
-    mesh_geometry_operators.HEIO_OT_SplitCollisionMeshLayers,
+	mesh_geometry_operators.HEIO_OT_MergeMeshGroups,
 	mesh_geometry_operators.HEIO_OT_CollisionPrimitivesToGeometry,
 
     info_operators.HEIO_OT_Info_Manual,

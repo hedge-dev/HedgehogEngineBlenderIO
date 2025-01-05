@@ -82,7 +82,7 @@ class HEIO_3D_CollisionPrimitiveRenderer:
             if obj.type != 'MESH' or not obj_eval.visible_in_viewport_get(view):
                 continue
 
-            for primitive in obj.data.heio_collision_mesh.primitives:
+            for primitive in obj.data.heio_mesh.collision_primitives:
 
                 # transformation matrix
                 matrix = obj.matrix_world.normalized() @ Matrix.LocRotScale(primitive.position,

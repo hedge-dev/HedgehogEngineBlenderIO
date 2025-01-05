@@ -5,7 +5,6 @@ from . import (
     armature_panel,
     node_panel,
     mesh_panel,
-    collision_mesh_panel,
     material_panel,
     viewport_toolbar,
     view3d_overlay_panel,
@@ -24,18 +23,16 @@ to_register = [
 
     node_panel.HEIO_PT_Node_Bone,
 
-    mesh_panel.HEIO_UL_MeshLayers,
-    mesh_panel.HEIO_MT_MeshLayersContextMenu,
     mesh_panel.HEIO_UL_MeshGroups,
+    mesh_panel.HEIO_UL_MeshLayers,
+    mesh_panel.HEIO_UL_CollisionPrimitiveList,
+    mesh_panel.HEIO_UL_CollisionInfoList,
+    mesh_panel.HEIO_MT_MeshLayersContextMenu,
+    mesh_panel.HEIO_MT_CollisionLayersContextMenu,
+    mesh_panel.HEIO_MT_CollisionTypesContextMenu,
+    mesh_panel.HEIO_MT_CollisionFlagsContextMenu,
     mesh_panel.HEIO_MT_MeshGroupsContextMenu,
     mesh_panel.HEIO_PT_Mesh,
-
-    collision_mesh_panel.HEIO_UL_CollisionInfoList,
-	collision_mesh_panel.HEIO_UL_CollisionPrimitiveList,
-	collision_mesh_panel.HEIO_MT_CollisionLayersContextMenu,
-    collision_mesh_panel.HEIO_MT_CollisionTypesContextMenu,
-    collision_mesh_panel.HEIO_MT_CollisionFlagsContextMenu,
-    collision_mesh_panel.HEIO_PT_CollisionMesh,
 
     material_panel.HEIO_UL_ParameterList,
     material_panel.HEIO_UL_CustomParameterList,

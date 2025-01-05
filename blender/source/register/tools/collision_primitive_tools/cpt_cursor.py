@@ -12,7 +12,7 @@ class HEIO_OT_View3D_SnapCursorToActiveCollisionPrimitive(HEIOBaseOperator):
         if context.object is None or context.object.type != 'MESH':
             return {'FINISHED'}
 
-        primitive = context.object.data.heio_collision_mesh.primitives.active_element
+        primitive = context.object.data.heio_mesh.collision_primitives.active_element
         if primitive is None:
             return {'FINISHED'}
 
@@ -33,7 +33,7 @@ class HEIO_OT_View3D_SnapActiveCollisionPrimitiveToCursor(HEIOBaseOperator):
         if context.object is None or context.object.type != 'MESH':
             return {'FINISHED'}
 
-        primitive = context.object.data.heio_collision_mesh.primitives.active_element
+        primitive = context.object.data.heio_mesh.collision_primitives.active_element
         if primitive is None:
             return {'FINISHED'}
 

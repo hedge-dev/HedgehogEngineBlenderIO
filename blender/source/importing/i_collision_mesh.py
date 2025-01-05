@@ -35,31 +35,33 @@ class CollisionMeshConverter:
         self._mesh_name_lookup = {}
 
     @staticmethod
-    def _convert_layers(mesh, mesh_data):
-        layers = mesh.heio_collision_mesh.layers
+    def _convert_groups(mesh, mesh_data):
+        groups = mesh.heio_mesh.groups
 
         set_slot_indices = []
         for i, mesh_layer in enumerate(mesh_data.Layers):
-            layer = layers.new(value=mesh_layer.Value)
-            layer.is_convex = mesh_layer.IsConvex
+            group = groups.new(name=f"Shape_{i}")
 
-            if layer.is_convex:
-                layer.convex_type.value = mesh_layer.Type
+            group.collision_layer.value = mesh_layer.Value
+
+            if mesh_layer.IsConvex:
+                group.is_convex_collision = True
+                group.convex_type.value = mesh_layer.Type
 
                 for value in mesh_layer.FlagValues:
-                    layer.convex_flags.new(value=value)
+                    group.convex_flags.new(value=value)
 
             set_slot_indices.extend([i] * mesh_layer.Size)
 
-        layers.initialize()
-        layers.attribute.data.foreach_set("value", set_slot_indices)
+        groups.initialize()
+        groups.attribute.data.foreach_set("value", set_slot_indices)
 
     @staticmethod
     def _convert_types(mesh, mesh_data):
         if mesh_data.TypeValues is None:
             return
 
-        types = mesh.heio_collision_mesh.types
+        types = mesh.heio_mesh.collision_types
 
         for value in mesh_data.TypeValues:
             types.new(value=value)
@@ -67,13 +69,12 @@ class CollisionMeshConverter:
 
         types.attribute.data.foreach_set("value", [x for x in mesh_data.Types])
 
-
     @staticmethod
     def _convert_flags(mesh, mesh_data):
         if mesh_data.FlagValues is None:
             return
 
-        flags = mesh.heio_collision_mesh.flags
+        flags = mesh.heio_mesh.collision_flags
 
         for value in mesh_data.FlagValues:
             flags.new(value=value)
@@ -83,7 +84,7 @@ class CollisionMeshConverter:
 
     @staticmethod
     def _convert_primitives(mesh, collision_mesh):
-        primitives = mesh.heio_collision_mesh.primitives
+        primitives = mesh.heio_mesh.collision_primitives
 
         for sn_primitive in collision_mesh.Primitives:
             primitive = primitives.new()
@@ -100,13 +101,13 @@ class CollisionMeshConverter:
             primitive.dimensions = (
                 sn_primitive.Dimensions.X, sn_primitive.Dimensions.Z, sn_primitive.Dimensions.Y)
 
-            primitive.surface_layer.value = sn_primitive.SurfaceLayer
-            primitive.surface_type.value = sn_primitive.SurfaceType
+            primitive.collision_layer.value = sn_primitive.SurfaceLayer
+            primitive.collision_type.value = sn_primitive.SurfaceType
 
             flags = sn_primitive.SurfaceFlags
             for i in range(32):
                 if (flags & 1) != 0:
-                    primitive.surface_flags.new(value=i)
+                    primitive.collision_flags.new(value=i)
                 flags >> 1
 
     def _convert_mesh(self, collision_mesh):
@@ -134,7 +135,7 @@ class CollisionMeshConverter:
 
         mesh.from_pydata(vertices, [], faces, shade_flat=True)
 
-        self._convert_layers(mesh, mesh_data)
+        self._convert_groups(mesh, mesh_data)
         self._convert_types(mesh, mesh_data)
         self._convert_flags(mesh, mesh_data)
         self._convert_primitives(mesh, collision_mesh)

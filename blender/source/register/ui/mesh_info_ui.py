@@ -135,3 +135,50 @@ def draw_mesh_info_panel(
         menu,
         type
     )
+
+
+class HEIO_UL_CollisionInfoList(bpy.types.UIList):
+
+    def draw_item(
+            self,
+            context: bpy.types.Context,
+            layout: bpy.types.UILayout,
+            data,
+            item,
+            icon: str,
+            active_data,
+            active_property,
+            index,
+            flt_flag):
+
+        split = layout.split(factor=0.15)
+        split.label(text=str(index))
+
+        row = split.row(align=True)
+        if item.custom:
+            row.prop(item, "value", text="", emboss=False)
+        else:
+            row.prop(item, "value_enum", text="", emboss=False)
+        row.prop(item, "custom", text="", icon='RESTRICT_INSTANCED_ON' if item.custom else 'RESTRICT_INSTANCED_OFF')
+
+def draw_collision_info_editor(
+        layout: bpy.types.UILayout,
+        collision_info,
+        label: str):
+
+    if layout is None:
+        return
+
+    layout.use_property_decorate = False
+
+    split = layout.split(factor=0.4)
+    split.alignment = 'RIGHT'
+    split.label(text=label)
+
+    row = split.row(align=True)
+    row.prop(collision_info, "custom", text="", icon='RESTRICT_INSTANCED_ON' if collision_info.custom else 'RESTRICT_INSTANCED_OFF')
+    if collision_info.custom:
+        row.prop(collision_info, "value", text="")
+    else:
+        row.prop(collision_info, "value_enum", text="")
+

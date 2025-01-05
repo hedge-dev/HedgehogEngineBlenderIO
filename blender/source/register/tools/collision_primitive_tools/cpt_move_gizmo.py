@@ -105,7 +105,7 @@ class HEIO_OT_CollisionPrimitive_Move(HEIOBaseModalOperator):
     )
 
     def _get_primitive(self, context):
-        return context.object.data.heio_collision_mesh.primitives.active_element
+        return context.object.data.heio_mesh.collision_primitives.active_element
 
     def _execute(self, context):
         primitive = self._get_primitive(context)

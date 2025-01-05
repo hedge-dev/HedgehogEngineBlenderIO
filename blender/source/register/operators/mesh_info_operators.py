@@ -24,9 +24,8 @@ class BaseMeshInfoOperator(HEIOBaseOperator):
     type: EnumProperty(
         name="Type",
         items=(
-            ('MESH_LAYERS', "", ""),
             ('MESH_GROUPS', "", ""),
-            ('COLLISION_LAYERS', "", ""),
+            ('RENDER_LAYERS', "", ""),
             ('COLLISION_TYPES', "", ""),
             ('COLLISION_FLAGS', "", ""),
             ('COLLISION_CONVEXFLAGS', "", ""),
@@ -46,38 +45,34 @@ class BaseMeshInfoOperator(HEIOBaseOperator):
         )
 
     def get_list(self, context: bpy.types.Context):
-        collision_info = context.active_object.data.heio_collision_mesh
         mesh_info = context.active_object.data.heio_mesh
 
-        if self.type == 'MESH_LAYERS':
-            return mesh_info.layers
+        if self.type == 'RENDER_LAYERS':
+            return mesh_info.render_layers
 
         elif self.type == 'MESH_GROUPS':
             return mesh_info.groups
 
-        elif self.type == 'COLLISION_LAYERS':
-            return collision_info.layers
-
         elif self.type == 'COLLISION_TYPES':
-            return collision_info.types
+            return mesh_info.collision_types
 
         elif self.type == 'COLLISION_FLAGS':
-            return collision_info.flags
+            return mesh_info.collision_flags
 
         elif self.type == 'COLLISION_CONVEXFLAGS':
-            layer = collision_info.layers.active_element
-            if layer is None:
-                raise HEIOUserException("No active mesh collision layer!")
-            return layer.convex_flags
+            group = mesh_info.groups.active_element
+            if group is None:
+                raise HEIOUserException("No active mesh group!")
+            return group.convex_flags
 
         elif self.type == 'COLLISION_PRIMITIVES':
-            return collision_info.primitives
+            return mesh_info.collision_primitives
 
         elif self.type == 'COLLISION_PRIMITIVEFLAGS':
-            primitive = collision_info.primitives.active_element
+            primitive = mesh_info.collision_primitives.active_element
             if primitive is None:
                 raise HEIOUserException("No active mesh collision primitive!")
-            return primitive.surface_flags
+            return primitive.collision_flags
 
         else:  # ERROR
             raise HEIOUserException("Invalid call!")
@@ -264,7 +259,7 @@ class HEIO_OT_MeshInfo_Remove(MeshListOperator, ListRemove):
         if self.attribute_utility is None:
             return
 
-        if self.type == 'MESH_LAYERS':
+        if self.type == 'RENDER_LAYERS':
             if removed_index == 3:
                 self.attribute_utility.change_int_values(removed_index, 0)
 
@@ -289,7 +284,7 @@ class HEIO_OT_MeshInfo_Move(MeshListOperator, ListMove):
                 raise HEIOUserException(
                     "Cannot move mesh info while in edit mode!")
 
-            if self.type == 'MESH_LAYERS':
+            if self.type == 'RENDER_LAYERS':
                 if target_list.active_index < 3:
                     raise HEIOUserException(
                         f"The {target_list.active_element.name} layer cannot be moved!")

@@ -108,6 +108,6 @@ class HEIO_OT_CollisionPrimitive_GizmoClicked(HEIOBaseOperator):
 
     def _execute(self, context):
         cpt_gizmo_state.MANUAL_SELECT_MODE = True
-        context.active_object.data.heio_collision_mesh.primitives.active_index = self.select_index
+        context.active_object.data.heio_mesh.collision_primitives.active_index = self.select_index
         context.active_object.data.update()
         return {'FINISHED'}

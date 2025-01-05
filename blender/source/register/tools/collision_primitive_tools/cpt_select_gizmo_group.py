@@ -25,7 +25,7 @@ class BaseCollisionPrimitiveSelectGizmoGroup(bpy.types.GizmoGroup):
             and obj is not None
             and obj.visible_get(view_layer=context.view_layer)
             and obj.type == 'MESH'
-            and len(obj.data.heio_collision_mesh.primitives) > 0
+            and len(obj.data.heio_mesh.collision_primitives) > 0
         )
 
     def setup(self, context):
@@ -62,7 +62,7 @@ class BaseCollisionPrimitiveSelectGizmoGroup(bpy.types.GizmoGroup):
 
     def refresh(self, context):
         obj = context.object
-        primitives = obj.data.heio_collision_mesh.primitives
+        primitives = obj.data.heio_mesh.collision_primitives
 
         self._create_select_gizmos(primitives)
         self._object_update(obj)

@@ -22,7 +22,7 @@ class HEIO_PT_VTP_Mesh(bpy.types.Panel):
         layout = self.layout
 
         layout.operator(mesh_geometry_operators.HEIO_OT_SplitMeshGroups.bl_idname)
-        layout.operator(mesh_geometry_operators.HEIO_OT_SplitCollisionMeshLayers.bl_idname)
+        layout.operator(mesh_geometry_operators.HEIO_OT_MergeMeshGroups.bl_idname)
         layout.operator(mesh_geometry_operators.HEIO_OT_CollisionPrimitivesToGeometry.bl_idname)
 
 

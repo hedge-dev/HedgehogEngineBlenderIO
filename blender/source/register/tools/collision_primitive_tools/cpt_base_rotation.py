@@ -38,7 +38,7 @@ class BaseCollisionPrimitiveRotateOperator(HEIOBaseModalOperator):
     _flip_angle: bool
 
     def _get_primitive(self, context):
-        return context.object.data.heio_collision_mesh.primitives.active_element
+        return context.object.data.heio_mesh.collision_primitives.active_element
 
     def _get_mouse_dir(self, context: bpy.types.Context, event: bpy.types.Event, prev):
 

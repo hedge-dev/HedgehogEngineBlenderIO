@@ -71,7 +71,7 @@ class HEIO_GGT_CollisionPrimitive_Transform(BaseCollisionPrimitiveSelectGizmoGro
         super().refresh(context)
 
         obj = context.object
-        primitive = obj.data.heio_collision_mesh.primitives.active_element
+        primitive = obj.data.heio_mesh.collision_primitives.active_element
 
         self.move_gizmo.base_hide = False
         self.rotate_gizmo_x.base_hide = primitive.shape_type == 'SPHERE'
@@ -88,7 +88,7 @@ class HEIO_GGT_CollisionPrimitive_Transform(BaseCollisionPrimitiveSelectGizmoGro
             return
 
         obj = context.object
-        primitive = obj.data.heio_collision_mesh.primitives.active_element
+        primitive = obj.data.heio_mesh.collision_primitives.active_element
 
         # Translation
 

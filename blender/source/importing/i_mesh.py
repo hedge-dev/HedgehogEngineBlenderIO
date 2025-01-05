@@ -135,7 +135,7 @@ class MeshConverter:
 
     @staticmethod
     def _create_polygon_layer_attributes(mesh: bpy.types.Mesh, mesh_data):
-        layers = mesh.heio_mesh.layers
+        layers = mesh.heio_mesh.render_layers
         layers.initialize()
         set_slot_indices = []
         special_layer_map = {}

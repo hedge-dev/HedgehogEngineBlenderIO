@@ -6,7 +6,6 @@ from . import (
     armature_properties,
     node_properties,
     mesh_properties,
-    collision_mesh_properties,
     material_parameter_properties,
     material_texture_properties,
     material_properties
@@ -28,20 +27,18 @@ to_register = [
 
     node_properties.HEIO_Node,
 
-    mesh_properties.HEIO_MeshInfo,
-    mesh_properties.HEIO_MeshLayerList,
+    mesh_properties.HEIO_MeshLayer,
+    mesh_properties.HEIO_RenderLayerList,
+    mesh_properties.HEIO_CollisionLayer,
+    mesh_properties.HEIO_CollisionType,
+    mesh_properties.HEIO_CollisionTypeList,
+    mesh_properties.HEIO_CollisionFlag,
+    mesh_properties.HEIO_CollisionFlagList,
+    mesh_properties.HEIO_MeshGroup,
     mesh_properties.HEIO_MeshGroupList,
+    mesh_properties.HEIO_CollisionPrimitive,
+    mesh_properties.HEIO_CollisionPrimitiveList,
     mesh_properties.HEIO_Mesh,
-
-    collision_mesh_properties.HEIO_CollisionType,
-    collision_mesh_properties.HEIO_CollisionTypeList,
-    collision_mesh_properties.HEIO_CollisionFlag,
-    collision_mesh_properties.HEIO_CollisionFlagList,
-    collision_mesh_properties.HEIO_CollisionLayer,
-    collision_mesh_properties.HEIO_CollisionLayerList,
-    collision_mesh_properties.HEIO_CollisionPrimitive,
-    collision_mesh_properties.HEIO_CollisionPrimitiveList,
-    collision_mesh_properties.HEIO_CollisionMesh,
 
     material_parameter_properties.HEIO_MaterialParameter,
     material_parameter_properties.HEIO_MaterialParameterList,
