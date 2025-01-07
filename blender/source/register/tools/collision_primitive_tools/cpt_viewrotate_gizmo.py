@@ -2,8 +2,8 @@ import bpy
 from mathutils import Matrix, Vector, Quaternion
 import gpu
 
-from .cpt_base_rotation import get_mouse_dir, BaseCollisionPrimitiveRotateOperator
-from ....utility import mesh_generators
+from .cpt_base_transform_operator import BaseRotateOperator
+from ....utility import mesh_generators, math_utils
 
 
 class HEIO_GT_CollisionPrimitive_ViewRotate(bpy.types.Gizmo):
@@ -70,7 +70,7 @@ class HEIO_GT_CollisionPrimitive_ViewRotate(bpy.types.Gizmo):
 
     def invoke(self, context, event):
 
-        mouse_dir = get_mouse_dir(context, event, self.matrix_world)
+        mouse_dir = math_utils.get_mouse_dir(context, event, self.matrix_world)
         angle = mouse_dir.angle_signed((0, -1))
         self._line_matrix = Matrix.Rotation(angle, 4, 'Z')
         self._initial_view_rotation = self.view_rotation
@@ -99,16 +99,17 @@ class HEIO_GT_CollisionPrimitive_ViewRotate(bpy.types.Gizmo):
         cls.shape_line = cls.new_custom_shape('LINES', [(0, 0, 0), (0, -1, 0)])
 
 
-class HEIO_OT_CollisionPrimitive_ViewRotate(BaseCollisionPrimitiveRotateOperator):
+class HEIO_OT_CollisionPrimitive_ViewRotate(BaseRotateOperator):
     bl_idname = "heio.collision_primitive_viewrotate"
     bl_label = "View-Rotate collision primitive"
     bl_description = "Rotate the collision primitive based on the viewing angle"
 
-    def _apply_rotation(self, context, rotation):
-        primitive = self._get_primitive(context)
+    def _update_transform(self, context, primitive):
+        axis = self._obj_rot @ context.region_data.view_rotation @ Vector(
+            (0, 0, -1))
+        primitive.rotation = Matrix.Rotation(
+            self.rotation, 4, axis).to_quaternion() @ self._initial_rotation
 
-        obj_rot = context.object.matrix_world.to_quaternion().inverted().normalized()
-        axis = obj_rot @ context.region_data.view_rotation @ Vector((0, 0, -1))
-        primitive.rotation = Matrix.Rotation(rotation, 4, axis).to_quaternion() @ self._initial_rotation
-
-        return {'FINISHED'}
+    def _setup(self, context, primitive):
+        super()._setup(context, primitive)
+        self._obj_rot = context.object.matrix_world.to_quaternion().inverted().normalized()

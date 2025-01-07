@@ -1,10 +1,10 @@
 import bpy
 from bpy.props import EnumProperty
-from mathutils import Matrix, Vector, Quaternion
+from mathutils import Matrix, Vector
 import gpu
 import math
 
-from .cpt_base_rotation import BaseCollisionPrimitiveRotateOperator
+from .cpt_base_transform_operator import BaseRotateOperator
 from ....utility import mesh_generators
 
 
@@ -14,28 +14,12 @@ class HEIO_GT_CollisionPrimitive_Rotate(bpy.types.Gizmo):
     shape_circle: tuple[gpu.types.GPUBatch, gpu.types.GPUShader]
     shape_line: tuple[gpu.types.GPUBatch, gpu.types.GPUShader]
 
-    mode: str
+    axis: str
     base_hide: bool
 
+    _axis_color: tuple[float, float, float]
     _line_matrix: Matrix | None
     _line_offset_matrix: Matrix | None
-
-    def _get_color(self):
-        if self.mode == 'X':
-            color = (1, 0.2, 0.322)
-
-        elif self.mode == 'Y':
-            color = (0.545, 0.863, 0)
-
-        elif self.mode == 'Z':
-            color = (0.157, 0.565, 1)
-
-        if self.is_highlight or self.is_modal:
-            color = (*color, 1)
-        else:
-            color = (*color, 0.5)
-
-        return color
 
     def _get_clip_plane(self, context: bpy.types.Context):
         matrix = context.region_data.view_matrix.inverted()
@@ -81,7 +65,10 @@ class HEIO_GT_CollisionPrimitive_Rotate(bpy.types.Gizmo):
             gpu.state.clip_distances_set(0)
             used_shader = shader
 
-        color = self._get_color()
+        color = (
+            *self._axis_color,
+            1 if self.is_highlight or self.is_modal else 0.5
+        )
 
         batch.program_set(used_shader)
         used_shader.uniform_float("color", color)
@@ -119,8 +106,8 @@ class HEIO_GT_CollisionPrimitive_Rotate(bpy.types.Gizmo):
     def draw_select(self, context, select_id):
         self._draw(context, select_id)
 
-    def set_mode(self, mode):
-        self.mode = mode
+    def set_axis(self, axis):
+        self.axis = axis
 
         matrix = Matrix((
             (0, 0, 0, 0),
@@ -129,17 +116,20 @@ class HEIO_GT_CollisionPrimitive_Rotate(bpy.types.Gizmo):
             (0, 0, 0, 1)
         ))
 
-        if self.mode == 'X':
+        if self.axis == 'X':
+            self._axis_color = (1, 0.2, 0.322)
             matrix[1][0] = -1
             matrix[2][1] = -1
             matrix[0][2] = 1
 
-        elif self.mode == 'Y':
+        elif self.axis == 'Y':
+            self._axis_color = (0.545, 0.863, 0)
             matrix[0][0] = 1
             matrix[2][1] = -1
             matrix[1][2] = 1
 
-        elif self.mode == 'Z':
+        elif self.axis == 'Z':
+            self._axis_color = (0.157, 0.565, 1)
             matrix[0][0] = 1
             matrix[1][1] = 1
             matrix[2][2] = 1
@@ -150,7 +140,7 @@ class HEIO_GT_CollisionPrimitive_Rotate(bpy.types.Gizmo):
         if hasattr(self, 'mode'):
             return
 
-        self.set_mode('X')
+        self.set_axis('X')
         self._line_matrix = None
         self.base_hide = False
 
@@ -185,7 +175,7 @@ class HEIO_GT_CollisionPrimitive_Rotate(bpy.types.Gizmo):
         ray_pos, ray_dir = self._get_mouse_ray(context, event)
 
         rotation = self.matrix_world.to_quaternion().normalized()
-        normal = rotation @ Vector((0, 0, 1))
+        normal = (rotation @ Vector((0, 0, 1))).normalized()
 
         div = normal.dot(ray_dir)
         if div != 0:
@@ -195,7 +185,7 @@ class HEIO_GT_CollisionPrimitive_Rotate(bpy.types.Gizmo):
                 ((normal.dot(pos) - normal.dot(ray_pos)) / div)
 
             direction = (hit - pos).normalized()
-            line_default = rotation @ Vector((0, -1, 0))
+            line_default = (rotation @ Vector((0, -1, 0))).normalized()
 
             angle = math.acos(Vector.dot(line_default, direction))
 
@@ -227,39 +217,35 @@ class HEIO_GT_CollisionPrimitive_Rotate(bpy.types.Gizmo):
         cls.shape_line = cls.new_custom_shape('LINES', [(0, 0, 0), (0, -1, 0)])
 
 
-class HEIO_OT_CollisionPrimitive_Rotate(BaseCollisionPrimitiveRotateOperator):
+class HEIO_OT_CollisionPrimitive_Rotate(BaseRotateOperator):
     bl_idname = "heio.collision_primitive_rotate"
     bl_label = "Rotate collision primitive"
     bl_description = "Rotate the collision primitive"
 
-    mode: EnumProperty(
+    axis: EnumProperty(
         name="Rotation mode",
         items=(
             ('X', "X Axis", ""),
             ('Y', "Y Axis", ""),
-            ('Z', "Z Axis", ""),
-            ('VIEW', "View Axis", "")
+            ('Z', "Z Axis", "")
         )
     )
 
-    def _apply_rotation(self, context, rotation):
-        primitive = self._get_primitive(context)
+    def _update_transform(self, context, primitive):
         primitive.rotation = self._initial_rotation @ Matrix.Rotation(
-            rotation, 4, self.mode).to_quaternion()
+            self.rotation, 4, self.axis).to_quaternion()
 
-        return {'FINISHED'}
-
-    def _invoke(self, context, event):
-        super()._invoke(context, event)
+    def _setup(self, context, primitive):
+        super()._setup(context, primitive)
 
         matrix = context.object.matrix_world.to_quaternion(
         ).normalized() @ self._initial_rotation
 
-        if self.mode == 'X':
+        if self.axis == 'X':
             normal = Vector((1, 0, 0))
-        elif self.mode == 'Y':
+        elif self.axis == 'Y':
             normal = Vector((0, 1, 0))
-        elif self.mode == 'Z':
+        elif self.axis == 'Z':
             normal = Vector((0, 0, 1))
 
         view_dir = (

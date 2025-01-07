@@ -1,5 +1,6 @@
 import bpy
 from mathutils import Matrix, Vector
+from bpy.props import BoolProperty
 
 from . import cpt_gizmo_state
 from .cpt_move_gizmo import (
@@ -17,14 +18,17 @@ from .cpt_viewrotate_gizmo import (
     HEIO_OT_CollisionPrimitive_ViewRotate
 )
 
+from .cpt_scale_gizmo import (
+    HEIO_GT_CollisionPrimitive_Scale,
+    HEIO_OT_CollisionPrimitive_Scale
+)
+
 from .cpt_select_gizmo_group import BaseCollisionPrimitiveSelectGizmoGroup
 
 
 class HEIO_GGT_CollisionPrimitive_Transform(BaseCollisionPrimitiveSelectGizmoGroup):
     bl_idname = "heio.ggt.collision_primitive_edit"
     bl_label = "HEIO Collision Primitive edit"
-
-    move_gizmo: HEIO_GT_CollisionPrimitive_Move
 
     def setup(self, context):
         super().setup(context)
@@ -38,12 +42,12 @@ class HEIO_GGT_CollisionPrimitive_Transform(BaseCollisionPrimitiveSelectGizmoGro
             HEIO_OT_CollisionPrimitive_Move.bl_idname)
         self.move_gizmo.use_draw_modal = True
 
-        def create_rotate_gizmo(mode):
+        def create_rotate_gizmo(axis):
             gz = self.gizmos.new(HEIO_GT_CollisionPrimitive_Rotate.bl_idname)
             op = gz.target_set_operator(
                 HEIO_OT_CollisionPrimitive_Rotate.bl_idname)
-            op.mode = mode
-            gz.set_mode(mode)
+            op.axis = axis
+            gz.set_axis(axis)
             gz.use_draw_modal = True
 
             return gz
@@ -51,6 +55,23 @@ class HEIO_GGT_CollisionPrimitive_Transform(BaseCollisionPrimitiveSelectGizmoGro
         self.rotate_gizmo_x = create_rotate_gizmo('X')
         self.rotate_gizmo_y = create_rotate_gizmo('Y')
         self.rotate_gizmo_z = create_rotate_gizmo('Z')
+
+        def create_scale_gizmo(axis):
+            gz = self.gizmos.new(HEIO_GT_CollisionPrimitive_Scale.bl_idname)
+            op = gz.target_set_operator(
+                HEIO_OT_CollisionPrimitive_Scale.bl_idname)
+            op.axis = axis
+            gz.set_axis(axis)
+            gz.use_draw_modal = True
+
+            return gz
+
+        self.scale_gizmo_x = create_scale_gizmo('X')
+        self.scale_gizmo_xn = create_scale_gizmo('-X')
+        self.scale_gizmo_y = create_scale_gizmo('Y')
+        self.scale_gizmo_yn = create_scale_gizmo('-Y')
+        self.scale_gizmo_z = create_scale_gizmo('Z')
+        self.scale_gizmo_zn = create_scale_gizmo('-Z')
 
         self.rotate_gizmo_view = self.gizmos.new(
             HEIO_GT_CollisionPrimitive_ViewRotate.bl_idname)
@@ -61,10 +82,18 @@ class HEIO_GGT_CollisionPrimitive_Transform(BaseCollisionPrimitiveSelectGizmoGro
 
         self.transform_gizmos = [
             self.move_gizmo,
+
             self.rotate_gizmo_x,
             self.rotate_gizmo_y,
             self.rotate_gizmo_z,
             self.rotate_gizmo_view,
+
+            self.scale_gizmo_x,
+            self.scale_gizmo_xn,
+            self.scale_gizmo_y,
+            self.scale_gizmo_yn,
+            self.scale_gizmo_z,
+            self.scale_gizmo_zn
         ]
 
     def refresh(self, context: bpy.types.Context):
@@ -73,7 +102,6 @@ class HEIO_GGT_CollisionPrimitive_Transform(BaseCollisionPrimitiveSelectGizmoGro
         obj = context.object
         primitive = obj.data.heio_mesh.collision_primitives.active_element
 
-        self.move_gizmo.base_hide = False
         self.rotate_gizmo_x.base_hide = primitive.shape_type == 'SPHERE'
         self.rotate_gizmo_y.base_hide = primitive.shape_type == 'SPHERE'
         self.rotate_gizmo_z.base_hide = primitive.shape_type != 'BOX'
@@ -94,17 +122,36 @@ class HEIO_GGT_CollisionPrimitive_Transform(BaseCollisionPrimitiveSelectGizmoGro
 
         matrix = obj.matrix_world.normalized()
 
-        self.move_gizmo.matrix_basis = Matrix.Translation(matrix.to_translation())
+        self.move_gizmo.matrix_basis = Matrix.Translation(
+            matrix.to_translation())
         self.move_gizmo.position = matrix.to_quaternion() @ Vector(primitive.position)
 
-        # Rotation(s)
+        # Rotation and scales
 
         matrix = matrix @ Matrix.LocRotScale(
             primitive.position, primitive.rotation, None).normalized()
 
-        self.rotate_gizmo_x.matrix_basis = matrix
-        self.rotate_gizmo_y.matrix_basis = matrix
-        self.rotate_gizmo_z.matrix_basis = matrix
+        for gizmo in self.transform_gizmos[1:]:
+            gizmo.matrix_basis = matrix
+
+        width = primitive.dimensions[0]
+        length = primitive.dimensions[1]
+        height = primitive.dimensions[2]
+
+        if primitive.shape_type != 'BOX':
+            length = width
+
+        if primitive.shape_type == 'SPHERE':
+            height = width
+        elif primitive.shape_type == 'CAPSULE':
+            height += width
+
+        self.scale_gizmo_x.offset = width
+        self.scale_gizmo_xn.offset = width
+        self.scale_gizmo_y.offset = length
+        self.scale_gizmo_yn.offset = length
+        self.scale_gizmo_z.offset = height
+        self.scale_gizmo_zn.offset = height
 
         self.rotate_gizmo_view.matrix_basis = Matrix.Translation(
             matrix.to_translation())

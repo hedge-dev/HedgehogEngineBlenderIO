@@ -91,7 +91,7 @@ def circle(segments: int, scale: float = 1):
 
     result.append(vertices[cw])
 
-    return GeneratedMeshInfo(vertices, None, 'TRI_STRIP')
+    return GeneratedMeshInfo(result, None, 'TRI_STRIP')
 
 
 def circle_lines(segments: int):

@@ -13,7 +13,6 @@ class BaseCollisionPrimitiveSelectGizmoGroup(bpy.types.GizmoGroup):
     bl_options = {'3D'}
 
     primitive_gizmos: list[bpy.types.Gizmo]
-    current_object: bpy.types.Object | None
 
     @classmethod
     def poll(cls, context):
@@ -29,11 +28,10 @@ class BaseCollisionPrimitiveSelectGizmoGroup(bpy.types.GizmoGroup):
         )
 
     def setup(self, context):
-        if hasattr(self, "current_object"):
+        if hasattr(self, "primitive_gizmos"):
             return
 
         self.primitive_gizmos = []
-        self.current_object = None
 
     def _create_select_gizmos(self, primitives):
         primitive_count = len(primitives)
@@ -54,10 +52,10 @@ class BaseCollisionPrimitiveSelectGizmoGroup(bpy.types.GizmoGroup):
             self.primitive_gizmos.append(gizmo)
 
     def _object_update(self, obj):
-        if obj == self.current_object:
+        if obj == cpt_gizmo_state.CURRENT_OBJECT:
             return
 
-        self.current_object = obj
+        cpt_gizmo_state.CURRENT_OBJECT = obj
         cpt_gizmo_state.MANUAL_SELECT_MODE = False
 
     def refresh(self, context):

@@ -4,14 +4,14 @@ from mathutils import Vector, Matrix
 import gpu
 import math
 
-from ...operators.base import HEIOBaseModalOperator
-from ....utility import mesh_generators
+from .cpt_base_transform_operator import BaseTransformOperator
+from ....utility import mesh_generators, math_utils
 
 
 class HEIO_GT_CollisionPrimitive_Move(bpy.types.Gizmo):
     bl_idname = "heio.gt.collision_primitive_move"
 
-    shape_circle: any
+    shape_circle: tuple[gpu.types.GPUBatch, gpu.types.GPUShader]
 
     position: Vector
     base_hide: bool
@@ -93,139 +93,54 @@ class HEIO_GT_CollisionPrimitive_Move(bpy.types.Gizmo):
         cls.shape_circle = mesh_generators.circle(16, 0.15).to_custom_shape()
 
 
-class HEIO_OT_CollisionPrimitive_Move(HEIOBaseModalOperator):
+class HEIO_OT_CollisionPrimitive_Move(BaseTransformOperator):
     bl_idname = "heio.collision_primitive_move"
     bl_label = "Move collision primitive"
     bl_description = "Move the collision primitive"
-    bl_options = {'REGISTER', 'UNDO', 'INTERNAL'}
 
     offset: FloatVectorProperty(
         name="Offset",
         size=3
     )
 
-    def _get_primitive(self, context):
-        return context.object.data.heio_mesh.collision_primitives.active_element
+    _internal_offset: Vector
+    _object_rotation: Matrix
 
-    def _execute(self, context):
-        primitive = self._get_primitive(context)
-        position = self._initial_location + Vector(self.offset)
+    def _update_transform(self, context, primitive):
+        primitive.position = self._initial_position + Vector(self.offset)
 
+    def _get_header_text(self):
+        return "Offset {:.4f} {:.4f} {:.4f}".format(*self.offset)
+
+    def _on_mouse_moved(self, context, event):
+        delta = math_utils.get_mouse_view_delta(
+            context,
+            event,
+            self._initial_position)
+
+        if self._precision:
+            delta *= 0.1
+
+        self._internal_offset += self._object_rotation @ delta
+
+    def _on_modal_update(self, context, event):
         if self._snap:
-            matrix = context.object.matrix_world.normalized()
-            world_pos = matrix @ position
-
             snap_level = 0
             if not context.region_data.is_perspective and context.region_data.is_orthographic_side_view:
-                snap_level = - \
-                    int(math.floor(math.log10(context.region_data.view_distance / 18.8)))
+                snap_level = - int(math.floor(math.log10(context.region_data.view_distance / 18.8)))
 
             if self._precision:
                 snap_level += 1
 
-            world_pos.x = round(world_pos.x, snap_level)
-            world_pos.y = round(world_pos.y, snap_level)
-            world_pos.z = round(world_pos.z, snap_level)
+            self.offset = Vector((
+                round(self._internal_offset.x, snap_level),
+                round(self._internal_offset.y, snap_level),
+                round(self._internal_offset.z, snap_level)
+            ))
+        else:
+            self.offset = self._internal_offset
 
-            position = matrix.inverted() @ world_pos
-
-        primitive.position = position
-        self._applied_offset = position - self._initial_location
-        return {'FINISHED'}
-
-    @staticmethod
-    def _get_view_delta(context: bpy.types.Context, event, pos):
-        # Logic taken from blender source:
-        # source/blender/editors/gizmo_library/gizmo_types/move3d_gizmo.cc -> move3d_get_translate(...)
-
-        mat = context.region_data.perspective_matrix.copy()
-
-        zfac = (
-            (mat[3][0] * pos[0])
-            + (mat[3][1] * pos[1])
-            + (mat[3][2] * pos[2])
-            + mat[3][3]
-        )
-
-        if zfac < 1.e-6 and zfac > -1.e-6:
-            zfac = 1
-        elif zfac < 0:
-            zfac = -zfac
-
-        delta_x = (event.mouse_x - event.mouse_prev_x) * \
-            2 * zfac / context.region.width
-        delta_y = (event.mouse_y - event.mouse_prev_y) * \
-            2 * zfac / context.region.height
-
-        mat.invert()
-        return Vector((
-            mat[0][0] * delta_x + mat[0][1] * delta_y,
-            mat[1][0] * delta_x + mat[1][1] * delta_y,
-            mat[2][0] * delta_x + mat[2][1] * delta_y,
-        ))
-
-    def _update_header_text(self, context):
-        context.area.header_text_set(
-            "Offset {:.4f} {:.4f} {:.4f}".format(*self._applied_offset))
-
-    def _modal(self, context: bpy.types.Context, event: bpy.types.Event):
-
-        if event.type == 'MOUSEMOVE':
-            self._snap = event.ctrl
-            self._precision = event.shift
-
-            delta = self._get_view_delta(
-                context,
-                event,
-                self.offset)
-
-            if self._precision:
-                delta *= 0.1
-
-            delta = self._object_rotation @ delta
-
-            self.offset = Vector(self.offset) + delta
-
-            self._execute(context)
-            self._update_header_text(context)
-
-        elif event.type in {'LEFT_CTRL', 'RIGHT_CTRL', 'CTRL'}:
-            self._snap = event.ctrl
-            self._execute(context)
-            self._update_header_text(context)
-
-        elif event.type in {'LEFT_SHIFT', 'RIGHT_SHIFT', 'SHIFT'}:
-            self._precision = event.shift
-            self._execute(context)
-            self._update_header_text(context)
-
-        elif event.type == 'LEFTMOUSE':
-            context.area.header_text_set(None)
-            context.workspace.status_text_set(None)
-            return {'FINISHED'}
-
-        elif event.type in {'RIGHTMOUSE', 'ESC'}:
-            self._get_primitive(context).position = self._initial_location
-            context.area.header_text_set(None)
-            context.workspace.status_text_set(None)
-            return {'CANCELLED'}
-
-        return {'RUNNING_MODAL'}
-
-    def _invoke(self, context: bpy.types.Context, event):
-        self.offset = (0, 0, 0)
-        self._applied_offset = (0, 0, 0)
-        self._snap = False
-        self._precision = False
-
-        self._initial_location = Vector(self._get_primitive(context).position)
-        self._object_rotation = context.object.matrix_world.inverted().normalized().to_quaternion()
-
-        global CURRENT_MODAL
-        CURRENT_MODAL = self
-
-        context.window_manager.modal_handler_add(self)
-        context.workspace.status_text_set(
-            "[ESC] or [RMB]: Cancel   |   [Shift]: Precision Mode   |   [Ctrl]: Snap")
-
-        return {'RUNNING_MODAL'}
+    def _setup(self, context, primitive):
+        self.offset = Vector()
+        self._internal_offset = Vector()
+        self._object_rotation = context.object.matrix_world.inverted().to_3x3().normalized()
