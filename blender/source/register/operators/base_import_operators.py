@@ -100,6 +100,8 @@ class ImportOperator(HEIOBaseFileLoadOperator):
 
     def draw(self, context):
         self.layout.use_property_decorate = False
+        self.layout.use_property_split = True
+        self.layout.prop(context.scene.heio_scene, "target_game")
 
 class ImportMaterialOperator(ImportOperator):
 
@@ -141,11 +143,7 @@ class ImportMaterialOperator(ImportOperator):
     def draw_panel_material(self):
         header, body = self.layout.panel(
             "HEIO_import_material", default_closed=False)
-        header.label(text=(
-            "General"
-            if "material" in self.bl_idname.lower()
-            else "Material"
-        ))
+        header.label(text="Material")
 
         if not body:
             return
