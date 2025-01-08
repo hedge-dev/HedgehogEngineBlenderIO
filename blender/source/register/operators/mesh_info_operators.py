@@ -19,7 +19,7 @@ NO_ATTRIB = {
 }
 
 class BaseMeshInfoOperator(HEIOBaseOperator):
-    bl_options = {'UNDO'}
+    bl_options = {'UNDO', 'INTERNAL'}
 
     type: EnumProperty(
         name="Type",
@@ -74,8 +74,7 @@ class BaseMeshInfoOperator(HEIOBaseOperator):
                 raise HEIOUserException("No active mesh collision primitive!")
             return primitive.collision_flags
 
-        else:  # ERROR
-            raise HEIOUserException("Invalid call!")
+        raise HEIOUserException("Invalid call!")
 
 
 class HEIO_OT_MeshInfo_Initialize(BaseMeshInfoOperator):

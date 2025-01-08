@@ -15,7 +15,7 @@ from ...exceptions import HEIODevException, HEIOUserException
 
 
 class SCAParameterOperator(HEIOBaseOperator):
-    bl_options = {'UNDO'}
+    bl_options = {'UNDO', 'INTERNAL'}
 
     mode: EnumProperty(
         name="Mode",

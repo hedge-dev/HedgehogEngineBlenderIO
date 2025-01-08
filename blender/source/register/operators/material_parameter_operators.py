@@ -11,7 +11,7 @@ from ..property_groups.material_properties import HEIO_Material
 
 
 class MaterialParameterOperator(HEIOBaseOperator):
-    bl_options = {'UNDO'}
+    bl_options = {'UNDO', 'INTERNAL'}
 
     mode: EnumProperty(
         name="Mode",

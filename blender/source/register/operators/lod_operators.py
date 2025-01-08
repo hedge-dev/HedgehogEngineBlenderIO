@@ -13,7 +13,7 @@ class HEIO_OT_LODInfo_Initialize(HEIOBaseOperator):
     bl_idname = "heio.lod_info_initialize"
     bl_label = "Initalize LOD info"
     bl_description = "Set up the mesh/armature to use LOD meshes"
-    bl_options = {'UNDO'}
+    bl_options = {'UNDO', 'INTERNAL'}
 
     @classmethod
     def poll(cls, context):
@@ -45,7 +45,7 @@ class HEIO_OT_LODInfo_Delete(HEIOBaseOperator):
     bl_idname = "heio.lod_info_delete"
     bl_label = "Delete LOD info"
     bl_description = "Deletes the meshes/armatures LOD info"
-    bl_options = {'UNDO'}
+    bl_options = {'UNDO', 'INTERNAL'}
 
     @classmethod
     def poll(cls, context):
@@ -74,7 +74,7 @@ class HEIO_OT_LODInfo_Delete(HEIOBaseOperator):
 
 
 class LODInfoListOperator(HEIOBaseOperator):
-    bl_options = {'UNDO'}
+    bl_options = {'UNDO', 'INTERNAL'}
 
     @classmethod
     def poll(cls, context):
