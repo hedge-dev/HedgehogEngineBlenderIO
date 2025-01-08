@@ -211,7 +211,7 @@ class MeshListOperator(BaseMeshInfoOperator):
     def _execute(self, context):
         list = self.get_list(context)
 
-        if self.type not in NO_ATTRIB :
+        if self.type not in NO_ATTRIB:
             if not list.initialized:
                 raise HEIOUserException("Not initialized!")
 
@@ -294,7 +294,7 @@ class HEIO_OT_MeshInfo_Move(MeshListOperator, ListMove):
 
         old_index, new_index = super().list_execute(context, target_list)
 
-        if old_index is None or self.attribute_utility is not None:
+        if old_index is None or self.attribute_utility is None:
             return
 
         if self.type == 'COLLISION_FLAGS':
