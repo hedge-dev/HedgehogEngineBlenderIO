@@ -118,8 +118,19 @@ class MeshConverter:
         bpy.data.objects.remove(shapekey_dummy_obj)
 
     def _assign_materials(self, mesh: bpy.types.Mesh, mesh_data):
+        material_indices = []
+        material_index_mapping = {}
+
         for sn_material, slot in zip(mesh_data.SetMaterials, mesh_data.SetSlots):
             material = self._material_converter.get_material(sn_material)
+            if material in material_index_mapping:
+                material_indices.append(material_index_mapping[material])
+                continue
+
+            material_index = len(mesh.materials)
+            material_indices.append(material_index)
+            material_index_mapping[material] = material_index
+
             mesh.materials.append(material)
 
             if LAYER_LUT[material.heio_material.layer] < slot.Type.value__:
@@ -128,9 +139,9 @@ class MeshConverter:
                     material.heio_material.special_layer_name = slot.Name
 
         face_index = 0
-        for i, face_count in enumerate(mesh_data.SetSizes):
+        for material_index, face_count in zip(material_indices, mesh_data.SetSizes):
             for f in range(face_index, face_index + face_count):
-                mesh.polygons[f].material_index = i
+                mesh.polygons[f].material_index = material_index
             face_index += face_count
 
     @staticmethod
