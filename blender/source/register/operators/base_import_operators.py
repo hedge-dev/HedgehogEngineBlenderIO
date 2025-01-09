@@ -62,37 +62,68 @@ class ImportOperator(HEIOBaseFileLoadOperator):
     def print_resolve_info(self, context: bpy.types.Context):
         resolve_info = HEIO_NET.RESOLVE_INFO.Combine(self.resolve_infos)
 
-        if resolve_info.UnresolvedFiles.Length == 0:
+        if resolve_info.UnresolvedFiles.Length == 0 and resolve_info.MissingStreamedImages.Length == 0:
             return
 
         resolve_info_text = bpy.data.texts.new("Import resolve report")
-        resolve_info_text.write(
-            f"{resolve_info.UnresolvedFiles.Length} files could not be found.\n\n")
 
-        if resolve_info.PackedDependencies.Length > 0:
-            resolve_info_text.write(
-                "Some files may be located in the following archives and need to be unpacked:\n")
-            for packed in resolve_info.PackedDependencies:
-                resolve_info_text.write(f"\t{packed}\n")
+        def write(text):
+            resolve_info_text.write(text)
 
-            resolve_info_text.write("\n")
+        add_gap = False
 
-        if resolve_info.MissingDependencies.Length > 0:
-            resolve_info_text.write(
-                "Following dependencies were not found altogether:\n")
-            for missing in resolve_info.MissingDependencies:
-                resolve_info_text.write(f"\t{missing}\n")
+        if resolve_info.UnresolvedFiles.Length > 0:
 
-            resolve_info_text.write("\n")
+            write(f"{resolve_info.UnresolvedFiles.Length} files could not be found.\n\n")
 
-        resolve_info_text.write("List of unresolved files:\n")
-        for unresolved_file in resolve_info.UnresolvedFiles:
-            resolve_info_text.write(f"\t{unresolved_file}\n")
+            if resolve_info.PackedDependencies.Length > 0:
+                write("Some files may be located in the following archives and need to be unpacked:\n")
+                for packed in resolve_info.PackedDependencies:
+                    write(f"\t{packed}\n")
+
+                write("\n")
+
+            if resolve_info.MissingDependencies.Length > 0:
+                write("Following dependencies were not found altogether:\n")
+                for missing in resolve_info.MissingDependencies:
+                    write(f"\t{missing}\n")
+
+                write("\n")
+
+            write("List of unresolved files:\n")
+            for unresolved_file in resolve_info.UnresolvedFiles:
+                write(f"\t{unresolved_file}\n")
+
+            add_gap = True
+
+        if resolve_info.MissingStreamedImages.Length > 0:
+            if add_gap:
+                write("\n\n")
+
+            write((
+                f"{resolve_info.MissingStreamedImages.Length} images are streamed and could not be loaded,"
+                " either because the streaming package (.ntsp file) was not found, or because the"
+                " streaming package does not contain the texture that is being looked for.\n"
+                "Please make sure that the NTSP filepath in the addon configuration is correctly"
+                "set. You can attempt to reimport the texture using [TODO].\n\n"))
+
+            if resolve_info.UnresolvedNTSPFiles.Length > 0:
+                write("Following streaming packages were not found altogether:\n")
+                for unresolved_ntsp in resolve_info.UnresolvedNTSPFiles:
+                    write(f"\t{unresolved_ntsp}.ntsp\n")
+
+                write("\n")
+
+            write("List of missing streamed images:\n")
+            for missing_streamed_image in resolve_info.MissingStreamedImages:
+                write(f"\t{missing_streamed_image}\n")
 
         bpy.ops.wm.window_new()
         context.area.type = 'TEXT_EDITOR'
         context.space_data.text = resolve_info_text
         context.space_data.top = 0
+        context.space_data.show_syntax_highlight = False
+        context.space_data.show_word_wrap = True
 
     @classmethod
     def poll(cls, context):
@@ -102,6 +133,7 @@ class ImportOperator(HEIOBaseFileLoadOperator):
         self.layout.use_property_decorate = False
         self.layout.use_property_split = True
         self.layout.prop(context.scene.heio_scene, "target_game")
+
 
 class ImportMaterialOperator(ImportOperator):
 
@@ -292,7 +324,6 @@ class ImportModelBaseOperator(ImportMaterialOperator):
             "HEIO_import_model_merge", default_closed=True)
         merge_header.prop(self, "vertex_merge_mode")
 
-
         if merge_body:
             merge_body.active = self.vertex_merge_mode != 'NONE'
             merge_body.prop(self, "vertex_merge_distance")
@@ -444,7 +475,8 @@ class ImportCollisionMeshOperator(ImportOperator):
 
         merge_header, merge_body = body.panel(
             "HEIO_import_collision_mesh_merge", default_closed=True)
-        merge_header.row(heading="Merge vertices").prop(self, "merge_collision_verts", text="")
+        merge_header.row(heading="Merge vertices").prop(
+            self, "merge_collision_verts", text="")
 
         if merge_body:
             merge_body.active = self.merge_collision_verts

@@ -62,7 +62,7 @@ namespace HEIO.NET
                 }
             }
 
-            return new([.. unresolved], [.. missingDependencies], [.. dependencyPacFiles]);
+            return new([.. unresolved], [.. missingDependencies], [.. dependencyPacFiles], [], []);
         }
 
         public ResolverInfo GetResolver(IDirectory directory)

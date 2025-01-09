@@ -24,11 +24,13 @@ namespace HEIO.NET
         }
 
 
-        public static Image? LoadImage(IFile file, Dictionary<string, Package?> packages, string streamingDirectory)
+        public static Image? LoadImage(IFile file, Dictionary<string, Package?> packages, string streamingDirectory, out string? noNTSP, out bool noNTSI)
         {
             Stream stream = file.Open(FileAccess.Read);
             uint signature = BitConverter.ToUInt32(stream.ReadBytes(4));
             stream.Position = 0;
+            noNTSP = null;
+            noNTSI = false;
 
             if(signature == 0x4953544e)
             {
@@ -45,13 +47,32 @@ namespace HEIO.NET
                         package = new();
                         package.Read(packageFile);
                     }
+                    else
+                    {
+                        noNTSP = info.PackageName;
+                        noNTSI = true;
+                    }
 
                     packages[info.PackageName] = package;
                 }
 
-                return package == null 
-                    ? null 
-                    : new(file.Path, info.UnpackDDS(package));
+                if(package == null)
+                {
+                    return null;
+                }
+
+                byte[] ddsData;
+                try
+                {
+                    ddsData = info.UnpackDDS(package);
+                }
+                catch(InvalidDataException)
+                {
+                    noNTSI = true;
+                    return null;
+                }
+
+                return new(file.Path, ddsData);
             }
 
             return new(file.Path, null);
@@ -62,6 +83,9 @@ namespace HEIO.NET
             DependencyResolverManager dependencyManager = new();
             Dictionary<string, Image> result = [];
             Dictionary<string, Package?> packages = [];
+
+            HashSet<string> missingStreamedImages = new();
+            HashSet<string> unresolvedNTSPFiles = new();
 
             info = dependencyManager.ResolveDependencies(materials.Select(x => (x, x.BaseFile!)), (resolver, material, file, unresolved) =>
             {
@@ -77,7 +101,18 @@ namespace HEIO.NET
 
                     if(resolver.GetFile(imageName) is IFile imageFile)
                     {
-                        Image? image = LoadImage(imageFile, packages, streamingDirectory);
+                        Image? image = LoadImage(imageFile, packages, streamingDirectory, out string? noNTSP, out bool noNTSI);
+
+                        if(noNTSP != null)
+                        {
+                            unresolvedNTSPFiles.Add(noNTSP);
+                        }
+
+                        if(noNTSI)
+                        {
+                            missingStreamedImages.Add(texture.PictureName);
+                        }
+
                         if(image != null)
                         {
                             result.Add(texture.PictureName!, image);
@@ -89,6 +124,8 @@ namespace HEIO.NET
                     }
                 }
             });
+
+            info = ResolveInfo.Combine(info, new([], [], [], [.. unresolvedNTSPFiles], [.. missingStreamedImages]));
 
             return result;
         }
