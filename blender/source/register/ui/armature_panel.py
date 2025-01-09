@@ -8,21 +8,6 @@ class HEIO_PT_Armature(PropertiesPanel):
     bl_label = "HEIO Armatures Properties"
     bl_context = "data"
 
-    @staticmethod
-    def draw_armature_properties(
-            layout: bpy.types.UILayout,
-            context: bpy.types.Context,
-            armature: bpy.types.Armature):
-
-        draw_lod_info_panel(
-            layout, context, armature.heio_armature.lod_info)
-
-    # === overriden methods === #
-
-    @classmethod
-    def poll(cls, context: bpy.types.Context):
-        return cls.verify(context) is None
-
     @classmethod
     def verify(cls, context: bpy.types.Context):
         obj = context.active_object
@@ -34,9 +19,9 @@ class HEIO_PT_Armature(PropertiesPanel):
 
         return None
 
-    def draw_panel(self, context):
+    @classmethod
+    def draw_panel(cls, layout, context):
+        armature = context.active_object.data
 
-        HEIO_PT_Armature.draw_armature_properties(
-            self.layout,
-            context,
-            context.active_object.data)
+        draw_lod_info_panel(
+            layout, context, armature.heio_armature.lod_info)

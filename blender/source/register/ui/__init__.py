@@ -42,6 +42,8 @@ to_register = [
 
     viewport_toolbar.HEIO_PT_VTP_Mesh,
     viewport_toolbar.HEIO_PT_VTP_Material,
+	viewport_toolbar.HEIO_PT_VTP_SceneData,
+    viewport_toolbar.HEIO_PT_VTP_ObjectData,
     viewport_toolbar.HEIO_PT_VTP_Info,
 
     view3d_overlay_panel.HEIO_VIEW3D_PT_overlay_collision_primitives,

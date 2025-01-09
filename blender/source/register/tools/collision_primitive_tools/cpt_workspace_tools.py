@@ -5,8 +5,7 @@ import os
 from .cpt_select_gizmo_group import HEIO_GGT_CollisionPrimitive_Select
 from .cpt_transform_gizmo_group import HEIO_GGT_CollisionPrimitive_Transform
 
-from ...ui.mesh_info_ui import draw_mesh_info_layout
-from ...ui.collision_mesh_panel import HEIO_PT_CollisionAttributes, HEIO_UL_CollisionPrimitiveList
+from ...ui.mesh_panel import HEIO_PT_Mesh, HEIO_UL_CollisionPrimitiveList
 from ....utility import general
 
 
@@ -25,7 +24,7 @@ class BaseCollisionPrimitiveWorkSpaceTool(WorkSpaceTool):
 
         primitives = context.active_object.data.heio_mesh.collision_primitives
 
-        body = draw_mesh_info_layout(
+        body = HEIO_PT_Mesh.draw_mesh_info_layout(
             layout,
             context,
             primitives,
@@ -34,7 +33,7 @@ class BaseCollisionPrimitiveWorkSpaceTool(WorkSpaceTool):
             'COLLISION_PRIMITIVES'
         )
 
-        HEIO_PT_CollisionAttributes._draw_primitive_editor(
+        HEIO_PT_Mesh.draw_primitive_editor(
             body,
             context,
             primitives.active_element

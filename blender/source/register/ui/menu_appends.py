@@ -2,6 +2,7 @@ import bpy
 
 from ..operators import import_operators, export_operators
 
+
 class TOPBAR_MT_HEIO_Export(bpy.types.Menu):
     '''The heio submenu in the export menu'''
     bl_label = "HEIO Formats"
@@ -36,7 +37,8 @@ class TOPBAR_MT_HEIO_Import(bpy.types.Menu):
         layout.operator(import_operators.HEIO_OT_Import_Material.bl_idname)
         layout.operator(import_operators.HEIO_OT_Import_Model.bl_idname)
         layout.operator(import_operators.HEIO_OT_Import_TerrainModel.bl_idname)
-        layout.operator(import_operators.HEIO_OT_Import_CollisionMesh.bl_idname)
+        layout.operator(
+            import_operators.HEIO_OT_Import_CollisionMesh.bl_idname)
         layout.operator(import_operators.HEIO_OT_Import_PointCloud.bl_idname)
 
     @staticmethod
@@ -51,6 +53,7 @@ class TOPBAR_MT_HEIO_Import(bpy.types.Menu):
     def unregister(cls):
         bpy.types.TOPBAR_MT_file_import.remove(TOPBAR_MT_HEIO_Import.menu_func)
 
+
 class MenuAppends:
 
     DONT_REGISTER_CLASS = True
@@ -58,13 +61,17 @@ class MenuAppends:
     @staticmethod
     def material_context_menu_func(self, context):
         self.layout.separator(type='LINE')
-        self.layout.operator(import_operators.HEIO_OT_Import_Material_Active.bl_idname, icon='IMPORT')
-        self.layout.operator(export_operators.HEIO_OT_Export_Material_Active.bl_idname, icon='EXPORT')
+        self.layout.operator(
+            import_operators.HEIO_OT_Import_Material_Active.bl_idname, icon='IMPORT')
+        self.layout.operator(
+            export_operators.HEIO_OT_Export_Material_Active.bl_idname, icon='EXPORT')
 
     @classmethod
     def register(cls):
-        bpy.types.MATERIAL_MT_context_menu.append(MenuAppends.material_context_menu_func)
+        bpy.types.MATERIAL_MT_context_menu.append(
+            MenuAppends.material_context_menu_func)
 
     @classmethod
     def unregister(cls):
-        bpy.types.MATERIAL_MT_context_menu.remove(MenuAppends.material_context_menu_func)
+        bpy.types.MATERIAL_MT_context_menu.remove(
+            MenuAppends.material_context_menu_func)

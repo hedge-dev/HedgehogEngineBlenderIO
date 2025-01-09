@@ -294,12 +294,26 @@ class HEIO_PT_Material(PropertiesPanel):
 
         layout.operator(HEIO_OT_Material_SetupNodes_Active.bl_idname)
 
-    @staticmethod
-    def draw_material_properties(
-            layout: bpy.types.UILayout,
-            context: bpy.types.Context,
-            material: bpy.types.Material):
+    # === overriden methods === #
 
+    @classmethod
+    def verify(cls, context: bpy.types.Context):
+        obj = context.active_object
+        if obj is None:
+            return "No active object"
+
+        if obj.type != 'MESH':
+            return "Active object not a mesh"
+
+        if obj.active_material is None:
+            return "No active material"
+
+        return None
+
+    @classmethod
+    def draw_panel(cls, layout, context):
+
+        material = context.active_object.active_material
         material_properties = material.heio_material
 
         HEIO_PT_Material.draw_header_properties(
@@ -329,30 +343,3 @@ class HEIO_PT_Material(PropertiesPanel):
             material_properties.sca_parameters,
             "MATERIAL"
         )
-
-    # === overriden methods === #
-
-    @classmethod
-    def poll(cls, context: Context):
-        return cls.verify(context) is None
-
-    @classmethod
-    def verify(cls, context: bpy.types.Context):
-        obj = context.active_object
-        if obj is None:
-            return "No active object"
-
-        if obj.type != 'MESH':
-            return "Active object not a mesh"
-
-        if obj.active_material is None:
-            return "No active material"
-
-        return None
-
-    def draw_panel(self, context):
-
-        HEIO_PT_Material.draw_material_properties(
-            self.layout,
-            context,
-            context.active_object.active_material)

@@ -1,5 +1,4 @@
 import bpy
-from bpy.types import Context
 
 from .base_panel import PropertiesPanel
 from .sca_parameter_panel import draw_sca_editor_menu
@@ -370,11 +369,23 @@ class HEIO_PT_Mesh(PropertiesPanel):
             'Collision flags'
         )
 
-    @staticmethod
-    def draw_mesh_properties(
-            layout: bpy.types.UILayout,
-            context: bpy.types.Context,
-            mesh: bpy.types.Mesh):
+    # === overriden methods === #
+
+    @classmethod
+    def verify(cls, context):
+        obj = context.active_object
+        if obj is None:
+            return "No active object"
+
+        if obj.type != 'MESH':
+            return "Active object not a mesh"
+
+        return None
+
+    @classmethod
+    def draw_panel(cls, layout, context):
+
+        mesh = context.active_object.data
 
         body = HEIO_PT_Mesh.draw_mesh_info_panel(
             layout,
@@ -440,27 +451,3 @@ class HEIO_PT_Mesh(PropertiesPanel):
 
         draw_lod_info_panel(layout, context, mesh.heio_mesh.lod_info)
         draw_sca_editor_menu(layout, mesh.heio_mesh.sca_parameters, 'MESH')
-
-    # === overriden methods === #
-
-    @classmethod
-    def poll(cls, context: Context):
-        return cls.verify(context) is None
-
-    @classmethod
-    def verify(cls, context: bpy.types.Context):
-        obj = context.active_object
-        if obj is None:
-            return "No active object"
-
-        if obj.type != 'MESH':
-            return "Active object not a mesh"
-
-        return None
-
-    def draw_panel(self, context):
-
-        HEIO_PT_Mesh.draw_mesh_properties(
-            self.layout,
-            context,
-            context.active_object.data)

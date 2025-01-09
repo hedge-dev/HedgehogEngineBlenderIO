@@ -1,4 +1,3 @@
-import bpy
 from .base_panel import PropertiesPanel
 from ..property_groups.scene_properties import HEIO_Scene
 
@@ -6,10 +5,9 @@ class HEIO_PT_Scene(PropertiesPanel):
     bl_label = "HEIO Settings"
     bl_context = "scene"
 
-    @staticmethod
-    def draw_scene_properties(
-            layout: bpy.types.UILayout,
-            scene: bpy.types.Scene):
+    @classmethod
+    def draw_panel(cls, layout, context):
+        scene = context.scene
 
         setting_properties: HEIO_Scene = scene.heio_scene
 
@@ -20,8 +18,3 @@ class HEIO_PT_Scene(PropertiesPanel):
             setting_properties,
             "target_game",
             icon="ERROR" if setting_properties.target_game == "ERROR_FALLBACK" else "NONE")
-
-    def draw_panel(self, context):
-        HEIO_PT_Scene.draw_scene_properties(
-            self.layout,
-            context.scene)

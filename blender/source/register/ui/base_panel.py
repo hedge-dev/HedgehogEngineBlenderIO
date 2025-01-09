@@ -12,7 +12,12 @@ class PropertiesPanel(bpy.types.Panel):
     def verify(cls, context: bpy.types.Context) -> str | None:
         return None
 
-    def draw_panel(self, context: bpy.types.Context):
+    @classmethod
+    def poll(cls, context: bpy.types.Context):
+        return cls.verify(context) is None
+
+    @classmethod
+    def draw_panel(cls, layout: bpy.types.UILayout, context: bpy.types.Context):
         return
 
     def draw(self, context: bpy.types.Context):
@@ -20,4 +25,4 @@ class PropertiesPanel(bpy.types.Panel):
         if draw_error_box(self.layout, self.verify(context)):
             return
 
-        self.draw_panel(context)
+        self.draw_panel(self.layout, context)

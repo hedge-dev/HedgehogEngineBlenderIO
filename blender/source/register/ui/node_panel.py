@@ -8,20 +8,8 @@ class HEIO_PT_Node_Bone(PropertiesPanel):
     bl_label = "HEIO Node Properties"
     bl_context = "bone"
 
-    @staticmethod
-    def draw_node_properties(
-            layout: bpy.types.UILayout,
-            context: bpy.types.Context,
-            bone: bpy.types.Bone | bpy.types.EditBone):
-
-        draw_sca_editor_menu(layout, bone.heio_node.sca_parameters, 'BONE')
-
     @classmethod
-    def poll(cls, context: bpy.types.Context):
-        return cls.verify(context) is None
-
-    @classmethod
-    def verify(cls, context: bpy.types.Context):
+    def verify(cls, context):
         obj = context.active_object
         if obj is None:
             return "No active object"
@@ -34,10 +22,8 @@ class HEIO_PT_Node_Bone(PropertiesPanel):
 
         return None
 
-    def draw(self, context: bpy.types.Context):
+    @classmethod
+    def draw_panel(cls, layout, context):
+        bone = context.active_bone
+        draw_sca_editor_menu(layout, bone.heio_node.sca_parameters, 'BONE')
 
-        HEIO_PT_Node_Bone.draw_node_properties(
-            self.layout,
-            context,
-            context.active_bone,
-        )
