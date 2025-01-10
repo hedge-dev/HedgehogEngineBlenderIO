@@ -4,6 +4,7 @@
   "ReleaseYear": 2024,
   "HedgehogEngine": 2,
   "UsesNTSP": true,
+  "BoneOrientation": "XZ",
   "DataVersions": {
     "Material": 3,
     "MaterialSampleChunk": 2

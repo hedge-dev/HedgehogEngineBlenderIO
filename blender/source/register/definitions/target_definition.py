@@ -39,6 +39,8 @@ class TargetDefinition:
     hedgehog_engine_version: int
 
     uses_ntsp: bool
+    bone_orientation: str
+
     has_preferences: bool
 
     data_versions: TargetDataVersions
@@ -56,7 +58,8 @@ class TargetDefinition:
             description: str,
             release_year: int,
             hedgehog_engine_version: int,
-            uses_ntsp: bool):
+            uses_ntsp: bool,
+            bone_orientation: str):
 
         self.directory = directory
         self.identifier = identifier
@@ -66,6 +69,8 @@ class TargetDefinition:
         self.hedgehog_engine_version = hedgehog_engine_version
 
         self.uses_ntsp = uses_ntsp
+        self.bone_orientation = bone_orientation
+
         self.has_preferences = uses_ntsp
 
         self.data_versions = None
@@ -84,7 +89,8 @@ class TargetDefinition:
             data["Description"],
             data["ReleaseYear"],
             data["HedgehogEngine"],
-            data["UsesNTSP"]
+            data["UsesNTSP"],
+            data["BoneOrientation"],
         )
 
         result.data_versions = data.parse_property(

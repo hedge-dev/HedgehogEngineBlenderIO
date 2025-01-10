@@ -1,6 +1,6 @@
 from mathutils import Matrix, Quaternion
+import math
 from ..dotnet import System
-
 
 def net_to_bpy_matrix(matrix):
     return Matrix((
@@ -11,7 +11,7 @@ def net_to_bpy_matrix(matrix):
     ))
 
 
-def net_to_bpy_bone_matrix(matrix):
+def net_to_bpy_bone_matrix_xz(matrix):
     return Matrix((
         (matrix.M31, matrix.M11, matrix.M21, matrix.M41),
         (-matrix.M33, -matrix.M13, -matrix.M23, -matrix.M43),
@@ -19,6 +19,21 @@ def net_to_bpy_bone_matrix(matrix):
         (0, 0, 0, 1),
     ))
 
+def net_to_bpy_bone_matrix_xy(matrix):
+    return Matrix((
+        (-matrix.M21, matrix.M11, matrix.M31, matrix.M41),
+        (matrix.M23, -matrix.M13, -matrix.M33, -matrix.M43),
+        (-matrix.M22, matrix.M12, matrix.M32, matrix.M42),
+        (0, 0, 0, 1),
+    ))
+
+def net_to_bpy_bone_matrix_znx(matrix):
+    return Matrix((
+        (matrix.M11, matrix.M31, -matrix.M21, matrix.M41),
+        (-matrix.M13, -matrix.M33, matrix.M23, -matrix.M43),
+        (matrix.M12, matrix.M32, -matrix.M22, matrix.M42),
+        (0, 0, 0, 1),
+    ))
 
 def net_transforms_to_bpy_matrix(position, rotation, scale):
 

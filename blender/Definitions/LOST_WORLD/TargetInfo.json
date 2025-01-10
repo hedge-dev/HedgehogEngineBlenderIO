@@ -4,6 +4,7 @@
   "ReleaseYear": 2013,
   "HedgehogEngine": 1,
   "UsesNTSP": false,
+  "BoneOrientation": "XY",
   "DataVersions": {
     "Material": 3,
     "MaterialSampleChunk": 2

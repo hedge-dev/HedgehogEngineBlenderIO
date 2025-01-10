@@ -13,17 +13,29 @@ class NodeConverter:
     _target_definition: TargetDefinition
     _mesh_converter: i_mesh.MeshConverter
 
-    def __init__(self, context: bpy.types.Context, target_definition: TargetDefinition, mesh_converter: i_mesh.MeshConverter):
+    def __init__(self, context: bpy.types.Context, target_definition: TargetDefinition, mesh_converter: i_mesh.MeshConverter, bone_orientation: str):
         self._context = context
         self._target_definition = target_definition
         self._mesh_converter = mesh_converter
 
+        self._bone_orientation = bone_orientation
+
         self._converted_models = dict()
         self._armature_name_lookup = dict()
 
-    @staticmethod
-    def _create_bones(model_info: i_model.ModelInfo):
+    def _create_bones(self, model_info: i_model.ModelInfo):
         world_space_scales = []
+
+        bone_orientation = self._bone_orientation
+        if bone_orientation == 'AUTO':
+            bone_orientation = self._target_definition.bone_orientation
+
+        if bone_orientation == 'XY':
+            matrix_remap = i_transform.net_to_bpy_bone_matrix_xy
+        elif bone_orientation == 'XZ':
+            matrix_remap = i_transform.net_to_bpy_bone_matrix_xz
+        else: # ZNX
+            matrix_remap = i_transform.net_to_bpy_bone_matrix_znx
 
         for node in model_info.sn_model.Nodes:
             bone = model_info.armature.edit_bones.new(node.Name)
@@ -33,7 +45,7 @@ class NodeConverter:
 
             node_matrix = HEIO_NET.PYTHON_HELPERS.InvertMatrix(node.Transform)
 
-            world_space = i_transform.net_to_bpy_bone_matrix(node_matrix)
+            world_space = matrix_remap(node_matrix)
 
             _, _, local_space_scale = world_space.decompose()
             world_space_scales.append(local_space_scale)

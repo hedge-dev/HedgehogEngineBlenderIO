@@ -246,6 +246,18 @@ class ImportModelBaseOperator(ImportMaterialOperator):
         default=False
     )
 
+    bone_orientation: EnumProperty(
+        name="Bone Orientation",
+        description="Bone orientation on import",
+        items=(
+            ('AUTO', "Auto", "Import based on target game configuration"),
+            ('XY', "X, Y", "X forward, Y up"),
+            ('XZ', "X, Z", "X forward, Z up"),
+            ('ZNX', "Z, -X", "Z forward, -X up"),
+        ),
+        default='AUTO'
+    )
+
     def draw_panel_model(self):
         header, body = self.layout.panel(
             "HEIO_import_model", default_closed=False)
@@ -272,6 +284,9 @@ class ImportModelBaseOperator(ImportMaterialOperator):
         body.prop(self, "import_tangents")
         body.prop(self, "import_lod_models")
 
+        body.use_property_split = True
+        body.prop(self, "bone_orientation")
+
     def draw(self, context: Context):
         super().draw(context)
         self.draw_panel_model()
@@ -293,7 +308,8 @@ class ImportModelBaseOperator(ImportMaterialOperator):
         self.node_converter = i_node.NodeConverter(
             context,
             self.target_definition,
-            self.mesh_converter
+            self.mesh_converter,
+            self.bone_orientation
         )
 
     def _setup_lod_models(self, context: bpy.types.Context, model_infos: list[i_model.ModelInfo]):
