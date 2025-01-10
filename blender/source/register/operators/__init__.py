@@ -9,6 +9,7 @@ from . import (
     material_parameter_operators,
     mesh_geometry_operators,
 	image_operators,
+	scap_mass_edit_operators,
     info_operators
 )
 
@@ -59,7 +60,11 @@ to_register = [
 
     image_operators.HEIO_OT_ReimportImages,
 
+	scap_mass_edit_operators.HEIO_OT_SCAP_MassEdit_Select,
+    scap_mass_edit_operators.HEIO_OT_SCAP_MassEdit_Set,
+	scap_mass_edit_operators.HEIO_OT_SCAP_MassEdit_Remove,
+
     info_operators.HEIO_OT_Info_Manual,
     info_operators.HEIO_OT_Info_Discord,
-    info_operators.HEIO_OT_Info_Report,
+    info_operators.HEIO_OT_Info_Report
 ]

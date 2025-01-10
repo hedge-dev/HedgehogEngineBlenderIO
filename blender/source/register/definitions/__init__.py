@@ -56,7 +56,7 @@ def get_target_definition(context: bpy.types.Context | None):
     if context is None:
         context = bpy.context
 
-    target_game = context.scene.heio_scene.target_game
+    target_game = context.scene.heio_scene.target_game_name
     if target_game not in TARGET_DEFINITIONS:
         return None
 

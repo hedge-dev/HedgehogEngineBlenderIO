@@ -89,9 +89,9 @@ def _get_sca_parameter_items(operator, context: bpy.types.Context):
         return []
 
     if operator.mode == 'MATERIAL':
-        return target_def.sca_parameters.material_items
+        return target_def.sca_parameters.material.items
     elif operator.mode in ['MESH', 'BONE']:
-        return target_def.sca_parameters.model_items
+        return target_def.sca_parameters.model.items
     return []
 
 
@@ -120,7 +120,7 @@ class HEIO_OT_SCAParameters_NewFromPreset(SCAParameterOperator, HEIOBasePopupOpe
         else:
             return
 
-        definition = defs[self.preset]
+        definition = defs.infos[self.preset]
 
         entry = parameter_list.new()
         entry.name = definition.name

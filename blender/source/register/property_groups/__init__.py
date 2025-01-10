@@ -17,6 +17,7 @@ to_register = [
 
     sca_parameter_properties.HEIO_SCA_Parameter,
     sca_parameter_properties.HEIO_SCA_Parameters,
+	sca_parameter_properties.HEIO_SCAP_MassEdit,
 
     lod_info_properties.HEIO_LODInfoLevel,
     lod_info_properties.HEIO_LODInfoLevelList,

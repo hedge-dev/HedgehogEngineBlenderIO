@@ -4,7 +4,8 @@ from .. operators import (
     mesh_geometry_operators,
     material_operators,
     image_operators,
-    info_operators
+    info_operators,
+    scap_mass_edit_operators
 )
 
 from . import (
@@ -47,6 +48,66 @@ class HEIO_PT_VTP_GeneralTools(ViewportToolPanel):
 
         layout.operator(
             image_operators.HEIO_OT_ReimportImages.bl_idname)
+
+
+class HEIO_PT_VTP_SCAP_MassEdit(ViewportToolPanel):
+    bl_label = "SCA Parameter Mass-edit"
+
+    @staticmethod
+    def _draw_values(layout: bpy.types.UILayout, mass_edit_info):
+
+        col = layout.column(align=True)
+
+        row = col.row(align=True)
+
+        if mass_edit_info.use_preset:
+            row.prop(mass_edit_info, "value_name_enum", text="")
+        else:
+            if len(mass_edit_info.value_name) == 0:
+                icon = "ERROR"
+            else:
+                icon = "NONE"
+            row.prop(mass_edit_info, "value_name", text="", icon=icon)
+
+        row.prop(mass_edit_info, "use_preset", text="", icon='PRESET')
+
+        split = col.split(factor=0.5, align=True)
+
+        enum_row = split.row(align=True)
+        enum_row.active = not mass_edit_info.use_preset
+        enum_row.prop(mass_edit_info, "value_type", text="")
+
+        property = "value"
+        if mass_edit_info.value_type != 'INTEGER':
+            property = mass_edit_info.value_type.lower() + "_value"
+
+        split.prop(mass_edit_info, property, text="")
+
+    def draw(self, context):
+        layout = self.layout
+        mass_edit_info = context.scene.heio_scap_massedit
+
+        layout.use_property_split = True
+        layout.use_property_decorate = False
+
+        layout.prop(mass_edit_info, "mode")
+
+        layout.use_property_split = False
+        self._draw_values(layout, mass_edit_info)
+
+        layout.separator()
+
+        row = layout.row(align=True)
+        row.operator(
+            scap_mass_edit_operators.HEIO_OT_SCAP_MassEdit_Select.bl_idname).exact = False
+        row.operator(scap_mass_edit_operators.HEIO_OT_SCAP_MassEdit_Select.bl_idname,
+                     text="Select Exact").exact = True
+
+        row = layout.row(align=True)
+        row.operator(
+            scap_mass_edit_operators.HEIO_OT_SCAP_MassEdit_Set.bl_idname)
+        row.operator(
+            scap_mass_edit_operators.HEIO_OT_SCAP_MassEdit_Remove.bl_idname)
 
 
 class HEIO_PT_VTP_Info(ViewportToolPanel):

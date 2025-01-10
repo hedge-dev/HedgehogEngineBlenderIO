@@ -20,7 +20,8 @@ class SCAParameterType(Enum):
                 f"Invalid SCA parameter type \"{data}\"")
 
 
-class SCAParameterDefinition:
+class SCAParameterDefinitionInfo:
+    index: int
     name: str
     parameter_type: SCAParameterType
     description: str
@@ -32,51 +33,48 @@ class SCAParameterDefinition:
 
     @staticmethod
     def parse_json_data(data: JSONWrapper):
-        return SCAParameterDefinition(
+        return SCAParameterDefinitionInfo(
             data.identifier,
             data.parse_property("Type", SCAParameterType),
             data.get_property_fallback("Description", "")
         )
 
+class SCAParameterDefinition:
+
+    infos: dict[str, SCAParameterDefinitionInfo]
+    items: list[tuple[str, str, str]]
+
+    def __init__(self):
+        self.infos = {}
+        self.items = []
+
     @staticmethod
-    def dict_items_from_json_data(data: JSONWrapper):
-        dict = {}
-        items = []
+    def parse_json_data(data: JSONWrapper):
+        result = SCAParameterDefinition()
 
         for key, value in data:
-            definition = value.parse(SCAParameterDefinition)
-            dict[key] = definition
-            items.append((key, key, definition.description))
+            definition = value.parse(SCAParameterDefinitionInfo)
+            definition.index = len(result.items)
 
-        return dict, items
+            result.infos[key] = definition
 
+            item = (key, key, definition.description)
+            result.items.append(item)
+
+        return result
 
 class SCAParameterDefinitionCollection:
 
-    material: dict[str, SCAParameterDefinition]
-    '''[name] = (type, description)'''
-    model: dict[str, SCAParameterDefinition]
-    '''[name] = (type, description)'''
-
-    material_items: list[tuple[str, str, str]]
-    model_items: list[tuple[str, str, str]]
+    material: SCAParameterDefinition
+    model: SCAParameterDefinition
 
     def __init__(self):
-        self.material = {}
-        self.model = {}
-        self.material_items = []
-        self.model_items = []
+        self.material = None
+        self.model = None
 
     @staticmethod
-    def parse_json_data(data):
+    def parse_json_data(data: JSONWrapper):
         result = SCAParameterDefinitionCollection()
-
-        if "Material" in data:
-            result.material, result.material_items = SCAParameterDefinition.dict_items_from_json_data(
-                data["Material"])
-
-        if "Model" in data:
-            result.model, result.model_items = SCAParameterDefinition.dict_items_from_json_data(
-                data["Model"])
-
+        result.material = data.parse_property("Material", SCAParameterDefinition)
+        result.model = data.parse_property("Model", SCAParameterDefinition)
         return result
