@@ -6,6 +6,8 @@ using SharpNeedle.Utilities;
 using SharpNeedle.Framework.HedgehogEngine.Mirage;
 using SharpNeedle.Framework.HedgehogEngine.Needle.TextureStreaming;
 using System.Linq;
+using static HEIO.NET.DependencyResolverManager;
+using static BulletSharp.DiscreteCollisionDetectorInterface;
 
 namespace HEIO.NET
 {
@@ -77,7 +79,59 @@ namespace HEIO.NET
 
             return new(file.Path, null);
         }
-    
+
+        public static Dictionary<string, Image> LoadDirectoryImages(string directory, string[] images, string streamingDirectory, out ResolveInfo info)
+        {
+            DependencyResolverManager dependencyManager = new();
+            Dictionary<string, Image> result = [];
+            Dictionary<string, Package?> packages = [];
+
+            HashSet<string> missingStreamedImages = new();
+            HashSet<string> unresolvedNTSPFiles = new();
+            HashSet<string> unresolvedFiles = new();
+
+            ResolverInfo resolver = dependencyManager.GetResolver(new HostDirectory(directory));
+
+            foreach(string imageName in images)
+            {
+                string filename = imageName + ".dds";
+
+                if(resolver.Resolver.GetFile(filename) is IFile imageFile)
+                {
+                    Image? image = LoadImage(imageFile, packages, streamingDirectory, out string? noNTSP, out bool noNTSI);
+
+                    if(noNTSP != null)
+                    {
+                        unresolvedNTSPFiles.Add(noNTSP);
+                    }
+
+                    if(noNTSI)
+                    {
+                        missingStreamedImages.Add(imageName);
+                    }
+
+                    if(image != null)
+                    {
+                        result.Add(imageName!, image);
+                    }
+                }
+                else
+                {
+                    unresolvedFiles.Add(filename);
+                }
+            }
+
+            info = new(
+                [.. unresolvedFiles],
+                resolver.MissingDependencies,
+                [.. resolver.PackedDependencies.Select(x => x.file.Path)],
+                [.. unresolvedNTSPFiles],
+                [.. missingStreamedImages]
+            );
+
+            return result;
+        }
+
         public static Dictionary<string, Image> LoadMaterialImages(Material[] materials, string streamingDirectory, out ResolveInfo info)
         {
             DependencyResolverManager dependencyManager = new();
@@ -91,7 +145,7 @@ namespace HEIO.NET
             {
                 foreach(Texture texture in material.Texset.Textures)
                 {
-                    if(string.IsNullOrWhiteSpace(texture.PictureName) 
+                    if(string.IsNullOrWhiteSpace(texture.PictureName)
                         || result.ContainsKey(texture.PictureName))
                     {
                         continue;
@@ -129,7 +183,8 @@ namespace HEIO.NET
 
             return result;
         }
-    
+
+
         public static unsafe void InvertGreenChannel(nint pixelPointer, int length)
         {
             float* pixels = (float*)pixelPointer;

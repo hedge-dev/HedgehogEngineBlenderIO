@@ -75,7 +75,7 @@ class MaterialConverter:
             texture.texcoord_index = sn_texture.TexCoordIndex
             texture.wrapmode_u = i_enum.from_wrap_mode(sn_texture.WrapModeU)
             texture.wrapmode_v = i_enum.from_wrap_mode(sn_texture.WrapModeV)
-            texture.image = self._image_loader.get_image(
+            texture.image = self._image_loader.get_setup_image(
                 texture, sn_texture.PictureName)
 
         return created_missing

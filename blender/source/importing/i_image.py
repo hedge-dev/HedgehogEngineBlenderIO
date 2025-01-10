@@ -118,6 +118,12 @@ class ImageLoader:
 
         return image
 
+    def import_image(self, image_name, net_image):
+        if "blender_dds_addon" in bpy.context.preferences.addons.keys():
+            return self._import_image_dds_addon(image_name, net_image)
+        else:
+            return self._import_image_native(image_name, net_image)
+
     def _setup_image(self, texture, image_name: str):
 
         image = None
@@ -138,6 +144,7 @@ class ImageLoader:
 
             image.source = 'GENERATED'
             image.generated_color = self._get_placeholder_image_color(node)
+            image.heio_image.reimport_name = image_name
 
         texture_mode = None
 
@@ -152,8 +159,10 @@ class ImageLoader:
 
         if texture_mode is not None:
             if texture_mode == 'sRGB':
+                image.colorspace_settings.is_data = False
                 image.colorspace_settings.name = 'sRGB'
             elif texture_mode == 'Linear' or texture_mode == 'Normal':
+                image.colorspace_settings.is_data = True
                 image.colorspace_settings.name = 'Non-Color'
 
         if texture_mode == 'Normal' and from_loaded and self._invert_normal_map_y_channel:
@@ -172,6 +181,22 @@ class ImageLoader:
 
         return image
 
+    def load_images(self, net_images):
+        progress_console.start("Loading Images", len(net_images))
+
+        for i, item in enumerate(net_images):
+
+            if item.Key in self._loaded_images:
+                continue
+
+            progress_console.update(
+                f"Loading \"{item.Key}\"", i, clear_below=True)
+
+            self._loaded_images[item.Key] = self.import_image(
+                item.Key, item.Value)
+
+        progress_console.end()
+
     def load_images_from_materials(self, sn_materials):
 
         progress_console.start("Loading Images")
@@ -183,25 +208,35 @@ class ImageLoader:
         self._resolve_infos.append(resolve_info)
 
         progress_console.end()
-        progress_console.start("Loading Images", len(net_images))
 
-        for i, item in enumerate(net_images):
+        self.load_images(net_images)
 
-            if item.Key in self._loaded_images:
-                continue
+    def load_images_from_directory(self, directory: str, filenames: list[str]):
+        progress_console.start("Loading Images")
+        progress_console.update("Resolving & preparing image files")
 
-            progress_console.update(f"Loading \"{item.Key}\"", i, clear_below=True)
+        net_images, resolve_info = HEIO_NET.IMAGE.LoadDirectoryImages(
+            directory, filenames, self._ntsp_dir, HEIO_NET.RESOLVE_INFO())
 
-            if "blender_dds_addon" in bpy.context.preferences.addons.keys():
-                image = self._import_image_dds_addon(item.Key, item.Value)
-            else:
-                image = self._import_image_native(item.Key, item.Value)
-
-            self._loaded_images[item.Key] = image
+        self._resolve_infos.append(resolve_info)
 
         progress_console.end()
 
-    def get_image(self, texture, image_name: str):
+        self.load_images(net_images)
+
+    def get_image(self, image_name: str):
+        if len(image_name.strip()) == 0:
+            return None
+
+        if image_name in self._loaded_images:
+            return self._loaded_images[image_name]
+
+        elif self._use_existing_images and image_name in bpy.data.images:
+            return bpy.data.images[image_name]
+
+        return None
+
+    def get_setup_image(self, texture, image_name: str):
         if len(image_name.strip()) == 0:
             return None
 
@@ -211,7 +246,7 @@ class ImageLoader:
         elif self._use_existing_images and image_name in bpy.data.images:
             return bpy.data.images[image_name]
 
-        else:
+        elif texture is not None:
             image = self._setup_image(
                 texture,
                 image_name)
@@ -220,6 +255,8 @@ class ImageLoader:
             texture.image = image
 
             return image
+
+        return None
 
     @property
     def resolve_infos(self):

@@ -45,6 +45,7 @@ class HEIOBaseModalOperator(HEIOBaseOperator):
     def _invoke(self, context, event):
         return {'RUNNING_MODAL'}
 
+
 class HEIOBasePopupOperator(HEIOBaseOperator):
 
     def _invoke(self, context: Context, event: Event):
@@ -58,11 +59,56 @@ class HEIOBaseFileLoadOperator(HEIOBaseOperator):
         description="Filepath used for importing the file",
         maxlen=1024,
         subtype='FILE_PATH',
+        options={'HIDDEN'},
     )
 
     def _invoke(self, context, event):
         context.window_manager.fileselect_add(self)
         return {'RUNNING_MODAL'}
+
+    def draw(self, context: Context):
+        layout = self.layout
+        layout.use_property_split = True
+        layout.use_property_decorate = False  # No animation.
+
+
+class HEIOBaseDirectoryLoadOperator(HEIOBaseOperator):
+
+    filepath: StringProperty(
+        name="File Path",
+        description="Filepath used for importing the file",
+        maxlen=1024,
+        subtype='FILE_PATH',
+        options={'HIDDEN'},
+    )
+
+    directory: StringProperty(
+        name="Directory",
+        description="Directory path used for importing the file(s)",
+        maxlen=1024,
+        subtype='DIR_PATH',
+        options={'HIDDEN'},
+    )
+
+    def correct_filepath(self, context: bpy.types.Context):
+        if self.directory:
+            filepath = self.directory + os.sep
+        elif context.blend_data.filepath:
+            filepath = os.path.dirname(context.blend_data.filepath) + os.sep
+        else:
+            return False
+
+        changed = filepath != self.filepath
+        self.filepath = filepath
+        return changed
+
+    def _invoke(self, context, event):
+        self.correct_filepath(context)
+        context.window_manager.fileselect_add(self)
+        return {'RUNNING_MODAL'}
+
+    def check(self, context: Context) -> bool:
+        return self.correct_filepath(context)
 
     def draw(self, context: Context):
         layout = self.layout
@@ -118,6 +164,7 @@ class HEIOBaseFileSaveOperator(HEIOBaseOperator):
         layout.use_property_split = True
         layout.use_property_decorate = False  # No animation.
 
+
 class HEIOBaseDirectorySaveOperator(HEIOBaseOperator):
 
     filepath: StringProperty(
@@ -160,6 +207,7 @@ class HEIOBaseDirectorySaveOperator(HEIOBaseOperator):
         layout = self.layout
         layout.use_property_split = True
         layout.use_property_decorate = False  # No animation.
+
 
 class ListAdd:
 

@@ -40,8 +40,7 @@ to_register = [
     material_panel.HEIO_UL_CustomTextureList,
     material_panel.HEIO_PT_Material,
 
-    viewport_toolbar.HEIO_PT_VTP_Mesh,
-    viewport_toolbar.HEIO_PT_VTP_Material,
+    viewport_toolbar.HEIO_PT_VTP_GeneralTools,
 	viewport_toolbar.HEIO_PT_VTP_SceneData,
     viewport_toolbar.HEIO_PT_VTP_ObjectData,
     viewport_toolbar.HEIO_PT_VTP_Info,

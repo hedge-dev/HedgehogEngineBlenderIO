@@ -8,6 +8,7 @@ from . import (
     material_operators,
     material_parameter_operators,
     mesh_geometry_operators,
+	image_operators,
     info_operators
 )
 
@@ -55,6 +56,8 @@ to_register = [
     mesh_geometry_operators.HEIO_OT_SplitMeshGroups,
 	mesh_geometry_operators.HEIO_OT_MergeMeshGroups,
 	mesh_geometry_operators.HEIO_OT_CollisionPrimitivesToGeometry,
+
+    image_operators.HEIO_OT_ReimportImages,
 
     info_operators.HEIO_OT_Info_Manual,
     info_operators.HEIO_OT_Info_Discord,

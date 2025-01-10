@@ -8,7 +8,8 @@ from . import (
     mesh_properties,
     material_parameter_properties,
     material_texture_properties,
-    material_properties
+    material_properties,
+    image_properties
 )
 
 to_register = [
@@ -46,5 +47,7 @@ to_register = [
     material_texture_properties.HEIO_MaterialTexture,
     material_texture_properties.HEIO_MaterialTextureList,
 
-    material_properties.HEIO_Material
+    material_properties.HEIO_Material,
+
+    image_properties.HEIO_Image
 ]

@@ -3,6 +3,7 @@ import bpy
 from .. operators import (
     mesh_geometry_operators,
     material_operators,
+    image_operators,
     info_operators
 )
 
@@ -24,8 +25,8 @@ class ViewportToolPanel(bpy.types.Panel):
     bl_options = {'DEFAULT_CLOSED'}
 
 
-class HEIO_PT_VTP_Mesh(ViewportToolPanel):
-    bl_label = "Mesh"
+class HEIO_PT_VTP_GeneralTools(ViewportToolPanel):
+    bl_label = "General Tools"
 
     def draw(self, context):
         layout = self.layout
@@ -37,15 +38,15 @@ class HEIO_PT_VTP_Mesh(ViewportToolPanel):
         layout.operator(
             mesh_geometry_operators.HEIO_OT_CollisionPrimitivesToGeometry.bl_idname)
 
-
-class HEIO_PT_VTP_Material(ViewportToolPanel):
-    bl_label = "Material"
-
-    def draw(self, context):
-        layout = self.layout
+        layout.separator(type='LINE', factor=1.5)
 
         layout.operator(
             material_operators.HEIO_OT_Material_SetupNodes.bl_idname)
+
+        layout.separator(type='LINE', factor=1.5)
+
+        layout.operator(
+            image_operators.HEIO_OT_ReimportImages.bl_idname)
 
 
 class HEIO_PT_VTP_Info(ViewportToolPanel):
@@ -90,7 +91,7 @@ class HEIO_PT_VTP_SceneData(ViewportToolDataPanel):
     def draw(self, context):
         scene_panel.HEIO_PT_Scene.draw_panel(
             self.layout,
-            context.scene
+            context
         )
 
 
