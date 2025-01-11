@@ -19,8 +19,8 @@ def convert_from_node(
         sca_parameter.name = parameter.Name
         sca_parameter.value = parameter.SignedValue
 
-        if sca_parameter_definitions is not None and sca_parameter.name in sca_parameter_definitions:
-            sca_parameter.value_type = sca_parameter_definitions[
+        if sca_parameter_definitions is not None and sca_parameter.name in sca_parameter_definitions.infos:
+            sca_parameter.value_type = sca_parameter_definitions.infos[
                 sca_parameter.name].parameter_type.name
 
 
