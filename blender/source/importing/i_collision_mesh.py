@@ -39,16 +39,16 @@ class CollisionMeshConverter:
         groups = mesh.heio_mesh.groups
 
         set_slot_indices = []
-        for i, mesh_layer in enumerate(mesh_data.Layers):
+        for i, mesh_layer in enumerate(mesh_data.Groups):
             group = groups.new(name=f"Shape_{i}")
 
-            group.collision_layer.value = mesh_layer.Value
+            group.collision_layer.value = mesh_layer.Layer
 
             if mesh_layer.IsConvex:
                 group.is_convex_collision = True
-                group.convex_type.value = mesh_layer.Type
+                group.convex_type.value = mesh_layer.ConvexType
 
-                for value in mesh_layer.FlagValues:
+                for value in mesh_layer.ConvexFlagValues:
                     group.convex_flags.new(value=value)
 
             set_slot_indices.extend([i] * mesh_layer.Size)
@@ -92,14 +92,12 @@ class CollisionMeshConverter:
             primitive.shape_type = i_enum.from_bullet_shape_type(
                 sn_primitive.ShapeType)
 
-            primitive.position = (
-                sn_primitive.Position.X, -sn_primitive.Position.Z, sn_primitive.Position.Y)
+            primitive.position = i_transform.net_to_bpy_position(sn_primitive.Position)
 
             primitive.rotation = i_transform.net_to_bpy_quaternion(
                 sn_primitive.Rotation)
 
-            primitive.dimensions = (
-                sn_primitive.Dimensions.X, sn_primitive.Dimensions.Z, sn_primitive.Dimensions.Y)
+            primitive.dimensions = i_transform.net_to_bpy_scale(sn_primitive.Dimensions)
 
             primitive.collision_layer.value = sn_primitive.SurfaceLayer
             primitive.collision_type.value = sn_primitive.SurfaceType
@@ -123,7 +121,7 @@ class CollisionMeshConverter:
         if mesh_data.Vertices.Count == 0:
             return mesh
 
-        vertices = [(x.X, -x.Z, x.Y) for x in mesh_data.Vertices]
+        vertices = [i_transform.net_to_bpy_position(x) for x in mesh_data.Vertices]
 
         faces = []
         for i in range(0, len(mesh_data.TriangleIndices), 3):

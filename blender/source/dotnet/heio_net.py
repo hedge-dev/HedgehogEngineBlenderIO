@@ -13,6 +13,9 @@ class HEIO_NET:
     COLLISION_MESH_DATA: any = None
     '''class HEIO.NET.CollisionMeshData'''
 
+    COLLISION_MESH_DATA_GROUP: any = None
+    '''class HEIO.NET.CollisionMeshDataLayer'''
+
     VERTEX_MERGE_MODE: any = None
     '''enum HEIO.NET.VertexMergeMode'''
 
@@ -25,6 +28,7 @@ class HEIO_NET:
     POINT_CLOUD_COLLECTION: any = None
     '''class HEIO.NET.PointCloudCollection'''
 
+
     @classmethod
     def load(cls):
 
@@ -36,13 +40,16 @@ class HEIO_NET:
             VertexMergeMode,
             ResolveInfo,
             ModelHelper,
-            PointCloudCollection
+            PointCloudCollection,
+            CollisionMeshDataGroup,
+            CollisionMeshData
         )
 
         cls.IMAGE = Image
         cls.PYTHON_HELPERS = PythonHelpers
         cls.MESH_DATA = MeshData
         cls.COLLISION_MESH_DATA = CollisionMeshData
+        cls.COLLISION_MESH_DATA_GROUP = CollisionMeshDataGroup
         cls.VERTEX_MERGE_MODE = VertexMergeMode
         cls.RESOLVE_INFO = ResolveInfo
         cls.MODEL_HELPER = ModelHelper

@@ -1,7 +1,7 @@
 import bpy
 from bpy.props import StringProperty, EnumProperty
 
-from .base import HEIOBaseDirectoryLoadOperator
+from .base import HEIOBaseFileLoadOperator
 from .. import definitions
 from ...utility.general import get_addon_preferences, print_resolve_info
 from ...utility import progress_console
@@ -10,7 +10,7 @@ from ...importing import i_image
 from ...exceptions import HEIOUserException
 
 
-class HEIO_OT_ReimportImages(HEIOBaseDirectoryLoadOperator):
+class HEIO_OT_ReimportImages(HEIOBaseFileLoadOperator):
     bl_idname = "heio.reimport_images"
     bl_label = "Reimport missing images"
     bl_description = "Attempt to reimport images that have failed to initially import"
@@ -96,6 +96,7 @@ class HEIO_OT_ReimportImages(HEIOBaseDirectoryLoadOperator):
         return {'FINISHED'}
 
     def _invoke(self, context, event):
+        self.directory_mode = True
         reimport_images = []
 
         for image in bpy.data.images:

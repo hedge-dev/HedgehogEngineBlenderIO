@@ -62,26 +62,6 @@ class HEIOBaseFileLoadOperator(HEIOBaseOperator):
         options={'HIDDEN'},
     )
 
-    def _invoke(self, context, event):
-        context.window_manager.fileselect_add(self)
-        return {'RUNNING_MODAL'}
-
-    def draw(self, context: Context):
-        layout = self.layout
-        layout.use_property_split = True
-        layout.use_property_decorate = False  # No animation.
-
-
-class HEIOBaseDirectoryLoadOperator(HEIOBaseOperator):
-
-    filepath: StringProperty(
-        name="File Path",
-        description="Filepath used for importing the file",
-        maxlen=1024,
-        subtype='FILE_PATH',
-        options={'HIDDEN'},
-    )
-
     directory: StringProperty(
         name="Directory",
         description="Directory path used for importing the file(s)",
@@ -90,7 +70,17 @@ class HEIOBaseDirectoryLoadOperator(HEIOBaseOperator):
         options={'HIDDEN'},
     )
 
+    directory_mode: BoolProperty(
+        name="Directory mode",
+        description="Choose a directory to save in, instead of a file",
+        default=False,
+        options={'HIDDEN'}
+    )
+
     def correct_filepath(self, context: bpy.types.Context):
+        if not self.directory_mode:
+            return False
+
         if self.directory:
             filepath = self.directory + os.sep
         elif context.blend_data.filepath:
@@ -126,55 +116,6 @@ class HEIOBaseFileSaveOperator(HEIOBaseOperator):
         options={'HIDDEN'},
     )
 
-    check_existing: BoolProperty(
-        name="Check Existing",
-        description="Check and warn on overwriting existing files",
-        default=True,
-        options={'HIDDEN'},
-    )
-
-    def correct_filepath(self, context: bpy.types.Context):
-        filepath = self.filepath
-        if not filepath:
-            filepath = context.blend_data.filepath
-            if not filepath:
-                filepath = "untitled"
-            else:
-                filepath = os.path.splitext(filepath)[0]
-
-        filepath = bpy.path.ensure_ext(
-            os.path.splitext(filepath)[0],
-            self.filename_ext,
-        )
-
-        changed = filepath != self.filepath
-        self.filepath = filepath
-        return changed
-
-    def _invoke(self, context, event):
-        self.correct_filepath(context)
-        context.window_manager.fileselect_add(self)
-        return {'RUNNING_MODAL'}
-
-    def check(self, context: Context) -> bool:
-        return self.correct_filepath(context)
-
-    def draw(self, context: Context):
-        layout = self.layout
-        layout.use_property_split = True
-        layout.use_property_decorate = False  # No animation.
-
-
-class HEIOBaseDirectorySaveOperator(HEIOBaseOperator):
-
-    filepath: StringProperty(
-        name="Filepath",
-        description="Filepath used for exporting the file(s)",
-        maxlen=1024,
-        subtype='FILE_PATH',
-        options={'HIDDEN'},
-    )
-
     directory: StringProperty(
         name="Directory",
         description="Directory path used for exporting the file(s)",
@@ -183,13 +124,43 @@ class HEIOBaseDirectorySaveOperator(HEIOBaseOperator):
         options={'HIDDEN'},
     )
 
+    check_existing: BoolProperty(
+        name="Check Existing",
+        description="Check and warn on overwriting existing files",
+        default=True,
+        options={'HIDDEN'},
+    )
+
+    directory_mode: BoolProperty(
+        name="Directory mode",
+        description="Choose a directory to save in, instead of a file",
+        default=False,
+        options={'HIDDEN'}
+    )
+
     def correct_filepath(self, context: bpy.types.Context):
-        if self.directory:
-            filepath = self.directory + os.sep
-        elif context.blend_data.filepath:
-            filepath = os.path.dirname(context.blend_data.filepath) + os.sep
+        if self.directory_mode:
+            if self.directory:
+                filepath = self.directory + os.sep
+            elif context.blend_data.filepath:
+                filepath = os.path.dirname(context.blend_data.filepath) + os.sep
+            else:
+                filepath = os.path.abspath("") + os.sep
+
         else:
-            return False
+            filepath = self.filepath
+            filename = os.path.basename(filepath)
+            if not filename:
+                filepath = context.blend_data.filepath
+                if not filepath:
+                    filepath = os.path.abspath("untitled")
+                else:
+                    filepath = os.path.splitext(filepath)[0]
+
+            filepath = bpy.path.ensure_ext(
+                os.path.splitext(filepath)[0],
+                self.filename_ext,
+            )
 
         changed = filepath != self.filepath
         self.filepath = filepath

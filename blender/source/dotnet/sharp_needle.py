@@ -8,22 +8,28 @@ class SharpNeedle:
     '''class SharpNeedle.Resource.ResourceExtensions'''
 
     SAMPLE_CHUNK_NODE: any = None
-    '''class SharpNeedle.FrameWork.HedgehogEngine.Mirage.SampleChunkNode'''
+    '''class SharpNeedle.Framework.HedgehogEngine.Mirage.SampleChunkNode'''
 
     MATERIAL: any = None
-    '''class SharpNeedle.FrameWork.HedgehogEngine.Mirage.Material'''
+    '''class SharpNeedle.Framework.HedgehogEngine.Mirage.Material'''
 
     TEXTURE: any = None
-    '''class SharpNeedle.FrameWork.HedgehogEngine.Mirage.Texture'''
+    '''class SharpNeedle.Framework.HedgehogEngine.Mirage.Texture'''
 
     WRAP_MODE: any = None
-    '''enum SharpNeedle.FrameWork.HedgehogEngine.Mirage.WrapMode'''
+    '''enum SharpNeedle.Framework.HedgehogEngine.Mirage.WrapMode'''
 
     TERRAIN_MODEL: any = None
-    '''enum SharpNeedle.FrameWork.HedgehogEngine.Mirage.TerrainModel'''
+    '''enum SharpNeedle.Framework.HedgehogEngine.Mirage.TerrainModel'''
 
     MODEL: any = None
-    '''enum SharpNeedle.FrameWork.HedgehogEngine.Mirage.Model'''
+    '''enum SharpNeedle.Framework.HedgehogEngine.Mirage.Model'''
+
+    BULLET_PRIMITIVE: any = None
+    '''enum SharpNeedle.Framework.HedgehogEngine.Bullet.BulletPrimitive'''
+
+    BULLET_PRIMITIVE_SHAPE_TYPE: any = None
+    '''enum SharpNeedle.Framework.HedgehogEngine.Bullet.BulletPrimiteShapeType'''
 
     @classmethod
     def load(cls):
@@ -42,6 +48,11 @@ class SharpNeedle:
             Model
         )
 
+        from SharpNeedle.Framework.HedgehogEngine.Bullet import ( # type: ignore
+            BulletPrimitive,
+            BulletPrimiteShapeType
+        )
+
         cls.RESOURCE_MANAGER = ResourceManager
         cls.RESOURCE_EXTENSIONS = ResourceExtensions
         cls.SAMPLE_CHUNK_NODE = SampleChunkNode
@@ -50,3 +61,5 @@ class SharpNeedle:
         cls.WRAP_MODE = WrapMode
         cls.TERRAIN_MODEL = TerrainModel
         cls.MODEL = Model
+        cls.BULLET_PRIMITIVE = BulletPrimitive
+        cls.BULLET_PRIMITIVE_SHAPE_TYPE = BulletPrimiteShapeType

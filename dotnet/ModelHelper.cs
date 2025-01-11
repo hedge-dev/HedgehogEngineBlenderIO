@@ -1,5 +1,5 @@
 ﻿using SharpNeedle.Framework.HedgehogEngine.Mirage;
-using SharpNeedle.Framework.HedgehogEngine.Mirage.Bullet;
+using SharpNeedle.Framework.HedgehogEngine.Bullet;
 using SharpNeedle.Framework.HedgehogEngine.Needle.Archive;
 using SharpNeedle.IO;
 using SharpNeedle.Resource;

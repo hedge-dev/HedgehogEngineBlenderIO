@@ -11,7 +11,11 @@ class TOPBAR_MT_HEIO_Export(bpy.types.Menu):
         layout = self.layout
 
         layout.label(text="Export as...")
-        layout.operator(export_operators.HEIO_OT_Export_Material.bl_idname)
+        layout.operator(export_operators.HEIO_OT_Export_Material.bl_idname, text="HE Material (*.material)")
+        # layout.operator(export_operators.HEIO_OT_Export_Model.bl_idname, text="HE Model (*.model)")
+        # layout.operator(export_operators.HEIO_OT_Export_TerrainModel.bl_idname, text="HE Terrain-Model (*.terrain-model)")
+        layout.operator(export_operators.HEIO_OT_Export_CollisionModel.bl_idname, text="HE Collisionmodel (*.btmesh)")
+        # layout.operator(export_operators.HEIO_OT_Export_PointCloud.bl_idname, text="HE Pointcloud (*.pc*)")
 
     @staticmethod
     def menu_func(self, context):

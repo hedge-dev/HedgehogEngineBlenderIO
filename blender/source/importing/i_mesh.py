@@ -1,7 +1,7 @@
 import bpy
 from mathutils import Vector
 
-from . import i_material, i_model, i_sca_parameters
+from . import i_material, i_model, i_sca_parameters, i_transform
 
 from ..dotnet import HEIO_NET, SharpNeedle
 from ..register.definitions import TargetDefinition
@@ -292,8 +292,7 @@ class MeshConverter:
         if mesh_data.Vertices.Count == 0:
             return mesh
 
-        vertices = [(x.Position.X, -x.Position.Z, x.Position.Y)
-                    for x in mesh_data.Vertices]
+        vertices = [i_transform.net_to_bpy_position(x) for x in mesh_data.Vertices]
 
         faces = []
         for i in range(0, len(mesh_data.TriangleIndices), 3):

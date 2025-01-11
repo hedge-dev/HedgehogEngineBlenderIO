@@ -24,6 +24,10 @@ to_register = [
 
     export_operators.HEIO_OT_Export_Material,
     export_operators.HEIO_OT_Export_Material_Active,
+	# export_operators.HEIO_OT_Export_Model,
+    # export_operators.HEIO_OT_Export_TerrainModel,
+    export_operators.HEIO_OT_Export_CollisionModel,
+    # export_operators.HEIO_OT_Export_PointCloud,
 
     filehandlers.HEIO_FH_Material,
 

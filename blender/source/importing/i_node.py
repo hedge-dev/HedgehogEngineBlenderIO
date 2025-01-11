@@ -31,11 +31,11 @@ class NodeConverter:
             bone_orientation = self._target_definition.bone_orientation
 
         if bone_orientation == 'XY':
-            matrix_remap = i_transform.net_to_bpy_bone_matrix_xy
+            matrix_remap = i_transform.net_to_bpy_bone_xy_matrix
         elif bone_orientation == 'XZ':
-            matrix_remap = i_transform.net_to_bpy_bone_matrix_xz
+            matrix_remap = i_transform.net_to_bpy_bone_xz_matrix
         else: # ZNX
-            matrix_remap = i_transform.net_to_bpy_bone_matrix_znx
+            matrix_remap = i_transform.net_to_bpy_bone_znx_matrix
 
         for node in model_info.sn_model.Nodes:
             bone = model_info.armature.edit_bones.new(node.Name)
