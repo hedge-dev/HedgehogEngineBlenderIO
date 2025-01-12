@@ -46,6 +46,8 @@ class ExportOperator(HEIOBaseFileSaveOperator):
     def setup(self, contex: bpy.types.Context):
         pass
 
+    def draw(self, context):
+        self.layout.use_property_decorate = False
 
 class ExportObjectSelectionOperator(ExportOperator):
 
@@ -160,7 +162,6 @@ class ExportMaterialOperator(ExportObjectSelectionOperator):
             return
 
         body.use_property_split = True
-        body.use_property_decorate = False
 
         if "blender_dds_addon" in bpy.context.preferences.addons.keys():
             body.prop(self, "image_mode")
@@ -268,7 +269,6 @@ class ExportBaseMeshDataOperator(ExportObjectSelectionOperator):
 #             return
 
 #         body.use_property_split = True
-#         body.use_property_decorate = False
 
 #         body.prop(self, "mesh_mode")
 
@@ -303,11 +303,10 @@ class ExportCollisionModelOperator(ExportBaseMeshDataOperator):
             return
 
         body.use_property_split = True
-        body.use_property_decorate = False
-
         if self.force_directory_mode is None:
             body.prop(self, "mesh_mode")
 
+        body.use_property_split = False
         body.prop(self, "apply_modifiers")
         body.prop(self, "apply_poses")
 
@@ -340,6 +339,12 @@ class ExportPointCloudOperator(ExportCollisionModelOperator):
         default='COL'
     )
 
+    write_resources: BoolProperty(
+        name="Write Resources",
+        description="Write only the .pcmodel/.pccol files, but not the .btmesh, .terrain-model or related files",
+        default=True
+    )
+
     force_directory_mode = False
 
     def draw_panel_pointcloud(self):
@@ -353,6 +358,10 @@ class ExportPointCloudOperator(ExportCollisionModelOperator):
         body.use_property_split = True
         body.prop(self, "cloud_type")
 
+        body.use_property_split = False
+        body.prop(self, "write_resources")
+
+
     def draw(self, context: Context):
         super().draw(context)
         self.draw_panel_pointcloud()
@@ -365,6 +374,9 @@ class ExportPointCloudOperator(ExportCollisionModelOperator):
     def setup(self, context):
         if self.target_definition.data_versions.point_cloud is None:
             raise HEIOUserException(f"Target game \"{self.target_definition.name}\" does not support exporting point cloud!")
+
+        if self.cloud_type == 'MODEL':
+            raise HEIOUserException(".pcmodel support not yet implemented!")
 
         super().setup(context)
 

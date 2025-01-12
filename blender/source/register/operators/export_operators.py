@@ -86,9 +86,6 @@ class HEIO_OT_Export_PointCloud(ExportPointCloudOperator):
     bl_label = "Export as HE Pointcloud (*.pcmodel;*.pccol)"
 
     def export(self, context):
-        if self.cloud_type == 'MODEL':
-            raise HEIOUserException(".pcmodel support not yet implemented!")
-
         self.modelmesh_manager.evaluate_begin(context)
 
         if self.cloud_type == 'COL':
@@ -101,7 +98,9 @@ class HEIO_OT_Export_PointCloud(ExportPointCloudOperator):
             self.cloud_type
         )
 
-        self.collision_mesh_processor.write_output_to_files(self.directory)
+        if self.write_resources:
+            self.collision_mesh_processor.write_output_to_files(self.directory)
+
         SharpNeedle.RESOURCE_EXTENSIONS.Write(pointcloud, self.filepath)
         return {'FINISHED'}
 
@@ -113,8 +112,6 @@ class HEIO_OT_Export_PointClouds(ExportPointCloudOperator):
     def export(self, context):
         if len(self.collection) == 0:
             raise HEIODevException("Invalid export call!")
-        elif self.cloud_type == 'MODEL':
-            raise HEIOUserException(".pcmodel support not yet implemented!")
 
         self.modelmesh_manager.evaluate_begin(context)
 
@@ -140,7 +137,9 @@ class HEIO_OT_Export_PointClouds(ExportPointCloudOperator):
             pointclouds.append((col.name, pointcloud))
 
         directory = os.path.dirname(self.filepath)
-        self.collision_mesh_processor.write_output_to_files(directory)
+
+        if self.write_resources:
+            self.collision_mesh_processor.write_output_to_files(directory)
 
         for name, pc in pointclouds:
             filepath = os.path.join(directory, name + ".pc" + self.cloud_type.lower())
