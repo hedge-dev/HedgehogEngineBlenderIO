@@ -179,11 +179,13 @@ def _validate_print(block_modif):
 
 
 def cleanup():
+    return
     while len(_BLOCKS) > 0:
         end()
 
 
 def start(name: str, progress_limit: int = 0):
+    return
     if len(_BLOCKS) == 0:
         sys.stdout = sys.__stdout__
         sys.stderr = sys.__stderr__
@@ -208,6 +210,7 @@ def start(name: str, progress_limit: int = 0):
 
 
 def update(text: str, progress: int | None = None, clear_below: bool = False):
+    return
     global _CURRENT_BLOCK
     if _validate_print(-1):
         if progress is None:
@@ -222,6 +225,7 @@ def update(text: str, progress: int | None = None, clear_below: bool = False):
 
 
 def end():
+    return
     global _CURRENT_BLOCK
     if _CURRENT_BLOCK is None:
         return

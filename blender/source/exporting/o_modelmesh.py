@@ -126,7 +126,7 @@ class ModelMeshManager:
 
     def register_objects(self, objects: list[bpy.types.Object]):
         for obj in objects:
-            if obj in self.obj_mesh_mapping:
+            if obj.type != 'MESH' or obj in self.obj_mesh_mapping:
                 continue
 
             lut_key = None

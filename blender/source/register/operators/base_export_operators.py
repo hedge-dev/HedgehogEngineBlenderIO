@@ -11,14 +11,21 @@ from .base import HEIOBaseFileSaveOperator
 from .. import definitions
 from ...dotnet import HEIO_NET, SharpNeedle
 from ...exceptions import HEIOUserException
-from ...exporting import o_modelmesh, o_collisionmesh, o_material, o_image
+from ...exporting import (
+	o_object_manager,
+	o_modelmesh,
+	o_collisionmesh,
+	o_material,
+	o_image,
+	o_pointcloud
+)
 
 
 class ExportOperator(HEIOBaseFileSaveOperator):
     bl_options = {'PRESET', 'UNDO'}
 
     def export(self, context: Context):
-        return {'FINISHED'}
+        raise NotImplementedError()
 
     def _execute(self, context: Context):
         from ...dotnet import load_dotnet
@@ -28,7 +35,7 @@ class ExportOperator(HEIOBaseFileSaveOperator):
         if self.target_definition is None:
             raise HEIOUserException("Invalid target game!")
 
-        self.setup()
+        self.setup(context)
 
         return self.export(context)
 
@@ -36,7 +43,7 @@ class ExportOperator(HEIOBaseFileSaveOperator):
         self.directory_mode = True
         return super()._invoke(context, event)
 
-    def setup(self):
+    def setup(self, contex: bpy.types.Context):
         pass
 
 
@@ -72,62 +79,6 @@ class ExportObjectSelectionOperator(ExportOperator):
         default="",
     )
 
-    def collect_objects(self, context: Context):
-        if self.collection:
-            collection: bpy.types.Collection = bpy.data.collections[self.collection]
-            result = set(collection.all_objects)
-        else:
-            result = set()
-
-            if self.use_active_collection:
-                objects = context.collection.all_objects
-            elif self.use_active_scene:
-                objects = context.scene.objects
-            else:
-                objects = bpy.data.objects
-
-            for obj in objects:
-                if (self.use_visible and not obj.visible_get(view_layer=context.view_layer)
-                        or self.use_selection and not obj.select_get(view_layer=context.view_layer)):
-                    continue
-                result.add(obj)
-
-        roots = set()
-        for obj in result:
-            parent = obj
-            while parent.parent is not None:
-                parent = parent.parent
-            roots.add(parent)
-
-        if len(roots) == 1:
-            for root in roots:
-                if root.type == 'ARMATURE':
-                    result.add(root)
-
-        return result
-
-    def assemble_object_trees(self, objects: list[bpy.types.Object]):
-        trees: dict[bpy.types.Object, set[bpy.types.Object]] = {}
-
-        for obj in objects:
-            available_root_parent = None
-            parent = obj.parent
-            while parent is not None:
-                if parent in objects:
-                    available_root_parent = parent
-                parent = parent.parent
-
-            if available_root_parent is not None:
-                tree = trees.get(available_root_parent, None)
-                if tree is None:
-                    tree = set()
-                    trees[available_root_parent] = tree
-                tree.add(obj)
-            elif obj not in trees:
-                trees[obj] = set()
-
-        return trees
-
     def draw_panel_include(self, is_file_browser: bool):
         if not is_file_browser:
             return
@@ -153,14 +104,25 @@ class ExportObjectSelectionOperator(ExportOperator):
 
         self.draw_panel_include(is_file_browser)
 
-    def export(self, context):
-        self.objects = self.collect_objects(context)
+    def setup(self, context):
+        super().setup(context)
+        self.object_manager = o_object_manager.ObjectManager()
 
-        if len(self.objects) == 0:
+        if len(self.collection) > 0:
+            collection = bpy.data.collections[self.collection]
+            self.object_manager.collect_objects_from_collection(collection)
+
+        else:
+            self.object_manager.collect_objects(
+                context,
+                self.use_selection,
+                self.use_visible,
+                self.use_active_collection,
+                self.use_active_scene
+            )
+
+        if len(self.object_manager.base_objects) == 0:
             raise HEIOUserException("No objects marked for export!")
-
-        self.object_trees = self.assemble_object_trees(self.objects)
-        return {'FINISHED'}
 
 
 class ExportMaterialOperator(ExportObjectSelectionOperator):
@@ -218,7 +180,7 @@ class ExportMaterialOperator(ExportObjectSelectionOperator):
         super().draw(context)
         self.draw_panel_material()
 
-    def export_materials(self, context: bpy.types.Context, materials):
+    def export_material_files(self, context: bpy.types.Context, materials):
         sn_materials = o_material.convert_to_sharpneedle_materials(
             self.target_definition, materials)
 
@@ -248,9 +210,6 @@ class ExportMaterialOperator(ExportObjectSelectionOperator):
         return {'FINISHED'}
 
 
-def _mesh_mode_updated(operator, context):
-    operator.directory_mode = operator.mesh_mode == 'SEPARATE'
-
 class ExportBaseMeshDataOperator(ExportObjectSelectionOperator):
 
     mesh_mode: EnumProperty(
@@ -260,8 +219,7 @@ class ExportBaseMeshDataOperator(ExportObjectSelectionOperator):
             ('SEPARATE', "Seperate", "Objects are seperated into their individual object trees that will be exported as seperate files named after the root objects"),
             ('MERGE', "Merge", "Merge all objects to be exported into one specific file")
         ),
-        default='SEPARATE',
-        update=_mesh_mode_updated
+        default='SEPARATE'
     )
 
     apply_modifiers: BoolProperty(
@@ -271,18 +229,23 @@ class ExportBaseMeshDataOperator(ExportObjectSelectionOperator):
     )
 
     apply_poses: BoolProperty(
-        name="Apply modifiers",
-        description="Apply modifiers before exporting",
+        name="Apply poses",
+        description="Apply armature poses before exporting",
         default=False
     )
 
-    def _invoke(self, context, event):
-        result = super()._invoke(context, event)
-        _mesh_mode_updated(self, context)
-        return result
+    force_directory_mode: bool | None = None
 
-    def setup(self):
-        super().setup()
+    def check(self, context):
+        if self.force_directory_mode is not None:
+            self.directory_mode = self.force_directory_mode
+        else:
+            self.directory_mode = self.mesh_mode == 'SEPARATE'
+
+        return super().check(context)
+
+    def setup(self, context):
+        super().setup(context)
 
         self.modelmesh_manager = o_modelmesh.ModelMeshManager(
             self.target_definition,
@@ -290,45 +253,48 @@ class ExportBaseMeshDataOperator(ExportObjectSelectionOperator):
             self.apply_poses
         )
 
-    def export(self, context):
-        super().export(context)
-        self.modelmesh_manager.register_objects(self.objects)
-        return {'FINISHED'}
+        self.modelmesh_manager.register_objects(
+            self.object_manager.all_objects)
 
 
-class ExportModelBaseOperator(ExportMaterialOperator, ExportBaseMeshDataOperator):
+# class ExportModelBaseOperator(ExportMaterialOperator, ExportBaseMeshDataOperator):
 
-    def draw_panel_model(self):
-        header, body = self.layout.panel(
-            "HEIO_export_model", default_closed=False)
-        header.label(text="Model")
+#     def draw_panel_model(self):
+#         header, body = self.layout.panel(
+#             "HEIO_export_model", default_closed=False)
+#         header.label(text="Model")
 
-        if not body:
-            return
+#         if not body:
+#             return
 
-        body.use_property_split = True
-        body.use_property_decorate = False
+#         body.use_property_split = True
+#         body.use_property_decorate = False
 
-        body.prop(self, "mesh_mode")
+#         body.prop(self, "mesh_mode")
 
-    def draw(self, context: Context):
-        super().draw(context)
-        self.draw_panel_model()
-
-
-class ExportModelOperator(ExportModelBaseOperator):
-    pass
+#     def draw(self, context: Context):
+#         super().draw(context)
+#         self.draw_panel_model()
 
 
-class ExportTerrainModelOperator(ExportModelBaseOperator):
-    pass
+# class ExportModelOperator(ExportModelBaseOperator):
+#     pass
+
+
+# class ExportTerrainModelOperator(ExportModelBaseOperator):
+#     pass
 
 
 class ExportCollisionModelOperator(ExportBaseMeshDataOperator):
 
     filename_ext = '.btmesh'
 
+    show_collision_mesh_panel = True
+
     def draw_panel_collision_model(self):
+        if not self.show_collision_mesh_panel:
+            return
+
         header, body = self.layout.panel(
             "HEIO_export_collision_model", default_closed=False)
         header.label(text="Collision Model")
@@ -339,104 +305,70 @@ class ExportCollisionModelOperator(ExportBaseMeshDataOperator):
         body.use_property_split = True
         body.use_property_decorate = False
 
-        body.prop(self, "mesh_mode")
+        if self.force_directory_mode is None:
+            body.prop(self, "mesh_mode")
+
+        body.prop(self, "apply_modifiers")
+        body.prop(self, "apply_poses")
 
     def draw(self, context: Context):
         super().draw(context)
         self.draw_panel_collision_model()
 
-    def setup(self):
-        super().setup()
+    def setup(self, context):
+        if self.target_definition.data_versions.bullet_mesh is None:
+            raise HEIOUserException(f"Target game \"{self.target_definition.name}\" does not support exporting bullet meshes!")
+
+        super().setup(context)
 
         self.collision_mesh_processor = o_collisionmesh.CollisionMeshProcessor(
             self.target_definition,
+            self.object_manager,
             self.modelmesh_manager
         )
 
-    def export_collision_meshes(self, context: bpy.types.Context, objects: list[bpy.types.Object] | None):
-        if objects is not None:
-            raise NotImplementedError()
 
-        self.modelmesh_manager.evaluate_begin(context)
+class ExportPointCloudOperator(ExportCollisionModelOperator):
 
-        if objects is None:
-            self.collision_mesh_processor.prepare_all_meshdata()
-        else:
-            raise NotImplementedError()
+    cloud_type: EnumProperty(
+        name="Collection Type",
+        description="Type of pointcloud to export",
+        items=(
+            ('MODEL', "Terrain (*.pcmodel) (WIP)", ''),
+            ('COL', "Collision (*.pccol)", '')
+        ),
+        default='COL'
+    )
 
-        self.modelmesh_manager.evaluate_end()
+    force_directory_mode = False
 
-        exports = {}
+    def draw_panel_pointcloud(self):
+        header, body = self.layout.panel(
+            "HEIO_export_collision_pointcloud", default_closed=False)
+        header.label(text="Point Cloud")
 
-        if self.mesh_mode == 'SEPARATE' or len(self.object_trees) == 1:
-            for root, children in self.object_trees.items():
-                sn_meshdata = []
+        if not body:
+            return
 
-                if root.type == 'MESH':
-                    root_meshdata = self.collision_mesh_processor.get_meshdata(
-                        root)
-                    if root_meshdata is not None:
-                        sn_meshdata.append(root_meshdata.convert_to_sn(None))
+        body.use_property_split = True
+        body.prop(self, "cloud_type")
 
-                parent_matrix = root.matrix_world.inverted()
+    def draw(self, context: Context):
+        super().draw(context)
+        self.draw_panel_pointcloud()
 
-                for child in children:
-                    if child.type != 'MESH':
-                        continue
+    def check(self, context):
+        self.filename_ext = '.pc' + self.cloud_type.lower()
+        self.show_collision_mesh_panel = self.cloud_type == 'COL'
+        return super().check(context)
 
-                    child_meshdata = self.collision_mesh_processor.get_meshdata(
-                        child)
+    def setup(self, context):
+        if self.target_definition.data_versions.point_cloud is None:
+            raise HEIOUserException(f"Target game \"{self.target_definition.name}\" does not support exporting point cloud!")
 
-                    if sn_meshdata is None:
-                        continue
+        super().setup(context)
 
-                    matrix = parent_matrix @ child.matrix_world
-                    sn_meshdata.append((child_meshdata.convert_to_sn(matrix)))
-
-                if len(sn_meshdata) > 0:
-                    if self.mesh_mode != 'SEPARATE':
-                        name = os.path.splitext(os.path.basename(self.filepath))[0]
-                    elif root.type == 'MESH':
-                        name = root.data.name
-                    else:
-                        name = root.name
-                    exports[name] = sn_meshdata
-
-        else:
-            sn_meshdata = []
-
-            for obj in self.objects:
-                if obj.type != 'MESH':
-                    continue
-
-                meshdata = self.collision_mesh_processor.get_meshdata(obj)
-                sn_meshdata.append(meshdata.convert_to_sn(obj.matrix_world))
-
-            if len(sn_meshdata) > 0:
-                filename = os.path.splitext(os.path.basename(self.filepath))[0]
-                exports[filename] = sn_meshdata
-
-        if len(exports) == 0:
-            raise HEIOUserException("No data to export")
-
-        for name, meshdata_list in exports.items():
-
-            sn_meshdata = []
-            sn_primitives = []
-
-            for meshdata in meshdata_list:
-                sn_meshdata.append(meshdata[0])
-                sn_primitives.extend(meshdata[1])
-
-            bullet_mesh = HEIO_NET.COLLISION_MESH_DATA.ToBulletMesh(sn_meshdata, sn_primitives)
-
-            filepath = os.path.join(self.directory, name + ".btmesh")
-            SharpNeedle.RESOURCE_EXTENSIONS.Write(bullet_mesh, filepath)
-
-
-class ExportPointCloudOperator(ExportCollisionModelOperator, ExportTerrainModelOperator, ExportModelOperator):
-    pass
-
-
-class ExportPointCloudsOperator(ExportPointCloudOperator):
-    pass
+        self.pointcloud_processor = o_pointcloud.PointCloudProcessor(
+            self.target_definition,
+            self.collision_mesh_processor
+        )

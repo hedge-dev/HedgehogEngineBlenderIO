@@ -31,6 +31,12 @@ class SharpNeedle:
     BULLET_PRIMITIVE_SHAPE_TYPE: any = None
     '''enum SharpNeedle.Framework.HedgehogEngine.Bullet.BulletPrimiteShapeType'''
 
+    POINTCLOUD: any = None
+    '''class SharpNeedle.Framework.SonicTeam.PointCloud'''
+
+    MATH_HELPER: any = None
+    '''class SharpNeedle.Utilities.MathHelper'''
+
     @classmethod
     def load(cls):
 
@@ -53,6 +59,14 @@ class SharpNeedle:
             BulletPrimiteShapeType
         )
 
+        from SharpNeedle.Framework.SonicTeam import ( # type: ignore
+            PointCloud
+        )
+
+        from SharpNeedle.Utilities import (# type: ignore
+            MathHelper
+        )
+
         cls.RESOURCE_MANAGER = ResourceManager
         cls.RESOURCE_EXTENSIONS = ResourceExtensions
         cls.SAMPLE_CHUNK_NODE = SampleChunkNode
@@ -63,3 +77,6 @@ class SharpNeedle:
         cls.MODEL = Model
         cls.BULLET_PRIMITIVE = BulletPrimitive
         cls.BULLET_PRIMITIVE_SHAPE_TYPE = BulletPrimiteShapeType
+        cls.POINTCLOUD = PointCloud
+        cls.MATH_HELPER = MathHelper
+

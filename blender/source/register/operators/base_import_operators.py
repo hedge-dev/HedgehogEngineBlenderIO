@@ -361,9 +361,6 @@ class ImportModelOperator(ImportModelBaseOperator):
         options={'HIDDEN'},
     )
 
-    def import_model_files(self, context: bpy.types.Context):
-        self._import_model_files(context, SharpNeedle.MODEL)
-
 
 class ImportTerrainModelOperator(ImportModelBaseOperator):
 
@@ -371,9 +368,6 @@ class ImportTerrainModelOperator(ImportModelBaseOperator):
         default="*.terrain-model",
         options={'HIDDEN'},
     )
-
-    def import_terrain_model_files(self, context: bpy.types.Context):
-        self._import_model_files(context, SharpNeedle.TERRAIN_MODEL)
 
 
 class ImportCollisionMeshOperator(ImportOperator):
@@ -442,23 +436,6 @@ class ImportCollisionMeshOperator(ImportOperator):
         super().draw(context)
         self.draw_panel_collision_mesh()
 
-    def import_collision_mesh_files(self, context: bpy.types.Context):
-        progress_console.update("Resolving & reading files")
-
-        directory = os.path.dirname(self.filepath)
-        filepaths = [os.path.join(directory, file.name) for file in self.files]
-
-        collision_meshes = HEIO_NET.MODEL_HELPER.LoadBulletMeshFiles(filepaths)
-
-        progress_console.update("Importing data")
-
-        meshes = self.collision_mesh_converter.convert_collision_meshes(
-            collision_meshes)
-
-        for mesh in meshes:
-            obj = bpy.data.objects.new(mesh.name, mesh)
-            context.scene.collection.objects.link(obj)
-
 
 class ImportPointCloudOperator(ImportCollisionMeshOperator, ImportModelBaseOperator):
 
@@ -467,7 +444,7 @@ class ImportPointCloudOperator(ImportCollisionMeshOperator, ImportModelBaseOpera
         options={'HIDDEN'},
     )
 
-    def _import_point_cloud_models(self, context: bpy.types.Context, point_cloud_collection):
+    def import_point_cloud_models(self, context: bpy.types.Context, point_cloud_collection):
         progress_console.update("Importing Models")
 
         model_infos = self.node_converter.convert_model_sets(
@@ -480,7 +457,7 @@ class ImportPointCloudOperator(ImportCollisionMeshOperator, ImportModelBaseOpera
 
         return collections
 
-    def _import_point_cloud_collision_meshes(self, context: bpy.types.Context, point_cloud_collection):
+    def import_point_cloud_collision_meshes(self, context: bpy.types.Context, point_cloud_collection):
         progress_console.update("Importing Collision Meshes")
 
         collision_meshes = self.collision_mesh_converter.convert_collision_meshes(
@@ -488,24 +465,3 @@ class ImportPointCloudOperator(ImportCollisionMeshOperator, ImportModelBaseOpera
 
         return i_pointcloud.convert_point_clouds(
             context, point_cloud_collection.CollisionMeshCollections, collision_meshes)
-
-    def import_point_cloud_files(self, context: bpy.types.Context):
-        progress_console.update("Resolving & reading files")
-
-        directory = os.path.dirname(self.filepath)
-        filepaths = [os.path.join(directory, file.name) for file in self.files]
-
-        point_cloud_collection, resolve_info = HEIO_NET.POINT_CLOUD_COLLECTION.LoadPointClouds(
-            filepaths, self.import_lod_models, HEIO_NET.RESOLVE_INFO())
-
-        self.resolve_infos.append(resolve_info)
-
-        collections = []
-
-        collections += self._import_point_cloud_models(
-            context, point_cloud_collection)
-        collections += self._import_point_cloud_collision_meshes(
-            context, point_cloud_collection)
-
-        for collection in collections:
-            context.collection.children.link(collection)

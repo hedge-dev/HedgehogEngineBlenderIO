@@ -14,18 +14,30 @@ class TargetDataVersions:
     material_sample_chunk: int
     '''Material sample chunk version (1-2)'''
 
+    bullet_mesh: int | None
+    '''Bulletmesh version'''
+
+    point_cloud: int | None
+    '''Point cloud version'''
+
     def __init__(
             self,
             material: int,
-            material_sample_chunk: int):
+            material_sample_chunk: int,
+            bullet_mesh: int | None,
+            point_cloud: int | None):
         self.material = material
         self.material_sample_chunk = material_sample_chunk
+        self.bullet_mesh = bullet_mesh
+        self.point_cloud = point_cloud
 
     @staticmethod
     def parse_json_data(data: JSONWrapper):
         return TargetDataVersions(
             data["Material"],
-            data["MaterialSampleChunk"]
+            data["MaterialSampleChunk"],
+            data["BulletMesh"],
+            data["PointCloud"],
         )
 
 

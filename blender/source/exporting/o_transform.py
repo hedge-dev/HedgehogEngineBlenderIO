@@ -1,5 +1,5 @@
 from mathutils import Matrix, Quaternion, Vector
-from ..dotnet import System
+from ..dotnet import System, SharpNeedle
 
 
 def bpy_to_net_matrix(matrix: Matrix):
@@ -40,10 +40,17 @@ def bpy_bone_znx_to_net_matrix(matrix: Matrix):
 
 def bpy_matrix_to_net_transforms(matrix: Matrix) -> tuple[any, any, any]:
     net_matrix = bpy_to_net_matrix(matrix)
-    pos = System.VECTOR3()
-    rot = System.QUATERNION()
-    scale = System.VECTOR3()
-    return System.MATRIX4X4.Decompose(net_matrix, pos, rot, scale)
+
+    pos = System.VECTOR3(0, 0, 0)
+    rot = System.QUATERNION(0, 0, 0, 1)
+    scale = System.VECTOR3(1, 1, 1)
+
+    _, net_scale, net_rot, net_pos = System.MATRIX4X4.Decompose(net_matrix, pos, rot, scale)
+
+    net_rot_euler_pyr = SharpNeedle.MATH_HELPER.ToEuler(net_rot)
+    net_rot_euler_ypr = System.VECTOR3(net_rot_euler_pyr.Y, net_rot_euler_pyr.X, net_rot_euler_pyr.Z)
+
+    return net_pos, net_rot_euler_ypr, net_scale
 
 
 def bpy_to_net_position(position: Vector):

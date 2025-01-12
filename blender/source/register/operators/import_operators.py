@@ -1,3 +1,8 @@
+import bpy
+import os
+from ...utility import progress_console
+from ...dotnet import SharpNeedle, HEIO_NET
+
 from .base_import_operators import (
     ImportMaterialOperator,
     ImportModelOperator,
@@ -9,7 +14,7 @@ from .base_import_operators import (
 
 class HEIO_OT_Import_Material(ImportMaterialOperator):
     bl_idname = "heio.import_material"
-    bl_label = "HE Material (*.material)"
+    bl_label = "Import HE Material (*.material)"
 
     def import_(self, context):
         self.import_material_files()
@@ -55,35 +60,67 @@ class HEIO_OT_Import_Material_Active_if(ImportMaterialOperator):
 
 class HEIO_OT_Import_Model(ImportModelOperator):
     bl_idname = "heio.import_model"
-    bl_label = "HE Model (*.model)"
+    bl_label = "Import HE Model (*.model)"
 
     def import_(self, context):
-        self.import_model_files(context)
+        self._import_model_files(context, SharpNeedle.MODEL)
         return {'FINISHED'}
 
 
 class HEIO_OT_Import_TerrainModel(ImportTerrainModelOperator):
     bl_idname = "heio.import_terrainmodel"
-    bl_label = "HE Terrain model (*.terrain-model)"
+    bl_label = "Import HE Terrain-Model (*.terrain-model)"
 
     def import_(self, context):
-        self.import_terrain_model_files(context)
+        self._import_model_files(context, SharpNeedle.TERRAIN_MODEL)
         return {'FINISHED'}
 
 
 class HEIO_OT_Import_CollisionMesh(ImportCollisionMeshOperator):
     bl_idname = "heio.import_collisionmesh"
-    bl_label = "HE Collision model (*.btmesh)"
+    bl_label = "Import HE Collision Mesh (*.btmesh)"
 
     def import_(self, context):
-        self.import_collision_mesh_files(context)
+        progress_console.update("Resolving & reading files")
+
+        directory = os.path.dirname(self.filepath)
+        filepaths = [os.path.join(directory, file.name) for file in self.files]
+
+        collision_meshes = HEIO_NET.MODEL_HELPER.LoadBulletMeshFiles(filepaths)
+
+        progress_console.update("Importing data")
+
+        meshes = self.collision_mesh_converter.convert_collision_meshes(
+            collision_meshes)
+
+        for mesh in meshes:
+            obj = bpy.data.objects.new(mesh.name, mesh)
+            context.scene.collection.objects.link(obj)
         return {'FINISHED'}
 
 
 class HEIO_OT_Import_PointCloud(ImportPointCloudOperator):
     bl_idname = "heio.import_pointcloud"
-    bl_label = "HE Point cloud (*.pcmodel;*.pccol)"
+    bl_label = "Import HE Point Cloud (*.pcmodel;*.pccol)"
 
     def import_(self, context):
-        self.import_point_cloud_files(context)
+        progress_console.update("Resolving & reading files")
+
+        directory = os.path.dirname(self.filepath)
+        filepaths = [os.path.join(directory, file.name) for file in self.files]
+
+        point_cloud_collection, resolve_info = HEIO_NET.POINT_CLOUD_COLLECTION.LoadPointClouds(
+            filepaths, self.import_lod_models, HEIO_NET.RESOLVE_INFO())
+
+        self.resolve_infos.append(resolve_info)
+
+        collections = []
+
+        collections += self.import_point_cloud_models(
+            context, point_cloud_collection)
+        collections += self.import_point_cloud_collision_meshes(
+            context, point_cloud_collection)
+
+        for collection in collections:
+            context.collection.children.link(collection)
         return {'FINISHED'}

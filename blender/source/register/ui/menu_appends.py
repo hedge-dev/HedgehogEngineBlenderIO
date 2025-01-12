@@ -14,8 +14,8 @@ class TOPBAR_MT_HEIO_Export(bpy.types.Menu):
         layout.operator(export_operators.HEIO_OT_Export_Material.bl_idname, text="HE Material (*.material)")
         # layout.operator(export_operators.HEIO_OT_Export_Model.bl_idname, text="HE Model (*.model)")
         # layout.operator(export_operators.HEIO_OT_Export_TerrainModel.bl_idname, text="HE Terrain-Model (*.terrain-model)")
-        layout.operator(export_operators.HEIO_OT_Export_CollisionModel.bl_idname, text="HE Collisionmodel (*.btmesh)")
-        # layout.operator(export_operators.HEIO_OT_Export_PointCloud.bl_idname, text="HE Pointcloud (*.pc*)")
+        layout.operator(export_operators.HEIO_OT_Export_CollisionMesh.bl_idname, text="HE Collision Mesh (*.btmesh)")
+        layout.operator(export_operators.HEIO_OT_Export_PointCloud.bl_idname, text="HE Point Cloud (*.pcmodel;*.pccol)")
 
     @staticmethod
     def menu_func(self, context):
@@ -38,12 +38,11 @@ class TOPBAR_MT_HEIO_Import(bpy.types.Menu):
         layout = self.layout
 
         layout.label(text="Import...")
-        layout.operator(import_operators.HEIO_OT_Import_Material.bl_idname)
-        layout.operator(import_operators.HEIO_OT_Import_Model.bl_idname)
-        layout.operator(import_operators.HEIO_OT_Import_TerrainModel.bl_idname)
-        layout.operator(
-            import_operators.HEIO_OT_Import_CollisionMesh.bl_idname)
-        layout.operator(import_operators.HEIO_OT_Import_PointCloud.bl_idname)
+        layout.operator(import_operators.HEIO_OT_Import_Material.bl_idname, text="HE Material (*.material)")
+        layout.operator(import_operators.HEIO_OT_Import_Model.bl_idname, text="HE Model (*.model)")
+        layout.operator(import_operators.HEIO_OT_Import_TerrainModel.bl_idname, text="HE Terrain-Model (*.terrain-model)")
+        layout.operator(import_operators.HEIO_OT_Import_CollisionMesh.bl_idname, text="HE Collision Mesh (*.btmesh)")
+        layout.operator(import_operators.HEIO_OT_Import_PointCloud.bl_idname, text="HE Point Cloud (*.pcmodel;*.pccol)")
 
     @staticmethod
     def menu_func(self, context):

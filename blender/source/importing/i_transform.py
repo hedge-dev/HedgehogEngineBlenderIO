@@ -38,17 +38,14 @@ def net_to_bpy_bone_znx_matrix(matrix):
     ))
 
 
-def net_transforms_to_bpy_matrix(position, rotation, scale):
+def net_transforms_to_bpy_matrix(position, euler_rotation, scale):
 
     position_mtx = System.MATRIX4X4.CreateTranslation(position)
-    rotation_x_mtx = System.MATRIX4X4.CreateRotationX(rotation.X)
-    rotation_y_mtx = System.MATRIX4X4.CreateRotationY(rotation.Y)
-    rotation_z_mtx = System.MATRIX4X4.CreateRotationZ(rotation.Z)
+    rotation_matrix = System.MATRIX4X4.CreateFromYawPitchRoll(
+        euler_rotation.Y, euler_rotation.X, euler_rotation.Z)
     scale_mtx = System.MATRIX4X4.CreateScale(scale)
 
-    rotation_matrix = rotation_x_mtx * rotation_y_mtx * rotation_z_mtx
     matrix = scale_mtx * rotation_matrix * position_mtx
-
     return net_to_bpy_matrix(matrix)
 
 

@@ -7,7 +7,9 @@
   "BoneOrientation": "XY",
   "DataVersions": {
     "Material": 1,
-    "MaterialSampleChunk": 1
+    "MaterialSampleChunk": 1,
+    "BulletMesh": null,
+    "PointCloud": null
   },
   "DefaultTextureModes": {
     "diffuse": "sRGB",

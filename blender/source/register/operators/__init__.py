@@ -26,10 +26,16 @@ to_register = [
     export_operators.HEIO_OT_Export_Material_Active,
 	# export_operators.HEIO_OT_Export_Model,
     # export_operators.HEIO_OT_Export_TerrainModel,
-    export_operators.HEIO_OT_Export_CollisionModel,
-    # export_operators.HEIO_OT_Export_PointCloud,
+    export_operators.HEIO_OT_Export_CollisionMesh,
+    export_operators.HEIO_OT_Export_PointCloud,
+	export_operators.HEIO_OT_Export_PointClouds,
 
     filehandlers.HEIO_FH_Material,
+	filehandlers.HEIO_FH_Model,
+    filehandlers.HEIO_FH_TerrainModel,
+    filehandlers.HEIO_FH_CollisionMesh,
+    filehandlers.HEIO_FH_PointCloud,
+    filehandlers.HEIO_FH_PointClouds,
 
     sca_parameter_operators.HEIO_OT_SCAParameters_Add,
     sca_parameter_operators.HEIO_OT_SCAParameters_Remove,
