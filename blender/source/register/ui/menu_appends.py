@@ -12,8 +12,8 @@ class TOPBAR_MT_HEIO_Export(bpy.types.Menu):
 
         layout.label(text="Export as...")
         layout.operator(export_operators.HEIO_OT_Export_Material.bl_idname, text="HE Material (*.material)")
-        # layout.operator(export_operators.HEIO_OT_Export_Model.bl_idname, text="HE Model (*.model)")
-        # layout.operator(export_operators.HEIO_OT_Export_TerrainModel.bl_idname, text="HE Terrain-Model (*.terrain-model)")
+        layout.operator(export_operators.HEIO_OT_Export_Model.bl_idname, text="HE Model (*.model)")
+        layout.operator(export_operators.HEIO_OT_Export_TerrainModel.bl_idname, text="HE Terrain-Model (*.terrain-model)")
         layout.operator(export_operators.HEIO_OT_Export_CollisionMesh.bl_idname, text="HE Collision Mesh (*.btmesh)")
         layout.operator(export_operators.HEIO_OT_Export_PointCloud.bl_idname, text="HE Point Cloud (*.pcmodel;*.pccol)")
 

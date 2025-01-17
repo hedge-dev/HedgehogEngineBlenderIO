@@ -4,6 +4,12 @@ class System:
     INT_PTR: any = None
     '''native System.IntPtr'''
 
+    LIST: any = None
+    '''class System.Collections.Generic.List'''
+
+    VECTOR2: any = None
+    '''struct System.Numerics.Vector2'''
+
     VECTOR3: any = None
     '''struct System.Numerics.Vector3'''
 
@@ -23,7 +29,12 @@ class System:
             IntPtr
         )
 
+        from System.Collections.Generic import ( # type: ignore
+            List
+        )
+
         from System.Numerics import ( # type: ignore
+            Vector2,
             Vector3,
             Vector4,
             Quaternion,
@@ -31,6 +42,8 @@ class System:
         )
 
         cls.INT_PTR = IntPtr
+        cls.LIST = List
+        cls.VECTOR2 = Vector2
         cls.VECTOR3 = Vector3
         cls.VECTOR4 = Vector4
         cls.QUATERNION = Quaternion

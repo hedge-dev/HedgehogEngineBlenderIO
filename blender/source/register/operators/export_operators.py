@@ -7,8 +7,7 @@ from ...dotnet import SharpNeedle
 
 from .base_export_operators import (
     ExportMaterialOperator,
-    # ExportModelOperator,
-    # ExportTerrainModelOperator,
+    ExportModelBaseOperator,
     ExportCollisionModelOperator,
     ExportPointCloudOperator
 )
@@ -25,7 +24,8 @@ class HEIO_OT_Export_Material(ExportMaterialOperator):
             for slot in obj.material_slots if slot.material is not None
         ])
 
-        self.export_material_files(context, materials)
+        self.material_manager.convert_materials(materials)
+        self.material_manager.write_output_to_files(self.directory)
         return {'FINISHED'}
 
 
@@ -42,17 +42,30 @@ class HEIO_OT_Export_Material_Active(ExportMaterialOperator):
         )
 
     def export(self, context):
-        self.export_material_files(
-            context, [context.active_object.active_material])
+        self.material_manager.convert_materials([context.active_object.active_material])
+        self.material_manager.write_output_to_files(self.directory)
         return {'FINISHED'}
 
-# class HEIO_OT_Export_Model(ExportModelOperator):
-#     bl_idname = "heio.export_model"
-#     bl_label = "Export as HE Model (*.model)"
+class HEIO_OT_Export_Model(ExportModelBaseOperator):
+    bl_idname = "heio.export_model"
+    bl_label = "Export as HE Model (*.model)"
 
-# class HEIO_OT_Export_TerrainModel(ExportTerrainModelOperator):
-#     bl_idname = "heio.export_terrainmodel"
-#     bl_label = "Export as HE Terrain-Model (*.terrain-model)"
+    filename_ext = ".model"
+
+    def export(self, context):
+        self.export_model_files(context, self.directory, 'MODEL')
+        return {'FINISHED'}
+
+class HEIO_OT_Export_TerrainModel(ExportModelBaseOperator):
+    bl_idname = "heio.export_terrainmodel"
+    bl_label = "Export as HE Terrain-Model (*.terrain-model)"
+
+    filename_ext = ".terrain-model"
+    show_bone_orientation = False
+
+    def export(self, context):
+        self.export_model_files(context, self.directory, 'TERRAIN')
+        return {'FINISHED'}
 
 
 class HEIO_OT_Export_CollisionMesh(ExportCollisionModelOperator):
@@ -60,7 +73,7 @@ class HEIO_OT_Export_CollisionMesh(ExportCollisionModelOperator):
     bl_label = "Export as HE Collision Mesh (*.btmesh)"
 
     def export(self, context):
-        self.modelmesh_manager.evaluate_begin(context)
+        self.modelmesh_manager.evaluate_begin(context, False)
         self.collision_mesh_processor.prepare_all_meshdata()
         self.modelmesh_manager.evaluate_end()
 
@@ -86,10 +99,16 @@ class HEIO_OT_Export_PointCloud(ExportPointCloudOperator):
     bl_label = "Export as HE Pointcloud (*.pcmodel;*.pccol)"
 
     def export(self, context):
-        self.modelmesh_manager.evaluate_begin(context)
+        self.modelmesh_manager.evaluate_begin(context, self.cloud_type == 'MODEL')
 
         if self.cloud_type == 'COL':
             self.collision_mesh_processor.prepare_all_meshdata()
+            compile = None
+            write = self.collision_mesh_processor.write_output_to_files
+        elif self.cloud_type == 'MODEL':
+            self.model_processor.prepare_all_meshdata()
+            compile = self.model_processor.compile_output
+            write = self.model_processor.write_output_to_files
 
         self.modelmesh_manager.evaluate_end()
 
@@ -99,7 +118,9 @@ class HEIO_OT_Export_PointCloud(ExportPointCloudOperator):
         )
 
         if self.write_resources:
-            self.collision_mesh_processor.write_output_to_files(self.directory)
+            if compile is not None:
+                compile()
+            write(self.directory)
 
         SharpNeedle.RESOURCE_EXTENSIONS.Write(pointcloud, self.filepath)
         return {'FINISHED'}
@@ -113,10 +134,14 @@ class HEIO_OT_Export_PointClouds(ExportPointCloudOperator):
         if len(self.collection) == 0:
             raise HEIODevException("Invalid export call!")
 
-        self.modelmesh_manager.evaluate_begin(context)
+        self.modelmesh_manager.evaluate_begin(context, self.cloud_type == 'MODEL')
 
         if self.cloud_type == 'COL':
             self.collision_mesh_processor.prepare_all_meshdata()
+            write = self.collision_mesh_processor.write_output_to_files
+        elif self.cloud_type == 'MODEL':
+            self.model_processor.prepare_all_meshdata()
+            write = self.model_processor.write_output_to_files
 
         self.modelmesh_manager.evaluate_end()
 
@@ -139,7 +164,7 @@ class HEIO_OT_Export_PointClouds(ExportPointCloudOperator):
         directory = os.path.dirname(self.filepath)
 
         if self.write_resources:
-            self.collision_mesh_processor.write_output_to_files(directory)
+            write(directory)
 
         for name, pc in pointclouds:
             filepath = os.path.join(directory, name + ".pc" + self.cloud_type.lower())

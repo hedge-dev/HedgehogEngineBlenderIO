@@ -8,8 +8,8 @@ from . import (
     material_operators,
     material_parameter_operators,
     mesh_geometry_operators,
-	image_operators,
-	scap_mass_edit_operators,
+    image_operators,
+    scap_mass_edit_operators,
     info_operators
 )
 
@@ -24,14 +24,14 @@ to_register = [
 
     export_operators.HEIO_OT_Export_Material,
     export_operators.HEIO_OT_Export_Material_Active,
-	# export_operators.HEIO_OT_Export_Model,
-    # export_operators.HEIO_OT_Export_TerrainModel,
+    export_operators.HEIO_OT_Export_Model,
+    export_operators.HEIO_OT_Export_TerrainModel,
     export_operators.HEIO_OT_Export_CollisionMesh,
     export_operators.HEIO_OT_Export_PointCloud,
-	export_operators.HEIO_OT_Export_PointClouds,
+    export_operators.HEIO_OT_Export_PointClouds,
 
     filehandlers.HEIO_FH_Material,
-	filehandlers.HEIO_FH_Model,
+    filehandlers.HEIO_FH_Model,
     filehandlers.HEIO_FH_TerrainModel,
     filehandlers.HEIO_FH_CollisionMesh,
     filehandlers.HEIO_FH_PointCloud,
@@ -48,7 +48,7 @@ to_register = [
     lod_operators.HEIO_OT_LODInfo_Remove,
     lod_operators.HEIO_OT_LODInfo_Move,
 
-	mesh_info_operators.HEIO_OT_MeshInfo_Initialize,
+    mesh_info_operators.HEIO_OT_MeshInfo_Initialize,
     mesh_info_operators.HEIO_OT_MeshInfo_Delete,
     mesh_info_operators.HEIO_OT_MeshInfo_Assign,
     mesh_info_operators.HEIO_OT_CollisionFlag_Remove,
@@ -65,14 +65,14 @@ to_register = [
     material_parameter_operators.HEIO_OT_MaterialParameters_Move,
 
     mesh_geometry_operators.HEIO_OT_SplitMeshGroups,
-	mesh_geometry_operators.HEIO_OT_MergeMeshGroups,
-	mesh_geometry_operators.HEIO_OT_CollisionPrimitivesToGeometry,
+    mesh_geometry_operators.HEIO_OT_MergeMeshGroups,
+    mesh_geometry_operators.HEIO_OT_CollisionPrimitivesToGeometry,
 
     image_operators.HEIO_OT_ReimportImages,
 
-	scap_mass_edit_operators.HEIO_OT_SCAP_MassEdit_Select,
+    scap_mass_edit_operators.HEIO_OT_SCAP_MassEdit_Select,
     scap_mass_edit_operators.HEIO_OT_SCAP_MassEdit_Set,
-	scap_mass_edit_operators.HEIO_OT_SCAP_MassEdit_Remove,
+    scap_mass_edit_operators.HEIO_OT_SCAP_MassEdit_Remove,
 
     info_operators.HEIO_OT_Info_Manual,
     info_operators.HEIO_OT_Info_Discord,

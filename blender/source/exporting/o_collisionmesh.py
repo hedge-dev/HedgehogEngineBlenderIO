@@ -82,7 +82,7 @@ class RawCollisionMeshData:
         self.layers = []
         self.primitives = []
 
-    def convert_to_sn(self, transform_matrix: Matrix | None):
+    def convert_to_net(self, transform_matrix: Matrix | None):
         if transform_matrix is None:
             vertices = self.vertices
         else:
@@ -283,7 +283,7 @@ class CollisionMeshProcessor:
             if root.type == 'MESH':
                 root_meshdata = self.get_meshdata(root)
                 if root_meshdata is not None:
-                    meshdata, primitives = root_meshdata.convert_to_sn(None)
+                    meshdata, primitives = root_meshdata.convert_to_net(None)
                     sn_meshdata.append(meshdata)
                     sn_primitives.extend(primitives)
 
@@ -298,7 +298,7 @@ class CollisionMeshProcessor:
 
             matrix = parent_matrix @ child.matrix_world
 
-            meshdata, primitives = child_meshdata.convert_to_sn(matrix)
+            meshdata, primitives = child_meshdata.convert_to_net(matrix)
             sn_meshdata.append(meshdata)
             sn_primitives.extend(primitives)
 

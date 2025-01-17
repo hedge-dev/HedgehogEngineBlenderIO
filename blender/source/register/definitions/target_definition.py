@@ -15,10 +15,10 @@ class TargetDataVersions:
     '''Material sample chunk version (1-2)'''
 
     bullet_mesh: int | None
-    '''Bulletmesh version'''
+    '''Bulletmesh version (3)'''
 
     point_cloud: int | None
-    '''Point cloud version'''
+    '''Point cloud version (1-2)'''
 
     def __init__(
             self,

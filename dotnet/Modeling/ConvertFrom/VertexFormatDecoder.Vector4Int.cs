@@ -1,17 +1,17 @@
 ﻿using Amicitia.IO.Binary;
 using SharpNeedle.Structs;
 
-namespace HEIO.NET.VertexUtils
+namespace HEIO.NET.Modeling.ConvertFrom
 {
-    public static partial class VertexFormatDecoder
+    internal static partial class VertexFormatDecoder
     {
         private static Vector4Int IntDecodeUint4(BinaryObjectReader reader)
         {
             return new(
-                (int)reader.ReadUInt32(),
-                (int)reader.ReadUInt32(),
-                (int)reader.ReadUInt32(),
-                (int)reader.ReadUInt32()
+                reader.ReadInt32(),
+                reader.ReadInt32(),
+                reader.ReadInt32(),
+                reader.ReadInt32()
             );
         }
 
@@ -27,16 +27,12 @@ namespace HEIO.NET.VertexUtils
 
         private static Vector4Int IntDecodeUByte4(BinaryObjectReader reader)
         {
-
-
-            Vector4Int result = new(
+            return new(
                 reader.ReadByte(),
                 reader.ReadByte(),
                 reader.ReadByte(),
                 reader.ReadByte()
             );
-
-            return result;
         }
 
         private static Vector4Int IntDecodeByte4(BinaryObjectReader reader)

@@ -1,82 +1,140 @@
+import os
 from typing import Iterable
 import bpy
 
-from . import o_enum, o_sca_parameters
+from . import o_enum, o_sca_parameters, o_image
 
 from ..dotnet import SharpNeedle, System, HEIO_NET
 from ..register.property_groups.material_properties import HEIO_Material
 from ..register.definitions import TargetDefinition
 
-def convert_to_sharpneedle_materials(
-        target_definition: TargetDefinition,
-        materials: Iterable[bpy.types.Material]):
 
-    converted = {}
+class MaterialProcessor:
 
-    for material in materials:
-        if material in converted:
-            continue
+    _target_definition: TargetDefinition
 
-        sn_material = SharpNeedle.MATERIAL()
-        converted[material] = sn_material
+    _context: bpy.types.Context
+    _image_mode: str
+    _invert_normal_map_y_channel: bool
 
-        material_properties: HEIO_Material = material.heio_material
+    _output: dict[bpy.types.Material, any]
 
-        sn_material.DataVersion = target_definition.data_versions.material
-        sn_material.Name = material.name
+    def __init__(
+            self,
+            target_definition: TargetDefinition,
+            context: bpy.types.Context,
+            image_mode: str,
+            nrm_invert_y_channel: str):
 
-        if target_definition.data_versions.material_sample_chunk == 1:
-            sn_material.Root = None
-        else:
-            sn_material.SetupNodes()
-            o_sca_parameters.convert_for_data(
-                sn_material, material_properties.sca_parameters)
+        self._target_definition = target_definition
+        self._context = context
+        self._image_mode = image_mode
 
-        sn_material.ShaderName = material_properties.shader_name
-        if len(material_properties.variant_name) > 0:
-            sn_material.ShaderName += f"[{material_properties.variant_name}]"
+        self._invert_normal_map_y_channel = (
+            nrm_invert_y_channel == "INVERT"
+            or (
+                nrm_invert_y_channel == "AUTO"
+                and self._target_definition.hedgehog_engine_version == 1
+            )
+        )
 
-        sn_material.AlphaThreshold = int(material.alpha_threshold * 255)
-        sn_material.NoBackFaceCulling = not material.use_backface_culling
-        sn_material.UseAdditiveBlending = material_properties.use_additive_blending
+        self._output = {}
 
-        for parameter in material_properties.parameters:
+    def convert_materials(
+            self,
+            materials: Iterable[bpy.types.Material]):
 
-            if parameter.value_type == 'BOOLEAN':
-                sn_material.BoolParameters.Add(
-                    parameter.name,
-                    HEIO_NET.PYTHON_HELPERS.CreateBoolParameter(
-                        parameter.boolean_value)
-                )
+        converted = []
 
-            else:
-                value = System.VECTOR4(
-                    parameter.float_value[0],
-                    parameter.float_value[1],
-                    parameter.float_value[2],
-                    parameter.float_value[3]
-                )
-
-                sn_material.FloatParameters.Add(
-                    parameter.name,
-                    HEIO_NET.PYTHON_HELPERS.CreateFloatParameter(value)
-                )
-
-        sn_material.Texset.Name = material.name
-
-        for i, texture in enumerate(material_properties.textures):
-            if texture.image is None:
+        for material in materials:
+            if material in self._output:
+                converted.append(self._output[material])
                 continue
 
-            sn_texture = SharpNeedle.TEXTURE()
+            sn_material = SharpNeedle.MATERIAL()
+            self._output[material] = sn_material
+            converted.append(sn_material)
 
-            sn_texture.Name = f"{material.name}-{i:04}"
-            sn_texture.PictureName = texture.image.name
-            sn_texture.Type = texture.name
-            sn_texture.TexCoordIndex = texture.texcoord_index
-            sn_texture.WrapModeU = o_enum.to_wrap_mode(texture.wrapmode_u)
-            sn_texture.WrapModeV = o_enum.to_wrap_mode(texture.wrapmode_v)
+            material_properties: HEIO_Material = material.heio_material
 
-            sn_material.Texset.Textures.Add(sn_texture)
+            sn_material.DataVersion = self._target_definition.data_versions.material
+            sn_material.Name = material.name
 
-    return converted
+            if self._target_definition.data_versions.material_sample_chunk == 1:
+                sn_material.Root = None
+            else:
+                sn_material.SetupNodes()
+                o_sca_parameters.convert_for_data(
+                    sn_material, material_properties.sca_parameters)
+
+            sn_material.ShaderName = material_properties.shader_name
+            if len(material_properties.variant_name) > 0:
+                sn_material.ShaderName += f"[{material_properties.variant_name}]"
+
+            sn_material.AlphaThreshold = int(material.alpha_threshold * 255)
+            sn_material.NoBackFaceCulling = not material.use_backface_culling
+            sn_material.UseAdditiveBlending = material_properties.use_additive_blending
+
+            for parameter in material_properties.parameters:
+
+                if parameter.value_type == 'BOOLEAN':
+                    sn_material.BoolParameters.Add(
+                        parameter.name,
+                        HEIO_NET.PYTHON_HELPERS.CreateBoolParameter(
+                            parameter.boolean_value)
+                    )
+
+                else:
+                    value = System.VECTOR4(
+                        parameter.float_value[0],
+                        parameter.float_value[1],
+                        parameter.float_value[2],
+                        parameter.float_value[3]
+                    )
+
+                    sn_material.FloatParameters.Add(
+                        parameter.name,
+                        HEIO_NET.PYTHON_HELPERS.CreateFloatParameter(value)
+                    )
+
+            sn_material.Texset.Name = material.name
+
+            for i, texture in enumerate(material_properties.textures):
+                if texture.image is None:
+                    continue
+
+                sn_texture = SharpNeedle.TEXTURE()
+
+                sn_texture.Name = f"{material.name}-{i:04}"
+                sn_texture.PictureName = texture.image.name
+                sn_texture.Type = texture.name
+                sn_texture.TexCoordIndex = texture.texcoord_index
+                sn_texture.WrapModeU = o_enum.to_wrap_mode(texture.wrapmode_u)
+                sn_texture.WrapModeV = o_enum.to_wrap_mode(texture.wrapmode_v)
+
+                sn_material.Texset.Textures.Add(sn_texture)
+
+        return converted
+
+    def get_converted_material(self, material):
+        return self._output[material]
+
+    def write_output_to_files(self, directory: str):
+        for sn_material in self._output.values():
+            filepath = os.path.join(
+                directory, sn_material.Name + ".material")
+            SharpNeedle.RESOURCE_EXTENSIONS.Write(sn_material, filepath)
+
+        self.write_output_images_to_files(directory)
+
+    def write_output_images_to_files(self, directory):
+        if self._image_mode == 'NONE':
+            return
+
+        o_image.export_material_images(
+            self._output.keys(),
+            self._context,
+            self._image_mode,
+            self._invert_normal_map_y_channel,
+            directory
+        )

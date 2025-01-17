@@ -1,12 +1,13 @@
-﻿using SharpNeedle.Framework.HedgehogEngine.Mirage;
-using System;
+﻿using HEIO.NET.Modeling.GPU;
+using J113D.Common;
+using SharpNeedle.Framework.HedgehogEngine.Mirage;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 
-namespace HEIO.NET.VertexUtils
+namespace HEIO.NET.Modeling.ConvertFrom
 {
-    internal class MeshProcessor
+    internal class GPUMeshConverter
     {
         private readonly Topology _topology;
         private readonly int _morphCount;
@@ -22,34 +23,29 @@ namespace HEIO.NET.VertexUtils
         public MeshData ResultData { get; }
 
 
-        public MeshProcessor(string name, Topology topology, bool merge, float mergeDistance, bool mergeSplitEdges, int morphCount)
+        public GPUMeshConverter(string name, Topology topology, bool merge, float mergeDistance, bool mergeSplitEdges, int morphCount)
         {
             _topology = topology;
             _morphCount = morphCount;
 
-            if (merge)
+            if(merge)
             {
                 _mergeSplitEdges = mergeSplitEdges;
                 _mergeComparer = Vertex.GetMergeComparer(mergeDistance, !mergeSplitEdges, morphCount > 0);
             }
 
-            ResultData = new(
-                name,
-                [], [],
-                _mergeSplitEdges ? [] : null,
-                _mergeSplitEdges ? [] : null,
-                [], [], true,
-                [], [], [],
-                [], []
-            );
+            ResultData = new(name, _mergeSplitEdges)
+            {
+                UseByteColors = true
+            };
         }
 
 
         private Vertex[] GetVertices(GPUMesh gpuMesh)
         {
-            Vertex[] vertices = new Vertex[gpuMesh.Vertices.Length];
+            Vertex[] vertices = new Vertex[gpuMesh.Vertices.Count];
 
-            for (int i = 0; i < vertices.Length; i++)
+            for(int i = 0; i < vertices.Length; i++)
             {
                 GPUVertex vertex = gpuMesh.Vertices[i];
 
@@ -79,49 +75,49 @@ namespace HEIO.NET.VertexUtils
             ResultData.SetMaterials.Add(mesh.Material);
             ResultData.SetSlots.Add(mesh.Slot);
 
-            GPUMesh gpuMesh = GPUMesh.ReadFromMesh(mesh, _topology);
+            GPUMesh gpuMesh = MeshConverter.ConvertToGPUMesh(mesh, _topology);
 
-            if (!gpuMesh.UseByteColors)
+            if(!gpuMesh.UseByteColors)
             {
                 ResultData.UseByteColors = false;
             }
 
-            while (gpuMesh.TexcoordSets > ResultData.TextureCoordinates.Count)
+            while(gpuMesh.TexcoordSets > ResultData.TextureCoordinates.Count)
             {
                 ResultData.TextureCoordinates.Add([.. Enumerable.Range(0, ResultData.TriangleIndices.Count).Select(x => default(Vector2))]);
                 _tempTexcoords.Add([.. Enumerable.Range(0, _tempTriangles.Count).Select(x => default(Vector2))]);
             }
 
-            while (gpuMesh.ColorSets > ResultData.Colors.Count)
+            while(gpuMesh.ColorSets > ResultData.Colors.Count)
             {
                 ResultData.Colors.Add([.. Enumerable.Range(0, ResultData.TriangleIndices.Count).Select(x => Vector4.One)]);
                 _tempColors.Add([.. Enumerable.Range(0, _tempTriangles.Count).Select(x => Vector4.One)]);
             }
 
             _tempTriangles.AddRange(gpuMesh.Triangles.Select(x => x + _tempVertices.Count));
-            _tempSetSizes.Add(gpuMesh.Triangles.Length / 3);
+            _tempSetSizes.Add(gpuMesh.Triangles.Count / 3);
 
-            for (int i = 0; i < ResultData.TextureCoordinates.Count; i++)
+            for(int i = 0; i < ResultData.TextureCoordinates.Count; i++)
             {
-                if (i < gpuMesh.TexcoordSets)
+                if(i < gpuMesh.TexcoordSets)
                 {
                     _tempTexcoords[i].AddRange(gpuMesh.Triangles.Select(x => gpuMesh.Vertices[x].TextureCoordinates[i]));
                 }
                 else
                 {
-                    _tempTexcoords[i].AddRange(Enumerable.Range(0, gpuMesh.Triangles.Length).Select(x => default(Vector2)));
+                    _tempTexcoords[i].AddRange(Enumerable.Range(0, gpuMesh.Triangles.Count).Select(x => default(Vector2)));
                 }
             }
 
-            for (int i = 0; i < ResultData.Colors.Count; i++)
+            for(int i = 0; i < ResultData.Colors.Count; i++)
             {
-                if (i < gpuMesh.ColorSets)
+                if(i < gpuMesh.ColorSets)
                 {
                     _tempColors[i].AddRange(gpuMesh.Triangles.Select(x => gpuMesh.Vertices[x].Colors[i]));
                 }
                 else
                 {
-                    _tempColors[i].AddRange(Enumerable.Range(0, gpuMesh.Triangles.Length).Select(x => Vector4.One));
+                    _tempColors[i].AddRange(Enumerable.Range(0, gpuMesh.Triangles.Count).Select(x => Vector4.One));
                 }
             }
 
@@ -146,9 +142,9 @@ namespace HEIO.NET.VertexUtils
                     : DistinctMap.CreateDistinctMap(_tempVertices, _mergeComparer);
 
             int vertexIndexOffset = ResultData.Vertices.Count;
-            foreach (Vertex vertex in vertices.Values)
+            foreach(Vertex vertex in vertices.Values)
             {
-                if (_mergeSplitEdges)
+                if(_mergeSplitEdges)
                 {
                     Vertex toAdd = vertex;
                     toAdd.Normal = default;
@@ -165,7 +161,7 @@ namespace HEIO.NET.VertexUtils
 
             int triangleIndex = 0;
 
-            for (int i = 0; i < _tempTriangles.Count;)
+            for(int i = 0; i < _tempTriangles.Count;)
             {
                 int v1 = _tempTriangles[i];
                 int v2 = _tempTriangles[i + 1];
@@ -175,12 +171,12 @@ namespace HEIO.NET.VertexUtils
                 int t2 = vertices[v2];
                 int t3 = vertices[v3];
 
-                if (t1 == t2 || t2 == t3 || t3 == t1 || !usedTriangles.Add(new(t1, t2, t3)))
+                if(t1 == t2 || t2 == t3 || t3 == t1 || !usedTriangles.Add(new(t1, t2, t3)))
                 {
                     int offset = 0;
-                    for (int j = 0; j < _tempSetSizes.Count; offset += _tempSetSizes[j], j++)
+                    for(int j = 0; j < _tempSetSizes.Count; offset += _tempSetSizes[j], j++)
                     {
-                        if (triangleIndex - offset < _tempSetSizes[j])
+                        if(triangleIndex - offset < _tempSetSizes[j])
                         {
                             _tempSetSizes[j]--;
                             break;
@@ -191,7 +187,7 @@ namespace HEIO.NET.VertexUtils
                     continue;
                 }
 
-                for (int j = 0; j < 3; j++, i++,
+                for(int j = 0; j < 3; j++, i++,
                     t1 = t2, t2 = t3,
                     v1 = v2, v2 = v3)
                 {
@@ -201,13 +197,13 @@ namespace HEIO.NET.VertexUtils
                     ResultData.PolygonNormals?.Add(vertex.Normal);
                     ResultData.PolygonTangents?.Add(vertex.Tangent);
 
-                    for (int k = 0; k < ResultData.TextureCoordinates.Count; k++)
+                    for(int k = 0; k < ResultData.TextureCoordinates.Count; k++)
                     {
                         Vector2 texcoord = _tempTexcoords[k][i];
                         ResultData.TextureCoordinates[k].Add(new(texcoord.X, 1 - texcoord.Y));
                     }
 
-                    for (int k = 0; k < ResultData.Colors.Count; k++)
+                    for(int k = 0; k < ResultData.Colors.Count; k++)
                     {
                         ResultData.Colors[k].Add(_tempColors[k][i]);
                     }
@@ -216,7 +212,7 @@ namespace HEIO.NET.VertexUtils
                 triangleIndex++;
             }
 
-            foreach (int setSize in _tempSetSizes)
+            foreach(int setSize in _tempSetSizes)
             {
                 ResultData.SetSizes.Add(setSize);
             }
@@ -225,16 +221,112 @@ namespace HEIO.NET.VertexUtils
             _tempSetSizes.Clear();
             _tempTriangles.Clear();
 
-            foreach (List<Vector2> texCoords in _tempTexcoords)
+            foreach(List<Vector2> texCoords in _tempTexcoords)
             {
                 texCoords.Clear();
             }
 
-            foreach (List<Vector4> colors in _tempColors)
+            foreach(List<Vector4> colors in _tempColors)
             {
                 colors.Clear();
             }
         }
-    }
 
+        public void NormalizeBindPositions(Model model)
+        {
+            Matrix4x4[] normalizeMatrices = new Matrix4x4[model.Nodes.Count];
+            bool allIdentity = true;
+
+            for(int i = 0; i < model.Nodes.Count; i++)
+            {
+                Matrix4x4 bindMatrix = model.Nodes[i].Transform;
+
+                Matrix4x4.Invert(bindMatrix, out Matrix4x4 boneMatrix);
+                Matrix4x4 normalizeMatrix = bindMatrix * Normalized(boneMatrix);
+
+                if(CheckIsIdentity(normalizeMatrix))
+                {
+                    normalizeMatrix = Matrix4x4.Identity;
+                }
+                else
+                {
+                    allIdentity = false;
+                }
+
+                normalizeMatrices[i] = normalizeMatrix;
+            }
+
+            if(allIdentity)
+            {
+                return;
+            }
+
+            Vector3 TransformPosition(Vector3 input, VertexWeight[] weights)
+            {
+                Matrix4x4 matrix = new();
+
+                foreach(VertexWeight weight in weights)
+                {
+                    matrix += normalizeMatrices[weight.Index] * weight.Weight;
+                }
+
+                return Vector3.Transform(new(input.X, input.Y, input.Z), matrix);
+            }
+
+            for(int i = 0; i < ResultData.Vertices.Count; i++)
+            {
+                Vertex vertex = ResultData.Vertices[i];
+
+                vertex.Position = TransformPosition(vertex.Position, vertex.Weights);
+
+                if(vertex.MorphPositions != null)
+                {
+                    for(int j = 0; j < vertex.MorphPositions.Length; j++)
+                    {
+                        vertex.MorphPositions[j] = TransformPosition(vertex.MorphPositions[j], vertex.Weights);
+                    }
+                }
+
+                ResultData.Vertices[i] = vertex;
+            }
+        }
+
+        private static Matrix4x4 Normalized(Matrix4x4 input)
+        {
+            float l1 = new Vector3(input.M11, input.M12, input.M13).Length();
+            float l2 = new Vector3(input.M21, input.M22, input.M23).Length();
+            float l3 = new Vector3(input.M31, input.M32, input.M33).Length();
+            return new(
+                input.M11 / l1, input.M12 / l1, input.M13 / l1, input.M14 / l1,
+                input.M21 / l2, input.M22 / l2, input.M23 / l2, input.M24 / l2,
+                input.M31 / l3, input.M32 / l3, input.M33 / l3, input.M34 / l3,
+                input.M41, input.M42, input.M43, input.M44
+            );
+        }
+
+        private static bool CheckIsIdentity(Matrix4x4 a)
+        {
+            const float p1 = 1.0001f;
+            const float n1 = 0.9999f;
+            const float p0 = 0.0001f;
+            const float n0 = -0.0001f;
+
+            return a.M11 is > n1 and < p1
+                && a.M12 is > n0 and < p0
+                && a.M13 is > n0 and < p0
+                && a.M14 is > n0 and < p0
+                && a.M21 is > n0 and < p0
+                && a.M22 is > n1 and < p1
+                && a.M23 is > n0 and < p0
+                && a.M24 is > n0 and < p0
+                && a.M31 is > n0 and < p0
+                && a.M32 is > n0 and < p0
+                && a.M33 is > n1 and < p1
+                && a.M34 is > n0 and < p0
+                && a.M41 is > n0 and < p0
+                && a.M42 is > n0 and < p0
+                && a.M43 is > n0 and < p0
+                && a.M44 is > n1 and < p1;
+        }
+    }
 }

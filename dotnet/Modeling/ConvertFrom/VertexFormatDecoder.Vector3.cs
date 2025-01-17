@@ -1,9 +1,9 @@
 ﻿using Amicitia.IO.Binary;
 using System.Numerics;
 
-namespace HEIO.NET.VertexUtils
+namespace HEIO.NET.Modeling.ConvertFrom
 {
-    public static partial class VertexFormatDecoder
+    internal static partial class VertexFormatDecoder
 	{
 		private static Vector3 DecodeFloat3(BinaryObjectReader reader)
 		{
@@ -18,10 +18,10 @@ namespace HEIO.NET.VertexUtils
 		{
 			uint value = reader.ReadUInt32();
 			return new(
-				(value) & 0x1FF,
-				(value >> 10) & 0x1FF,
-				(value >> 20) & 0x1FF
-			);
+				(value) & 0x3FF,
+				(value >> 10) & 0x3FF,
+				(value >> 20) & 0x3FF
+            );
 		}
 
 		private static Vector3 DecodeDec3(BinaryObjectReader reader)
@@ -38,9 +38,9 @@ namespace HEIO.NET.VertexUtils
 		{
 			uint value = reader.ReadUInt32();
 			return new(
-				((value) & 0x1FF) / 1023f,
-				((value >> 10) & 0x1FF) / 1023f,
-				((value >> 20) & 0x1FF) / 1023f
+				((value) & 0x3FF) / 1023f,
+				((value >> 10) & 0x3FF) / 1023f,
+				((value >> 20) & 0x3FF) / 1023f
 			);
 		}
 
@@ -58,8 +58,8 @@ namespace HEIO.NET.VertexUtils
 		{
 			uint value = reader.ReadUInt32();
 			return new(
-				(value) & 0x3FF,
-				(value >> 11) & 0x3FF,
+				(value) & 0x7FF,
+				(value >> 11) & 0x7FF,
 				value >> 22
 			);
 		}
@@ -78,8 +78,8 @@ namespace HEIO.NET.VertexUtils
 		{
 			uint value = reader.ReadUInt32();
 			return new(
-				((value) & 0x3FF) / 2047f,
-				((value >> 11) & 0x3FF) / 2047f,
+				((value) & 0x7FF) / 2047f,
+				((value >> 11) & 0x7FF) / 2047f,
 				(value >> 22) / 1023f
 			);
 		}
@@ -98,8 +98,8 @@ namespace HEIO.NET.VertexUtils
         {
             uint value = reader.ReadUInt32();
             return new(
-                (value) & 0x1FF,
-                (value >> 10) & 0x3FF,
+                (value) & 0x3FF,
+                (value >> 10) & 0x7FF,
                 value >> 21
             );
         }
@@ -118,8 +118,8 @@ namespace HEIO.NET.VertexUtils
         {
             uint value = reader.ReadUInt32();
             return new(
-                ((value) & 0x1FF) / 1023f,
-                ((value >> 10) & 0x3FF) / 2047f,
+                ((value) & 0x3FF) / 1023f,
+                ((value >> 10) & 0x7FF) / 2047f,
                 (value >> 21) / 2047f
             );
         }

@@ -7,7 +7,6 @@ using SharpNeedle.Framework.HedgehogEngine.Mirage;
 using SharpNeedle.Framework.HedgehogEngine.Needle.TextureStreaming;
 using System.Linq;
 using static HEIO.NET.DependencyResolverManager;
-using static BulletSharp.DiscreteCollisionDetectorInterface;
 
 namespace HEIO.NET
 {

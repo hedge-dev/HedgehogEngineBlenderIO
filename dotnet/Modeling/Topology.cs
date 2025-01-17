@@ -1,6 +1,6 @@
-﻿namespace HEIO.NET.VertexUtils
+﻿namespace HEIO.NET.Modeling
 {
-    public enum Topology
+    internal enum Topology
     {
         TriangleList,
         TriangleStrips

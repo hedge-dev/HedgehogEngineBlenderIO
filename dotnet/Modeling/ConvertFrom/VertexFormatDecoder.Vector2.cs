@@ -2,9 +2,9 @@
 using System;
 using System.Numerics;
 
-namespace HEIO.NET.VertexUtils
+namespace HEIO.NET.Modeling.ConvertFrom
 {
-    public static partial class VertexFormatDecoder
+    internal static partial class VertexFormatDecoder
     {
         private static Vector2 DecodeFloat2(BinaryObjectReader reader)
         {

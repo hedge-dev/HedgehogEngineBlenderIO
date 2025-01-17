@@ -154,7 +154,7 @@ class HEIO_RenderLayerList(BaseMeshInfoList):
     def _on_init(self):
         self.new(name="Opaque")
         self.new(name="Transparent")
-        self.new(name="Punch through")
+        self.new(name="PunchThrough")
 
     @property
     def attribute_name(self):

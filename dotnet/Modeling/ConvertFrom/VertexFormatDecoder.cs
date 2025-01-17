@@ -6,9 +6,9 @@ using System.IO;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 
-namespace HEIO.NET.VertexUtils
+namespace HEIO.NET.Modeling.ConvertFrom
 {
-    public static partial class VertexFormatDecoder
+    internal static partial class VertexFormatDecoder
     {
         public static int GetFormatComponentCount(VertexFormat format)
         {
@@ -133,17 +133,15 @@ namespace HEIO.NET.VertexUtils
 
         public static Func<BinaryObjectReader, float> GetSingleDecoder(VertexFormat format)
         {
-            switch(format)
+            return format switch
             {
-                case VertexFormat.Float1:
-                case VertexFormat.Int1:
-                case VertexFormat.Uint1:
-                case VertexFormat.Int1Norm:
-                case VertexFormat.Uint1Norm:
-                    throw new NotImplementedException();
-                default:
-                    throw new InvalidDataException($"Format \"{format}\" not a single!");
-            }
+                VertexFormat.Float1 => DecodeFloat1,
+                VertexFormat.Int1 => DecodeInt1,
+                VertexFormat.Uint1 => DecodeUInt1,
+                VertexFormat.Int1Norm => DecodeInt1Norm,
+                VertexFormat.Uint1Norm => DecodeUInt1Norm,
+                _ => throw new InvalidDataException($"Format \"{format}\" not a single!"),
+            };
         }
 
         public static Func<BinaryObjectReader, Vector2> GetVector2Decoder(VertexFormat format)
@@ -205,13 +203,10 @@ namespace HEIO.NET.VertexUtils
                 VertexFormat.Ushort4Norm => DecodeUShort4Norm,
                 VertexFormat.Float16_4 => DecodeFloat16_4,
                 VertexFormat.D3dColor => DecodeUByte4,
-
-                VertexFormat.UDec4 
-                or VertexFormat.Dec4 
-                or VertexFormat.UDec4Norm 
-                or VertexFormat.Dec4Norm 
-                    => throw new InvalidDataException($"Format \"{format}\" is not supported (please open a github issue with the file)!"),
-
+                VertexFormat.UDec4 => DecodeUDec4,
+                VertexFormat.Dec4 => DecodeDec4,
+                VertexFormat.UDec4Norm => DecodeUDec4Norm,
+                VertexFormat.Dec4Norm => DecodeDec4Norm,
                 _ => throw new InvalidDataException($"Format \"{format}\" not a 4 component vector!"),
             };
         }
@@ -242,7 +237,7 @@ namespace HEIO.NET.VertexUtils
         private static int ToSigned2(uint value)
         {
             return (value & 0x2) != 0
-                ? unchecked((int)(0xFFFFFFFC | value))
+                ? unchecked((int)(~0x1 | value))
                 : (int)(value & 0x1);
         }
 
@@ -251,7 +246,7 @@ namespace HEIO.NET.VertexUtils
         private static int ToSigned10(uint value)
         {
             return (value & 0x200) != 0
-                ? unchecked((int)(0xFFFFFC00 | value))
+                ? unchecked((int)(~0x1FF | value))
                 : (int)(value & 0x1FF);
         }
 
@@ -259,7 +254,7 @@ namespace HEIO.NET.VertexUtils
         private static int ToSigned11(uint value)
         {
             return (value & 0x400) != 0
-                ? unchecked((int)(0xFFFFF800 | value))
+                ? unchecked((int)(~0x3FF | value))
                 : (int)(value & 0x3FF);
         }
     }

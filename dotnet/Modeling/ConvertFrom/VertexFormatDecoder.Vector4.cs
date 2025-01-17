@@ -2,9 +2,9 @@
 using System;
 using System.Numerics;
 
-namespace HEIO.NET.VertexUtils
+namespace HEIO.NET.Modeling.ConvertFrom
 {
-    public static partial class VertexFormatDecoder
+    internal static partial class VertexFormatDecoder
     {
         private static Vector4 DecodeFloat4(BinaryObjectReader reader)
         {
@@ -140,9 +140,9 @@ namespace HEIO.NET.VertexUtils
         {
             uint value = reader.ReadUInt32();
             return new(
-                (value) & 0x1FF,
-                (value >> 10) & 0x1FF,
-                (value >> 20) & 0x1FF,
+                (value) & 0x3FF,
+                (value >> 10) & 0x3FF,
+                (value >> 20) & 0x3FF,
                 value >> 30
             );
         }
@@ -162,9 +162,9 @@ namespace HEIO.NET.VertexUtils
         {
             uint value = reader.ReadUInt32();
             return new(
-                ((value) & 0x1FF) / 1023f,
-                ((value >> 10) & 0x1FF) / 1023f,
-                ((value >> 20) & 0x1FF) / 1023f,
+                ((value) & 0x3FF) / 1023f,
+                ((value >> 10) & 0x3FF) / 1023f,
+                ((value >> 20) & 0x3FF) / 1023f,
                 (value >> 30) / 3f
             );
         }

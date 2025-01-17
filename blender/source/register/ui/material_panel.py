@@ -238,14 +238,14 @@ class HEIO_PT_Material(PropertiesPanel):
         body.use_property_split = True
         body.use_property_decorate = False
 
-        body.prop(material_properties, "layer")
+        body.prop(material_properties, "render_layer")
 
-        if material_properties.layer == 'SPECIAL':
+        if material_properties.render_layer == 'SPECIAL':
             body.prop(
                 material_properties,
-                "special_layer_name",
+                "special_render_layer_name",
                 icon="ERROR"
-                if len(material_properties.special_layer_name) == 0
+                if len(material_properties.special_render_layer_name) == 0
                 else "NONE"
             )
 

@@ -227,8 +227,8 @@ class HEIO_Material(bpy.types.PropertyGroup):
         set=_set_shader_variant
     )
 
-    layer: EnumProperty(
-        name="Layer",
+    render_layer: EnumProperty(
+        name="Render layer",
         items=(
             ("AUTO", "Automatic", "Determines the layer based on the shader preset. Falls back to \"Opaque\" for custom shaders."),
             ("OPAQUE", "Opaque", "Fully opaque material, transparent elements get ignored."),
@@ -243,7 +243,7 @@ class HEIO_Material(bpy.types.PropertyGroup):
         update=_update_blending
     )
 
-    special_layer_name: StringProperty(
+    special_render_layer_name: StringProperty(
         name="\"Special\" layer name",
         description="Layer name for when the layer type \"special\" is used"
     )
@@ -335,7 +335,7 @@ class HEIO_Material(bpy.types.PropertyGroup):
         self.setup_definition_textures(definition)
 
     def update_material_properties(self, target_definition: TargetDefinition | None):
-        layer = self.layer
+        layer = self.render_layer
 
         if layer == 'AUTO':
             if target_definition is not None and self.shader_name in target_definition.shaders.definitions:

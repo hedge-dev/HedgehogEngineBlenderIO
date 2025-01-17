@@ -7,6 +7,9 @@ class SharpNeedle:
     RESOURCE_EXTENSIONS: any = None
     '''class SharpNeedle.Resource.ResourceExtensions'''
 
+    RESOURCE_REFERENCE: any = None
+    '''class SharpNeedle.Resource.ResourceReference'''
+
     SAMPLE_CHUNK_NODE: any = None
     '''class SharpNeedle.Framework.HedgehogEngine.Mirage.SampleChunkNode'''
 
@@ -25,6 +28,9 @@ class SharpNeedle:
     MODEL: any = None
     '''enum SharpNeedle.Framework.HedgehogEngine.Mirage.Model'''
 
+    MESH_SLOT: any = None
+    '''enum SharpNeedle.Framework.HedgehogEngine.Mirage.MeshSlot'''
+
     BULLET_PRIMITIVE: any = None
     '''enum SharpNeedle.Framework.HedgehogEngine.Bullet.BulletPrimitive'''
 
@@ -42,7 +48,8 @@ class SharpNeedle:
 
         from SharpNeedle.Resource import ( # type: ignore
             ResourceManager,
-            ResourceExtensions
+            ResourceExtensions,
+            ResourceReference
         )
 
         from SharpNeedle.Framework.HedgehogEngine.Mirage import ( # type: ignore
@@ -51,7 +58,8 @@ class SharpNeedle:
             Texture,
             WrapMode,
             TerrainModel,
-            Model
+            Model,
+            MeshSlot
         )
 
         from SharpNeedle.Framework.HedgehogEngine.Bullet import ( # type: ignore
@@ -69,12 +77,14 @@ class SharpNeedle:
 
         cls.RESOURCE_MANAGER = ResourceManager
         cls.RESOURCE_EXTENSIONS = ResourceExtensions
+        cls.RESOURCE_REFERENCE = ResourceReference
         cls.SAMPLE_CHUNK_NODE = SampleChunkNode
         cls.MATERIAL = Material
         cls.TEXTURE = Texture
         cls.WRAP_MODE = WrapMode
         cls.TERRAIN_MODEL = TerrainModel
         cls.MODEL = Model
+        cls.MESH_SLOT = MeshSlot
         cls.BULLET_PRIMITIVE = BulletPrimitive
         cls.BULLET_PRIMITIVE_SHAPE_TYPE = BulletPrimiteShapeType
         cls.POINTCLOUD = PointCloud

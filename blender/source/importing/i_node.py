@@ -1,9 +1,8 @@
 import bpy
-from mathutils import Matrix, Vector
 
 from . import i_transform, i_mesh, i_model, i_sca_parameters
 from ..register.definitions import TargetDefinition
-from ..dotnet import SharpNeedle, HEIO_NET
+from ..dotnet import SharpNeedle, HEIO_NET, System
 from ..utility import progress_console
 
 
@@ -24,8 +23,6 @@ class NodeConverter:
         self._armature_name_lookup = dict()
 
     def _create_bones(self, model_info: i_model.ModelInfo):
-        world_space_scales = []
-
         bone_orientation = self._bone_orientation
         if bone_orientation == 'AUTO':
             bone_orientation = self._target_definition.bone_orientation
@@ -43,28 +40,15 @@ class NodeConverter:
             bone.tail = (0, 1, 0)
             bone.inherit_scale = 'ALIGNED'
 
-            node_matrix = HEIO_NET.PYTHON_HELPERS.InvertMatrix(node.Transform)
-
-            world_space = matrix_remap(node_matrix)
-
-            _, _, local_space_scale = world_space.decompose()
-            world_space_scales.append(local_space_scale)
-
             if node.ParentIndex >= 0:
                 parent = model_info.armature.edit_bones[node.ParentIndex]
                 bone.parent = parent
 
-                parent_world_scale = world_space_scales[node.ParentIndex]
-                local_space_scale = Vector((
-                    local_space_scale.x / parent_world_scale.x,
-                    local_space_scale.y / parent_world_scale.y,
-                    local_space_scale.z / parent_world_scale.z,
-                ))
+            _, node_matrix = System.MATRIX4X4.Invert(node.Transform, System.MATRIX4X4.Identity)
+            world_space = matrix_remap(node_matrix)
+            model_info.bone_matrices.append(world_space)
+            bone.matrix = world_space.normalized()
 
-            model_info.pose_bone_scales.append(local_space_scale)
-
-            pos, rot, _ = world_space.decompose()
-            bone.matrix = Matrix.LocRotScale(pos, rot, None)
 
     @staticmethod
     def _correct_bone_lengths(armature: bpy.types.Armature):

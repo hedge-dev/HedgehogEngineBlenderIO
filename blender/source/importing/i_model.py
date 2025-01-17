@@ -1,5 +1,5 @@
 import bpy
-from mathutils import Vector
+from mathutils import Matrix
 
 from ..dotnet import SharpNeedle
 
@@ -14,7 +14,7 @@ class ModelInfo:
     meshes: list[bpy.types.Mesh]
 
     armature: bpy.types.Armature | None
-    pose_bone_scales: list[Vector]
+    bone_matrices: list[Matrix]
 
     mesh_objects: list[bpy.types.Object]
     armatures_objects: list[bpy.types.Object]
@@ -29,7 +29,7 @@ class ModelInfo:
         self.meshes = []
 
         self.armature = None
-        self.pose_bone_scales = []
+        self.bone_matrices = []
 
         self.mesh_objects = []
         self.armatures_objects = []
@@ -57,7 +57,7 @@ class ModelInfo:
             context.view_layer.depsgraph.update()
 
             for i, pose_bone in enumerate(armature_obj.pose.bones):
-                pose_bone.scale = self.pose_bone_scales[i]
+                pose_bone.matrix = self.bone_matrices[i]
 
             for mesh in self.meshes:
 

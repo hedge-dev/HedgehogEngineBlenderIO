@@ -133,10 +133,10 @@ class MeshConverter:
 
             mesh.materials.append(material)
 
-            if LAYER_LUT[material.heio_material.layer] < slot.Type.value__:
-                material.heio_material.layer = LAYER_LUT[slot.Type.value__]
-                if material.heio_material.layer == 'SPECIAL':
-                    material.heio_material.special_layer_name = slot.Name
+            if LAYER_LUT[material.heio_material.render_layer] < slot.Type.value__:
+                material.heio_material.render_layer = LAYER_LUT[slot.Type.value__]
+                if material.heio_material.render_layer == 'SPECIAL':
+                    material.heio_material.special_render_layer_name = slot.Name
 
         face_index = 0
         for material_index, face_count in zip(material_indices, mesh_data.SetSizes):
@@ -292,7 +292,7 @@ class MeshConverter:
         if mesh_data.Vertices.Count == 0:
             return mesh
 
-        vertices = [i_transform.net_to_bpy_position(x) for x in mesh_data.Vertices]
+        vertices = [i_transform.net_to_bpy_position(x.Position) for x in mesh_data.Vertices]
 
         faces = []
         for i in range(0, len(mesh_data.TriangleIndices), 3):
