@@ -203,7 +203,6 @@ namespace HEIO.NET.Modeling.ConvertTo
             }
         }
 
-
         private GPUMesh[] BoneLimitSplit(int boneLimit)
         {
             short[][] vertexBoneIndices = _gpuMesh.Vertices.Select(x => x.Weights.Where(x => x.Weight > 0).Select(x => x.Index).ToArray()).ToArray();
@@ -264,19 +263,22 @@ namespace HEIO.NET.Modeling.ConvertTo
                     _gpuMesh.MultiTangent,
                     _gpuMesh.Topology,
                     _gpuMesh.Material,
-                    _gpuMesh.Slot);
+                    _gpuMesh.Slot
+                );
 
                 Array.Fill(indexMap, -1);
 
                 foreach(int vertexIndex in vertexIndices)
                 {
                     int newVertexIndex = indexMap[vertexIndex];
+
                     if(newVertexIndex == -1)
                     {
                         newVertexIndex = gpuMesh.Vertices.Count;
                         gpuMesh.Vertices.Add(_gpuMesh.Vertices[vertexIndex]);
                         indexMap[vertexIndex] = newVertexIndex;
                     }
+
                     gpuMesh.Triangles.Add(newVertexIndex);
                 }
 
@@ -325,18 +327,13 @@ namespace HEIO.NET.Modeling.ConvertTo
             List<int> triangles = (List<int>)gpuMesh.Triangles;
             triangles.Clear();
 
-            int stripOffset = 0;
             for(int i = 0; i < strips.Length; i++)
             {
-                int[] strip = strips[i];
-
-                triangles.AddRange(strip);
-                stripOffset += strip.Length;
+                triangles.AddRange(strips[i]);
 
                 if(i < strips.Length - 1)
                 {
                     triangles.Add(ushort.MaxValue);
-                    stripOffset++;
                 }
             }
         }

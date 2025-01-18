@@ -321,10 +321,10 @@ class ExportModelBaseOperator(ExportMaterialOperator, ExportBaseMeshDataOperator
     def setup(self, context):
         super().setup(context)
 
-        if not self.target_definition.supports_topology or not self.use_triangle_strips:
-            topology = 'TRIANGLE_LIST'
-        elif self.use_triangle_strips:
+        if not self.target_definition.supports_topology or self.use_triangle_strips:
             topology = 'TRIANGLE_STRIPS'
+        else:
+            topology = 'TRIANGLE_LIST'
 
         self.model_processor = o_model.ModelProcessor(
             self.target_definition,
