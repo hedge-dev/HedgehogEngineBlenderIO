@@ -14,6 +14,7 @@ class MaterialProcessor:
     _target_definition: TargetDefinition
 
     _context: bpy.types.Context
+    _auto_sca_parameters: bool
     _image_mode: str
     _invert_normal_map_y_channel: bool
 
@@ -22,11 +23,13 @@ class MaterialProcessor:
     def __init__(
             self,
             target_definition: TargetDefinition,
+            auto_sca_parameters: bool,
             context: bpy.types.Context,
             image_mode: str,
             nrm_invert_y_channel: str):
 
         self._target_definition = target_definition
+        self._auto_sca_parameters = auto_sca_parameters
         self._context = context
         self._image_mode = image_mode
 
@@ -46,6 +49,10 @@ class MaterialProcessor:
 
         converted = []
 
+        sca_defaults = {}
+        if not self._auto_sca_parameters:
+            sca_defaults = self._target_definition.sca_parameters.material_defaults
+
         for material in materials:
             if material in self._output:
                 converted.append(self._output[material])
@@ -60,12 +67,12 @@ class MaterialProcessor:
             sn_material.DataVersion = self._target_definition.data_versions.material
             sn_material.Name = material.name
 
-            if self._target_definition.data_versions.material_sample_chunk == 1:
+            if self._target_definition.data_versions.sample_chunk == 1:
                 sn_material.Root = None
             else:
                 sn_material.SetupNodes()
                 o_sca_parameters.convert_for_data(
-                    sn_material, material_properties.sca_parameters)
+                    sn_material, material_properties.sca_parameters, sca_defaults)
 
             sn_material.ShaderName = material_properties.shader_name
             if len(material_properties.variant_name) > 0:

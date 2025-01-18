@@ -42,5 +42,18 @@
       "Type": "Boolean",
       "Description": "Color mask(?)"
     }
+  },
+  "Defaults": {
+    "Material":{},
+    "Model": {
+      "GIOcclus": true,
+      "TerrainB": false,
+      "ColorMas": false
+    },
+    "TerrainModel": {
+      "GIOcclus": true,
+      "TerrainB": false,
+      "ColorMas": false
+    }
   }
 }

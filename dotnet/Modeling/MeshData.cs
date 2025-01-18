@@ -1,11 +1,37 @@
 ﻿using SharpNeedle.Framework.HedgehogEngine.Mirage;
 using SharpNeedle.Resource;
 using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
 using System.Text.Json.Serialization;
 
 namespace HEIO.NET.Modeling
 {
+    public class MeshDataSetInfo
+    {
+        public bool UseByteColors { get; }
+
+        public bool Enable8Weights { get; }
+
+        public bool EnableMultiTangent { get; }
+
+        public ResourceReference<Material> Material { get; }
+
+        public MeshSlot Slot { get; }
+
+        public int Size { get; internal set; }
+
+        public MeshDataSetInfo(bool useByteColors, bool enable8Weights, bool enableMultiTangent, ResourceReference<Material> material, MeshSlot slot, int size)
+        {
+            UseByteColors = useByteColors;
+            Enable8Weights = enable8Weights;
+            EnableMultiTangent = enableMultiTangent;
+            Material = material;
+            Slot = slot;
+            Size = size;
+        }
+    }
+
     public class MeshData
     {
         public string Name { get; set; }
@@ -18,23 +44,27 @@ namespace HEIO.NET.Modeling
 
         public IList<Vector3>? PolygonTangents { get; set; }
 
+        public IList<Vector3>? PolygonTangents2 { get; set; }
+
         public IList<IList<Vector2>> TextureCoordinates { get; set; }
 
         public IList<IList<Vector4>> Colors { get; set; }
 
-        public bool UseByteColors { get; set; }
 
-
-        public IList<ResourceReference<Material>> SetMaterials { get; set; }
-
-        public IList<MeshSlot> SetSlots { get; set; }
-
-        public IList<int> SetSizes { get; set; }
-
+        public IList<MeshDataSetInfo> MeshSets { get; set; }
 
         public IList<string> GroupNames { get; set; }
 
-        public IList<int> GroupSizes { get; set; }
+        /// <summary>
+        /// Number of sets in each group
+        /// </summary>
+        public IList<int> GroupSetCounts { get; set; }
+
+
+        public bool UseByteColors => MeshSets.All(x => x.UseByteColors);
+
+        public bool EnableMultiTangent => MeshSets.Any(x => x.EnableMultiTangent);
+
 
         [JsonConstructor]
         internal MeshData() : this(string.Empty, false) { }
@@ -48,11 +78,9 @@ namespace HEIO.NET.Modeling
             PolygonTangents = polygonDirections ? [] : null;
             TextureCoordinates = [];
             Colors = [];
-            SetMaterials = [];
-            SetSlots = [];
-            SetSizes = [];
+            MeshSets = [];
             GroupNames = [];
-            GroupSizes = [];
+            GroupSetCounts = [];
         }
 
         public MeshData(
@@ -61,12 +89,10 @@ namespace HEIO.NET.Modeling
             int[] triangleIndices,
             Vector3[]? polygonNormals,
             Vector3[]? polygonTangents,
+            Vector3[]? polygonTangents2,
             Vector2[][] textureCoordinates,
             Vector4[][] colors,
-            bool useByteColors,
-            ResourceReference<Material>[] setMaterials,
-            MeshSlot[] setSlots,
-            int[] setSizes,
+            MeshDataSetInfo[] meshSets,
             string[] groupNames,
             int[] groupSizes)
         {
@@ -75,14 +101,12 @@ namespace HEIO.NET.Modeling
             TriangleIndices = triangleIndices;
             PolygonNormals = polygonNormals;
             PolygonTangents = polygonTangents;
+            PolygonTangents2 = polygonTangents2;
             TextureCoordinates = textureCoordinates;
             Colors = colors;
-            UseByteColors = useByteColors;
-            SetMaterials = setMaterials;
-            SetSlots = setSlots;
-            SetSizes = setSizes;
+            MeshSets = meshSets;
             GroupNames = groupNames;
-            GroupSizes = groupSizes;
+            GroupSetCounts = groupSizes;
         }
 
         public static MeshData FromHEMorph(ModelBase model, MorphModel morph, VertexMergeMode vertexMergeMode, float mergeDistance, bool mergeSplitEdges)

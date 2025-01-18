@@ -5,9 +5,10 @@
   "HedgehogEngine": 2,
   "UsesNTSP": true,
   "BoneOrientation": "XZ",
+  "SupportsTopology": true,
   "DataVersions": {
+    "SampleChunk": 2,
     "Material": 3,
-    "MaterialSampleChunk": 2,
     "BulletMesh": 3,
     "PointCloud": 2
   },

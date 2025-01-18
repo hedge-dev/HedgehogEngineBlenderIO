@@ -349,6 +349,7 @@ class HEIO_Material(bpy.types.PropertyGroup):
             self.id_data.surface_render_method = 'DITHERED'
 
         from bpy.types import ShaderNodeValue
+
         def update_layer_node(node_name: str, layer_types: set[str]):
             layer_node: ShaderNodeValue | None = get_node_of_type(
                 self.id_data, "Layer " + node_name, ShaderNodeValue)
@@ -359,7 +360,6 @@ class HEIO_Material(bpy.types.PropertyGroup):
         update_layer_node("Opaque", {'OPAQUE'})
         update_layer_node("Transparent", {'TRANSPARENT', 'PUNCHTHROUGH'})
         update_layer_node("Special", {'SPECIAL'})
-
 
     def update_material_nodes(self):
 

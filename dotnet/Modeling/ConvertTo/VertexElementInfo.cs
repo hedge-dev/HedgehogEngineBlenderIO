@@ -64,7 +64,7 @@ namespace HEIO.NET.Modeling.ConvertTo
             VertexFormat.Float2,
             VertexFormat.UByte4Norm,
             VertexFormat.Float4,
-            VertexFormat.Ushort2,
+            VertexFormat.Ushort4,
             VertexFormat.UByte4Norm
         );
 
@@ -74,7 +74,7 @@ namespace HEIO.NET.Modeling.ConvertTo
             VertexFormat.Float16_2,
             VertexFormat.UByte4Norm,
             VertexFormat.Float4,
-            VertexFormat.Ushort2,
+            VertexFormat.Ushort4,
             VertexFormat.UByte4Norm
         );
     }

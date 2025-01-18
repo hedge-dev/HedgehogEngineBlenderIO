@@ -19,6 +19,9 @@ class HEIO_NET:
     MESH_DATA: any = None
     '''class HEIO.NET.Modeling.MeshData'''
 
+    MESH_DATA_SET_INFO: any = None
+    '''class HEIO.NET.Modeling,MeshDataSetInfo'''
+
     MESH_COMPILE_DATA: any = None
     '''Struct HEIO.NET.Modeling.MeshCompileData'''
 
@@ -37,6 +40,8 @@ class HEIO_NET:
     VERTEX_MERGE_MODE: any = None
     '''enum HEIO.NET.Modeling.VertexMergeMode'''
 
+    TOPOLOGY: any = None
+    '''enum HEIO.NET.Modeling.Topology'''
 
     @classmethod
     def load(cls):
@@ -51,12 +56,14 @@ class HEIO_NET:
 
         from HEIO.NET.Modeling import ( # type: ignore
             MeshData,
+            MeshDataSetInfo,
             MeshCompileData,
             CollisionMeshData,
             CollisionMeshDataGroup,
             Vertex,
             VertexWeight,
-            VertexMergeMode
+            VertexMergeMode,
+            Topology
         )
 
         cls.IMAGE = Image
@@ -66,9 +73,11 @@ class HEIO_NET:
         cls.POINT_CLOUD_COLLECTION = PointCloudCollection
 
         cls.MESH_DATA = MeshData
+        cls.MESH_DATA_SET_INFO = MeshDataSetInfo
         cls.MESH_COMPILE_DATA = MeshCompileData
         cls.COLLISION_MESH_DATA = CollisionMeshData
         cls.COLLISION_MESH_DATA_GROUP = CollisionMeshDataGroup
         cls.VERTEX = Vertex
         cls.VERTEX_WEIGHT = VertexWeight
         cls.VERTEX_MERGE_MODE = VertexMergeMode
+        cls.TOPOLOGY = Topology

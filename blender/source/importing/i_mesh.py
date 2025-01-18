@@ -121,8 +121,8 @@ class MeshConverter:
         material_indices = []
         material_index_mapping = {}
 
-        for sn_material, slot in zip(mesh_data.SetMaterials, mesh_data.SetSlots):
-            material = self._material_converter.get_material(sn_material)
+        for meshSet in mesh_data.MeshSets:
+            material = self._material_converter.get_material(meshSet.Material)
             if material in material_index_mapping:
                 material_indices.append(material_index_mapping[material])
                 continue
@@ -133,16 +133,17 @@ class MeshConverter:
 
             mesh.materials.append(material)
 
+            slot = meshSet.Slot
             if LAYER_LUT[material.heio_material.render_layer] < slot.Type.value__:
                 material.heio_material.render_layer = LAYER_LUT[slot.Type.value__]
                 if material.heio_material.render_layer == 'SPECIAL':
                     material.heio_material.special_render_layer_name = slot.Name
 
         face_index = 0
-        for material_index, face_count in zip(material_indices, mesh_data.SetSizes):
-            for f in range(face_index, face_index + face_count):
+        for material_index, meshSet in zip(material_indices, mesh_data.MeshSets):
+            for f in range(face_index, face_index + meshSet.Size):
                 mesh.polygons[f].material_index = material_index
-            face_index += face_count
+            face_index += meshSet.Size
 
     @staticmethod
     def _create_polygon_layer_attributes(mesh: bpy.types.Mesh, mesh_data):
@@ -151,22 +152,23 @@ class MeshConverter:
         set_slot_indices = []
         special_layer_map = {}
 
-        for layer, size in zip(mesh_data.SetSlots, mesh_data.SetSizes):
-            layer_index = layer.Type.value__
+        for meshSet in mesh_data.MeshSets:
+            slot = meshSet.Slot
+            layer_index = slot.Type.value__
 
             if layer_index == 3:
-                if layer.Name not in special_layer_map:
+                if slot.Name not in special_layer_map:
                     layer_index = 3 + len(special_layer_map)
 
-                    special_layer_map[layer.Name] = layer_index
+                    special_layer_map[slot.Name] = layer_index
 
                     special_layer_name = layers.new()
-                    special_layer_name.name = layer.Name
+                    special_layer_name.name = slot.Name
 
                 else:
-                    layer_index = special_layer_map[layer.Name]
+                    layer_index = special_layer_map[slot.Name]
 
-            set_slot_indices.extend([layer_index] * size)
+            set_slot_indices.extend([layer_index] * meshSet.Size)
 
         layers.attribute.data.foreach_set("value", set_slot_indices)
 
@@ -177,7 +179,7 @@ class MeshConverter:
         group_indices = []
         set_offset = 0
 
-        for group_index, group in enumerate(zip(mesh_data.GroupNames, mesh_data.GroupSizes)):
+        for group_index, group in enumerate(zip(mesh_data.GroupNames, mesh_data.GroupSetCounts)):
 
             if group_index == 0:
                 meshgroup = groups[0]
@@ -188,7 +190,7 @@ class MeshConverter:
 
             for i in range(group[1]):
                 group_indices.extend(
-                    [group_index] * mesh_data.SetSizes[i + set_offset])
+                    [group_index] * mesh_data.MeshSets[set_offset + i].Size)
             set_offset += group[1]
 
         groups.attribute.data.foreach_set("value", group_indices)

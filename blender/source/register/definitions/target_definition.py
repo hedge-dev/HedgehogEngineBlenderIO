@@ -8,11 +8,11 @@ from . import (
 
 
 class TargetDataVersions:
+    sample_chunk: int
+    '''Sample chunk version (1-2)'''
+
     material: int
     '''Material data version (1-3)'''
-
-    material_sample_chunk: int
-    '''Material sample chunk version (1-2)'''
 
     bullet_mesh: int | None
     '''Bulletmesh version (3)'''
@@ -22,20 +22,20 @@ class TargetDataVersions:
 
     def __init__(
             self,
+            sample_chunk: int,
             material: int,
-            material_sample_chunk: int,
             bullet_mesh: int | None,
             point_cloud: int | None):
         self.material = material
-        self.material_sample_chunk = material_sample_chunk
+        self.sample_chunk = sample_chunk
         self.bullet_mesh = bullet_mesh
         self.point_cloud = point_cloud
 
     @staticmethod
     def parse_json_data(data: JSONWrapper):
         return TargetDataVersions(
+            data["SampleChunk"],
             data["Material"],
-            data["MaterialSampleChunk"],
             data["BulletMesh"],
             data["PointCloud"],
         )
@@ -52,6 +52,7 @@ class TargetDefinition:
 
     uses_ntsp: bool
     bone_orientation: str
+    supports_topology: bool
 
     has_preferences: bool
 
@@ -71,7 +72,8 @@ class TargetDefinition:
             release_year: int,
             hedgehog_engine_version: int,
             uses_ntsp: bool,
-            bone_orientation: str):
+            bone_orientation: str,
+            supports_topology: bool):
 
         self.directory = directory
         self.identifier = identifier
@@ -82,6 +84,7 @@ class TargetDefinition:
 
         self.uses_ntsp = uses_ntsp
         self.bone_orientation = bone_orientation
+        self.supports_topology = supports_topology
 
         self.has_preferences = uses_ntsp
 
@@ -103,6 +106,7 @@ class TargetDefinition:
             data["HedgehogEngine"],
             data["UsesNTSP"],
             data["BoneOrientation"],
+            data["SupportsTopology"],
         )
 
         result.data_versions = data.parse_property(

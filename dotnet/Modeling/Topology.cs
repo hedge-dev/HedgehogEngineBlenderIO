@@ -1,8 +1,8 @@
 ﻿namespace HEIO.NET.Modeling
 {
-    internal enum Topology
+    public enum Topology
     {
-        TriangleList,
-        TriangleStrips
+        TriangleStrips,
+        TriangleList
     }
 }

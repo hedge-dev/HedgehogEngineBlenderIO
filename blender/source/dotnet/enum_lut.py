@@ -43,3 +43,11 @@ BULLET_PRIMITIVE_SHAPE_TYPE = {
     'Cylinder': 'CYLINDER',
     'CYLINDER': 'Cylinder'
 }
+
+TOPOLOGY = {
+    'TriangleStrips' : 'TRIANGLE_STRIPS',
+    'TRIANGLE_STRIPS' : 'TriangleStrips',
+
+    'TriangleList' : 'TRIANGLE_LIST',
+    'TRIANGLE_LIST' : 'TriangleList',
+}

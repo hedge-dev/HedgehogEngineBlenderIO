@@ -305,6 +305,16 @@ class HEIO_CollisionPrimitiveList(BaseList):
 
 class HEIO_Mesh(bpy.types.PropertyGroup):
 
+    force_enable_8_weights: BoolProperty(
+        name="Force enable 8-weight export",
+        description="Force enable models to export with 8 weights instead of 4. Does not change material parameters"
+    )
+
+    force_enable_multi_tangent: BoolProperty(
+        name="Force enable multi tangent export",
+        description="Force enable models to export with a second tangent set (uses third UV map). Does not change material parameters"
+    )
+
     groups: PointerProperty(
         type=HEIO_MeshGroupList
     )

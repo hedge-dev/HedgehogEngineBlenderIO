@@ -50,5 +50,10 @@
       "Type": "Boolean",
       "Description": "Unknown"
     }
+  },
+  "Defaults": {
+    "Material":{},
+    "Model": {},
+    "TerrainModel": {}
   }
 }

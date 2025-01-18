@@ -31,8 +31,8 @@ def print_resolve_info(context: bpy.types.Context, resolve_infos: list):
 
     if resolve_info.UnresolvedFiles.Length > 0:
 
-        write(
-            f"{resolve_info.UnresolvedFiles.Length} files could not be found. (You can attempt to reimport textures using [TODO])\n\n")
+        write(f"{resolve_info.UnresolvedFiles.Length} files could not be found.")
+        write("(You can attempt to reimport textures using the \"Reimport\" operator in the viewport tools)\n\n")
 
         if resolve_info.PackedDependencies.Length > 0:
             write(
@@ -63,8 +63,8 @@ def print_resolve_info(context: bpy.types.Context, resolve_infos: list):
             f"{resolve_info.MissingStreamedImages.Length} images are streamed and could not be loaded,"
             " either because the streaming package (.ntsp file) was not found, or because the"
             " streaming package does not contain the texture that is being looked for.\n"
-            "Please make sure that the NTSP filepath in the addon configuration is correctly"
-            "set. You can attempt to reimport textures using [TODO].\n\n"))
+            "Please make sure that the NTSP filepath in the addon configuration is correctly set.\n"
+            "You can attempt to reimport textures using the \"Reimport\" operator in the viewport tools.\n\n"))
 
         if resolve_info.UnresolvedNTSPFiles.Length > 0:
             write("Following streaming packages were not found altogether:\n")

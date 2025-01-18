@@ -369,6 +369,23 @@ class HEIO_PT_Mesh(PropertiesPanel):
             'Collision flags'
         )
 
+    @staticmethod
+    def draw_export_panel(
+            layout: bpy.types.UILayout,
+            props):
+
+        header, body = layout.panel("heio_mesh_export", default_closed=True)
+
+        header.label(text="Export settings")
+        if not body:
+            return None
+
+        body.use_property_split = False
+        body.use_property_decorate = False
+
+        body.prop(props, "force_enable_8_weights")
+        body.prop(props, "force_enable_multi_tangent")
+
     # === overriden methods === #
 
     @classmethod
@@ -386,6 +403,11 @@ class HEIO_PT_Mesh(PropertiesPanel):
     def draw_panel(cls, layout, context):
 
         mesh = context.active_object.data
+
+        HEIO_PT_Mesh.draw_export_panel(
+            layout,
+            mesh.heio_mesh
+        )
 
         body = HEIO_PT_Mesh.draw_mesh_info_panel(
             layout,

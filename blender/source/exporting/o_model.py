@@ -2,7 +2,7 @@ import os
 import bpy
 from mathutils import Vector, Matrix
 
-from . import o_transform, o_material, o_modelmesh, o_object_manager
+from . import o_enum, o_transform, o_material, o_modelmesh, o_object_manager, o_sca_parameters
 from ..register.definitions import TargetDefinition
 from ..dotnet import HEIO_NET, SharpNeedle, System
 from ..exceptions import HEIODevException, HEIOUserException
@@ -58,6 +58,7 @@ class RawVertex:
 
             o_transform.bpy_to_net_position(normal),
             System.VECTOR3(0, 0, 0),
+            System.VECTOR3(0, 0, 0),
             weights
         )
 
@@ -68,59 +69,58 @@ class RawMeshData:
     triangle_indices: list[int]
 
     polygon_tangents: list[Vector]
+    polygon_tangents2: list[Vector] | None
 
     textureCoordinates: list[any]
     colors: list[any]
 
-    use_byte_colors: bool
-
-    set_materials: list[any]
-    set_slots: list[any]
-    set_sizes: list[int]
-
+    mesh_sets: list[any]
     group_names: list[str]
-    group_sizes: list[int]
+    group_set_counts: list[int]
 
     def __init__(self):
         self.vertices = []
         self.triangle_indices = []
 
         self.polygon_tangents = []
+        self.polygon_tangents2 = None
 
         self.textureCoordinates = []
         self.colors = []
-        self.use_byte_colors = False
 
-        self.set_materials = []
-        self.set_slots = []
-        self.set_sizes = []
-
+        self.mesh_sets = []
         self.group_names = []
-        self.group_sizes = []
+        self.group_set_counts = []
 
     def convert_to_net(self, matrix: tuple[Matrix, Matrix] | None, weight_index_map: dict[str, int] | None):
 
         polygon_tangents = self.polygon_tangents
+        polygon_tangents2 = self.polygon_tangents2
 
         if matrix is not None:
             normal_matrix = matrix[1]
             polygon_tangents = [normal_matrix @ t for t in polygon_tangents]
 
+            if polygon_tangents2 is not None:
+                polygon_tangents2 = [normal_matrix @ t for t in polygon_tangents2]
+
         return HEIO_NET.MESH_DATA(
-            "",
-            [v.convert_to_net(matrix, weight_index_map)
-             for v in self.vertices],
+            "", # name is only important for import
+
+            [v.convert_to_net(matrix, weight_index_map) for v in self.vertices],
             self.triangle_indices,
             None,
+
             [o_transform.bpy_to_net_position(t) for t in polygon_tangents],
+            [o_transform.bpy_to_net_position(t) for t in polygon_tangents2]
+                if polygon_tangents2 is not None else None,
+
             self.textureCoordinates,
             self.colors,
-            self.use_byte_colors,
-            self.set_materials,
-            self.set_slots,
-            self.set_sizes,
+
+            self.mesh_sets,
             self.group_names,
-            self.group_sizes
+            self.group_set_counts
         )
 
 
@@ -131,8 +131,11 @@ class ModelProcessor:
     _object_manager: o_object_manager.ObjectManager
     _modelmesh_manager: o_modelmesh.ModelMeshManager
 
+    _auto_sca_parameters: bool
     _use_pose_bone_matrices: bool
     _bone_orientation: str
+    _topology: any
+    _optimized_vertex_data: bool
 
     _meshdata_lut: dict[o_modelmesh.ModelMesh, RawMeshData | None]
     _output_queue: list
@@ -144,16 +147,23 @@ class ModelProcessor:
             material_processor: o_material.MaterialProcessor,
             object_manager: o_object_manager.ObjectManager,
             modelmesh_manager: o_modelmesh.ModelMeshManager,
+            auto_sca_parameters: bool,
             use_pose_bone_matrices: bool,
-            bone_orientation: str):
+            bone_orientation: str,
+            topology: any,
+            optimized_vertex_data: bool
+            ):
 
         self._target_definition = target_definition
         self._material_processor = material_processor
         self._object_manager = object_manager
         self._modelmesh_manager = modelmesh_manager
-        self._bone_orientation = bone_orientation
 
+        self._auto_sca_parameters = auto_sca_parameters
         self._use_pose_bone_matrices = use_pose_bone_matrices
+        self._bone_orientation = bone_orientation
+        self._topology = topology
+        self._optimized_vertex_data = optimized_vertex_data
 
         self._meshdata_lut = {}
         self._output_queue = []
@@ -373,7 +383,7 @@ class ModelProcessor:
                 [System.VECTOR2(0, 0)] * len(loop_order))
             up_vec = Vector((0, 0, 1))
             raw_meshdata.polygon_tangents = [
-                n.cross(up_vec) for n in raw_meshdata.polygon_normals]
+                n.vector.cross(up_vec) for n in mesh.corner_normals]
 
         else:
             for uv_layer in mesh.uv_layers:
@@ -390,37 +400,51 @@ class ModelProcessor:
 
         colors, byte_colors = self._convert_colors(mesh, loop_order)
         raw_meshdata.colors.append(colors)
-        raw_meshdata.use_byte_colors = byte_colors
 
         _, current_group, current_layer, current_material = polygon_mapping[0]
         group_size = 0
         set_size = 0
+
+        def add_set():
+            if set_size == 0:
+                return
+
+            materaial = materials[current_material]
+            sn_material = self._material_processor.get_converted_material(materaial)
+
+            def get_param_or(fallback, param_name):
+                if fallback:
+                    return fallback
+
+                parameter = materaial.heio_material.parameters.find_next(param_name, 0, set(["BOOLEAN"]))
+                if parameter is not None:
+                    return parameter.boolean_value
+
+                return False
+
+            enable_8_weight = get_param_or(modelmesh.obj.data.heio_mesh.force_enable_8_weights, "enable_max_bone_influences_8")
+            enable_multi_tangent = get_param_or(modelmesh.obj.data.heio_mesh.force_enable_multi_tangent, "enable_multi_tangent_space")
+
+            raw_meshdata.mesh_sets.append(HEIO_NET.MESH_DATA_SET_INFO(
+                byte_colors,
+                enable_8_weight,
+                enable_multi_tangent,
+                SharpNeedle.RESOURCE_REFERENCE[SharpNeedle.MATERIAL](sn_material),
+                SharpNeedle.MESH_SLOT(layer_names[current_layer]),
+                set_size
+            ))
+
+            nonlocal group_size
+            group_size += 1
 
         def add_group():
             if group_size == 0:
                 return
 
             raw_meshdata.group_names.append(group_names[current_group])
-            raw_meshdata.group_sizes.append(group_size)
-
-        def add_set():
-            if set_size == 0:
-                return
-
-            sn_material = self._material_processor.get_converted_material(materials[current_material])
-
-            raw_meshdata.set_materials.append(
-                SharpNeedle.RESOURCE_REFERENCE[SharpNeedle.MATERIAL](sn_material))
-
-            raw_meshdata.set_slots.append(
-                SharpNeedle.MESH_SLOT(layer_names[current_layer]))
-
-            raw_meshdata.set_sizes.append(set_size)
+            raw_meshdata.group_set_counts.append(group_size)
 
         for _, poly_group, poly_layer, poly_material in polygon_mapping:
-            if poly_group != current_group:
-                add_group()
-                group_size = 0
 
             if (poly_group != current_group
                 or current_layer != poly_layer
@@ -428,14 +452,17 @@ class ModelProcessor:
                 add_set()
                 set_size = 0
 
-            group_size += 1
+            if poly_group != current_group:
+                add_group()
+                group_size = 0
+
             set_size += 1
             current_group = poly_group
             current_layer = poly_layer
             current_material = poly_material
 
-        add_group()
         add_set()
+        add_group()
 
         return raw_meshdata
 
@@ -458,6 +485,74 @@ class ModelProcessor:
     def get_meshdata(self, obj: bpy.types.Object):
         modelmesh = self._modelmesh_manager.obj_mesh_mapping[obj]
         return self._meshdata_lut[modelmesh]
+
+    def _get_model_nodes(self, armature_obj):
+        weight_index_map: dict[str, int] = {}
+        model_nodes = []
+
+        bone_orientation = self._bone_orientation
+        if bone_orientation == 'AUTO':
+            bone_orientation = self._target_definition.bone_orientation
+
+        if bone_orientation == 'XY':
+            matrix_remap = o_transform.bpy_bone_xy_to_net_matrix
+        elif bone_orientation == 'XZ':
+            matrix_remap = o_transform.bpy_bone_xz_to_net_matrix
+        else:  # ZNX
+            matrix_remap = o_transform.bpy_bone_znx_to_net_matrix
+
+        for i, bone in enumerate(armature_obj.pose.bones):
+            weight_index_map[bone.name] = i
+
+            if self._use_pose_bone_matrices:
+                matrix = bone.matrix
+            else:
+                matrix = bone.bone.matrix_local
+
+            node = SharpNeedle.MODEL.Node()
+            node.Name = bone.name
+
+            if bone.parent is not None:
+                node.ParentIndex = weight_index_map[bone.parent.name]
+            else:
+                node.ParentIndex = -1
+
+            net_matrix = matrix_remap(matrix)
+            valid, net_matrix = System.MATRIX4X4.Invert(
+                net_matrix, System.MATRIX4X4.Identity)
+            if not valid:
+                raise HEIOUserException(
+                    f"Bone \"{bone.name}\" on armature \"{armature_obj.data.name}\" has an invalid matrix! Make sure all scale channels are not 0")
+            node.Transform = net_matrix
+
+            model_nodes.append(node)
+
+        return weight_index_map, model_nodes
+
+    def _get_sca_parameters(self, root, model_nodes):
+        if self._target_definition.data_versions.sample_chunk < 2:
+            return None
+
+        sca_parameters = []
+
+        defaults = self._target_definition.sca_parameters.model_defaults
+        if model_nodes is None:
+            defaults = self._target_definition.sca_parameters.terrain_defaults
+
+        if root is not None and root.type == 'ARMATURE':
+            for i, bone in enumerate(root.pose.bones):
+                node = o_sca_parameters.convert_to_model_node_prm(bone.bone.heio_node.sca_parameters, i, defaults)
+                sca_parameters.append(node)
+
+        elif root is not None and root.type == 'MESH':
+            node = o_sca_parameters.convert_to_model_node_prm(root.data.heio_mesh.sca_parameters, 0, defaults)
+            sca_parameters.append(node)
+
+        else:
+            node = o_sca_parameters.convert_to_model_node_prm(None, 0, defaults)
+            sca_parameters.append(node)
+
+        return [x for x in sca_parameters if x is not None]
 
     def enqueue_compile_model(self, root: bpy.types.Object | None, children: list[bpy.types.Object] | None, mode: str = 'AUTO', name: str | None = None):
 
@@ -488,53 +583,16 @@ class ModelProcessor:
         model_nodes = None
 
         if root is not None and root.type == 'ARMATURE' and mode != 'TERRAIN':
-            weight_index_map: dict[str, int] = {}
-            model_nodes = []
-
-            bone_orientation = self._bone_orientation
-            if bone_orientation == 'AUTO':
-                bone_orientation = self._target_definition.bone_orientation
-
-            if bone_orientation == 'XY':
-                matrix_remap = o_transform.bpy_bone_xy_to_net_matrix
-            elif bone_orientation == 'XZ':
-                matrix_remap = o_transform.bpy_bone_xz_to_net_matrix
-            else:  # ZNX
-                matrix_remap = o_transform.bpy_bone_znx_to_net_matrix
-
-            for i, bone in enumerate(root.pose.bones):
-                weight_index_map[bone.name] = i
-
-                if self._use_pose_bone_matrices:
-                    matrix = bone.matrix
-                else:
-                    matrix = bone.bone.matrix_local
-
-                node = SharpNeedle.MODEL.Node()
-                node.Name = bone.name
-
-                if bone.parent is not None:
-                    node.ParentIndex = weight_index_map[bone.parent.name]
-                else:
-                    node.ParentIndex = -1
-
-                net_matrix = matrix_remap(matrix)
-                valid, net_matrix = System.MATRIX4X4.Invert(
-                    net_matrix, System.MATRIX4X4.Identity)
-                if not valid:
-                    raise HEIOUserException(
-                        f"Bone \"{bone.name}\" on armature \"{root.data.name}\" has an invalid matrix! Make sure all scale channels are not 0")
-                node.Transform = net_matrix
-
-                model_nodes.append(node)
+            weight_index_map, model_nodes = self._get_model_nodes(root)
 
         elif mode == 'MODEL':
 
             node = SharpNeedle.MODEL.Node()
-            node.Name = bone.name
+            node.Name = name
             node.ParentIndex = -1
             node.Transform = System.MATRIX4X4.Identity
             model_nodes = [node]
+
 
         if root is None:
             parent_matrix = Matrix.Identity(4)
@@ -565,10 +623,13 @@ class ModelProcessor:
         if len(sn_meshdata) == 0:
             return None
 
+        sca_parameters = self._get_sca_parameters(root, model_nodes)
+
         model_compile_data = HEIO_NET.MESH_COMPILE_DATA(
             name,
             sn_meshdata,
-            model_nodes
+            model_nodes,
+            sca_parameters
         )
 
         #model_compile_data.SaveToJson("C:\\Users\\Justin113D\\Downloads\\New Folder")
@@ -580,7 +641,13 @@ class ModelProcessor:
 
     def compile_output(self):
 
-        models = HEIO_NET.MESH_COMPILE_DATA.ToHEModels(self._output_queue)
+        models = HEIO_NET.MESH_COMPILE_DATA.ToHEModels(
+            self._output_queue,
+            self._target_definition.hedgehog_engine_version == 2,
+            self._topology,
+            self._optimized_vertex_data
+        )
+
         for model in models:
             self._output[model.Name] = model
         self._output_queue.clear()

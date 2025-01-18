@@ -78,5 +78,20 @@
       "Type": "Boolean",
       "Description": "Unknown"
     }
+  },
+  "Defaults": {
+    "Material":{
+      "VatVolum": false
+    },
+    "Model": {
+      "GIOcclus": true,
+      "TerrainB": false,
+      "ColorMas": false
+    },
+    "TerrainModel": {
+      "GIOcclus": true,
+      "TerrainB": false,
+      "ColorMas": false
+    }
   }
 }

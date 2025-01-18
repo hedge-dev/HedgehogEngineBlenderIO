@@ -1,9 +1,12 @@
 ﻿using HEIO.NET.Modeling.GPU;
 using J113D.Common;
 using SharpNeedle.Framework.HedgehogEngine.Mirage;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
+using System.Runtime.Intrinsics.Arm;
 
 namespace HEIO.NET.Modeling.ConvertFrom
 {
@@ -18,7 +21,7 @@ namespace HEIO.NET.Modeling.ConvertFrom
         private readonly List<List<Vector2>> _tempTexcoords = [];
         private readonly List<List<Vector4>> _tempColors = [];
         private readonly List<int> _tempTriangles = [];
-        private readonly List<int> _tempSetSizes = [];
+        private int _tempSetOffset = 0;
 
         public MeshData ResultData { get; }
 
@@ -34,10 +37,7 @@ namespace HEIO.NET.Modeling.ConvertFrom
                 _mergeComparer = Vertex.GetMergeComparer(mergeDistance, !mergeSplitEdges, morphCount > 0);
             }
 
-            ResultData = new(name, _mergeSplitEdges)
-            {
-                UseByteColors = true
-            };
+            ResultData = new(name, _mergeSplitEdges);
         }
 
 
@@ -54,6 +54,7 @@ namespace HEIO.NET.Modeling.ConvertFrom
                     _morphCount,
                     vertex.Normal,
                     vertex.Tangent,
+                    gpuMesh.MultiTangent ? vertex.Tangent2 : vertex.Tangent,
                     [.. vertex.Weights
                         .Where(x => x.Weight != 0)
                         .Select(x => new VertexWeight(gpuMesh.BoneIndices[x.Index], x.Weight))
@@ -67,59 +68,74 @@ namespace HEIO.NET.Modeling.ConvertFrom
         public void AddGroupInfo(string groupname, int groupSize)
         {
             ResultData.GroupNames.Add(groupname);
-            ResultData.GroupSizes.Add(groupSize);
+            ResultData.GroupSetCounts.Add(groupSize);
         }
 
         public void AddMesh(Mesh mesh, bool addVertices = true)
         {
-            ResultData.SetMaterials.Add(mesh.Material);
-            ResultData.SetSlots.Add(mesh.Slot);
-
             GPUMesh gpuMesh = MeshConverter.ConvertToGPUMesh(mesh, _topology);
 
-            if(!gpuMesh.UseByteColors)
+            ResultData.MeshSets.Add(new(
+                gpuMesh.UseByteColors,
+                gpuMesh.Vertices[0].Weights.Length > 4,
+                gpuMesh.MultiTangent,
+                mesh.Material,
+                mesh.Slot,
+                gpuMesh.Triangles.Count / 3
+            ));
+
+            if(gpuMesh.MultiTangent && ResultData.PolygonTangents != null && ResultData.PolygonTangents2 == null)
             {
-                ResultData.UseByteColors = false;
+                ResultData.PolygonTangents2 = new List<Vector3>(ResultData.PolygonTangents);
+            }
+
+            void AddBase<T, W>(IList<W> output, int fallbackLength, T fallback) where W : IList<T>
+            {
+                IEnumerable<T> baseEnum = output.Count == 0 
+                    ? Enumerable.Range(0, fallbackLength).Select(x => fallback) 
+                    : output[0];
+
+                if(new List<T>(baseEnum) is W w)
+                {
+                    output.Add(w);
+                }
+                else
+                {
+                    throw new UnreachableException();
+                }
             }
 
             while(gpuMesh.TexcoordSets > ResultData.TextureCoordinates.Count)
             {
-                ResultData.TextureCoordinates.Add([.. Enumerable.Range(0, ResultData.TriangleIndices.Count).Select(x => default(Vector2))]);
-                _tempTexcoords.Add([.. Enumerable.Range(0, _tempTriangles.Count).Select(x => default(Vector2))]);
+                AddBase(ResultData.TextureCoordinates, ResultData.TriangleIndices.Count, default(Vector2));
+                AddBase(_tempTexcoords, _tempTriangles.Count, default(Vector2));
             }
 
             while(gpuMesh.ColorSets > ResultData.Colors.Count)
             {
-                ResultData.Colors.Add([.. Enumerable.Range(0, ResultData.TriangleIndices.Count).Select(x => Vector4.One)]);
-                _tempColors.Add([.. Enumerable.Range(0, _tempTriangles.Count).Select(x => Vector4.One)]);
+                AddBase(ResultData.Colors, ResultData.TriangleIndices.Count, Vector4.One);
+                AddBase(_tempColors, _tempTriangles.Count, Vector4.One);
             }
 
             _tempTriangles.AddRange(gpuMesh.Triangles.Select(x => x + _tempVertices.Count));
-            _tempSetSizes.Add(gpuMesh.Triangles.Count / 3);
 
-            for(int i = 0; i < ResultData.TextureCoordinates.Count; i++)
+            void AddNew<T>(List<List<T>> output, int inputSets, int outputSets, Func<GPUVertex, T[]> getValueArray, T fallback)
             {
-                if(i < gpuMesh.TexcoordSets)
+                for(int i = 0; i < outputSets; i++)
                 {
-                    _tempTexcoords[i].AddRange(gpuMesh.Triangles.Select(x => gpuMesh.Vertices[x].TextureCoordinates[i]));
-                }
-                else
-                {
-                    _tempTexcoords[i].AddRange(Enumerable.Range(0, gpuMesh.Triangles.Count).Select(x => default(Vector2)));
+                    if(i < inputSets)
+                    {
+                        output[i].AddRange(gpuMesh.Triangles.Select(x => getValueArray(gpuMesh.Vertices[x])[i]));
+                    }
+                    else
+                    {
+                        output[i].AddRange(Enumerable.Range(0, gpuMesh.Triangles.Count).Select(x => fallback));
+                    }
                 }
             }
 
-            for(int i = 0; i < ResultData.Colors.Count; i++)
-            {
-                if(i < gpuMesh.ColorSets)
-                {
-                    _tempColors[i].AddRange(gpuMesh.Triangles.Select(x => gpuMesh.Vertices[x].Colors[i]));
-                }
-                else
-                {
-                    _tempColors[i].AddRange(Enumerable.Range(0, gpuMesh.Triangles.Count).Select(x => Vector4.One));
-                }
-            }
+            AddNew(_tempTexcoords, gpuMesh.TexcoordSets, ResultData.TextureCoordinates.Count, (v) => v.TextureCoordinates, default);
+            AddNew(_tempColors, gpuMesh.ColorSets, ResultData.Colors.Count, (v) => v.Colors, Vector4.One);
 
             if(addVertices)
             {
@@ -174,11 +190,11 @@ namespace HEIO.NET.Modeling.ConvertFrom
                 if(t1 == t2 || t2 == t3 || t3 == t1 || !usedTriangles.Add(new(t1, t2, t3)))
                 {
                     int offset = 0;
-                    for(int j = 0; j < _tempSetSizes.Count; offset += _tempSetSizes[j], j++)
+                    for(int j = _tempSetOffset; j < ResultData.MeshSets.Count; offset += ResultData.MeshSets[j].Size, j++)
                     {
-                        if(triangleIndex - offset < _tempSetSizes[j])
+                        if(triangleIndex - offset < ResultData.MeshSets[j].Size)
                         {
-                            _tempSetSizes[j]--;
+                            ResultData.MeshSets[j].Size--;
                             break;
                         }
                     }
@@ -196,6 +212,7 @@ namespace HEIO.NET.Modeling.ConvertFrom
                     ResultData.TriangleIndices.Add(vertexIndexOffset + t1);
                     ResultData.PolygonNormals?.Add(vertex.Normal);
                     ResultData.PolygonTangents?.Add(vertex.Tangent);
+                    ResultData.PolygonTangents2?.Add(vertex.Tangent2);
 
                     for(int k = 0; k < ResultData.TextureCoordinates.Count; k++)
                     {
@@ -212,14 +229,9 @@ namespace HEIO.NET.Modeling.ConvertFrom
                 triangleIndex++;
             }
 
-            foreach(int setSize in _tempSetSizes)
-            {
-                ResultData.SetSizes.Add(setSize);
-            }
-
             _tempVertices.Clear();
-            _tempSetSizes.Clear();
             _tempTriangles.Clear();
+            _tempSetOffset = ResultData.MeshSets.Count;
 
             foreach(List<Vector2> texCoords in _tempTexcoords)
             {
@@ -330,3 +342,4 @@ namespace HEIO.NET.Modeling.ConvertFrom
         }
     }
 }
+

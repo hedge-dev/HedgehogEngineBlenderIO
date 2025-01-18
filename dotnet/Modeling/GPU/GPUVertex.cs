@@ -11,6 +11,8 @@ namespace HEIO.NET.Modeling.GPU
 
         public Vector3 Tangent { get; set; }
 
+        public Vector3 Tangent2 { get; set; }
+
         public Vector2[] TextureCoordinates { get; set; }
 
         public Vector4[] Colors { get; set; }
@@ -25,6 +27,7 @@ namespace HEIO.NET.Modeling.GPU
             Position = default;
             Normal = default;
             Tangent = default;
+            Tangent2 = default;
 
             TextureCoordinates = new Vector2[texcoordSets];
             Colors = new Vector4[colorSets];

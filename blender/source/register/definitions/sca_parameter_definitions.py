@@ -63,18 +63,33 @@ class SCAParameterDefinition:
 
         return result
 
+
 class SCAParameterDefinitionCollection:
 
     material: SCAParameterDefinition
     model: SCAParameterDefinition
 
+    material_defaults: dict[str, any]
+    model_defaults: dict[str, any]
+    terrain_defaults: dict[str, any]
+
     def __init__(self):
         self.material = None
         self.model = None
+        self.material_defaults = {}
+        self.model_defaults = {}
+        self.terrain_defaults = {}
 
     @staticmethod
     def parse_json_data(data: JSONWrapper):
         result = SCAParameterDefinitionCollection()
         result.material = data.parse_property("Material", SCAParameterDefinition)
         result.model = data.parse_property("Model", SCAParameterDefinition)
+
+        defaults = data["Defaults"]
+
+        result.material_defaults = {v:k for v, k in defaults["Material"]}
+        result.model_defaults = {v:k for v, k in defaults["Model"]}
+        result.terrain_defaults = {v:k for v, k in defaults["TerrainModel"]}
+
         return result

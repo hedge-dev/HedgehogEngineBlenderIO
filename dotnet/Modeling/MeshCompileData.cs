@@ -10,20 +10,25 @@ namespace HEIO.NET.Modeling
     public readonly struct MeshCompileData
     {
         public string Name { get; }
+
         public MeshData[] MeshData { get; }
+
         public Model.Node[]? Nodes { get; }
 
+        public SampleChunkNode[]? SCAParameters { get; }
+
         [JsonConstructor]
-        public MeshCompileData(string name, MeshData[] meshData, Model.Node[]? nodes)
+        public MeshCompileData(string name, MeshData[] meshData, Model.Node[]? nodes, SampleChunkNode[]? scaParameters)
         {
             Name = name;
             MeshData = meshData;
             Nodes = nodes;
+            SCAParameters = scaParameters;
         }
 
-        public static ModelBase[] ToHEModels(MeshCompileData[] compileData)
+        public static ModelBase[] ToHEModels(MeshCompileData[] compileData, bool hedgehogEngine2, Topology topology, bool optimizedVertexData)
         {
-            return ModelConverter.CompileMeshData(compileData);
+            return ModelConverter.CompileMeshData(compileData, hedgehogEngine2, topology, optimizedVertexData);
         }
 
         public void SaveToJson(string directory)

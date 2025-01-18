@@ -34,5 +34,10 @@
       "Type": "Boolean",
       "Description": "Characters are visible behind the mesh"
     }
+  },
+  "Defaults": {
+    "Material":{},
+    "Model": {},
+    "TerrainModel": {}
   }
 }

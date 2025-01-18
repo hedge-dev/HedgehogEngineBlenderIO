@@ -6,14 +6,12 @@ namespace HEIO.NET.Modeling.ConvertTo
     internal readonly struct TriangleData
     {
         public readonly MeshData data;
-        public readonly int offset;
-        public readonly int size;
+        public readonly int setIndex;
 
-        public TriangleData(MeshData data, int offset, int size)
+        public TriangleData(MeshData data, int setIndex)
         {
             this.data = data;
-            this.offset = offset;
-            this.size = size;
+            this.setIndex = setIndex;
         }
     }
 

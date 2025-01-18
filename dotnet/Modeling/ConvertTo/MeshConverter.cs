@@ -5,7 +5,6 @@ using SharpNeedle.Framework.HedgehogEngine.Mirage;
 using SharpNeedle.Structs;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Numerics;
@@ -14,9 +13,13 @@ namespace HEIO.NET.Modeling.ConvertTo
 {
     internal static class MeshConverter
     {
-        public static Mesh ConvertToMesh(GPUMesh gpuMesh)
+        public static Mesh ConvertToMesh(GPUMesh gpuMesh, bool optimizedVertexData)
         {
-            List<VertexElement> elements = EvaluateVertexElements(gpuMesh, gpuMesh.Vertices[0].Weights.Length / 4, out ushort vertexSize);
+            List<VertexElement> elements = EvaluateVertexElements(
+                gpuMesh, 
+                gpuMesh.Vertices[0].Weights.Length / 4, 
+                optimizedVertexData, 
+                out ushort vertexSize);
 
             return new()
             {
@@ -31,9 +34,15 @@ namespace HEIO.NET.Modeling.ConvertTo
             };
         }
 
-        private static List<VertexElement> EvaluateVertexElements(GPUMesh gpuMesh, int weightSets, out ushort vertexSize)
+        private static List<VertexElement> EvaluateVertexElements(GPUMesh gpuMesh, int weightSets, bool optimizedVertexData, out ushort vertexSize)
         {
-            VertexFormatSetup formatSetup = VertexFormatSetups._optimized;
+            VertexFormatSetup formatSetup = optimizedVertexData
+                ? (gpuMesh.BlendIndex16
+                    ? VertexFormatSetups._optimizedV6
+                    : VertexFormatSetups._optimized)
+                : (gpuMesh.BlendIndex16
+                    ? VertexFormatSetups._fullV6
+                    : VertexFormatSetups._full);
 
             List<(VertexType, VertexFormat, byte)> info = [
                 (VertexType.Position, formatSetup.position, 0),
@@ -42,6 +51,11 @@ namespace HEIO.NET.Modeling.ConvertTo
                 (VertexType.Binormal, formatSetup.normal, 0),
             ];
 
+            if(gpuMesh.MultiTangent)
+            {
+                info.Add((VertexType.Tangent, formatSetup.normal, 1));
+                info.Add((VertexType.Binormal, formatSetup.normal, 1));
+            }
 
             for(byte i = 0; i < gpuMesh.TexcoordSets; i++)
             {
@@ -118,8 +132,6 @@ namespace HEIO.NET.Modeling.ConvertTo
                 {
                     case VertexType.Position:
                     case VertexType.Normal:
-                    case VertexType.Tangent:
-                    case VertexType.Binormal:
                         Action<BinaryObjectWriter, Vector3> vec3Writer = VertexFormatEncoder.GetVector3Encoder(element.Format);
 
                         if(element.UsageIndex != 0)
@@ -131,21 +143,43 @@ namespace HEIO.NET.Modeling.ConvertTo
                         {
                             callback = (BinaryObjectWriter writer, GPUVertex vtx) => vec3Writer(writer, vtx.Position);
                         }
-                        else if(element.Type == VertexType.Normal)
+                        else // normal
                         {
                             callback = (BinaryObjectWriter writer, GPUVertex vtx) => vec3Writer(writer, vtx.Normal);
                         }
-                        else if(element.Type == VertexType.Tangent)
+
+                        break;
+
+                    case VertexType.Tangent:
+                    case VertexType.Binormal:
+                        if(element.UsageIndex > 1)
                         {
-                            callback = (BinaryObjectWriter writer, GPUVertex vtx) => vec3Writer(writer, vtx.Tangent);
+                            throw new InvalidOperationException($"Writing \"{element.Type}\" with usage index {element.UsageIndex} is not supported!");
                         }
-                        else if(element.Type == VertexType.Binormal)
+
+                        Action<BinaryObjectWriter, Vector3> vec3Writer2 = VertexFormatEncoder.GetVector3Encoder(element.Format);
+
+                        if(element.UsageIndex == 0)
                         {
-                            callback = (BinaryObjectWriter writer, GPUVertex vtx) => vec3Writer(writer, Vector3.Cross(vtx.Normal, vtx.Tangent));
+                            if(element.Type == VertexType.Tangent)
+                            {
+                                callback = (BinaryObjectWriter writer, GPUVertex vtx) => vec3Writer2(writer, vtx.Tangent);
+                            }
+                            else // bitangent
+                            {
+                                callback = (BinaryObjectWriter writer, GPUVertex vtx) => vec3Writer2(writer, Vector3.Cross(vtx.Normal, vtx.Tangent));
+                            }
                         }
                         else
                         {
-                            throw new UnreachableException();
+                            if(element.Type == VertexType.Tangent)
+                            {
+                                callback = (BinaryObjectWriter writer, GPUVertex vtx) => vec3Writer2(writer, vtx.Tangent2);
+                            }
+                            else // bitangent
+                            {
+                                callback = (BinaryObjectWriter writer, GPUVertex vtx) => vec3Writer2(writer, Vector3.Cross(vtx.Normal, vtx.Tangent2));
+                            }
                         }
 
                         break;
@@ -195,7 +229,7 @@ namespace HEIO.NET.Modeling.ConvertTo
                         throw new InvalidOperationException($"Writing \"{element.Type}\" is not supported!");
                 }
 
-                result.Add(callback);    
+                result.Add(callback);
             }
 
             return [.. result];

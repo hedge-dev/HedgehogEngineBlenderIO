@@ -9,14 +9,13 @@ from bpy.props import (
 
 from .base import HEIOBaseFileSaveOperator
 from .. import definitions
-from ...dotnet import HEIO_NET, SharpNeedle
 from ...exceptions import HEIOUserException
 from ...exporting import (
+    o_enum,
     o_object_manager,
     o_modelmesh,
     o_collisionmesh,
     o_material,
-    o_image,
     o_pointcloud,
     o_model
 )
@@ -155,6 +154,12 @@ class ExportMaterialOperator(ExportObjectSelectionOperator):
         default="AUTO"
     )
 
+    auto_sca_parameters_material: BoolProperty(
+        name="Automatic SCA parameters",
+        description="Add default SCA parameters to the material if missing (defined per target game)",
+        default=True
+    )
+
     def draw_panel_material(self):
         header, body = self.layout.panel(
             "HEIO_export_material", default_closed=False)
@@ -164,6 +169,7 @@ class ExportMaterialOperator(ExportObjectSelectionOperator):
             return
 
         body.use_property_split = True
+        body.prop(self, "auto_sca_parameters_material")
 
         if "blender_dds_addon" in bpy.context.preferences.addons.keys():
             body.prop(self, "image_mode")
@@ -188,6 +194,7 @@ class ExportMaterialOperator(ExportObjectSelectionOperator):
 
         self.material_manager = o_material.MaterialProcessor(
             self.target_definition,
+            self.auto_sca_parameters_material,
             context,
             self.image_mode,
             self.nrm_invert_y_channel)
@@ -245,6 +252,12 @@ class ExportModelBaseOperator(ExportMaterialOperator, ExportBaseMeshDataOperator
     show_model_panel = True
     show_bone_orientation = True
 
+    auto_sca_parameters_model: BoolProperty(
+        name="Automatic SCA parameters",
+        description="Add default SCA parameters to the model if missing (defined per target game)",
+        default=True
+    )
+
     bone_orientation: EnumProperty(
         name="Bone Orientation",
         description="Bone orientation on import",
@@ -257,8 +270,19 @@ class ExportModelBaseOperator(ExportMaterialOperator, ExportBaseMeshDataOperator
         default='AUTO'
     )
 
+    use_triangle_strips: BoolProperty(
+        name="Use triangle strips",
+        description="Use triangle strips instead of triangle lists (smaller files and gpu load, but might decrease rendering performance)",
+        default=False
+    )
 
-    def draw_panel_model(self):
+    optimized_vertex_data: BoolProperty(
+        name="Optimized vertex data",
+        description="Use optimized vertex data (less precise but smaller files)",
+        default=True
+    )
+
+    def draw_panel_model(self, context):
         if not self.show_model_panel:
             return
 
@@ -275,26 +299,43 @@ class ExportModelBaseOperator(ExportMaterialOperator, ExportBaseMeshDataOperator
         body.use_property_split = False
         body.prop(self, "apply_modifiers")
         body.prop(self, "apply_poses")
+        body.prop(self, "auto_sca_parameters_model")
 
         body.use_property_split = True
         if self.show_bone_orientation:
             body.prop(self, "bone_orientation")
 
+        body.separator()
+        body.use_property_split = False
+
+        target_def = definitions.get_target_definition(context)
+        if target_def is None or target_def.supports_topology:
+            body.prop(self, "use_triangle_strips")
+
+        body.prop(self, "optimized_vertex_data")
 
     def draw(self, context: Context):
         super().draw(context)
-        self.draw_panel_model()
+        self.draw_panel_model(context)
 
     def setup(self, context):
         super().setup(context)
+
+        if not self.target_definition.supports_topology or not self.use_triangle_strips:
+            topology = 'TRIANGLE_LIST'
+        elif self.use_triangle_strips:
+            topology = 'TRIANGLE_STRIPS'
 
         self.model_processor = o_model.ModelProcessor(
             self.target_definition,
             self.material_manager,
             self.object_manager,
             self.modelmesh_manager,
+            self.auto_sca_parameters_model,
             self.apply_poses,
-            self.bone_orientation
+            self.bone_orientation,
+            o_enum.to_topology(topology),
+            self.optimized_vertex_data
         )
 
     def export_model_files(self, context, directory, mode):

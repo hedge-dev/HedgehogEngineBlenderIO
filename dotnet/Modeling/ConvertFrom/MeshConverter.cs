@@ -38,11 +38,16 @@ namespace HEIO.NET.Modeling.ConvertFrom
 
             GPUVertex[] vertices = ReadVertexData(mesh, texcoordSets, colorSets, weightCount, useByteColors);
 
+            bool blendIndex16 = mesh.Elements.Any(x => x.Type == VertexType.BlendIndices && x.Format == VertexFormat.Ushort2);
+            bool multiTangent = mesh.Elements.Any(x => x.Type == VertexType.Tangent && x.UsageIndex == 1);
+
             return new(
                 vertices,
                 texcoordSets,
                 colorSets,
                 useByteColors,
+                blendIndex16,
+                multiTangent,
                 Topology.TriangleList,
                 triangles,
                 mesh.BoneIndices,
@@ -157,7 +162,6 @@ namespace HEIO.NET.Modeling.ConvertFrom
                 {
                     case VertexType.Position:
                     case VertexType.Normal:
-                    case VertexType.Tangent:
                         if(element.UsageIndex != 0)
                         {
                             continue;
@@ -173,13 +177,26 @@ namespace HEIO.NET.Modeling.ConvertFrom
                         {
                             callback = (BinaryObjectReader reader, ref GPUVertex vtx) => vtx.Normal = Vector3.Normalize(vec3Reader(reader));
                         }
-                        else if(element.Type == VertexType.Tangent)
+
+                        break;
+                    case VertexType.Tangent:
+                        if(element.UsageIndex > 1)
                         {
-                            callback = (BinaryObjectReader reader, ref GPUVertex vtx) => vtx.Tangent = Vector3.Normalize(vec3Reader(reader));
+                            continue;
+                        }
+
+                        Func<BinaryObjectReader, Vector3> vec3Reader2 = VertexFormatDecoder.GetVector3Decoder(element.Format);
+
+                        if(element.UsageIndex == 0)
+                        {
+                            callback = (BinaryObjectReader reader, ref GPUVertex vtx) => vtx.Tangent = Vector3.Normalize(vec3Reader2(reader));
+                        }
+                        else
+                        {
+                            callback = (BinaryObjectReader reader, ref GPUVertex vtx) => vtx.Tangent2 = Vector3.Normalize(vec3Reader2(reader));
                         }
 
                         break;
-
                     case VertexType.BlendIndices:
                         Func<BinaryObjectReader, Vector4Int> vec4intReader = VertexFormatDecoder.GetVector4IntDecoder(element.Format);
 

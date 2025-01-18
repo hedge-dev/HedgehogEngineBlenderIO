@@ -2,44 +2,37 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Threading.Tasks;
 
 namespace HEIO.NET.Modeling.ConvertTo
 {
     internal class ModelConverter
     {
-        private static MeshProcessor[] ExtractProcessData(MeshCompileData compileData)
+        private static MeshProcessor[] ExtractProcessData(MeshCompileData compileData, Topology topology)
         {
             Dictionary<(string, MeshSlot, Material), List<TriangleData>> triangleData = [];
 
             foreach(MeshData mesh in compileData.MeshData)
             {
-                int triangleOffset = 0;
                 int setIndex = 0;
 
                 for(int i = 0; i < mesh.GroupNames.Count; i++)
                 {
-                    int groupSize = mesh.GroupSizes[i];
                     string groupName = mesh.GroupNames[i];
-                    int groupTriangleOffset = 0;
 
-                    while(groupTriangleOffset < groupSize)
+                    int setEnd = setIndex + mesh.GroupSetCounts[i];
+                    for(; setIndex < setEnd; setIndex++)
                     {
-                        int setSize = mesh.SetSizes[setIndex];
-                        MeshSlot slot = mesh.SetSlots[setIndex];
-                        Material material = mesh.SetMaterials[setIndex].Resource!;
+                        MeshDataSetInfo set = mesh.MeshSets[setIndex];
 
-                        if(!triangleData.TryGetValue((groupName, slot, material), out List<TriangleData>? triangleDataList))
+                        if(!triangleData.TryGetValue((groupName, set.Slot, set.Material.Resource!), out List<TriangleData>? triangleDataList))
                         {
                             triangleDataList = [];
-                            triangleData[(groupName, slot, material)] = triangleDataList;
+                            triangleData[(groupName, set.Slot, set.Material.Resource!)] = triangleDataList;
                         }
 
-                        triangleDataList.Add(new(mesh, triangleOffset, setSize));
-
-                        triangleOffset += setSize;
-                        groupTriangleOffset += setSize;
-                        setIndex++;
+                        triangleDataList.Add(new(mesh, setIndex));
                     }
                 }
             }
@@ -50,19 +43,20 @@ namespace HEIO.NET.Modeling.ConvertTo
                     x.Key.Item2,
                     x.Key.Item3,
                     [.. x.Value],
-                    compileData.Nodes == null ? 0 : 1
+                    compileData.Nodes != null,
+                    topology
             ))];
         }
 
 
-        public static ModelBase[] CompileMeshData(MeshCompileData[] compileData)
+        public static ModelBase[] CompileMeshData(MeshCompileData[] compileData, bool hedgehogEngine2, Topology topology, bool optimizedVertexData)
         {
             List<MeshProcessor> processors = [];
             List<int> processDataSizes = [];
 
             ParallelLoopResult parallelLoopResult = Parallel.ForEach(compileData, (cData, _, i) =>
             {
-                MeshProcessor[] processor = ExtractProcessData(cData);
+                MeshProcessor[] processor = ExtractProcessData(cData, topology);
                 lock(processors)
                     lock(processDataSizes)
                     {
@@ -76,7 +70,7 @@ namespace HEIO.NET.Modeling.ConvertTo
                 throw new InvalidOperationException("Collecting process data failed!");
             }
 
-            parallelLoopResult = Parallel.ForEach(processors, (processor) => processor.Process());
+            parallelLoopResult = Parallel.ForEach(processors, (processor) => processor.Process(hedgehogEngine2, optimizedVertexData));
 
             if(!parallelLoopResult.IsCompleted)
             {
@@ -98,14 +92,47 @@ namespace HEIO.NET.Modeling.ConvertTo
                     };
 
                 model.Name = data.Name;
-                model.DataVersion = 5;
+                model.DataVersion = hedgehogEngine2 && data.Nodes?.Length > 256 ? 6u : 5u;
+                
+                if(data.SCAParameters != null)
+                {
+                    model.SetupNodes();
+                    SampleChunkNode dataRoot = model.Root!.Children[0];
+
+                    dataRoot.InsertChild(0, new("UserAABB", 0));
+
+                    if(topology != Topology.TriangleStrips)
+                    {
+                        // triangle list
+                        dataRoot.InsertChild(0, new("Topology", 3));
+                    }
+
+                    if(data.SCAParameters.Length > 0)
+                    {
+
+                        SampleChunkNode nodesExt = new("NodesExt", 1);
+                        dataRoot.InsertChild(0, nodesExt);
+
+                        foreach(SampleChunkNode scaParameter in data.SCAParameters)
+                        {
+                            nodesExt.AddChild(scaParameter);
+                        }
+                    }
+                }
 
                 Dictionary<string, MeshGroup> groups = [];
+
+                Vector3 aabbMin = new(float.PositiveInfinity);
+                Vector3 aabbMax = new(float.NegativeInfinity);
 
                 int end = processorOffset + processDataSizes[i];
                 for(; processorOffset < end; processorOffset++)
                 {
                     MeshProcessor processor = processors[processorOffset];
+
+                    aabbMin = Vector3.Min(aabbMin, processor.AABBMin);
+                    aabbMax = Vector3.Max(aabbMax, processor.AABBMax);
+
                     if(!groups.TryGetValue(processor.GroupName, out MeshGroup? group))
                     {
                         group = new()
@@ -117,7 +144,12 @@ namespace HEIO.NET.Modeling.ConvertTo
                         model.Groups.Add(group);
                     }
 
-                    group.Add(processor.Result!);
+                    group.AddRange(processor.Result!);   
+                }
+
+                if(model is Model modelmodel)
+                {
+                    modelmodel.Bounds = new(aabbMin, aabbMax);
                 }
 
                 result[i] = model;

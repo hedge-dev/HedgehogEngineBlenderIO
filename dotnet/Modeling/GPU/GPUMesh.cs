@@ -14,6 +14,10 @@ namespace HEIO.NET.Modeling.GPU
 
         public bool UseByteColors { get; }
 
+        public bool BlendIndex16 { get; set; }
+
+        public bool MultiTangent { get; }
+
         public Topology Topology { get; }
 
         public IList<int> Triangles { get; }
@@ -25,12 +29,14 @@ namespace HEIO.NET.Modeling.GPU
         public MeshSlot Slot { get; }
 
 
-        public GPUMesh(int texcoordSets, int colorSets, bool useByteColors, Topology topology, ResourceReference<Material> material, MeshSlot slot)
+        public GPUMesh(int texcoordSets, int colorSets, bool useByteColors, bool blendIndex16, bool multiTangent, Topology topology, ResourceReference<Material> material, MeshSlot slot)
         {
             Vertices = [];
             TexcoordSets = texcoordSets;
             ColorSets = colorSets;
             UseByteColors = useByteColors;
+            BlendIndex16 = blendIndex16;
+            MultiTangent = multiTangent;
             Topology = topology;
             Triangles = [];
             BoneIndices = [];
@@ -38,12 +44,14 @@ namespace HEIO.NET.Modeling.GPU
             Slot = slot;
         }
 
-        public GPUMesh(GPUVertex[] vertices, int texcoordSets, int colorSets, bool useByteColors, Topology topology, int[] triangles, short[] boneIndices, ResourceReference<Material> material, MeshSlot slot)
+        public GPUMesh(GPUVertex[] vertices, int texcoordSets, int colorSets, bool useByteColors, bool blendIndex16, bool multiTangent, Topology topology, int[] triangles, short[] boneIndices, ResourceReference<Material> material, MeshSlot slot)
         {
             Vertices = vertices;
             TexcoordSets = texcoordSets;
             ColorSets = colorSets;
             UseByteColors = useByteColors;
+            BlendIndex16 = blendIndex16;
+            MultiTangent = multiTangent;
             Topology = topology;
             Triangles = triangles;
             BoneIndices = boneIndices;
