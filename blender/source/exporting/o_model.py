@@ -416,6 +416,9 @@ class ModelProcessor:
             sn_material = self._material_processor.get_converted_material(materaial)
 
             def get_param_or(fallback, param_name):
+                if self._target_definition.hedgehog_engine_version == 1:
+                    return False
+
                 if fallback:
                     return fallback
 
