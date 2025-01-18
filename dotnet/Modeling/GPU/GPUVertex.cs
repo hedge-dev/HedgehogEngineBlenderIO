@@ -19,10 +19,8 @@ namespace HEIO.NET.Modeling.GPU
 
         public VertexWeight[] Weights { get; set; }
 
-        public bool UseByteColors { get; set; }
 
-
-        public GPUVertex(int texcoordSets, int colorSets, int weightCount, bool useByteColors)
+        public GPUVertex(int texcoordSets, int colorSets, int weightCount)
         {
             Position = default;
             Normal = default;
@@ -35,8 +33,28 @@ namespace HEIO.NET.Modeling.GPU
 
             Array.Fill(Colors, new(1));
             Array.Fill(Weights, new(-1, 0));
+        }
 
-            UseByteColors = useByteColors;
+        public GPUVertex Copy()
+        {
+            Vector2[] textureCoordinates = new Vector2[TextureCoordinates.Length];
+            Vector4[] colors = new Vector4[Colors.Length];
+            VertexWeight[] weights = new VertexWeight[Weights.Length];
+
+            Array.Copy(TextureCoordinates, textureCoordinates, textureCoordinates.Length);
+            Array.Copy(Colors, colors, colors.Length);
+            Array.Copy(Weights, weights, weights.Length);
+
+            return new()
+            {
+                Position = Position,
+                Normal = Normal,
+                Tangent = Tangent,
+                Tangent2 = Tangent2,
+                TextureCoordinates = textureCoordinates,
+                Colors = colors,
+                Weights = weights,
+            };
         }
     }
 }

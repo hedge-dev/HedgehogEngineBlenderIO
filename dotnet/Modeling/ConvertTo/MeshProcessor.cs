@@ -142,7 +142,7 @@ namespace HEIO.NET.Modeling.ConvertTo
                 ProcessTriangleCorner corner = distinctCorners[i];
                 Vertex vertex = _vertices[corner.vertexIndex];
 
-                GPUVertex gpuVertex = new(_gpuMesh.TexcoordSets, _gpuMesh.ColorSets, weightCount, _gpuMesh.UseByteColors)
+                GPUVertex gpuVertex = new(_gpuMesh.TexcoordSets, _gpuMesh.ColorSets, weightCount)
                 {
                     Position = vertex.Position,
                     Normal = vertex.Normal,
@@ -237,6 +237,7 @@ namespace HEIO.NET.Modeling.ConvertTo
                         vertexIndices.Add(v2);
                         vertexIndices.Add(v3);
                         found = true;
+                        break;
                     }
                 }
 
@@ -275,7 +276,7 @@ namespace HEIO.NET.Modeling.ConvertTo
                     if(newVertexIndex == -1)
                     {
                         newVertexIndex = gpuMesh.Vertices.Count;
-                        gpuMesh.Vertices.Add(_gpuMesh.Vertices[vertexIndex]);
+                        gpuMesh.Vertices.Add(_gpuMesh.Vertices[vertexIndex].Copy());
                         indexMap[vertexIndex] = newVertexIndex;
                     }
 
@@ -347,7 +348,7 @@ namespace HEIO.NET.Modeling.ConvertTo
 
                 GPUMesh[] gpuMeshes;
 
-                if(_usedBones.Count <= 24 || hedgehogEngine2)
+                if(_usedBones.Count <= 25 || hedgehogEngine2)
                 {
                     _gpuMesh.BlendIndex16 = _usedBones.Count > 255;
                     EvaluateBoneIndices(_gpuMesh, _usedBones);
@@ -355,7 +356,7 @@ namespace HEIO.NET.Modeling.ConvertTo
                 }
                 else
                 {
-                    gpuMeshes = BoneLimitSplit(24);
+                    gpuMeshes = BoneLimitSplit(25);
                 }
 
                 foreach(GPUMesh gpuMesh in gpuMeshes)
@@ -366,7 +367,7 @@ namespace HEIO.NET.Modeling.ConvertTo
                     }
                 }
 
-                Result = gpuMeshes.Select(x => MeshConverter.ConvertToMesh(x, optimizedVertexData)).ToArray();
+                Result = gpuMeshes.Select(x => MeshConverter.ConvertToMesh(x, hedgehogEngine2, optimizedVertexData)).ToArray();
             }
 
             return Result;

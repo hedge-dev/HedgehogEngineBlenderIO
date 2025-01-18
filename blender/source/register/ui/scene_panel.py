@@ -18,3 +18,5 @@ class HEIO_PT_Scene(PropertiesPanel):
             setting_properties,
             "target_game",
             icon="ERROR" if setting_properties.target_game == "ERROR_FALLBACK" else "NONE")
+
+        layout.prop(setting_properties, "target_console")

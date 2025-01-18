@@ -49,6 +49,11 @@ class HEIO_Scene(bpy.types.PropertyGroup):
         set=_set_target_game
     )
 
+    target_console: BoolProperty(
+        name="Target console",
+        description="Whether to target console releases, instead of pc releases"
+    )
+
     show_all_shaders: BoolProperty(
         name="Show all shaders",
         description="Show all shaders defined, instead of only the commonly used ones."

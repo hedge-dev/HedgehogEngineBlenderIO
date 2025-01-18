@@ -76,7 +76,6 @@ namespace HEIO.NET.Modeling.ConvertTo
 
             ModelBase[] result = new ModelBase[compileData.Length];
 
-            int processorOffset = 0;
             for(int i = 0; i < compileData.Length; i++)
             {
                 MeshCompileData data = compileData[i];

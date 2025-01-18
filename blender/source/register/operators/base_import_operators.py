@@ -66,7 +66,10 @@ class ImportOperator(HEIOBaseFileLoadOperator):
     def draw(self, context):
         self.layout.use_property_decorate = False
         self.layout.use_property_split = True
+        self.layout.separator()
         self.layout.prop(context.scene.heio_scene, "target_game")
+        self.layout.prop(context.scene.heio_scene, "target_console")
+        self.layout.separator()
 
     def print_resolve_info(self, context):
         print_resolve_info(context, self.resolve_infos)

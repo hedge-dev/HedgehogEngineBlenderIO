@@ -116,7 +116,7 @@ namespace HEIO.NET.Modeling.ConvertFrom
 
             for(uint i = 0, o = 0; i < mesh.VertexCount; i++, o += mesh.VertexSize)
             {
-                GPUVertex vertex = new(texcoordSets, colorSets, weightCount, useByteColors);
+                GPUVertex vertex = new(texcoordSets, colorSets, weightCount);
 
                 foreach((int offset, VertexReadCallback callback) in readCallbacks)
                 {

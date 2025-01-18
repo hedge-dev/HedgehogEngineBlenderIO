@@ -13,11 +13,12 @@ namespace HEIO.NET.Modeling.ConvertTo
 {
     internal static class MeshConverter
     {
-        public static Mesh ConvertToMesh(GPUMesh gpuMesh, bool optimizedVertexData)
+        public static Mesh ConvertToMesh(GPUMesh gpuMesh, bool hedgehogEngine2, bool optimizedVertexData)
         {
             List<VertexElement> elements = EvaluateVertexElements(
                 gpuMesh, 
-                gpuMesh.Vertices[0].Weights.Length / 4, 
+                gpuMesh.Vertices[0].Weights.Length / 4,
+                hedgehogEngine2,
                 optimizedVertexData, 
                 out ushort vertexSize);
 
@@ -34,18 +35,16 @@ namespace HEIO.NET.Modeling.ConvertTo
             };
         }
 
-        private static List<VertexElement> EvaluateVertexElements(GPUMesh gpuMesh, int weightSets, bool optimizedVertexData, out ushort vertexSize)
+        private static List<VertexElement> EvaluateVertexElements(GPUMesh gpuMesh, int weightSets, bool hedgehogEngine2, bool optimizedVertexData, out ushort vertexSize)
         {
-            VertexFormatSetup formatSetup = optimizedVertexData
-                ? (gpuMesh.BlendIndex16
-                    ? VertexFormatSetups._optimizedV6
-                    : VertexFormatSetups._optimized)
-                : (gpuMesh.BlendIndex16
-                    ? VertexFormatSetups._fullV6
-                    : VertexFormatSetups._full);
+            VertexFormatSetup formatSetup = !optimizedVertexData
+                ? VertexFormatSetups._full
+                : hedgehogEngine2 
+                ? VertexFormatSetups._he2Optimized 
+                : VertexFormatSetups._he1Optimized;
 
             List<(VertexType, VertexFormat, byte)> info = [
-                (VertexType.Position, formatSetup.position, 0),
+                (VertexType.Position, VertexFormat.Float3, 0),
                 (VertexType.Normal, formatSetup.normal, 0),
                 (VertexType.Tangent, formatSetup.normal, 0),
                 (VertexType.Binormal, formatSetup.normal, 0),
@@ -64,17 +63,17 @@ namespace HEIO.NET.Modeling.ConvertTo
 
             for(byte i = 0; i < gpuMesh.ColorSets; i++)
             {
-                info.Add((VertexType.Color, gpuMesh.UseByteColors ? formatSetup.byteColor : formatSetup.floatColor, i));
+                info.Add((VertexType.Color, gpuMesh.UseByteColors ? VertexFormat.UByte4Norm : VertexFormat.Float4, i));
             }
 
             for(byte i = 0; i < weightSets; i++)
             {
-                info.Add((VertexType.BlendIndices, formatSetup.blendIndices, i));
+                info.Add((VertexType.BlendIndices, gpuMesh.BlendIndex16 ? VertexFormat.Ushort4 : VertexFormat.UByte4, i));
             }
 
             for(byte i = 0; i < weightSets; i++)
             {
-                info.Add((VertexType.BlendWeight, formatSetup.blendWeights, i));
+                info.Add((VertexType.BlendWeight, VertexFormat.UByte4Norm, i));
             }
 
             List<VertexElement> result = [];

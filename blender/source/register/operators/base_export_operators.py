@@ -326,6 +326,11 @@ class ExportModelBaseOperator(ExportMaterialOperator, ExportBaseMeshDataOperator
         else:
             topology = 'TRIANGLE_LIST'
 
+        optimize_vertex_data = self.optimized_vertex_data
+        if self.target_definition.hedgehog_engine_version == 1 and not context.scene.heio_scene.target_console:
+            # he1 doesnt support optimized vertex data on pc
+            optimize_vertex_data = False
+
         self.model_processor = o_model.ModelProcessor(
             self.target_definition,
             self.material_manager,
@@ -335,7 +340,7 @@ class ExportModelBaseOperator(ExportMaterialOperator, ExportBaseMeshDataOperator
             self.apply_poses,
             self.bone_orientation,
             o_enum.to_topology(topology),
-            self.optimized_vertex_data
+            optimize_vertex_data
         )
 
     def export_model_files(self, context, directory, mode):
