@@ -9,12 +9,19 @@ namespace HEIO.NET.Modeling.ConvertTo
 {
     internal class ModelConverter
     {
-        private static MeshProcessor[] ExtractProcessData(MeshCompileData compileData, Topology topology)
+        private static IProcessable[] ExtractProcessData(MeshCompileData compileData, Topology topology)
         {
             Dictionary<(string, MeshSlot, Material), List<TriangleData>> triangleData = [];
+            List<MorphProcessor> morphProcessors = [];
 
             foreach(MeshData mesh in compileData.MeshData)
             {
+                if(mesh.MorphNames != null && compileData.Nodes != null)
+                {
+                    morphProcessors.Add(new(mesh, topology));
+                    continue;
+                }
+
                 int setIndex = 0;
 
                 for(int i = 0; i < mesh.GroupNames.Count; i++)
@@ -37,25 +44,28 @@ namespace HEIO.NET.Modeling.ConvertTo
                 }
             }
 
-            return [.. triangleData.Select(
-                x => new MeshProcessor(
-                    x.Key.Item1,
-                    x.Key.Item2,
-                    x.Key.Item3,
-                    [.. x.Value],
-                    compileData.Nodes != null,
-                    topology
-            ))];
+            return [
+                .. triangleData.Select(
+                    x => new MeshProcessor(
+                        x.Key.Item1,
+                        x.Key.Item2,
+                        x.Key.Item3,
+                        [.. x.Value],
+                        compileData.Nodes != null,
+                        topology
+                    )),
+                .. morphProcessors
+            ];
         }
 
 
         public static ModelBase[] CompileMeshData(MeshCompileData[] compileData, bool hedgehogEngine2, Topology topology, bool optimizedVertexData)
         {
-            MeshProcessor[][] processors = new MeshProcessor[compileData.Length][];
+            IProcessable[][] processors = new IProcessable[compileData.Length][];
 
             ParallelLoopResult parallelLoopResult = Parallel.ForEach(compileData, (cData, _, i) =>
             {
-                MeshProcessor[] processor = ExtractProcessData(cData, topology);
+                IProcessable[] processor = ExtractProcessData(cData, topology);
                 lock(processors)
                 {
                     processors[i] = processor;
@@ -89,7 +99,7 @@ namespace HEIO.NET.Modeling.ConvertTo
 
                 model.Name = data.Name;
                 model.DataVersion = hedgehogEngine2 && data.Nodes?.Length > 256 ? 6u : 5u;
-                
+
                 if(data.SCAParameters != null)
                 {
                     model.SetupNodes();
@@ -121,23 +131,33 @@ namespace HEIO.NET.Modeling.ConvertTo
                 Vector3 aabbMin = new(float.PositiveInfinity);
                 Vector3 aabbMax = new(float.NegativeInfinity);
 
-                foreach(MeshProcessor processor in processors[i])
+                foreach(IProcessable processor in processors[i])
                 {
                     aabbMin = Vector3.Min(aabbMin, processor.AABBMin);
                     aabbMax = Vector3.Max(aabbMax, processor.AABBMax);
 
-                    if(!groups.TryGetValue(processor.GroupName, out MeshGroup? group))
+                    if(processor is MeshProcessor meshProcessor)
                     {
-                        group = new()
+                        if(!groups.TryGetValue(meshProcessor.GroupName, out MeshGroup? group))
                         {
-                            Name = processor.GroupName
-                        };
+                            group = new()
+                            {
+                                Name = meshProcessor.GroupName
+                            };
 
-                        groups[processor.GroupName] = group;
-                        model.Groups.Add(group);
+                            groups[meshProcessor.GroupName] = group;
+                            model.Groups.Add(group);
+                        }
+
+                        group.AddRange(meshProcessor.Result!);
+                    }
+                    else if(processor is MorphProcessor morphProcessor)
+                    {
+                        Model modelmodel2 = (Model)model;
+                        modelmodel2.Morphs ??= [];
+                        modelmodel2.Morphs!.Add(morphProcessor.Result!);
                     }
 
-                    group.AddRange(processor.Result!);   
                 }
 
                 if(model is Model modelmodel)

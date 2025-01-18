@@ -78,6 +78,8 @@ class RawMeshData:
     group_names: list[str]
     group_set_counts: list[int]
 
+    morph_names: None
+
     def __init__(self):
         self.vertices = []
         self.triangle_indices = []
@@ -91,6 +93,8 @@ class RawMeshData:
         self.mesh_sets = []
         self.group_names = []
         self.group_set_counts = []
+
+        self.morph_names = None
 
     def convert_to_net(self, matrix: tuple[Matrix, Matrix] | None, weight_index_map: dict[str, int] | None):
 
@@ -120,7 +124,9 @@ class RawMeshData:
 
             self.mesh_sets,
             self.group_names,
-            self.group_set_counts
+            self.group_set_counts,
+
+            self.morph_names
         )
 
 
@@ -194,7 +200,7 @@ class ModelProcessor:
 
         if modelmesh.evaluated_shape_positions is not None:
             def get_shape_positions(vertex: bpy.types.MeshVertex):
-                return [b[vertex.index] for b in modelmesh.evaluated_shape_positions]
+                return [b[vertex.index] - vertex.co for b in modelmesh.evaluated_shape_positions]
 
         else:
             def get_shape_positions(vertex: bpy.types.MeshVertex):
@@ -475,6 +481,9 @@ class ModelProcessor:
         add_set()
         add_group()
 
+        if modelmesh.evaluated_shape_positions is not None:
+            raw_meshdata.morph_names = [x.name for x in modelmesh.obj.data.shape_keys.key_blocks[1:]]
+
         return raw_meshdata
 
     def prepare_all_meshdata(self):
@@ -626,6 +635,9 @@ class ModelProcessor:
             if child_meshdata is None:
                 continue
 
+            if model_nodes is not None and child_meshdata.morph_names is not None and len(child_meshdata.group_names) > 1:
+                raise HEIOUserException(f"Mesh \"{child.data.name}\" is a shape model, which cannot have more than one mesh group!")
+
             matrix = parent_matrix @ child.matrix_world
             normal_matrix = matrix.to_3x3().normalized()
             sn_meshdata.append(child_meshdata.convert_to_net(
@@ -633,6 +645,9 @@ class ModelProcessor:
 
         if len(sn_meshdata) == 0:
             return None
+
+        if any([x.MorphNames is not None and x.GroupNames.Count > 1 for x in sn_meshdata]):
+            raise HEIOUserException("Model")
 
         sca_parameters = self._get_sca_parameters(root, model_nodes)
 
@@ -642,8 +657,6 @@ class ModelProcessor:
             model_nodes,
             sca_parameters
         )
-
-        #model_compile_data.SaveToJson("C:\\Users\\Justin113D\\Downloads\\New Folder")
 
         self._output_queue.append(model_compile_data)
         self._output[name] = None

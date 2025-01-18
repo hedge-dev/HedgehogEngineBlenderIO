@@ -1,6 +1,7 @@
 ﻿using SharpNeedle.Framework.HedgehogEngine.Mirage;
 using SharpNeedle.Resource;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace HEIO.NET.Modeling.GPU
 {
@@ -18,7 +19,7 @@ namespace HEIO.NET.Modeling.GPU
 
         public bool MultiTangent { get; }
 
-        public Topology Topology { get; }
+        public Topology Topology { get; private set; }
 
         public IList<int> Triangles { get; }
 
@@ -57,6 +58,61 @@ namespace HEIO.NET.Modeling.GPU
             BoneIndices = boneIndices;
             Material = material;
             Slot = slot;
+        }
+
+        public void ToStrips()
+        {
+            if(Topology == Topology.TriangleStrips)
+            {
+                return;
+            }
+
+            int[][] strips = J113D.Strippify.TriangleStrippifier.Global.Strippify([.. Triangles]);
+            List<int> triangles = (List<int>)Triangles;
+            triangles.Clear();
+
+            for(int i = 0; i < strips.Length; i++)
+            {
+                triangles.AddRange(strips[i]);
+
+                if(i < strips.Length - 1)
+                {
+                    triangles.Add(ushort.MaxValue);
+                }
+            }
+
+            Topology = Topology.TriangleStrips;
+        }
+
+        public void EvaluateBoneIndices(HashSet<short> usedBones)
+        {
+            if(usedBones.Count == 0)
+            {
+                return;
+            }
+
+            ((List<short>)BoneIndices).AddRange(usedBones.Order());
+
+            if(usedBones.Max() <= BoneIndices.Count - 1)
+            {
+                return;
+            }
+
+            short[] boneMap = new short[usedBones.Max() + 2];
+            boneMap[0] = -1;
+            for(short i = 0; i < BoneIndices.Count; i++)
+            {
+                boneMap[BoneIndices[i] + 1] = i;
+            }
+
+            for(int i = 0; i < Vertices.Count; i++)
+            {
+                VertexWeight[] weights = Vertices[i].Weights;
+                for(int j = 0; j < weights.Length; j++)
+                {
+                    weights[j].Index = boneMap[weights[j].Index + 1];
+                }
+            }
         }
     }
 }

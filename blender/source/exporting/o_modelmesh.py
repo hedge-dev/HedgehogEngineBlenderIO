@@ -77,7 +77,9 @@ class ModelMesh:
                 for block in self.evaluated_object.data.shape_keys.key_blocks[1:]:
                     block.value = 1
                     self.evaluated_shape_positions.append(
-                        [v.undeformed_co.copy() for v in self.evaluated_object.to_mesh().vertices]
+                        [v.co.copy() for v in self.evaluated_object.to_mesh(
+                            preserve_all_data_layers=True,
+                            depsgraph=depsgraph).vertices]
                     )
                     self.evaluated_object.to_mesh_clear()
                     block.value = 0

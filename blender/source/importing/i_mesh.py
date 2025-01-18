@@ -94,12 +94,12 @@ class MeshConverter:
 
         bpy.data.objects.remove(weight_dummy_obj)
 
-    def _convert_morphs(self, mesh: bpy.types.Mesh, mesh_data, morph_model):
-        if morph_model is None or morph_model.Targets.Count == 0:
+    def _convert_morphs(self, mesh: bpy.types.Mesh, mesh_data):
+        if mesh_data.MorphNames is None or mesh_data.MorphNames.Count == 0:
             return
 
         shapekey_positions = [
-            [None] * len(mesh_data.Vertices) for _ in morph_model.Targets]
+            [None] * len(mesh_data.Vertices) for _ in mesh_data.MorphNames]
 
         for i, vertex in enumerate(mesh_data.Vertices):
             for s, position in enumerate(vertex.MorphPositions):
@@ -109,8 +109,8 @@ class MeshConverter:
         shapekey_dummy_obj = bpy.data.objects.new("DUMMY", mesh)
 
         shapekey_dummy_obj.shape_key_add(name="basis")
-        for s, morph_target in enumerate(morph_model.Targets):
-            shapekey = shapekey_dummy_obj.shape_key_add(name=morph_target.Name)
+        for s, morph_name in enumerate(mesh_data.MorphNames):
+            shapekey = shapekey_dummy_obj.shape_key_add(name=morph_name)
             for i, pos in enumerate(shapekey_positions[s]):
                 shapekey.data[i].co += pos
             # shapekey.points.foreach_set("co", shapekey_positions[s])
@@ -287,7 +287,7 @@ class MeshConverter:
             if nrm0.dot(nrm1) > 0.995 and nrm2.dot(nrm3) > 0.995:
                 edge.use_edge_sharp = False
 
-    def _convert_mesh_data(self, mesh_data: any, model: any, morph_model: any, name_suffix: str,):
+    def _convert_mesh_data(self, mesh_data: any, model: any, name_suffix: str,):
 
         mesh = bpy.data.meshes.new(mesh_data.Name + name_suffix)
 
@@ -307,7 +307,7 @@ class MeshConverter:
         mesh.from_pydata(vertices, [], faces, shade_flat=False)
 
         self._convert_weights(mesh, mesh_data, model)
-        self._convert_morphs(mesh, mesh_data, morph_model)
+        self._convert_morphs(mesh, mesh_data)
         self._assign_materials(mesh, mesh_data)
 
         if self._create_mesh_layer_attributes:
@@ -337,7 +337,7 @@ class MeshConverter:
                 self._merge_split_edges
             )
 
-            mesh = self._convert_mesh_data(mesh_data, model, None, name_suffix)
+            mesh = self._convert_mesh_data(mesh_data, model, name_suffix)
             model_info.meshes.append(mesh)
 
             i_sca_parameters.convert_from_data(
@@ -353,7 +353,7 @@ class MeshConverter:
 
             for mesh_data in mesh_datas:
                 model_info.meshes.append(
-                    self._convert_mesh_data(mesh_data, model, None, name_suffix))
+                    self._convert_mesh_data(mesh_data, model, name_suffix))
 
             if model.Morphs != None:
                 for morph in model.Morphs:
@@ -366,7 +366,7 @@ class MeshConverter:
                     )
 
                     morph_mesh = self._convert_mesh_data(
-                        morph_data, model, morph, name_suffix)
+                        morph_data, model, name_suffix)
                     model_info.meshes.append(morph_mesh)
 
         return model_info

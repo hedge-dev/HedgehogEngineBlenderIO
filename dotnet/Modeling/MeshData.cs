@@ -60,10 +60,9 @@ namespace HEIO.NET.Modeling
         /// </summary>
         public IList<int> GroupSetCounts { get; set; }
 
+        public IList<string>? MorphNames { get; set; }
 
         public bool UseByteColors => MeshSets.All(x => x.UseByteColors);
-
-        public bool EnableMultiTangent => MeshSets.Any(x => x.EnableMultiTangent);
 
 
         [JsonConstructor]
@@ -81,6 +80,7 @@ namespace HEIO.NET.Modeling
             MeshSets = [];
             GroupNames = [];
             GroupSetCounts = [];
+            MorphNames = null;
         }
 
         public MeshData(
@@ -94,7 +94,8 @@ namespace HEIO.NET.Modeling
             Vector4[][] colors,
             MeshDataSetInfo[] meshSets,
             string[] groupNames,
-            int[] groupSizes)
+            int[] groupSizes,
+            string[]? morphNames)
         {
             Name = name;
             Vertices = vertices;
@@ -107,6 +108,7 @@ namespace HEIO.NET.Modeling
             MeshSets = meshSets;
             GroupNames = groupNames;
             GroupSetCounts = groupSizes;
+            MorphNames = morphNames;
         }
 
         public static MeshData FromHEMorph(ModelBase model, MorphModel morph, VertexMergeMode vertexMergeMode, float mergeDistance, bool mergeSplitEdges)
@@ -141,6 +143,12 @@ namespace HEIO.NET.Modeling
             if(model is Model armatureModel)
             {
                 converter.NormalizeBindPositions(armatureModel);
+            }
+
+            converter.ResultData.MorphNames = [];
+            for(int i = 0; i < morph.Targets.Count; i++)
+            {
+                converter.ResultData.MorphNames.Add(morph.Targets[i].Name ?? "Shape_" + i);
             }
 
             return converter.ResultData;
