@@ -200,9 +200,14 @@ class ModelProcessor:
             def get_shape_positions(vertex: bpy.types.MeshVertex):
                 return None
 
+        loop_normals: list[Vector] = [None] * len(modelmesh.evaluated_mesh.vertices)
+        for loop in modelmesh.evaluated_mesh.loops:
+            # loops on the same vertex must share the same normal, no need to merge or compare
+            loop_normals[loop.vertex_index] = loop.normal
+
         return [RawVertex(
             vertex.co.copy(),
-            modelmesh.evaluated_mesh.vertex_normals[vertex.index].vector.copy(),
+            loop_normals[vertex.index].copy(),
             get_shape_positions(vertex),
             get_weights(vertex)
         ) for vertex in modelmesh.evaluated_mesh.vertices]
