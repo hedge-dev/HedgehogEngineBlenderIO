@@ -245,7 +245,7 @@ class ModelProcessor:
 
                 group_name_map.append(index)
 
-            group_attribute = heiomesh.groups.attribute
+            group_attribute = modelmesh.evaluated_mesh.attributes[heiomesh.groups.attribute_name]
 
             def get_group_index(polygon: bpy.types.MeshPolygon):
                 return group_name_map[group_attribute.data[polygon.index].value]
@@ -265,7 +265,7 @@ class ModelProcessor:
 
                 layer_name_map.append(index)
 
-            layer_attribute = heiomesh.render_layers.attribute
+            layer_attribute = modelmesh.evaluated_mesh.attributes[heiomesh.render_layers.attribute_name]
 
             def get_layer_index(polygon: bpy.types.MeshPolygon):
                 return layer_name_map[layer_attribute.data[polygon.index].value]

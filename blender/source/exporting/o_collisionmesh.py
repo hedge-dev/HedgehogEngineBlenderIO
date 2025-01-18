@@ -154,7 +154,7 @@ class CollisionMeshProcessor:
             layer_max = len(heiomesh.groups) - 1
             triangles = [list() for _ in heiomesh.groups]
             invalid_triangles = []
-            attribute = heiomesh.groups.attribute
+            attribute = modelmesh.evaluated_mesh.attributes[heiomesh.groups.attribute_name]
 
             for group, polygon in zip(attribute.data, modelmesh.evaluated_mesh.polygons):
                 if group.value > layer_max:
@@ -199,14 +199,14 @@ class CollisionMeshProcessor:
             if heiomesh.collision_types.initialized and not heiomesh.collision_types.attribute_invalid:
                 raw_meshdata.type_values = [
                     t.value for t in heiomesh.collision_types]
-                attribute = heiomesh.collision_types.attribute
+                attribute = modelmesh.evaluated_mesh.attributes[heiomesh.collision_types.attribute_name]
                 raw_meshdata.types = [
                     attribute.data[x].value for x in triangle_order]
 
             if heiomesh.collision_flags.initialized and not heiomesh.collision_flags.attribute_invalid:
                 raw_meshdata.flag_values = [
                     t.value for t in heiomesh.collision_flags]
-                attribute = heiomesh.collision_flags.attribute
+                attribute = modelmesh.evaluated_mesh.attributes[heiomesh.collision_flags.attribute_name]
                 raw_meshdata.flags = [
                     attribute.data[x].value for x in triangle_order]
 
