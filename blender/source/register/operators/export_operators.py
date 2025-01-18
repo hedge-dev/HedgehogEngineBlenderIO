@@ -138,9 +138,11 @@ class HEIO_OT_Export_PointClouds(ExportPointCloudOperator):
 
         if self.cloud_type == 'COL':
             self.collision_mesh_processor.prepare_all_meshdata()
+            compile = None
             write = self.collision_mesh_processor.write_output_to_files
         elif self.cloud_type == 'MODEL':
             self.model_processor.prepare_all_meshdata()
+            compile = self.model_processor.compile_output
             write = self.model_processor.write_output_to_files
 
         self.modelmesh_manager.evaluate_end()
@@ -164,6 +166,8 @@ class HEIO_OT_Export_PointClouds(ExportPointCloudOperator):
         directory = os.path.dirname(self.filepath)
 
         if self.write_resources:
+            if compile is not None:
+                compile()
             write(directory)
 
         for name, pc in pointclouds:

@@ -51,18 +51,15 @@ namespace HEIO.NET.Modeling.ConvertTo
 
         public static ModelBase[] CompileMeshData(MeshCompileData[] compileData, bool hedgehogEngine2, Topology topology, bool optimizedVertexData)
         {
-            List<MeshProcessor> processors = [];
-            List<int> processDataSizes = [];
+            MeshProcessor[][] processors = new MeshProcessor[compileData.Length][];
 
             ParallelLoopResult parallelLoopResult = Parallel.ForEach(compileData, (cData, _, i) =>
             {
                 MeshProcessor[] processor = ExtractProcessData(cData, topology);
                 lock(processors)
-                    lock(processDataSizes)
-                    {
-                        processors.AddRange(processor);
-                        processDataSizes.Add(processor.Length);
-                    }
+                {
+                    processors[i] = processor;
+                }
             });
 
             if(!parallelLoopResult.IsCompleted)
@@ -70,7 +67,7 @@ namespace HEIO.NET.Modeling.ConvertTo
                 throw new InvalidOperationException("Collecting process data failed!");
             }
 
-            parallelLoopResult = Parallel.ForEach(processors, (processor) => processor.Process(hedgehogEngine2, optimizedVertexData));
+            parallelLoopResult = Parallel.ForEach(processors.SelectMany(x => x), (processor) => processor.Process(hedgehogEngine2, optimizedVertexData));
 
             if(!parallelLoopResult.IsCompleted)
             {
@@ -125,11 +122,8 @@ namespace HEIO.NET.Modeling.ConvertTo
                 Vector3 aabbMin = new(float.PositiveInfinity);
                 Vector3 aabbMax = new(float.NegativeInfinity);
 
-                int end = processorOffset + processDataSizes[i];
-                for(; processorOffset < end; processorOffset++)
+                foreach(MeshProcessor processor in processors[i])
                 {
-                    MeshProcessor processor = processors[processorOffset];
-
                     aabbMin = Vector3.Min(aabbMin, processor.AABBMin);
                     aabbMax = Vector3.Max(aabbMax, processor.AABBMax);
 
