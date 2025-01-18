@@ -130,6 +130,8 @@ class ExportObjectSelectionOperator(ExportOperator):
 
 class ExportMaterialOperator(ExportObjectSelectionOperator):
 
+    show_material_panel = True
+
     image_mode: EnumProperty(
         name="Image Export Mode",
         items=(
@@ -161,6 +163,9 @@ class ExportMaterialOperator(ExportObjectSelectionOperator):
     )
 
     def draw_panel_material(self):
+        if not self.show_material_panel:
+            return
+
         header, body = self.layout.panel(
             "HEIO_export_material", default_closed=False)
         header.label(text="Material")
@@ -168,8 +173,10 @@ class ExportMaterialOperator(ExportObjectSelectionOperator):
         if not body:
             return
 
-        body.use_property_split = True
+        body.use_property_split = False
         body.prop(self, "auto_sca_parameters_material")
+
+        body.use_property_split = True
 
         if "blender_dds_addon" in bpy.context.preferences.addons.keys():
             body.prop(self, "image_mode")
@@ -252,6 +259,12 @@ class ExportModelBaseOperator(ExportMaterialOperator, ExportBaseMeshDataOperator
     show_model_panel = True
     show_bone_orientation = True
 
+    export_materials: BoolProperty(
+        name="Export materials",
+        description="Disabling this will not export materials or their images",
+        default=True
+    )
+
     auto_sca_parameters_model: BoolProperty(
         name="Automatic SCA parameters",
         description="Add default SCA parameters to the model if missing (defined per target game)",
@@ -305,14 +318,17 @@ class ExportModelBaseOperator(ExportMaterialOperator, ExportBaseMeshDataOperator
         if self.show_bone_orientation:
             body.prop(self, "bone_orientation")
 
-        body.separator()
         body.use_property_split = False
+        body.prop(self, "export_materials")
+
+        body.separator()
 
         target_def = definitions.get_target_definition(context)
         if target_def is None or target_def.supports_topology:
             body.prop(self, "use_triangle_strips")
 
-        body.prop(self, "optimized_vertex_data")
+        if target_def is None or target_def.hedgehog_engine_version == 2 or context.scene.heio_scene.target_console:
+            body.prop(self, "optimized_vertex_data")
 
     def draw(self, context: Context):
         super().draw(context)
@@ -336,12 +352,17 @@ class ExportModelBaseOperator(ExportMaterialOperator, ExportBaseMeshDataOperator
             self.material_manager,
             self.object_manager,
             self.modelmesh_manager,
+            self.export_materials,
             self.auto_sca_parameters_model,
             self.apply_poses,
             self.bone_orientation,
             o_enum.to_topology(topology),
             optimize_vertex_data
         )
+
+    def check(self, context):
+        self.show_material_panel = self.export_materials and self.show_model_panel
+        return super().check(context)
 
     def export_model_files(self, context, directory, mode):
         self.modelmesh_manager.evaluate_begin(context, mode != 'TERRAIN')

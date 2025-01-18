@@ -131,6 +131,7 @@ class ModelProcessor:
     _object_manager: o_object_manager.ObjectManager
     _modelmesh_manager: o_modelmesh.ModelMeshManager
 
+    _write_materials: bool
     _auto_sca_parameters: bool
     _use_pose_bone_matrices: bool
     _bone_orientation: str
@@ -147,6 +148,7 @@ class ModelProcessor:
             material_processor: o_material.MaterialProcessor,
             object_manager: o_object_manager.ObjectManager,
             modelmesh_manager: o_modelmesh.ModelMeshManager,
+            write_materials: bool,
             auto_sca_parameters: bool,
             use_pose_bone_matrices: bool,
             bone_orientation: str,
@@ -159,6 +161,7 @@ class ModelProcessor:
         self._object_manager = object_manager
         self._modelmesh_manager = modelmesh_manager
 
+        self._write_materials = write_materials
         self._auto_sca_parameters = auto_sca_parameters
         self._use_pose_bone_matrices = use_pose_bone_matrices
         self._bone_orientation = bone_orientation
@@ -661,6 +664,7 @@ class ModelProcessor:
                 extension = ".model"
 
             filepath = os.path.join(directory, name + extension)
-            SharpNeedle.RESOURCE_EXTENSIONS.Write(model, filepath)
+            SharpNeedle.RESOURCE_EXTENSIONS.Write(model, filepath, self._write_materials)
 
-        self._material_processor.write_output_images_to_files(directory)
+        if self._write_materials:
+            self._material_processor.write_output_images_to_files(directory)
