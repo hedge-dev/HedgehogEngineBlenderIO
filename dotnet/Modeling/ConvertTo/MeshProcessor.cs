@@ -347,7 +347,7 @@ namespace HEIO.NET.Modeling.ConvertTo
 
                 GPUMesh[] gpuMeshes;
 
-                if(_usedBones.Count <= 25 || hedgehogEngine2)
+                if(_usedBones.Count <= 24 || hedgehogEngine2)
                 {
                     _gpuMesh.BlendIndex16 = _usedBones.Count > 255;
                     EvaluateBoneIndices(_gpuMesh, _usedBones);
@@ -355,7 +355,7 @@ namespace HEIO.NET.Modeling.ConvertTo
                 }
                 else
                 {
-                    gpuMeshes = BoneLimitSplit(25);
+                    gpuMeshes = BoneLimitSplit(24);
                 }
 
                 foreach(GPUMesh gpuMesh in gpuMeshes)
