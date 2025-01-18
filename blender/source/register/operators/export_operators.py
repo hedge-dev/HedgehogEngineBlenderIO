@@ -53,7 +53,7 @@ class HEIO_OT_Export_Model(ExportModelBaseOperator):
     filename_ext = ".model"
 
     def export(self, context):
-        self.export_model_files(context, self.directory, 'MODEL')
+        self.export_model_files(context, 'MODEL')
         return {'FINISHED'}
 
 class HEIO_OT_Export_TerrainModel(ExportModelBaseOperator):
@@ -64,7 +64,7 @@ class HEIO_OT_Export_TerrainModel(ExportModelBaseOperator):
     show_bone_orientation = False
 
     def export(self, context):
-        self.export_model_files(context, self.directory, 'TERRAIN')
+        self.export_model_files(context, 'TERRAIN')
         return {'FINISHED'}
 
 

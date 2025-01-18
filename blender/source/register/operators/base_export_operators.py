@@ -364,7 +364,7 @@ class ExportModelBaseOperator(ExportMaterialOperator, ExportBaseMeshDataOperator
         self.show_material_panel = self.export_materials and self.show_model_panel
         return super().check(context)
 
-    def export_model_files(self, context, directory, mode):
+    def export_model_files(self, context, mode):
         self.modelmesh_manager.evaluate_begin(context, mode != 'TERRAIN')
         self.model_processor.prepare_all_meshdata()
         self.modelmesh_manager.evaluate_end()
@@ -381,6 +381,8 @@ class ExportModelBaseOperator(ExportMaterialOperator, ExportBaseMeshDataOperator
         else:
             self.model_processor.enqueue_compile_model(
                 None, self.object_manager.base_objects, mode, name)
+
+        directory = os.path.dirname(self.filepath)
 
         self.model_processor.compile_output()
         self.model_processor.write_output_to_files(directory)
