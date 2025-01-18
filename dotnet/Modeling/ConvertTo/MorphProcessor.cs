@@ -26,16 +26,16 @@ namespace HEIO.NET.Modeling.ConvertTo
             AABBMax = new(float.NegativeInfinity);
 
             _data = data;
-            _weightSets = data.MeshSets.Any(x => x.Enable8Weights) ? 2 : 1;
+            _weightSets = 1;
             _topology = topology;
 
             _triangles = [];
             _gpuMesh = new(
-                int.Clamp(data.TextureCoordinates.Count, 1, 4),
+                4,
                 1,
-                data.UseByteColors,
                 false,
-                data.MeshSets.Any(x => x.EnableMultiTangent),
+                false,
+                false,
                 Topology.TriangleList,
                 data.MeshSets[0].Material,
                 data.MeshSets[0].Slot
@@ -99,7 +99,7 @@ namespace HEIO.NET.Modeling.ConvertTo
             _gpuMesh.BlendIndex16 = usedBones.Count > 255;
             _gpuMesh.EvaluateBoneIndices(usedBones);
 
-            Mesh baseMesh = MeshConverter.ConvertToMesh(_gpuMesh, hedgehogEngine2, optimizedVertexData);
+            Mesh baseMesh = MeshConverter.ConvertToMesh(_gpuMesh, false, false);
 
             Result = new()
             {
