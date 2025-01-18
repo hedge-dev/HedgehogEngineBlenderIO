@@ -435,7 +435,7 @@ class ExportPointCloudOperator(ExportCollisionModelOperator, ExportModelBaseOper
         name="Collection Type",
         description="Type of pointcloud to export",
         items=(
-            ('MODEL', "Terrain (*.pcmodel) (WIP)", ''),
+            ('MODEL', "Terrain (*.pcmodel)", ''),
             ('COL', "Collision (*.pccol)", '')
         ),
         default='MODEL'
@@ -469,8 +469,8 @@ class ExportPointCloudOperator(ExportCollisionModelOperator, ExportModelBaseOper
 
     def check(self, context):
         self.filename_ext = '.pc' + self.cloud_type.lower()
-        self.show_collision_mesh_panel = self.cloud_type == 'COL'
-        self.show_model_panel = self.cloud_type == 'MODEL'
+        self.show_collision_mesh_panel = self.cloud_type == 'COL' and self.write_resources
+        self.show_model_panel = self.cloud_type == 'MODEL' and self.write_resources
         return super().check(context)
 
     def setup(self, context):
