@@ -1,11 +1,7 @@
-import os
-import bpy
 from mathutils import Vector, Quaternion, Matrix
 
-from . import o_enum, o_transform, o_modelmesh, o_object_manager
-from ..register.definitions import TargetDefinition
+from . import o_enum, o_mesh, o_transform, o_modelmesh
 from ..dotnet import HEIO_NET, SharpNeedle
-from ..exceptions import HEIODevException
 
 
 class RawCollisionPrimitiveData:
@@ -39,9 +35,9 @@ class RawCollisionPrimitiveData:
     def convert_to_sn(self, transform_matrix: Matrix | None):
         position = self.position
         rotation = self.rotation
-        transform_matrix = transform_matrix.normalized()
 
         if transform_matrix is not None:
+            transform_matrix = transform_matrix.normalized()
             position = transform_matrix @ position
             rotation = transform_matrix.to_quaternion() @ rotation
 
@@ -106,27 +102,7 @@ class RawCollisionMeshData:
         return sn_meshdata, sn_primitives
 
 
-class CollisionMeshProcessor:
-
-    target_definition: TargetDefinition
-    object_manager: o_object_manager.ObjectManager
-    modelmesh_manager: o_modelmesh.ModelMeshManager
-
-    _meshdata_lut: dict[o_modelmesh.ModelMesh, RawCollisionMeshData | None]
-    _output: dict[str, any]
-
-    def __init__(
-            self,
-            target_definition: TargetDefinition,
-            object_manager: o_object_manager.ObjectManager,
-            modelmesh_manager: o_modelmesh.ModelMeshManager):
-
-        self.target_definition = target_definition
-        self.object_manager = object_manager
-        self.modelmesh_manager = modelmesh_manager
-
-        self._meshdata_lut = {}
-        self._output = {}
+class CollisionMeshProcessor(o_mesh.BaseMeshProcessor):
 
     def _convert_modelmesh(self, modelmesh: o_modelmesh.ModelMesh):
         if len(modelmesh.evaluated_mesh.polygons) == 0:
@@ -227,50 +203,7 @@ class CollisionMeshProcessor:
 
         return raw_meshdata
 
-    def prepare_all_meshdata(self):
-        for modelmesh in self.modelmesh_manager.modelmesh_lut.values():
-            if modelmesh in self._meshdata_lut:
-                continue
-
-            self._meshdata_lut[modelmesh] = self._convert_modelmesh(modelmesh)
-
-    def prepare_object_meshdata(self, objects: list[bpy.types.Object]):
-        for obj in objects:
-            modelmesh = self.modelmesh_manager.obj_mesh_mapping[obj]
-
-            if modelmesh in self._meshdata_lut:
-                continue
-
-            self._meshdata_lut[modelmesh] = self._convert_modelmesh(modelmesh)
-
-    def get_meshdata(self, obj: bpy.types.Object):
-        modelmesh = self.modelmesh_manager.obj_mesh_mapping[obj]
-        return self._meshdata_lut[modelmesh]
-
-    def compile_bulletmesh(self, root: bpy.types.Object | None, children: list[bpy.types.Object] | None, name: str | None = None):
-
-        if root is None and (children is None or len(children) == 0):
-            raise HEIODevException("No input!")
-
-        if root is not None and root.type == 'EMPTY' and root.instance_type == 'COLLECTION' and root.instance_collection is not None:
-            collection = root.instance_collection
-            root, children = self.object_manager.collection_trees[root.instance_collection]
-
-            if name is None and root is None:
-                name = collection.name
-
-        if name is None and root is not None:
-            if root.type in {'ARMATURE', 'MESH'}:
-                name = root.data.name
-            else:
-                name = root.name
-
-        if name is None:
-            raise HEIODevException("No export name!")
-
-        if name in self._output:
-            return name
-
+    def _assemble_compile_data(self, root, children, name):
         sn_meshdata = []
         sn_primitives = []
 
@@ -305,16 +238,22 @@ class CollisionMeshProcessor:
         if len(sn_meshdata) == 0:
             return None
 
-        bullet_mesh = HEIO_NET.COLLISION_MESH_DATA.ToBulletMesh(
-            sn_meshdata, sn_primitives)
+        return (name, sn_meshdata, sn_primitives)
 
-        bullet_mesh.BulletMeshVersion = self.target_definition.data_versions.bullet_mesh
+    def compile_output(self):
+        # TODO: compile with multithreading in c#
 
-        self._output[name] = bullet_mesh
+        for name, sn_meshdata, sn_primitives in self._output_queue:
+            bullet_mesh = HEIO_NET.COLLISION_MESH_DATA.ToBulletMesh(
+                sn_meshdata, sn_primitives)
 
-        return name
+            bullet_mesh.Name = name
+            bullet_mesh.BulletMeshVersion = self._target_definition.data_versions.bullet_mesh
 
-    def write_output_to_files(self, directory: str):
-        for name, bullet_mesh in self._output.items():
-            filepath = os.path.join(directory, name + ".btmesh")
-            SharpNeedle.RESOURCE_EXTENSIONS.Write(bullet_mesh, filepath)
+            self._output[bullet_mesh.Name] = bullet_mesh
+
+        self._output_queue.clear()
+
+    @classmethod
+    def _get_extension(cls, data):
+        return ".btmesh"

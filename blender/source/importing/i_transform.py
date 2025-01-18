@@ -1,5 +1,5 @@
 from mathutils import Matrix, Vector
-from ..dotnet import System
+from ..dotnet import System, HEIO_NET
 
 
 def net_to_bpy_matrix(matrix):
@@ -41,8 +41,7 @@ def net_to_bpy_bone_znx_matrix(matrix):
 def net_transforms_to_bpy_matrix(position, euler_rotation, scale):
 
     position_mtx = System.MATRIX4X4.CreateTranslation(position)
-    rotation_matrix = System.MATRIX4X4.CreateFromYawPitchRoll(
-        euler_rotation.Y, euler_rotation.X, euler_rotation.Z)
+    rotation_matrix = HEIO_NET.PYTHON_HELPERS.CreateRotationMatrix(euler_rotation)
     scale_mtx = System.MATRIX4X4.CreateScale(scale)
 
     matrix = scale_mtx * rotation_matrix * position_mtx

@@ -113,7 +113,6 @@ class MeshConverter:
             shapekey = shapekey_dummy_obj.shape_key_add(name=morph_name)
             for i, pos in enumerate(shapekey_positions[s]):
                 shapekey.data[i].co += pos
-            # shapekey.points.foreach_set("co", shapekey_positions[s])
 
         bpy.data.objects.remove(shapekey_dummy_obj)
 

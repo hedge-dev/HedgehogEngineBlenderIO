@@ -21,17 +21,21 @@ class PointCloudProcessor:
         self.model_processor = model_processor
         self.collision_mesh_processor = collision_mesh_processor
 
-    def object_trees_to_pointscloud(self, object_trees: dict[bpy.types.Object, list[bpy.types.Object]], type):
+    def object_trees_to_pointscloud(self, object_trees: dict[bpy.types.Object, list[bpy.types.Object]], type, write_resources):
         pointcloud = SharpNeedle.POINTCLOUD()
         pointcloud.FormatVersion = self.target_definition.data_versions.point_cloud
 
+        if type == 'COL':
+            processor = self.collision_mesh_processor
+        elif type == 'MODEL':
+            processor = self.model_processor
+
         for root, children in object_trees.items():
 
-            if type == 'COL':
-                resource_name = self.collision_mesh_processor.compile_bulletmesh(
-                    root, children)
-            elif type == 'MODEL':
-                resource_name = self.model_processor.enqueue_compile_model(root, children)
+            if write_resources:
+                resource_name = processor.enqueue_compile(root, children)
+            else:
+                resource_name = processor.get_name(root)
 
             if resource_name is None:
                 continue

@@ -1,11 +1,11 @@
-import os
 import bpy
 from mathutils import Vector, Matrix
 
-from . import o_enum, o_transform, o_material, o_modelmesh, o_object_manager, o_sca_parameters
+from . import o_mesh, o_transform, o_material, o_modelmesh, o_object_manager, o_sca_parameters
 from ..register.definitions import TargetDefinition
 from ..dotnet import HEIO_NET, SharpNeedle, System
-from ..exceptions import HEIODevException, HEIOUserException
+from ..exceptions import HEIOUserException
+
 
 
 class RawVertex:
@@ -130,53 +130,45 @@ class RawMeshData:
         )
 
 
-class ModelProcessor:
+class ModelProcessor(o_mesh.BaseMeshProcessor):
 
-    _target_definition: TargetDefinition
+    mode: str
+
     _material_processor: o_material.MaterialProcessor
-    _object_manager: o_object_manager.ObjectManager
-    _modelmesh_manager: o_modelmesh.ModelMeshManager
 
-    _write_materials: bool
     _auto_sca_parameters: bool
     _use_pose_bone_matrices: bool
     _bone_orientation: str
     _topology: any
     _optimized_vertex_data: bool
 
-    _meshdata_lut: dict[o_modelmesh.ModelMesh, RawMeshData | None]
-    _output_queue: list
-    _output: dict[str, any]
-
     def __init__(
             self,
             target_definition: TargetDefinition,
-            material_processor: o_material.MaterialProcessor,
             object_manager: o_object_manager.ObjectManager,
             modelmesh_manager: o_modelmesh.ModelMeshManager,
-            write_materials: bool,
+            write_dependencies: bool,
+
+            material_processor: o_material.MaterialProcessor,
             auto_sca_parameters: bool,
             use_pose_bone_matrices: bool,
             bone_orientation: str,
             topology: any,
-            optimized_vertex_data: bool
-            ):
+            optimized_vertex_data: bool):
 
-        self._target_definition = target_definition
+        super().__init__(target_definition, object_manager, modelmesh_manager, write_dependencies)
+
+        self.mode = 'AUTO'
+
         self._material_processor = material_processor
-        self._object_manager = object_manager
-        self._modelmesh_manager = modelmesh_manager
 
-        self._write_materials = write_materials
         self._auto_sca_parameters = auto_sca_parameters
         self._use_pose_bone_matrices = use_pose_bone_matrices
         self._bone_orientation = bone_orientation
         self._topology = topology
         self._optimized_vertex_data = optimized_vertex_data
 
-        self._meshdata_lut = {}
-        self._output_queue = []
-        self._output = {}
+    ##################################################
 
     def _convert_vertices(self, modelmesh: o_modelmesh.ModelMesh):
         groupnames = [g.name for g in modelmesh.evaluated_object.vertex_groups]
@@ -206,7 +198,7 @@ class ModelProcessor:
             def get_shape_positions(vertex: bpy.types.MeshVertex):
                 return None
 
-        loop_normals: list[Vector] = [None] * len(modelmesh.evaluated_mesh.vertices)
+        loop_normals: list[Vector] = [x.vector.copy() for x in modelmesh.evaluated_mesh.vertex_normals]
         for loop in modelmesh.evaluated_mesh.loops:
             # loops on the same vertex must share the same normal, no need to merge or compare
             loop_normals[loop.vertex_index] = loop.normal
@@ -486,25 +478,7 @@ class ModelProcessor:
 
         return raw_meshdata
 
-    def prepare_all_meshdata(self):
-        for modelmesh in self._modelmesh_manager.modelmesh_lut.values():
-            if modelmesh in self._meshdata_lut:
-                continue
-
-            self._meshdata_lut[modelmesh] = self._convert_modelmesh(modelmesh)
-
-    def prepare_object_meshdata(self, objects: list[bpy.types.Object]):
-        for obj in objects:
-            modelmesh = self._modelmesh_manager.obj_mesh_mapping[obj]
-
-            if modelmesh in self._meshdata_lut:
-                continue
-
-            self._meshdata_lut[modelmesh] = self._convert_modelmesh(modelmesh)
-
-    def get_meshdata(self, obj: bpy.types.Object):
-        modelmesh = self._modelmesh_manager.obj_mesh_mapping[obj]
-        return self._meshdata_lut[modelmesh]
+    ##################################################
 
     def _get_model_nodes(self, armature_obj):
         weight_index_map: dict[str, int] = {}
@@ -574,38 +548,16 @@ class ModelProcessor:
 
         return [x for x in sca_parameters if x is not None]
 
-    def enqueue_compile_model(self, root: bpy.types.Object | None, children: list[bpy.types.Object] | None, mode: str = 'AUTO', name: str | None = None):
-
-        if root is None and (children is None or len(children) == 0):
-            raise HEIODevException("No input!")
-
-        if root is not None and root.type == 'EMPTY' and root.instance_type == 'COLLECTION' and root.instance_collection is not None:
-            collection = root.instance_collection
-            root, children = self._object_manager.collection_trees[root.instance_collection]
-
-            if name is None and root is None:
-                name = collection.name
-
-        if name is None and root is not None:
-            if root.type in {'ARMATURE', 'MESH'}:
-                name = root.data.name
-            else:
-                name = root.name
-
-        if name is None:
-            raise HEIODevException("No export name!")
-
-        if name in self._output:
-            return name
+    def _assemble_compile_data(self, root, children, name: str):
 
         sn_meshdata = []
         weight_index_map = None
         model_nodes = None
 
-        if root is not None and root.type == 'ARMATURE' and mode != 'TERRAIN':
+        if root is not None and root.type == 'ARMATURE' and self.mode != 'TERRAIN':
             weight_index_map, model_nodes = self._get_model_nodes(root)
 
-        elif mode == 'MODEL':
+        elif self.mode == 'MODEL':
 
             node = SharpNeedle.MODEL.Node()
             node.Name = name
@@ -651,20 +603,16 @@ class ModelProcessor:
 
         sca_parameters = self._get_sca_parameters(root, model_nodes)
 
-        model_compile_data = HEIO_NET.MESH_COMPILE_DATA(
+        return HEIO_NET.MESH_COMPILE_DATA(
             name,
             sn_meshdata,
             model_nodes,
             sca_parameters
         )
 
-        self._output_queue.append(model_compile_data)
-        self._output[name] = None
-
-        return name
+    ##################################################
 
     def compile_output(self):
-
         models = HEIO_NET.MESH_COMPILE_DATA.ToHEModels(
             self._output_queue,
             self._target_definition.hedgehog_engine_version == 2,
@@ -674,18 +622,20 @@ class ModelProcessor:
 
         for model in models:
             self._output[model.Name] = model
+
         self._output_queue.clear()
 
-    def write_output_to_files(self, directory: str):
-        for name, model in self._output.items():
+    ##################################################
 
-            if isinstance(model, SharpNeedle.TERRAIN_MODEL):
-                extension = ".terrain-model"
-            else:
-                extension = ".model"
+    @classmethod
+    def _get_extension(cls, data):
+        if isinstance(data, SharpNeedle.TERRAIN_MODEL):
+            return ".terrain-model"
+        else:
+            return ".model"
 
-            filepath = os.path.join(directory, name + extension)
-            SharpNeedle.RESOURCE_EXTENSIONS.Write(model, filepath, self._write_materials)
+    def write_output_to_files(self, directory):
+        super().write_output_to_files(directory)
 
-        if self._write_materials:
+        if self._write_dependencies:
             self._material_processor.write_output_images_to_files(directory)

@@ -12,6 +12,7 @@ from .. import definitions
 from ...exceptions import HEIOUserException
 from ...exporting import (
     o_enum,
+    o_mesh,
     o_object_manager,
     o_modelmesh,
     o_collisionmesh,
@@ -199,7 +200,7 @@ class ExportMaterialOperator(ExportObjectSelectionOperator):
     def setup(self, context):
         super().setup(context)
 
-        self.material_manager = o_material.MaterialProcessor(
+        self.material_processor = o_material.MaterialProcessor(
             self.target_definition,
             self.auto_sca_parameters_material,
             context,
@@ -252,6 +253,27 @@ class ExportBaseMeshDataOperator(ExportObjectSelectionOperator):
 
         self.modelmesh_manager.register_objects(
             self.object_manager.all_objects)
+
+    def export_basemesh_files(self, context, processor: o_mesh.BaseMeshProcessor, eval_shapekeys: bool):
+        self.modelmesh_manager.evaluate_begin(context, eval_shapekeys)
+        processor.prepare_all_meshdata()
+        self.modelmesh_manager.evaluate_end()
+
+        name = None
+        if self.mesh_mode == 'MERGE':
+            name = os.path.splitext(os.path.basename(self.filepath))[0]
+
+        if self.mesh_mode == 'SEPARATE' or len(self.object_manager.base_objects) == 1:
+            for root, children in self.object_manager.object_trees.items():
+                processor.enqueue_compile(root, children, name)
+
+        else:
+            processor.enqueue_compile(None, self.object_manager.base_objects, name)
+
+        directory = os.path.dirname(self.filepath)
+
+        processor.compile_output()
+        processor.write_output_to_files(directory)
 
 
 class ExportModelBaseOperator(ExportMaterialOperator, ExportBaseMeshDataOperator):
@@ -349,10 +371,11 @@ class ExportModelBaseOperator(ExportMaterialOperator, ExportBaseMeshDataOperator
 
         self.model_processor = o_model.ModelProcessor(
             self.target_definition,
-            self.material_manager,
             self.object_manager,
             self.modelmesh_manager,
             self.export_materials,
+
+            self.material_processor,
             self.auto_sca_parameters_model,
             self.apply_poses,
             self.bone_orientation,
@@ -365,27 +388,8 @@ class ExportModelBaseOperator(ExportMaterialOperator, ExportBaseMeshDataOperator
         return super().check(context)
 
     def export_model_files(self, context, mode):
-        self.modelmesh_manager.evaluate_begin(context, mode != 'TERRAIN')
-        self.model_processor.prepare_all_meshdata()
-        self.modelmesh_manager.evaluate_end()
-
-        name = None
-        if self.mesh_mode == 'MERGE':
-            name = os.path.splitext(os.path.basename(self.filepath))[0]
-
-        if self.mesh_mode == 'SEPARATE' or len(self.object_manager.base_objects) == 1:
-            for root, children in self.object_manager.object_trees.items():
-                self.model_processor.enqueue_compile_model(
-                    root, children, mode, name)
-
-        else:
-            self.model_processor.enqueue_compile_model(
-                None, self.object_manager.base_objects, mode, name)
-
-        directory = os.path.dirname(self.filepath)
-
-        self.model_processor.compile_output()
-        self.model_processor.write_output_to_files(directory)
+        self.model_processor.mode = mode
+        self.export_basemesh_files(context, self.model_processor, mode != 'TERRAIN')
 
 
 class ExportCollisionModelOperator(ExportBaseMeshDataOperator):
@@ -427,7 +431,8 @@ class ExportCollisionModelOperator(ExportBaseMeshDataOperator):
         self.collision_mesh_processor = o_collisionmesh.CollisionMeshProcessor(
             self.target_definition,
             self.object_manager,
-            self.modelmesh_manager
+            self.modelmesh_manager,
+            False # bullet mesh has no dependencies
         )
 
 
