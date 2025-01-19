@@ -3,7 +3,7 @@ from mathutils import Vector
 from ..register.definitions import TargetDefinition
 
 
-class ModelMesh:
+class ModelSet:
 
     obj: bpy.types.Object
 
@@ -97,7 +97,7 @@ class ModelMesh:
             modifier.show_viewport = self._viewport_modifier_states[modifier]
 
 
-class ModelMeshManager:
+class ModelSetManager:
 
     target_definition: TargetDefinition
     eval_depsgraph: bpy.types.Depsgraph | None
@@ -106,8 +106,8 @@ class ModelMeshManager:
     _apply_armature: bool
 
     _registered_objects: set[bpy.types.Object]
-    modelmesh_lut: dict[bpy.types.Object | bpy.types.Mesh, ModelMesh]
-    obj_mesh_mapping: dict[bpy.types.Object, ModelMesh]
+    modelmesh_lut: dict[bpy.types.Object | bpy.types.Mesh, ModelSet]
+    obj_mesh_mapping: dict[bpy.types.Object, ModelSet]
 
     def __init__(
             self,
@@ -143,7 +143,7 @@ class ModelMeshManager:
                     modelmesh = self.modelmesh_lut[obj.data]
 
             if modelmesh is None:
-                modelmesh = ModelMesh(obj)
+                modelmesh = ModelSet(obj)
                 self.modelmesh_lut[lut_key] = modelmesh
 
             self.obj_mesh_mapping[obj] = modelmesh

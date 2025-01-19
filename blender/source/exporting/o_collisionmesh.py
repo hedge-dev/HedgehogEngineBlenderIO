@@ -1,6 +1,6 @@
 from mathutils import Vector, Quaternion, Matrix
 
-from . import o_enum, o_mesh, o_transform, o_modelmesh
+from . import o_enum, o_mesh, o_modelset, o_transform
 from ..dotnet import HEIO_NET, SharpNeedle
 
 
@@ -104,7 +104,7 @@ class RawCollisionMeshData:
 
 class CollisionMeshProcessor(o_mesh.BaseMeshProcessor):
 
-    def _convert_modelmesh(self, modelmesh: o_modelmesh.ModelMesh):
+    def _convert_modelmesh(self, modelmesh: o_modelset.ModelSet):
         if len(modelmesh.evaluated_mesh.polygons) == 0:
             return None
 

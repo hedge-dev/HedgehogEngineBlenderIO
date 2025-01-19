@@ -1,7 +1,7 @@
 import bpy
 from mathutils import Vector, Matrix
 
-from . import o_mesh, o_transform, o_material, o_modelmesh, o_object_manager, o_sca_parameters
+from . import o_mesh, o_modelset, o_transform, o_material, o_object_manager, o_sca_parameters
 from ..register.definitions import TargetDefinition
 from ..dotnet import HEIO_NET, SharpNeedle, System
 from ..exceptions import HEIOUserException
@@ -146,7 +146,7 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
             self,
             target_definition: TargetDefinition,
             object_manager: o_object_manager.ObjectManager,
-            modelmesh_manager: o_modelmesh.ModelMeshManager,
+            modelmesh_manager: o_modelset.ModelSetManager,
             write_dependencies: bool,
 
             material_processor: o_material.MaterialProcessor,
@@ -170,7 +170,7 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
 
     ##################################################
 
-    def _convert_vertices(self, modelmesh: o_modelmesh.ModelMesh):
+    def _convert_vertices(self, modelmesh: o_modelset.ModelSet):
         groupnames = [g.name for g in modelmesh.evaluated_object.vertex_groups]
 
         if modelmesh.is_weighted:
@@ -210,7 +210,7 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
             get_weights(vertex)
         ) for vertex in modelmesh.evaluated_mesh.vertices]
 
-    def _map_polygons(self, modelmesh: o_modelmesh.ModelMesh):
+    def _map_polygons(self, modelmesh: o_modelset.ModelSet):
         group_names = []
         layer_names = []
         materials = []
@@ -355,7 +355,7 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
 
         return colors, color_attribute.data_type == 'BYTE_COLOR'
 
-    def _convert_modelmesh(self, modelmesh: o_modelmesh.ModelMesh):
+    def _convert_modelmesh(self, modelmesh: o_modelset.ModelSet):
         mesh = modelmesh.evaluated_mesh
         if len(mesh.polygons) == 0:
             return None

@@ -1,7 +1,7 @@
 import os
 import bpy
 
-from . import o_modelmesh, o_object_manager
+from . import o_modelset, o_object_manager
 from ..register.definitions import TargetDefinition
 from ..dotnet import SharpNeedle
 from ..exceptions import HEIODevException
@@ -11,11 +11,11 @@ class BaseMeshProcessor:
 
     _target_definition: TargetDefinition
     _object_manager: o_object_manager.ObjectManager
-    _modelmesh_manager: o_modelmesh.ModelMeshManager
+    _modelmesh_manager: o_modelset.ModelSetManager
 
     _write_dependencies: bool
 
-    _meshdata_lut: dict[o_modelmesh.ModelMesh, any]
+    _meshdata_lut: dict[o_modelset.ModelSet, any]
     _output: dict[str, any]
     _output_queue: list
 
@@ -23,7 +23,7 @@ class BaseMeshProcessor:
             self,
             target_definition: TargetDefinition,
             object_manager: o_object_manager.ObjectManager,
-            modelmesh_manager: o_modelmesh.ModelMeshManager,
+            modelmesh_manager: o_modelset.ModelSetManager,
             write_dependencies: bool):
 
         self._target_definition = target_definition
@@ -36,7 +36,7 @@ class BaseMeshProcessor:
         self._output = {}
         self._output_queue = []
 
-    def _convert_modelmesh(self, modelmesh: o_modelmesh.ModelMesh):
+    def _convert_modelmesh(self, modelmesh: o_modelset.ModelSet):
         raise NotImplementedError()
 
     def prepare_all_meshdata(self):

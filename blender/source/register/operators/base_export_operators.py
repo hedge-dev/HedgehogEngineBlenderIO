@@ -13,8 +13,8 @@ from ...exceptions import HEIOUserException
 from ...exporting import (
     o_enum,
     o_mesh,
+    o_modelset,
     o_object_manager,
-    o_modelmesh,
     o_collisionmesh,
     o_material,
     o_pointcloud,
@@ -245,7 +245,7 @@ class ExportBaseMeshDataOperator(ExportObjectSelectionOperator):
     def setup(self, context):
         super().setup(context)
 
-        self.modelmesh_manager = o_modelmesh.ModelMeshManager(
+        self.modelmesh_manager = o_modelset.ModelSetManager(
             self.target_definition,
             self.apply_modifiers,
             self.apply_poses
