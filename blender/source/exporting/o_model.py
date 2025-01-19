@@ -272,7 +272,7 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
                     render_layer_name = material.render_layer
                 elif material.shader_name in self._target_definition.shaders.definitions:
                     render_layer_name = self._target_definition.shaders.definitions[
-                        material.shader_name].layer
+                        material.shader_name].layer.name
                 else:
                     render_layer_name = 'OPAQUE'
 
