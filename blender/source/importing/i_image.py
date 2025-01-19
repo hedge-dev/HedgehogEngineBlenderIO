@@ -168,6 +168,9 @@ class ImageLoader:
         if texture_mode == 'Normal' and from_loaded and self._invert_normal_map_y_channel:
             print(f"Flipping normals of image \"{image_name}\"..")
 
+            if len(image.packed_files) == 0:
+                image.pack()
+
             pixels = numpy.array(image.pixels, dtype=numpy.float32)
             HEIO_NET.IMAGE.InvertGreenChannel(
                 System.INT_PTR(pixels.ctypes.data), len(pixels))
