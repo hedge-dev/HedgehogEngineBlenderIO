@@ -2,8 +2,9 @@ import bpy
 
 from . import i_transform, i_mesh, i_model, i_sca_parameters
 from ..register.definitions import TargetDefinition
-from ..dotnet import SharpNeedle, HEIO_NET, System
+from ..dotnet import SharpNeedle, System
 from ..utility import progress_console
+from ..exceptions import HEIODevException
 
 
 class NodeConverter:
@@ -12,12 +13,32 @@ class NodeConverter:
     _target_definition: TargetDefinition
     _mesh_converter: i_mesh.MeshConverter
 
-    def __init__(self, context: bpy.types.Context, target_definition: TargetDefinition, mesh_converter: i_mesh.MeshConverter, bone_orientation: str):
+    _bone_orientation: str
+    _bone_length_mode: str
+    _min_bone_length: float
+    _max_leaf_bone_length: float
+
+    _converted_models: dict
+    _armature_name_lookup: dict
+
+    def __init__(
+            self,
+            context: bpy.types.Context,
+            target_definition: TargetDefinition,
+            mesh_converter: i_mesh.MeshConverter,
+            bone_orientation: str,
+            bone_length_mode: str,
+            min_bone_length: float,
+            max_leaf_bone_length: float):
+
         self._context = context
         self._target_definition = target_definition
         self._mesh_converter = mesh_converter
 
         self._bone_orientation = bone_orientation
+        self._bone_length_mode = bone_length_mode
+        self._min_bone_length = min_bone_length
+        self._max_leaf_bone_length = max_leaf_bone_length
 
         self._converted_models = dict()
         self._armature_name_lookup = dict()
@@ -31,7 +52,7 @@ class NodeConverter:
             matrix_remap = i_transform.net_to_bpy_bone_xy_matrix
         elif bone_orientation == 'XZ':
             matrix_remap = i_transform.net_to_bpy_bone_xz_matrix
-        else: # ZNX
+        else:  # ZNX
             matrix_remap = i_transform.net_to_bpy_bone_znx_matrix
 
         for node in model_info.sn_model.Nodes:
@@ -44,27 +65,68 @@ class NodeConverter:
                 parent = model_info.armature.edit_bones[node.ParentIndex]
                 bone.parent = parent
 
-            _, node_matrix = System.MATRIX4X4.Invert(node.Transform, System.MATRIX4X4.Identity)
+            _, node_matrix = System.MATRIX4X4.Invert(
+                node.Transform, System.MATRIX4X4.Identity)
             world_space = matrix_remap(node_matrix)
             model_info.bone_matrices.append(world_space)
             bone.matrix = world_space.normalized()
 
 
     @staticmethod
-    def _correct_bone_lengths(armature: bpy.types.Armature):
+    def _get_bone_length_closest(bone: bpy.types.EditBone):
+        distance = float("inf")
+
+        for child in bone.children:
+            new_distance = (bone.head - child.head).magnitude
+            if new_distance < distance:
+                distance = new_distance
+
+        return distance
+
+    @staticmethod
+    def _get_bone_length_furthest(bone: bpy.types.EditBone):
+        distance = float(0)
+
+        for child in bone.children:
+            new_distance = (bone.head - child.head).magnitude
+            if new_distance > distance:
+                distance = new_distance
+
+        return distance
+
+    @staticmethod
+    def _get_bone_length_most_children(bone: bpy.types.EditBone):
+        parent_bone = bone.children[0]
+
+        for child in bone.children[1:]:
+            if len(child.children) > len(parent_bone.children):
+                parent_bone = child
+
+        return (bone.head - parent_bone.head).magnitude
+
+    @staticmethod
+    def _get_bone_length_first(bone: bpy.types.EditBone):
+        return (bone.head - bone.children[0].head).magnitude
+
+    def _correct_bone_lengths(self, armature: bpy.types.Armature):
         for bone in armature.edit_bones:
             if len(bone.children) > 0:
-                distance = float("inf")
-                for child in bone.children:
-                    new_distance = (bone.head - child.head).magnitude
-                    if new_distance < distance:
-                        distance = new_distance
 
-                if distance < 0.01:
-                    distance = 0.01
+                if self._bone_length_mode == 'CLOSEST':
+                    distance = self._get_bone_length_closest(bone)
+                elif self._bone_length_mode == 'FURTHEST':
+                    distance = self._get_bone_length_furthest(bone)
+                elif self._bone_length_mode == 'MOSTCHILDREN':
+                    distance = self._get_bone_length_most_children(bone)
+                elif self._bone_length_mode == 'FIRST':
+                    distance = self._get_bone_length_first(bone)
+                else:
+                    raise HEIODevException("Invalid bone length mode")
+
+                distance = max(distance, self._min_bone_length)
 
             elif bone.parent is not None:
-                distance = bone.parent.length
+                distance = min(self._max_leaf_bone_length, bone.parent.length)
 
             else:
                 continue

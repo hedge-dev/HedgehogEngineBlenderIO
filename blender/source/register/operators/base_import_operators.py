@@ -113,7 +113,7 @@ class ImportMaterialOperator(ImportOperator):
 
     def draw_panel_material(self):
         header, body = self.layout.panel(
-            "HEIO_import_material", default_closed=False)
+            "HEIO_import_material", default_closed=True)
         header.label(text="Material")
 
         if not body:
@@ -132,12 +132,14 @@ class ImportMaterialOperator(ImportOperator):
         body.prop(self, "use_existing_images")
 
         if "blender_dds_addon" not in bpy.context.preferences.addons.keys():
+            body.separator()
             box = body.box()
             box.label(text="Please install and enable the blender")
             box.label(text="DDS addon for better texture import support")
 
             from .info_operators import HEIO_OT_Info_DDS_Addon
             body.operator(HEIO_OT_Info_DDS_Addon.bl_idname)
+            body.separator()
 
     def draw(self, context: Context):
         super().draw(context)
@@ -261,6 +263,77 @@ class ImportModelBaseOperator(ImportMaterialOperator):
         default='AUTO'
     )
 
+    bone_length_mode: EnumProperty(
+        name="Bone length mode",
+        description="How to determine a bones length",
+        items=(
+            ('CLOSEST', "Closest", "Use distance to closest bone for length"),
+            ('FURTHEST', "Furthest", "Use distance to farthest bone for length"),
+            ('MOSTCHILDREN', "Most Children", "Use distance to the child with most children itself for length"),
+            ('FIRST', "First", "Use distance to the first child for length"),
+        ),
+        default='MOSTCHILDREN'
+    )
+
+    min_bone_length: FloatProperty(
+        name="Minimum bone length",
+        description="The minimum length a bone should have",
+        min=0.01,
+        default=0.01
+    )
+
+    max_leaf_bone_length: FloatProperty(
+        name="Maximum leaf bone length",
+        description="The maximum length a bone with no children should have",
+        min=0.01,
+        default=1
+    )
+
+    def _draw_panel_model_vertex_merge(self, layout):
+        header, body = layout.panel(
+            "HEIO_import_model_merge", default_closed=True)
+
+        header.use_property_split = True
+        split = header.split(factor=0.4)
+        split.label(text="Vertex merge mode")
+        split.prop(self, "vertex_merge_mode", text="")
+
+        if not body:
+            return
+
+        body.use_property_split = False
+        body.active = self.vertex_merge_mode != 'NONE'
+        body.prop(self, "vertex_merge_distance")
+        body.prop(self, "merge_split_edges")
+
+    def _draw_panel_model_attributes(self, layout):
+        header, body = layout.panel(
+            "HEIO_import_model_attributes", default_closed=True)
+        header.label(text="Additional properties")
+
+        if not body:
+            return
+
+        body.use_property_split = False
+        body.prop(self, "create_mesh_layer_attributes")
+        body.prop(self, "create_meshgroup_attributes")
+        body.prop(self, "import_tangents")
+        body.prop(self, "import_lod_models")
+
+    def _draw_panel_armature(self, layout):
+        header, body = layout.panel(
+            "HEIO_import_model_armature", default_closed=True)
+        header.label(text="Armature")
+
+        if not body:
+            return
+
+        body.use_property_split = True
+        body.prop(self, "bone_orientation")
+        body.prop(self, "bone_length_mode")
+        body.prop(self, "min_bone_length")
+        body.prop(self, "max_leaf_bone_length")
+
     def draw_panel_model(self):
         header, body = self.layout.panel(
             "HEIO_import_model", default_closed=False)
@@ -269,26 +342,9 @@ class ImportModelBaseOperator(ImportMaterialOperator):
         if not body:
             return
 
-        body.use_property_split = True
-
-        merge_header, merge_body = body.panel(
-            "HEIO_import_model_merge", default_closed=True)
-        merge_header.prop(self, "vertex_merge_mode")
-
-        if merge_body:
-            merge_body.active = self.vertex_merge_mode != 'NONE'
-            merge_body.prop(self, "vertex_merge_distance")
-            merge_body.prop(self, "merge_split_edges")
-            body.separator()
-
-        body.use_property_split = False
-        body.prop(self, "create_mesh_layer_attributes")
-        body.prop(self, "create_meshgroup_attributes")
-        body.prop(self, "import_tangents")
-        body.prop(self, "import_lod_models")
-
-        body.use_property_split = True
-        body.prop(self, "bone_orientation")
+        self._draw_panel_model_vertex_merge(body)
+        self._draw_panel_model_attributes(body)
+        self._draw_panel_armature(body)
 
     def draw(self, context: Context):
         super().draw(context)
@@ -312,7 +368,10 @@ class ImportModelBaseOperator(ImportMaterialOperator):
             context,
             self.target_definition,
             self.mesh_converter,
-            self.bone_orientation
+            self.bone_orientation,
+            self.bone_length_mode,
+            self.min_bone_length,
+            self.max_leaf_bone_length
         )
 
     def _setup_lod_models(self, context: bpy.types.Context, model_infos: list[i_model.ModelInfo]):
@@ -412,7 +471,7 @@ class ImportCollisionMeshOperator(ImportOperator):
 
     def draw_panel_collision_mesh(self):
         header, body = self.layout.panel(
-            "HEIO_import_collision_mesh", default_closed=False)
+            "HEIO_import_collision_mesh", default_closed=True)
         header.label(text="Collision mesh")
 
         if not body:
