@@ -256,6 +256,24 @@ class HEIO_PT_VTP_ObjectData(ViewportToolPanel):
         self._draw_panel(
             layout,
             context,
+            "armature",
+            "Armature",
+            armature_panel.HEIO_PT_Armature,
+            lambda c: f"Active armature: {c.active_object.data.name}"
+        )
+
+        self._draw_panel(
+            layout,
+            context,
+            "bone",
+            "Bone",
+            node_panel.HEIO_PT_Node_Bone,
+            lambda c: f"Active bone: {c.active_bone.name}"
+        )
+
+        self._draw_panel(
+            layout,
+            context,
             "mesh",
             "Mesh",
             mesh_panel.HEIO_PT_Mesh,
@@ -270,22 +288,4 @@ class HEIO_PT_VTP_ObjectData(ViewportToolPanel):
             material_panel.HEIO_PT_Material,
             lambda c: None,
             self.draw_materials_list
-        )
-
-        self._draw_panel(
-            layout,
-            context,
-            "armature",
-            "Armature",
-            armature_panel.HEIO_PT_Armature,
-            lambda c: f"Active armature: {c.active_object.data.name}"
-        )
-
-        self._draw_panel(
-            layout,
-            context,
-            "bone",
-            "Bone",
-            node_panel.HEIO_PT_Node_Bone,
-            lambda c: f"Active bone: {c.active_bone.name}"
         )

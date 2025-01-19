@@ -435,6 +435,11 @@ class HEIO_PT_Mesh(PropertiesPanel):
             'Render layers'
         )
 
+        draw_lod_info_panel(layout, context, mesh.heio_mesh.lod_info)
+        draw_sca_editor_menu(layout, mesh.heio_mesh.sca_parameters, 'MESH')
+
+        layout.separator(type="LINE")
+
         HEIO_PT_Mesh.draw_mesh_info_panel(
             layout,
             context,
@@ -470,6 +475,3 @@ class HEIO_PT_Mesh(PropertiesPanel):
             context,
             mesh.heio_mesh.collision_primitives.active_element
         )
-
-        draw_lod_info_panel(layout, context, mesh.heio_mesh.lod_info)
-        draw_sca_editor_menu(layout, mesh.heio_mesh.sca_parameters, 'MESH')
