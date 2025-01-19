@@ -76,5 +76,6 @@ to_register = [
 
     info_operators.HEIO_OT_Info_Manual,
     info_operators.HEIO_OT_Info_Discord,
-    info_operators.HEIO_OT_Info_Report
+    info_operators.HEIO_OT_Info_Report,
+	info_operators.HEIO_OT_Info_DDS_Addon
 ]
