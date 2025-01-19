@@ -46,23 +46,17 @@ class HEIO_UL_LODInfoLevels(bpy.types.UIList):
 
         layout.active = index > 0
 
-        name = ""
-
-        if layout.active:
-            if isinstance(item.id_data, bpy.types.Mesh):
-                lod_data = item.mesh
-                icon = 'MESH_DATA'
-            else:
-                lod_data = item.armature
-                icon = 'ARMATURE_DATA'
-
-            if lod_data is None:
-                icon = "ERROR"
-            else:
-                name = lod_data.name
-        else:
+        if not layout.active:
             icon = 'BLANK1'
             name = "self"
+
+        elif item.target is None:
+            icon = "ERROR"
+            name = ""
+
+        else:
+            icon = 'NONE'
+            name = item.target.name
 
         split = layout.split(factor=0.5)
         split.label(text=name, icon=icon)
@@ -112,10 +106,7 @@ def draw_lod_info_panel(
         return
 
     if lod_info.levels.active_index > 0:
-        if isinstance(lod_info.id_data, bpy.types.Mesh):
-            body.prop_search(lod_info_level, "mesh", bpy.data, "meshes")
-        else:
-            body.prop_search(lod_info_level, "armature", bpy.data, "armatures")
+        body.prop_search(lod_info_level, "target", bpy.data, "objects")
 
     body.prop(lod_info_level, "cascade")
     body.prop(lod_info_level, "unknown")

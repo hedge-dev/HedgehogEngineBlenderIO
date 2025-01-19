@@ -387,8 +387,6 @@ class MeshConverter:
 
             model_info.lod_models.append(lod_model_info)
 
-        model_info.setup_lod_info()
-
         progress_console.end()
 
     def convert_model_sets(self, model_sets) -> list[i_model.ModelInfo]:

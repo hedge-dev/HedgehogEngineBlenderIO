@@ -89,7 +89,7 @@ class ModelInfo:
 
         return mesh_objs, armature_obj
 
-    def setup_lod_info(self):
+    def setup_lod_info(self, lod_collection: bpy.types.Collection, context: bpy.types.Context):
         if self.sn_lod_info is None or self.lod_info_set_up:
             return
 
@@ -116,8 +116,9 @@ class ModelInfo:
             lod_info_level.unknown = sn_lod_info_item.Unknown2
 
             lod_model = self.lod_models[i - 1]
+            mesh_objs, armature_obj = lod_model.create_object(lod_model.name, lod_collection, context)
 
-            if self.armature is not None:
-                lod_info_level.armature = lod_model.armature
+            if armature_obj is not None:
+                lod_info_level.target = armature_obj
             else:
-                lod_info_level.mesh = lod_model.meshes[0]
+                lod_info_level.target = mesh_objs[0]

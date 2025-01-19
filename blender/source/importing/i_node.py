@@ -117,8 +117,6 @@ class NodeConverter:
             progress_console.update(f"Converting LOD level {i}", i)
             self._convert_model(lod_model_info)
 
-        model_info.setup_lod_info()
-
         progress_console.end()
 
     def convert_model_sets(self, model_sets):

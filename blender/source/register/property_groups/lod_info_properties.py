@@ -23,16 +23,10 @@ class HEIO_LODInfoLevel(bpy.types.PropertyGroup):
         default=-1
     )
 
-    mesh: PointerProperty(
-        name="Mesh",
-        description="Mesh to use for this lod level",
-        type=bpy.types.Mesh
-    )
-
-    armature: PointerProperty(
-        name="Armature",
-        description="Armature to use for this lod level",
-        type=bpy.types.Armature
+    target: PointerProperty(
+        name="Target",
+        description="Target object to use for this lod level",
+        type=bpy.types.Object
     )
 
 

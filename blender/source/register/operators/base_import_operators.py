@@ -331,9 +331,7 @@ class ImportModelBaseOperator(ImportMaterialOperator):
             context.scene.collection.children.link(lod_collection)
 
         for model_info in model_infos:
-            for lod_model_info in model_info.lod_models:
-                lod_model_info.create_object(
-                    lod_model_info.name, lod_collection, context)
+            model_info.setup_lod_info(lod_collection, context)
 
     def _import_model_files(self, context: bpy.types.Context, type):
         progress_console.update("Resolving & reading files")
