@@ -9,4 +9,5 @@ User Interface
    settings
    tools/index
    object/index
+   lod_info
    sca_parameters

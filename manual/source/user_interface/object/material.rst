@@ -8,7 +8,6 @@ Material Properties
 	:Panel:		:menuselection:`Properties --> Material Properties --> HEIO Material`
 
 
-
 .. _HEIO_Material.custom_shader:
 
 Custom Shader
@@ -72,15 +71,22 @@ General
 =======
 
 
-.. _HEIO_Material.layer:
+.. _HEIO_Material.render_layer:
 
-Layer
-	The mesh layer to exporting a model. This is a property that is not actually tied to
+Render Layer
+	The render layer to use when exporting a model. This is a property that is not actually tied to
 	materials, but to mesh-sets of a model, but since blender has nothing like mesh-sets,
 	the layer gets derived from materials on export.
 
+	HEIO adds the ability to specify the layer to use per polygon using
+	:doc:`Render layers </user_interface/object/mesh/render_layers>`, but usually
+	the materials render layer is all you need.
+
 	If set to automatic the layer will be taken from the selected shader. If the shader
 	is not defined by the targeted game, ``Opaque`` will be used.
+
+	When choosing ``Special``, a textfield will be shown that lets you specify the special layer
+	name.
 
 Clip Threshold
 	The default clip threshold property added here for convenience.

@@ -9,6 +9,8 @@ SCA Parameters
 
 .. reference::
 
+	:Bone:			:menuselection:`Properties --> Bone Properties --> HEIO Node Properties --> SCA Parameters`
+	:Mesh:			:menuselection:`Properties --> Mesh Properties --> HEIO Mesh --> SCA Parameters`
 	:Material:		:menuselection:`Properties --> Material Properties --> HEIO Material --> SCA Parameters`
 
 Some games make use of ``Sample Chunk Attribute`` parameters to pass additional per-file
