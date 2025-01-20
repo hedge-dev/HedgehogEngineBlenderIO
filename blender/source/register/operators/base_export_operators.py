@@ -109,7 +109,7 @@ class ExportObjectSelectionOperator(ExportOperator):
         self.draw_panel_include(is_file_browser)
 
     def _include_lod_models(self):
-        return True
+        return self.target_definition.hedgehog_engine_version > 1
 
     def setup(self, context):
         super().setup(context)

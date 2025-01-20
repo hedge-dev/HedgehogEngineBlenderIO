@@ -623,7 +623,7 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
 
         result = (name, compile_data, None)
 
-        if root is None:
+        if root is None or self._target_definition.hedgehog_engine_version < 2:
             return result
 
         if root.type == 'ARMATURE':
