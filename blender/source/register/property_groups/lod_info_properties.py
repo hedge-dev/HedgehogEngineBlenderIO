@@ -38,12 +38,6 @@ class HEIO_LODInfoLevelList(BaseList):
 
 class HEIO_LODInfo(bpy.types.PropertyGroup):
 
-    unknown: IntProperty(
-        name="Unknown",
-        description="Yet to determine what this does. Only seen to use either 4 or 132",
-        default=4
-    )
-
     levels: PointerProperty(
         type=HEIO_LODInfoLevelList
     )

@@ -100,11 +100,7 @@ class BaseMeshProcessor:
     def compile_output(self):
         raise NotImplementedError()
 
-    @classmethod
-    def _get_extension(cls, data):
-        raise NotImplementedError()
-
     def write_output_to_files(self, directory: str):
         for name, data in self._output.items():
-            filepath = os.path.join(directory, name + self._get_extension(data))
-            SharpNeedle.RESOURCE_EXTENSIONS.Write(data, filepath, self._write_dependencies)
+            filepath = os.path.join(directory, name + data[1])
+            SharpNeedle.RESOURCE_EXTENSIONS.Write(data[0], filepath, self._write_dependencies)

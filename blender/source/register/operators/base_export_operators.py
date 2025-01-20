@@ -108,9 +108,12 @@ class ExportObjectSelectionOperator(ExportOperator):
 
         self.draw_panel_include(is_file_browser)
 
+    def _include_lod_models(self):
+        return True
+
     def setup(self, context):
         super().setup(context)
-        self.object_manager = o_object_manager.ObjectManager()
+        self.object_manager = o_object_manager.ObjectManager(self._include_lod_models())
 
         if len(self.collection) > 0:
             collection = bpy.data.collections[self.collection]
@@ -421,6 +424,9 @@ class ExportCollisionModelOperator(ExportBaseMeshDataOperator):
         super().draw(context)
         self.draw_panel_collision_model()
 
+    def _include_lod_models(self):
+        return False
+
     def setup(self, context):
         if self.target_definition.data_versions.bullet_mesh is None:
             raise HEIOUserException(
@@ -479,6 +485,9 @@ class ExportPointCloudOperator(ExportCollisionModelOperator, ExportModelBaseOper
         self.show_collision_mesh_panel = self.cloud_type == 'COL' and self.write_resources
         self.show_model_panel = self.cloud_type == 'MODEL' and self.write_resources
         return super().check(context)
+
+    def _include_lod_models(self):
+        return self.cloud_type == 'MODEL'
 
     def setup(self, context):
         if self.target_definition.data_versions.point_cloud is None:

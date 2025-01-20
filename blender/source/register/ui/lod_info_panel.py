@@ -87,11 +87,6 @@ def draw_lod_info_panel(
     body.use_property_split = True
     body.use_property_decorate = False
 
-    body.prop(lod_info, "unknown")
-
-    body.separator(type='LINE')
-    body.label(text="Levels:")
-
     draw_list(
         body,
         HEIO_UL_LODInfoLevels,

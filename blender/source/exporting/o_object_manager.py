@@ -9,12 +9,14 @@ class ObjectManager:
     object_trees: dict[BObject, set[BObject]]
     collection_trees: dict[bpy.types.Collection,
                            tuple[BObject | None, list[BObject]]]
+    lod_trees: dict[BObject, set[BObject]]
 
-    def __init__(self):
+    def __init__(self, include_lod_trees: bool):
         self.all_objects = set()
         self.base_objects = set()
         self.object_trees = {}
         self.collection_trees = {}
+        self.lod_trees = {} if include_lod_trees else None
 
     @staticmethod
     def _get_armature_root(objects: set[BObject]):
@@ -29,6 +31,8 @@ class ObjectManager:
             for root in roots:
                 if root.type == 'ARMATURE':
                     objects.add(root)
+
+
 
     @staticmethod
     def assemble_object_trees(objects):
@@ -48,10 +52,32 @@ class ObjectManager:
                     tree = set()
                     trees[available_root_parent] = tree
                 tree.add(obj)
+
             elif obj not in trees:
                 trees[obj] = set()
 
         return trees
+
+    @staticmethod
+    def _get_lod_trees(root):
+        result = {}
+
+        if root.type == 'MESH':
+            lod_info = root.data.heio_mesh.lod_info
+        elif root.type == 'ARMATURE':
+            lod_info = root.data.heio_armature.lod_info
+        else:
+            return result
+
+        result = {}
+
+        for level in lod_info.levels.elements[1:]:
+            if level.target is None:
+                continue
+
+            result[level.target] = list(level.target.children_recursive)
+
+        return result
 
     def _update_objects(self, new_objects: set[BObject]):
         self._get_armature_root(new_objects)
@@ -82,6 +108,20 @@ class ObjectManager:
                 self.collection_trees[coll] = (None, collection_objects)
 
             self.all_objects.update(collection_objects)
+
+        if self.lod_trees is not None:
+            roots = list(self.object_trees.keys())
+            roots.extend([root for root, _ in self.collection_trees.values() if root is not None])
+
+            for root in roots:
+                trees = self._get_lod_trees(root)
+
+                for root, children in trees.items():
+                    self.all_objects.add(root)
+                    self.all_objects.update(children)
+
+                self.lod_trees.update(trees)
+
 
     def collect_objects(
             self,

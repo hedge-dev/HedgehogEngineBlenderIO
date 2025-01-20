@@ -42,9 +42,11 @@ class HEIO_OT_Export_Material_Active(ExportMaterialOperator):
         )
 
     def export(self, context):
-        self.material_processor.convert_materials([context.active_object.active_material])
+        self.material_processor.convert_materials(
+            [context.active_object.active_material])
         self.material_processor.write_output_to_files(self.directory)
         return {'FINISHED'}
+
 
 class HEIO_OT_Export_Model(ExportModelBaseOperator):
     bl_idname = "heio.export_model"
@@ -55,6 +57,7 @@ class HEIO_OT_Export_Model(ExportModelBaseOperator):
     def export(self, context):
         self.export_model_files(context, 'MODEL')
         return {'FINISHED'}
+
 
 class HEIO_OT_Export_TerrainModel(ExportModelBaseOperator):
     bl_idname = "heio.export_terrainmodel"
@@ -73,7 +76,8 @@ class HEIO_OT_Export_CollisionMesh(ExportCollisionModelOperator):
     bl_label = "Export as HE Collision Mesh (*.btmesh)"
 
     def export(self, context):
-        self.export_basemesh_files(context, self.collision_mesh_processor, False)
+        self.export_basemesh_files(
+            context, self.collision_mesh_processor, False)
         return {'FINISHED'}
 
 
@@ -88,7 +92,8 @@ class HEIO_OT_Export_PointCloud(ExportPointCloudOperator):
             processor = self.model_processor
 
         if self.write_resources:
-            self.modelmesh_manager.evaluate_begin(context, self.cloud_type == 'MODEL')
+            self.modelmesh_manager.evaluate_begin(
+                context, self.cloud_type == 'MODEL')
             processor.prepare_all_meshdata()
             self.modelmesh_manager.evaluate_end()
 
@@ -107,6 +112,7 @@ class HEIO_OT_Export_PointCloud(ExportPointCloudOperator):
         SharpNeedle.RESOURCE_EXTENSIONS.Write(pointcloud, self.filepath)
         return {'FINISHED'}
 
+
 class HEIO_OT_Export_PointClouds(ExportPointCloudOperator):
     bl_idname = "heio.export_pointclouds"
     bl_label = "Collections as HE Pointclouds (*.pcmodel;*.pccol)"
@@ -122,7 +128,8 @@ class HEIO_OT_Export_PointClouds(ExportPointCloudOperator):
             processor = self.model_processor
 
         if self.write_resources:
-            self.modelmesh_manager.evaluate_begin(context, self.cloud_type == 'MODEL')
+            self.modelmesh_manager.evaluate_begin(
+                context, self.cloud_type == 'MODEL')
             processor.prepare_all_meshdata()
             self.modelmesh_manager.evaluate_end()
 
@@ -133,7 +140,8 @@ class HEIO_OT_Export_PointClouds(ExportPointCloudOperator):
             if len(col.all_objects) == 0:
                 continue
 
-            object_trees = self.object_manager.assemble_object_trees(set(col.all_objects))
+            object_trees = self.object_manager.assemble_object_trees(
+                set(col.all_objects))
 
             pointcloud = self.pointcloud_processor.object_trees_to_pointscloud(
                 object_trees,
@@ -150,7 +158,8 @@ class HEIO_OT_Export_PointClouds(ExportPointCloudOperator):
             processor.write_output_to_files(directory)
 
         for name, pc in pointclouds:
-            filepath = os.path.join(directory, name + ".pc" + self.cloud_type.lower())
+            filepath = os.path.join(
+                directory, name + ".pc" + self.cloud_type.lower())
             SharpNeedle.RESOURCE_EXTENSIONS.Write(pc, filepath)
 
         return {'FINISHED'}

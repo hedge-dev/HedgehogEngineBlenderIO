@@ -142,6 +142,8 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
     _topology: any
     _optimized_vertex_data: bool
 
+    _lod_output: dict[bpy.types.Object, any]
+
     def __init__(
             self,
             target_definition: TargetDefinition,
@@ -167,6 +169,8 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
         self._bone_orientation = bone_orientation
         self._topology = topology
         self._optimized_vertex_data = optimized_vertex_data
+
+        self._lod_output = {}
 
     ##################################################
 
@@ -548,8 +552,7 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
 
         return [x for x in sca_parameters if x is not None]
 
-    def _assemble_compile_data(self, root, children, name: str):
-
+    def _assemble_compile_data_set(self, root, children, name: str):
         sn_meshdata = []
         weight_index_map = None
         model_nodes = None
@@ -610,29 +613,82 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
             sca_parameters
         )
 
+    def _assemble_compile_data(self, root, children, name: str):
+        compile_data = self._assemble_compile_data_set(root, children, name)
+
+        if compile_data is None:
+            return None
+
+        result = (name, compile_data, None)
+
+        if root is None:
+            return result
+
+        if root.type == 'ARMATURE':
+            lod_info = root.data.heio_armature.lod_info
+        elif root.type == 'MESH':
+            lod_info = root.data.heio_mesh.lod_info
+        else:
+            return result
+
+        if len(lod_info.levels) == 0:
+            return result
+
+        for level in lod_info.levels.elements[1:]:
+            if level.target is None or level.target in self._lod_output:
+                continue
+
+            lod_children = self._object_manager.lod_trees[level.target]
+            self._output_queue.append((level.target, self._assemble_compile_data_set(level.target, lod_children, name)))
+            self._lod_output[level.target] = None
+
+        return (name, compile_data, lod_info)
+
     ##################################################
 
     def compile_output(self):
         models = HEIO_NET.MESH_COMPILE_DATA.ToHEModels(
-            self._output_queue,
+            [x[1] for x in self._output_queue],
             self._target_definition.hedgehog_engine_version == 2,
             self._topology,
             self._optimized_vertex_data
         )
 
-        for model in models:
-            self._output[model.Name] = model
+        for queued, model in zip(self._output_queue, models):
+            if len(queued) == 3:
+                continue
+
+            self._lod_output[queued[0]] = model
+
+        for queued, model in zip(self._output_queue, models):
+            if len(queued) == 2:
+                continue
+
+            extension = ".terrain-model" if isinstance(model, SharpNeedle.TERRAIN_MODEL) else ".model"
+
+            if queued[2] is None:
+                self._output[queued[0]] = (model, extension)
+                continue
+
+            lod_models = []
+            lod_cascades = []
+            lod_unknowns = []
+
+            lod_models.append(model)
+
+            for i, level in enumerate(queued[2].levels):
+                if i > 0 and level.target is None:
+                    continue
+
+                lod_cascades.append(level.cascade)
+                lod_unknowns.append(level.unknown)
+
+                if i > 0:
+                    lod_models.append(self._lod_output[level.target])
+
+            self._output[queued[0]] = (HEIO_NET.MODEL_HELPER.CreateLODArchive(lod_models, lod_cascades, lod_unknowns), extension)
 
         self._output_queue.clear()
-
-    ##################################################
-
-    @classmethod
-    def _get_extension(cls, data):
-        if isinstance(data, SharpNeedle.TERRAIN_MODEL):
-            return ".terrain-model"
-        else:
-            return ".model"
 
     def write_output_to_files(self, directory):
         super().write_output_to_files(directory)

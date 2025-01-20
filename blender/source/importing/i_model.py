@@ -101,7 +101,6 @@ class ModelInfo:
             return
 
         self.lod_info_set_up = True
-        lod_info.unknown = self.sn_lod_info.Unknown1
         lod_info.initialize()
 
         for i, sn_lod_info_item in enumerate(self.sn_lod_info.Items):

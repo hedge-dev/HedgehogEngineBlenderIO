@@ -241,7 +241,7 @@ class CollisionMeshProcessor(o_mesh.BaseMeshProcessor):
         return (name, sn_meshdata, sn_primitives)
 
     def compile_output(self):
-        # TODO: compile with multithreading in c#
+        # TODO: compile with multithreading in c#, maybe
 
         for name, sn_meshdata, sn_primitives in self._output_queue:
             bullet_mesh = HEIO_NET.COLLISION_MESH_DATA.ToBulletMesh(
@@ -250,10 +250,6 @@ class CollisionMeshProcessor(o_mesh.BaseMeshProcessor):
             bullet_mesh.Name = name
             bullet_mesh.BulletMeshVersion = self._target_definition.data_versions.bullet_mesh
 
-            self._output[bullet_mesh.Name] = bullet_mesh
+            self._output[bullet_mesh.Name] = (bullet_mesh, ".btmesh")
 
         self._output_queue.clear()
-
-    @classmethod
-    def _get_extension(cls, data):
-        return ".btmesh"
