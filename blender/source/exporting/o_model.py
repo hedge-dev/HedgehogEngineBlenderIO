@@ -533,9 +533,11 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
 
         sca_parameters = []
 
-        defaults = self._target_definition.sca_parameters.model_defaults
-        if model_nodes is None:
-            defaults = self._target_definition.sca_parameters.terrain_defaults
+        defaults = {}
+        if self._auto_sca_parameters and self._target_definition.sca_parameters is not None:
+            defaults = self._target_definition.sca_parameters.model_defaults
+            if model_nodes is None:
+                defaults = self._target_definition.sca_parameters.terrain_defaults
 
         if root is not None and root.type == 'ARMATURE':
             for i, bone in enumerate(root.pose.bones):

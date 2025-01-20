@@ -113,7 +113,8 @@ class ExportObjectSelectionOperator(ExportOperator):
 
     def setup(self, context):
         super().setup(context)
-        self.object_manager = o_object_manager.ObjectManager(self._include_lod_models())
+        self.object_manager = o_object_manager.ObjectManager(
+            self._include_lod_models())
 
         if len(self.collection) > 0:
             collection = bpy.data.collections[self.collection]
@@ -133,8 +134,6 @@ class ExportObjectSelectionOperator(ExportOperator):
 
 
 class ExportMaterialOperator(ExportObjectSelectionOperator):
-
-    show_material_panel = True
 
     image_mode: EnumProperty(
         name="Image Export Mode",
@@ -166,23 +165,28 @@ class ExportMaterialOperator(ExportObjectSelectionOperator):
         default=True
     )
 
-    def draw_panel_material(self):
-        if not self.show_material_panel:
+    def _hide_material_panel(self):
+        return False
+
+    def draw_panel_material(self, context):
+        if self._hide_material_panel():
             return
 
         header, body = self.layout.panel(
-            "HEIO_export_material", default_closed=False)
+            "HEIO_export_material", default_closed=True)
         header.label(text="Material")
 
         if not body:
             return
 
-        body.use_property_split = False
-        body.prop(self, "auto_sca_parameters_material")
+        target_def = definitions.get_target_definition(context)
+        if target_def is None or target_def.data_versions.sample_chunk >= 2:
+            body.use_property_split = False
+            body.prop(self, "auto_sca_parameters_material")
 
-        body.use_property_split = True
 
         if "blender_dds_addon" in bpy.context.preferences.addons.keys():
+            body.use_property_split = True
             body.prop(self, "image_mode")
 
             if self.image_mode != 'NONE':
@@ -198,7 +202,7 @@ class ExportMaterialOperator(ExportObjectSelectionOperator):
 
     def draw(self, context: Context):
         super().draw(context)
-        self.draw_panel_material()
+        self.draw_panel_material(context)
 
     def setup(self, context):
         super().setup(context)
@@ -235,15 +239,34 @@ class ExportBaseMeshDataOperator(ExportObjectSelectionOperator):
         default=False
     )
 
-    force_directory_mode: bool | None = None
-
     def check(self, context):
-        if self.force_directory_mode is not None:
-            self.directory_mode = self.force_directory_mode
+        force = self._get_force_directory_mode()
+        if force is not None:
+            self.directory_mode = force
         else:
             self.directory_mode = self.mesh_mode == 'SEPARATE'
 
         return super().check(context)
+
+    def _get_force_directory_mode(self):
+        return None
+
+    def draw_mesh_mode(self, layout):
+        if self._get_force_directory_mode() is None:
+            layout.use_property_split = True
+            layout.prop(self, "mesh_mode")
+
+    def draw_panel_geometry(self, layout):
+        header, body = layout.panel(
+            "HEIO_export_geometry", default_closed=True)
+        header.label(text="Geometry")
+
+        if not body:
+            return
+
+        body.use_property_split = False
+        body.prop(self, "apply_modifiers")
+        body.prop(self, "apply_poses")
 
     def setup(self, context):
         super().setup(context)
@@ -271,7 +294,8 @@ class ExportBaseMeshDataOperator(ExportObjectSelectionOperator):
                 processor.enqueue_compile(root, children, name)
 
         else:
-            processor.enqueue_compile(None, self.object_manager.base_objects, name)
+            processor.enqueue_compile(
+                None, self.object_manager.base_objects, name)
 
         directory = os.path.dirname(self.filepath)
 
@@ -280,9 +304,6 @@ class ExportBaseMeshDataOperator(ExportObjectSelectionOperator):
 
 
 class ExportModelBaseOperator(ExportMaterialOperator, ExportBaseMeshDataOperator):
-
-    show_model_panel = True
-    show_bone_orientation = True
 
     export_materials: BoolProperty(
         name="Export materials",
@@ -320,8 +341,50 @@ class ExportModelBaseOperator(ExportMaterialOperator, ExportBaseMeshDataOperator
         default=True
     )
 
+    def _hide_material_panel(self):
+        return not self.export_materials or self._hide_model_panel()
+
+    def _hide_model_panel(self):
+        return False
+
+    def _draw_panel_model_general(self, layout, target_def: definitions.TargetDefinition):
+        header, body = layout.panel(
+            "HEIO_export_model_general", default_closed=True)
+        header.label(text="General")
+
+        if not body:
+            return
+
+        body.use_property_split = False
+        if target_def is None or target_def.data_versions.sample_chunk >= 2:
+            body.prop(self, "auto_sca_parameters_model")
+        body.prop(self, "export_materials")
+
+        body.use_property_split = True
+        body.prop(self, "bone_orientation")
+
+    def _draw_panel_model_advanced(self, layout, context, target_def: definitions.TargetDefinition):
+        show_triangle_strips = target_def is None or target_def.supports_topology
+        show_optimized_vertex_data = target_def is None or target_def.hedgehog_engine_version == 2 or context.scene.heio_scene.target_console
+
+        if not show_triangle_strips and not show_optimized_vertex_data:
+            return
+
+        header, body = layout.panel(
+            "HEIO_export_model_advanced", default_closed=True)
+        header.label(text="Advanced")
+
+        if not body:
+            return
+
+        if show_triangle_strips:
+            body.prop(self, "use_triangle_strips")
+
+        if show_optimized_vertex_data:
+            body.prop(self, "optimized_vertex_data")
+
     def draw_panel_model(self, context):
-        if not self.show_model_panel:
+        if self._hide_model_panel():
             return
 
         header, body = self.layout.panel(
@@ -331,29 +394,12 @@ class ExportModelBaseOperator(ExportMaterialOperator, ExportBaseMeshDataOperator
         if not body:
             return
 
-        body.use_property_split = True
-        body.prop(self, "mesh_mode")
-
-        body.use_property_split = False
-        body.prop(self, "apply_modifiers")
-        body.prop(self, "apply_poses")
-        body.prop(self, "auto_sca_parameters_model")
-
-        body.use_property_split = True
-        if self.show_bone_orientation:
-            body.prop(self, "bone_orientation")
-
-        body.use_property_split = False
-        body.prop(self, "export_materials")
-
-        body.separator()
-
         target_def = definitions.get_target_definition(context)
-        if target_def is None or target_def.supports_topology:
-            body.prop(self, "use_triangle_strips")
 
-        if target_def is None or target_def.hedgehog_engine_version == 2 or context.scene.heio_scene.target_console:
-            body.prop(self, "optimized_vertex_data")
+        self.draw_mesh_mode(body)
+        self.draw_panel_geometry(body)
+        self._draw_panel_model_general(body, target_def)
+        self._draw_panel_model_advanced(body, context, target_def)
 
     def draw(self, context: Context):
         super().draw(context)
@@ -386,23 +432,21 @@ class ExportModelBaseOperator(ExportMaterialOperator, ExportBaseMeshDataOperator
             optimize_vertex_data
         )
 
-    def check(self, context):
-        self.show_material_panel = self.export_materials and self.show_model_panel
-        return super().check(context)
-
     def export_model_files(self, context, mode):
         self.model_processor.mode = mode
-        self.export_basemesh_files(context, self.model_processor, mode != 'TERRAIN')
+        self.export_basemesh_files(
+            context, self.model_processor, mode != 'TERRAIN')
 
 
 class ExportCollisionModelOperator(ExportBaseMeshDataOperator):
 
     filename_ext = ".btmesh"
 
-    show_collision_mesh_panel = True
+    def _hide_collision_mesh_panel(self):
+        return False
 
     def draw_panel_collision_model(self):
-        if not self.show_collision_mesh_panel:
+        if self._hide_collision_mesh_panel():
             return
 
         header, body = self.layout.panel(
@@ -412,13 +456,8 @@ class ExportCollisionModelOperator(ExportBaseMeshDataOperator):
         if not body:
             return
 
-        body.use_property_split = True
-        if self.force_directory_mode is None:
-            body.prop(self, "mesh_mode")
-
-        body.use_property_split = False
-        body.prop(self, "apply_modifiers")
-        body.prop(self, "apply_poses")
+        self.draw_mesh_mode(body)
+        self.draw_panel_geometry(body)
 
     def draw(self, context: Context):
         super().draw(context)
@@ -438,7 +477,7 @@ class ExportCollisionModelOperator(ExportBaseMeshDataOperator):
             self.target_definition,
             self.object_manager,
             self.modelmesh_manager,
-            False # bullet mesh has no dependencies
+            False  # bullet mesh has no dependencies
         )
 
 
@@ -460,7 +499,14 @@ class ExportPointCloudOperator(ExportCollisionModelOperator, ExportModelBaseOper
         default=True
     )
 
-    force_directory_mode = False
+    def _get_force_directory_mode(self):
+        return False
+
+    def _hide_model_panel(self):
+        return self.cloud_type != 'MODEL' or not self.write_resources
+
+    def _hide_collision_mesh_panel(self):
+        return self.cloud_type != 'COL' or not self.write_resources
 
     def draw_panel_pointcloud(self):
         header, body = self.layout.panel(
@@ -482,8 +528,6 @@ class ExportPointCloudOperator(ExportCollisionModelOperator, ExportModelBaseOper
 
     def check(self, context):
         self.filename_ext = '.pc' + self.cloud_type.lower()
-        self.show_collision_mesh_panel = self.cloud_type == 'COL' and self.write_resources
-        self.show_model_panel = self.cloud_type == 'MODEL' and self.write_resources
         return super().check(context)
 
     def _include_lod_models(self):

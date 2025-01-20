@@ -50,7 +50,7 @@ class MaterialProcessor:
         converted = []
 
         sca_defaults = {}
-        if not self._auto_sca_parameters:
+        if self._auto_sca_parameters and self._target_definition.data_versions.sample_chunk >= 2 and self._target_definition.sca_parameters is not None:
             sca_defaults = self._target_definition.sca_parameters.material_defaults
 
         for material in materials:
