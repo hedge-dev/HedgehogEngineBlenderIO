@@ -2,7 +2,7 @@ from mathutils import Vector, Quaternion, Matrix
 
 from . import o_enum, o_mesh, o_modelset, o_transform
 from ..dotnet import HEIO_NET, SharpNeedle
-
+from ..utility import progress_console
 
 class RawCollisionPrimitiveData:
 
@@ -104,35 +104,35 @@ class RawCollisionMeshData:
 
 class CollisionMeshProcessor(o_mesh.BaseMeshProcessor):
 
-    def _convert_modelmesh(self, modelmesh: o_modelset.ModelSet):
-        if len(modelmesh.evaluated_mesh.polygons) == 0:
+    def _convert_model_set(self, model_set: o_modelset.ModelSet):
+        if len(model_set.evaluated_mesh.polygons) == 0:
             return None
 
         raw_meshdata = RawCollisionMeshData()
         raw_meshdata.vertices = [
-            v.co for v in modelmesh.evaluated_mesh.vertices]
+            v.co for v in model_set.evaluated_mesh.vertices]
 
-        heiomesh = modelmesh.obj.data.heio_mesh
+        heiomesh = model_set.obj.data.heio_mesh
 
         triangle_order = []
 
         if not heiomesh.groups.initialized or heiomesh.groups.attribute_invalid:
             triangle_order = list(
-                range(len(modelmesh.evaluated_mesh.polygons)))
+                range(len(model_set.evaluated_mesh.polygons)))
             raw_meshdata.triangle_indices = [
-                vertex for polygon in modelmesh.evaluated_mesh.polygons for vertex in polygon.vertices]
+                vertex for polygon in model_set.evaluated_mesh.polygons for vertex in polygon.vertices]
             raw_meshdata.layers.append(
                 HEIO_NET.COLLISION_MESH_DATA_GROUP(
-                    len(modelmesh.evaluated_mesh.polygons), 0, False
+                    len(model_set.evaluated_mesh.polygons), 0, False
                 ))
 
         else:
             layer_max = len(heiomesh.groups) - 1
             triangles = [list() for _ in heiomesh.groups]
             invalid_triangles = []
-            attribute = modelmesh.evaluated_mesh.attributes[heiomesh.groups.attribute_name]
+            attribute = model_set.evaluated_mesh.attributes[heiomesh.groups.attribute_name]
 
-            for group, polygon in zip(attribute.data, modelmesh.evaluated_mesh.polygons):
+            for group, polygon in zip(attribute.data, model_set.evaluated_mesh.polygons):
                 if group.value > layer_max:
                     invalid_triangles.append(polygon)
                 else:
@@ -175,14 +175,14 @@ class CollisionMeshProcessor(o_mesh.BaseMeshProcessor):
             if heiomesh.collision_types.initialized and not heiomesh.collision_types.attribute_invalid:
                 raw_meshdata.type_values = [
                     t.value for t in heiomesh.collision_types]
-                attribute = modelmesh.evaluated_mesh.attributes[heiomesh.collision_types.attribute_name]
+                attribute = model_set.evaluated_mesh.attributes[heiomesh.collision_types.attribute_name]
                 raw_meshdata.types = [
                     attribute.data[x].value for x in triangle_order]
 
             if heiomesh.collision_flags.initialized and not heiomesh.collision_flags.attribute_invalid:
                 raw_meshdata.flag_values = [
                     t.value for t in heiomesh.collision_flags]
-                attribute = modelmesh.evaluated_mesh.attributes[heiomesh.collision_flags.attribute_name]
+                attribute = model_set.evaluated_mesh.attributes[heiomesh.collision_flags.attribute_name]
                 raw_meshdata.flags = [
                     attribute.data[x].value for x in triangle_order]
 
@@ -242,8 +242,12 @@ class CollisionMeshProcessor(o_mesh.BaseMeshProcessor):
 
     def compile_output(self):
         # TODO: compile with multithreading in c#, maybe
+        progress_console.start("Compiling collision meshes", len(self._output_queue))
 
-        for name, sn_meshdata, sn_primitives in self._output_queue:
+        for i, output in enumerate(self._output_queue):
+            name, sn_meshdata, sn_primitives = output
+            progress_console.update(f"Compiling collision mesh \"{name}\"", i)
+
             bullet_mesh = HEIO_NET.COLLISION_MESH_DATA.ToBulletMesh(
                 sn_meshdata, sn_primitives)
 
@@ -253,3 +257,5 @@ class CollisionMeshProcessor(o_mesh.BaseMeshProcessor):
             self._output[bullet_mesh.Name] = (bullet_mesh, ".btmesh")
 
         self._output_queue.clear()
+
+        progress_console.end()

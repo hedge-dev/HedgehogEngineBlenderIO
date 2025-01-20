@@ -5,7 +5,7 @@ from . import o_mesh, o_modelset, o_transform, o_material, o_object_manager, o_s
 from ..register.definitions import TargetDefinition
 from ..dotnet import HEIO_NET, SharpNeedle, System
 from ..exceptions import HEIOUserException
-
+from ..utility import progress_console
 
 
 class RawVertex:
@@ -148,7 +148,7 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
             self,
             target_definition: TargetDefinition,
             object_manager: o_object_manager.ObjectManager,
-            modelmesh_manager: o_modelset.ModelSetManager,
+            model_set_manager: o_modelset.ModelSetManager,
             write_dependencies: bool,
 
             material_processor: o_material.MaterialProcessor,
@@ -158,7 +158,7 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
             topology: any,
             optimized_vertex_data: bool):
 
-        super().__init__(target_definition, object_manager, modelmesh_manager, write_dependencies)
+        super().__init__(target_definition, object_manager, model_set_manager, write_dependencies)
 
         self.mode = 'AUTO'
 
@@ -174,16 +174,33 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
 
     ##################################################
 
-    def _convert_vertices(self, modelmesh: o_modelset.ModelSet):
-        groupnames = [g.name for g in modelmesh.evaluated_object.vertex_groups]
+    def _pre_prepare_mesh_data(self, model_sets):
+        all_materials = set()
 
-        if modelmesh.is_weighted:
+        for model_set in model_sets:
+            if len(model_set.evaluated_mesh.polygons) == 0:
+                continue
+
+            materials = [x.material for x in model_set.evaluated_object.material_slots]
+            if any([m is None for m in materials]):
+                raise HEIOUserException(
+                    f"Object \"{model_set.obj.name}\" has empty material slots!")
+
+            all_materials.update(materials)
+
+        self._material_processor.convert_materials(all_materials)
+
+
+    def _convert_vertices(self, model_set: o_modelset.ModelSet):
+        groupnames = [g.name for g in model_set.evaluated_object.vertex_groups]
+
+        if model_set.is_weighted:
             minWeight = 0.5 / 255
             def get_weights(vertex: bpy.types.MeshVertex):
                 return [(groupnames[g.group], g.weight) for g in vertex.groups if g.weight > minWeight]
 
-        elif modelmesh.attached_bone_name is not None:
-            attached_bone_weight = [(modelmesh.attached_bone_name, 1)]
+        elif model_set.attached_bone_name is not None:
+            attached_bone_weight = [(model_set.attached_bone_name, 1)]
 
             def get_weights(vertex: bpy.types.MeshVertex):
                 return attached_bone_weight
@@ -194,16 +211,16 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
             def get_weights(vertex: bpy.types.MeshVertex):
                 return empty_weights
 
-        if modelmesh.evaluated_shape_positions is not None:
+        if model_set.evaluated_shape_positions is not None:
             def get_shape_positions(vertex: bpy.types.MeshVertex):
-                return [b[vertex.index] - vertex.co for b in modelmesh.evaluated_shape_positions]
+                return [b[vertex.index] - vertex.co for b in model_set.evaluated_shape_positions]
 
         else:
             def get_shape_positions(vertex: bpy.types.MeshVertex):
                 return None
 
-        loop_normals: list[Vector] = [x.vector.copy() for x in modelmesh.evaluated_mesh.vertex_normals]
-        for loop in modelmesh.evaluated_mesh.loops:
+        loop_normals: list[Vector] = [x.vector.copy() for x in model_set.evaluated_mesh.vertex_normals]
+        for loop in model_set.evaluated_mesh.loops:
             # loops on the same vertex must share the same normal, no need to merge or compare
             loop_normals[loop.vertex_index] = loop.normal
 
@@ -212,14 +229,14 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
             loop_normals[vertex.index].copy(),
             get_shape_positions(vertex),
             get_weights(vertex)
-        ) for vertex in modelmesh.evaluated_mesh.vertices]
+        ) for vertex in model_set.evaluated_mesh.vertices]
 
-    def _map_polygons(self, modelmesh: o_modelset.ModelSet):
+    def _map_polygons(self, model_set: o_modelset.ModelSet):
         group_names = []
         layer_names = []
         materials = []
 
-        heiomesh = modelmesh.obj.data.heio_mesh
+        heiomesh = model_set.obj.data.heio_mesh
 
         if not heiomesh.groups.initialized or heiomesh.groups.attribute_invalid:
             group_names.append("")
@@ -241,7 +258,7 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
 
                 group_name_map.append(index)
 
-            group_attribute = modelmesh.evaluated_mesh.attributes[heiomesh.groups.attribute_name]
+            group_attribute = model_set.evaluated_mesh.attributes[heiomesh.groups.attribute_name]
 
             def get_group_index(polygon: bpy.types.MeshPolygon):
                 return group_name_map[group_attribute.data[polygon.index].value]
@@ -261,13 +278,13 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
 
                 layer_name_map.append(index)
 
-            layer_attribute = modelmesh.evaluated_mesh.attributes[heiomesh.render_layers.attribute_name]
+            layer_attribute = model_set.evaluated_mesh.attributes[heiomesh.render_layers.attribute_name]
 
             def get_layer_index(polygon: bpy.types.MeshPolygon):
                 return layer_name_map[layer_attribute.data[polygon.index].value]
 
         else:
-            for material_slot in modelmesh.evaluated_object.material_slots:
+            for material_slot in model_set.evaluated_object.material_slots:
                 material = material_slot.material.heio_material
 
                 if material.render_layer == 'SPECIAL':
@@ -297,7 +314,7 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
         material_lut = {}
         material_map = []
 
-        for material_slot in modelmesh.evaluated_object.material_slots:
+        for material_slot in model_set.evaluated_object.material_slots:
             if material_slot.material not in material_lut:
                 index = len(materials)
                 material_lut[material_slot.material] = index
@@ -315,7 +332,7 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
             get_group_index(polygon),
             get_layer_index(polygon),
             get_material_index(polygon)
-        ) for polygon in modelmesh.evaluated_mesh.polygons]
+        ) for polygon in model_set.evaluated_mesh.polygons]
         polygon_mapping.sort(key=lambda x: (x[1], x[2], x[3]))
 
         return group_names, layer_names, materials, polygon_mapping
@@ -359,26 +376,19 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
 
         return colors, color_attribute.data_type == 'BYTE_COLOR'
 
-    def _convert_modelmesh(self, modelmesh: o_modelset.ModelSet):
-        mesh = modelmesh.evaluated_mesh
+    def _convert_model_set(self, model_set: o_modelset.ModelSet):
+        mesh = model_set.evaluated_mesh
         if len(mesh.polygons) == 0:
             return None
 
-        if len(modelmesh.evaluated_object.material_slots) == 0:
+        if len(model_set.evaluated_object.material_slots) == 0:
             raise HEIOUserException(
-                f"Object \"{modelmesh.obj.name}\" has no materials!")
-
-        materials = [x.material for x in modelmesh.evaluated_object.material_slots]
-        if any([m is None for m in materials]):
-            raise HEIOUserException(
-                f"Object \"{modelmesh.obj.name}\" has empty material slots!")
-
-        self._material_processor.convert_materials(materials)
+                f"Object \"{model_set.obj.name}\" has no materials!")
 
         raw_meshdata = RawMeshData()
-        raw_meshdata.vertices = self._convert_vertices(modelmesh)
+        raw_meshdata.vertices = self._convert_vertices(model_set)
         group_names, layer_names, materials, polygon_mapping = self._map_polygons(
-            modelmesh)
+            model_set)
 
         loop_order: list[bpy.types.MeshLoop] = [
             mesh.loops[loop]
@@ -435,8 +445,8 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
 
                 return False
 
-            enable_8_weight = get_param_or(modelmesh.obj.data.heio_mesh.force_enable_8_weights, "enable_max_bone_influences_8")
-            enable_multi_tangent = get_param_or(modelmesh.obj.data.heio_mesh.force_enable_multi_tangent, "enable_multi_tangent_space")
+            enable_8_weight = get_param_or(model_set.obj.data.heio_mesh.force_enable_8_weights, "enable_max_bone_influences_8")
+            enable_multi_tangent = get_param_or(model_set.obj.data.heio_mesh.force_enable_multi_tangent, "enable_multi_tangent_space")
 
             raw_meshdata.mesh_sets.append(HEIO_NET.MESH_DATA_SET_INFO(
                 byte_colors,
@@ -477,8 +487,8 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
         add_set()
         add_group()
 
-        if modelmesh.evaluated_shape_positions is not None:
-            raw_meshdata.morph_names = [x.name for x in modelmesh.obj.data.shape_keys.key_blocks[1:]]
+        if model_set.evaluated_shape_positions is not None:
+            raw_meshdata.morph_names = [x.name for x in model_set.obj.data.shape_keys.key_blocks[1:]]
 
         return raw_meshdata
 
@@ -636,19 +646,28 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
         if len(lod_info.levels) == 0:
             return result
 
-        for level in lod_info.levels.elements[1:]:
+        progress_console.start("Preparing LOD mesh data for export", len(lod_info.levels) - 1)
+
+        for i, level in enumerate(lod_info.levels.elements[1:]):
             if level.target is None or level.target in self._lod_output:
                 continue
+
+            progress_console.update(f"Converting mesh data for LOD object \"{level.target.name}\"", i)
 
             lod_children = self._object_manager.lod_trees[level.target]
             self._output_queue.append((level.target, self._assemble_compile_data_set(level.target, lod_children, name)))
             self._lod_output[level.target] = None
+
+        progress_console.end()
 
         return (name, compile_data, lod_info)
 
     ##################################################
 
     def compile_output(self):
+        progress_console.start("Compiling models")
+        progress_console.update("This may take a while")
+
         models = HEIO_NET.MESH_COMPILE_DATA.ToHEModels(
             [x[1] for x in self._output_queue],
             self._target_definition.hedgehog_engine_version == 2,
@@ -691,6 +710,7 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
             self._output[queued[0]] = (HEIO_NET.MODEL_HELPER.CreateLODArchive(lod_models, lod_cascades, lod_unknowns), extension)
 
         self._output_queue.clear()
+        progress_console.end()
 
     def write_output_to_files(self, directory):
         super().write_output_to_files(directory)

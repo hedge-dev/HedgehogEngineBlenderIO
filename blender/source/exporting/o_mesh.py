@@ -5,30 +5,31 @@ from . import o_modelset, o_object_manager
 from ..register.definitions import TargetDefinition
 from ..dotnet import SharpNeedle
 from ..exceptions import HEIODevException
+from ..utility import progress_console
 
 
 class BaseMeshProcessor:
 
     _target_definition: TargetDefinition
     _object_manager: o_object_manager.ObjectManager
-    _modelmesh_manager: o_modelset.ModelSetManager
+    _modelset_manager: o_modelset.ModelSetManager
 
     _write_dependencies: bool
 
     _meshdata_lut: dict[o_modelset.ModelSet, any]
-    _output: dict[str, any]
+    _output: dict[str, tuple[str, any]]
     _output_queue: list
 
     def __init__(
             self,
             target_definition: TargetDefinition,
             object_manager: o_object_manager.ObjectManager,
-            modelmesh_manager: o_modelset.ModelSetManager,
+            modelset_manager: o_modelset.ModelSetManager,
             write_dependencies: bool):
 
         self._target_definition = target_definition
         self._object_manager = object_manager
-        self._modelmesh_manager = modelmesh_manager
+        self._modelset_manager = modelset_manager
 
         self._write_dependencies = write_dependencies
 
@@ -36,28 +37,46 @@ class BaseMeshProcessor:
         self._output = {}
         self._output_queue = []
 
-    def _convert_modelmesh(self, modelmesh: o_modelset.ModelSet):
+    def _convert_model_set(self, model_set: o_modelset.ModelSet):
         raise NotImplementedError()
 
+    def _pre_prepare_mesh_data(self, model_sets: list[o_modelset.ModelSet]):
+        pass
+
     def prepare_all_meshdata(self):
-        for modelmesh in self._modelmesh_manager.modelmesh_lut.values():
-            if modelmesh in self._meshdata_lut:
+        self._pre_prepare_mesh_data(self._modelset_manager.model_set_lut.values())
+
+        progress_console.start("Preparing mesh data for export", len(self._modelset_manager.model_set_lut))
+
+        for i, model_set in enumerate(self._modelset_manager.model_set_lut.values()):
+            progress_console.update(f"Converting mesh data for object \"{model_set.obj.name}\"", i)
+
+            if model_set in self._meshdata_lut:
                 continue
 
-            self._meshdata_lut[modelmesh] = self._convert_modelmesh(modelmesh)
+            self._meshdata_lut[model_set] = self._convert_model_set(model_set)
+
+        progress_console.end()
 
     def prepare_object_meshdata(self, objects: list[bpy.types.Object]):
-        for obj in objects:
-            modelmesh = self._modelmesh_manager.obj_mesh_mapping[obj]
+        self._pre_prepare_mesh_data([self._modelset_manager.obj_mesh_mapping[obj] for obj in objects])
 
-            if modelmesh in self._meshdata_lut:
+        progress_console.start("Preparing mesh data for export", len(self._modelset_manager.model_set_lut))
+
+        for i, obj in enumerate(objects):
+            progress_console.update(f"Converting mesh data for object \"{obj.name}\"", i)
+            model_set = self._modelset_manager.obj_mesh_mapping[obj]
+
+            if model_set in self._meshdata_lut:
                 continue
 
-            self._meshdata_lut[modelmesh] = self._convert_modelmesh(modelmesh)
+            self._meshdata_lut[model_set] = self._convert_model_set(model_set)
+
+        progress_console.end()
 
     def get_meshdata(self, obj: bpy.types.Object):
-        modelmesh = self._modelmesh_manager.obj_mesh_mapping[obj]
-        return self._meshdata_lut[modelmesh]
+        model_set = self._modelset_manager.obj_mesh_mapping[obj]
+        return self._meshdata_lut[model_set]
 
     @staticmethod
     def get_name(root: bpy.types.Object):
@@ -84,10 +103,15 @@ class BaseMeshProcessor:
         if name in self._output:
             return name
 
+        progress_console.start("Collecting compile data")
+        progress_console.update(f"... for model \"{name}\"")
+
         if root is not None and root.type == 'EMPTY' and root.instance_type == 'COLLECTION' and root.instance_collection is not None:
             root, children = self._object_manager.collection_trees[root.instance_collection]
 
         compile_data = self._assemble_compile_data(root, children, name)
+
+        progress_console.end()
 
         if compile_data is None:
             return None
@@ -101,6 +125,13 @@ class BaseMeshProcessor:
         raise NotImplementedError()
 
     def write_output_to_files(self, directory: str):
-        for name, data in self._output.items():
+        progress_console.start("Writing models to files", len(self._output))
+
+        for i, output in enumerate(self._output.items()):
+            name, data = output
+            progress_console.update(f"Writing model \"{name}\"", i)
+
             filepath = os.path.join(directory, name + data[1])
             SharpNeedle.RESOURCE_EXTENSIONS.Write(data[0], filepath, self._write_dependencies)
+
+        progress_console.end()

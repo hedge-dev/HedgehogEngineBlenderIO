@@ -92,12 +92,13 @@ class HEIO_OT_Export_PointCloud(ExportPointCloudOperator):
             processor = self.model_processor
 
         if self.write_resources:
-            self.modelmesh_manager.evaluate_begin(
+            self.model_set_manager.evaluate_begin(
                 context, self.cloud_type == 'MODEL')
             processor.prepare_all_meshdata()
-            self.modelmesh_manager.evaluate_end()
+            self.model_set_manager.evaluate_end()
 
         pointcloud = self.pointcloud_processor.object_trees_to_pointscloud(
+            os.path.splitext(os.path.basename(self.filepath))[0],
             self.object_manager.object_trees,
             self.cloud_type,
             self.write_resources
@@ -128,10 +129,10 @@ class HEIO_OT_Export_PointClouds(ExportPointCloudOperator):
             processor = self.model_processor
 
         if self.write_resources:
-            self.modelmesh_manager.evaluate_begin(
+            self.model_set_manager.evaluate_begin(
                 context, self.cloud_type == 'MODEL')
             processor.prepare_all_meshdata()
-            self.modelmesh_manager.evaluate_end()
+            self.model_set_manager.evaluate_end()
 
         collection = bpy.data.collections[self.collection]
         pointclouds = []
@@ -144,12 +145,13 @@ class HEIO_OT_Export_PointClouds(ExportPointCloudOperator):
                 set(col.all_objects))
 
             pointcloud = self.pointcloud_processor.object_trees_to_pointscloud(
+                col.name,
                 object_trees,
                 self.cloud_type,
                 self.write_resources
             )
 
-            pointclouds.append((col.name, pointcloud))
+            pointclouds.append(pointcloud)
 
         directory = os.path.dirname(self.filepath)
 
@@ -157,9 +159,9 @@ class HEIO_OT_Export_PointClouds(ExportPointCloudOperator):
             processor.compile_output()
             processor.write_output_to_files(directory)
 
-        for name, pc in pointclouds:
+        for pc in pointclouds:
             filepath = os.path.join(
-                directory, name + ".pc" + self.cloud_type.lower())
+                directory, pc.Name + ".pc" + self.cloud_type.lower())
             SharpNeedle.RESOURCE_EXTENSIONS.Write(pc, filepath)
 
         return {'FINISHED'}

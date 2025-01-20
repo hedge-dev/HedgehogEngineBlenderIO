@@ -7,6 +7,7 @@ from . import o_enum, o_sca_parameters, o_image
 from ..dotnet import SharpNeedle, System, HEIO_NET
 from ..register.property_groups.material_properties import HEIO_Material
 from ..register.definitions import TargetDefinition
+from ..utility import progress_console
 
 
 class MaterialProcessor:
@@ -47,13 +48,17 @@ class MaterialProcessor:
             self,
             materials: Iterable[bpy.types.Material]):
 
+        progress_console.start("Converting Materials", len(materials))
+
         converted = []
 
         sca_defaults = {}
         if self._auto_sca_parameters and self._target_definition.data_versions.sample_chunk >= 2 and self._target_definition.sca_parameters is not None:
             sca_defaults = self._target_definition.sca_parameters.material_defaults
 
-        for material in materials:
+        for i, material in enumerate(materials):
+            progress_console.update(f"Converting material \"{material.name}\"", i)
+
             if material in self._output:
                 converted.append(self._output[material])
                 continue
@@ -106,13 +111,13 @@ class MaterialProcessor:
 
             sn_material.Texset.Name = material.name
 
-            for i, texture in enumerate(material_properties.textures):
+            for j, texture in enumerate(material_properties.textures):
                 if texture.image is None:
                     continue
 
                 sn_texture = SharpNeedle.TEXTURE()
 
-                sn_texture.Name = f"{material.name}-{i:04}"
+                sn_texture.Name = f"{material.name}-{j:04}"
                 sn_texture.PictureName = texture.image.name
                 sn_texture.Type = texture.name
                 sn_texture.TexCoordIndex = texture.texcoord_index
@@ -121,16 +126,25 @@ class MaterialProcessor:
 
                 sn_material.Texset.Textures.Add(sn_texture)
 
+        progress_console.end()
+
         return converted
 
     def get_converted_material(self, material):
         return self._output[material]
 
     def write_output_to_files(self, directory: str):
-        for sn_material in self._output.values():
+        progress_console.start("Writing Materials to files", len(self._output))
+
+        for i, sn_material in enumerate(self._output.values()):
+            progress_console.update(f"Writing material \"{sn_material.Name}\"", i)
+
             filepath = os.path.join(
                 directory, sn_material.Name + ".material")
+
             SharpNeedle.RESOURCE_EXTENSIONS.Write(sn_material, filepath)
+
+        progress_console.end()
 
         self.write_output_images_to_files(directory)
 

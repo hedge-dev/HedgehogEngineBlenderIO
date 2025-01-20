@@ -21,6 +21,7 @@ from ...exporting import (
     o_model
 )
 
+from ...utility import progress_console
 
 class ExportOperator(HEIOBaseFileSaveOperator):
     bl_options = {'PRESET', 'UNDO'}
@@ -38,7 +39,12 @@ class ExportOperator(HEIOBaseFileSaveOperator):
 
         self.setup(context)
 
-        return self.export(context)
+        progress_console.cleanup()
+        progress_console.start("Exporting")
+        result = self.export(context)
+        progress_console.end()
+
+        return result
 
     def _invoke(self, context, event):
         self.directory_mode = True
@@ -271,19 +277,19 @@ class ExportBaseMeshDataOperator(ExportObjectSelectionOperator):
     def setup(self, context):
         super().setup(context)
 
-        self.modelmesh_manager = o_modelset.ModelSetManager(
+        self.model_set_manager = o_modelset.ModelSetManager(
             self.target_definition,
             self.apply_modifiers,
             self.apply_poses
         )
 
-        self.modelmesh_manager.register_objects(
+        self.model_set_manager.register_objects(
             self.object_manager.all_objects)
 
     def export_basemesh_files(self, context, processor: o_mesh.BaseMeshProcessor, eval_shapekeys: bool):
-        self.modelmesh_manager.evaluate_begin(context, eval_shapekeys)
+        self.model_set_manager.evaluate_begin(context, eval_shapekeys)
         processor.prepare_all_meshdata()
-        self.modelmesh_manager.evaluate_end()
+        self.model_set_manager.evaluate_end()
 
         name = None
         if self.mesh_mode == 'MERGE':
@@ -421,7 +427,7 @@ class ExportModelBaseOperator(ExportMaterialOperator, ExportBaseMeshDataOperator
         self.model_processor = o_model.ModelProcessor(
             self.target_definition,
             self.object_manager,
-            self.modelmesh_manager,
+            self.model_set_manager,
             self.export_materials,
 
             self.material_processor,
@@ -476,7 +482,7 @@ class ExportCollisionModelOperator(ExportBaseMeshDataOperator):
         self.collision_mesh_processor = o_collisionmesh.CollisionMeshProcessor(
             self.target_definition,
             self.object_manager,
-            self.modelmesh_manager,
+            self.model_set_manager,
             False  # bullet mesh has no dependencies
         )
 

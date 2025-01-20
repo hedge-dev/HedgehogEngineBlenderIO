@@ -3,7 +3,7 @@ import bpy
 from . import o_model, o_collisionmesh, o_transform
 from ..dotnet import SharpNeedle
 from ..register.definitions import TargetDefinition
-
+from ..utility import progress_console
 
 class PointCloudProcessor:
 
@@ -21,16 +21,23 @@ class PointCloudProcessor:
         self.model_processor = model_processor
         self.collision_mesh_processor = collision_mesh_processor
 
-    def object_trees_to_pointscloud(self, object_trees: dict[bpy.types.Object, list[bpy.types.Object]], type, write_resources):
+    def object_trees_to_pointscloud(self, name: str, object_trees: dict[bpy.types.Object, list[bpy.types.Object]], type, write_resources):
+
+
         pointcloud = SharpNeedle.POINTCLOUD()
         pointcloud.FormatVersion = self.target_definition.data_versions.point_cloud
+        pointcloud.Name = name
 
         if type == 'COL':
             processor = self.collision_mesh_processor
         elif type == 'MODEL':
             processor = self.model_processor
 
-        for root, children in object_trees.items():
+        progress_console.start(f"Assembling point cloud \"{name}\"", len(object_trees))
+
+        for i, object_tree in enumerate(object_trees.items()):
+            root, children = object_tree
+            progress_console.update(f"Processing instance \"{root.name}\"", i)
 
             if write_resources:
                 resource_name = processor.enqueue_compile(root, children)
@@ -49,5 +56,7 @@ class PointCloudProcessor:
                 o_transform.bpy_matrix_to_net_transforms(root.matrix_world)
 
             pointcloud.Instances.Add(point)
+
+        progress_console.end()
 
         return pointcloud

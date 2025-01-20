@@ -106,7 +106,7 @@ class ModelSetManager:
     _apply_armature: bool
 
     _registered_objects: set[bpy.types.Object]
-    modelmesh_lut: dict[bpy.types.Object | bpy.types.Mesh, ModelSet]
+    model_set_lut: dict[bpy.types.Object | bpy.types.Mesh, ModelSet]
     obj_mesh_mapping: dict[bpy.types.Object, ModelSet]
 
     def __init__(
@@ -122,7 +122,7 @@ class ModelSetManager:
         self._apply_armature = apply_armature
 
         self._registered_objects = set()
-        self.modelmesh_lut = {}
+        self.model_set_lut = {}
         self.obj_mesh_mapping = {}
 
     def register_objects(self, objects: list[bpy.types.Object]):
@@ -131,7 +131,7 @@ class ModelSetManager:
                 continue
 
             lut_key = None
-            modelmesh = None
+            model_set = None
 
             if len(obj.modifiers) > 0 and self._apply_modifiers:
                 lut_key = obj
@@ -139,38 +139,38 @@ class ModelSetManager:
             else:
                 lut_key = obj.data
 
-                if lut_key in self.modelmesh_lut:
-                    modelmesh = self.modelmesh_lut[obj.data]
+                if lut_key in self.model_set_lut:
+                    model_set = self.model_set_lut[obj.data]
 
-            if modelmesh is None:
-                modelmesh = ModelSet(obj)
-                self.modelmesh_lut[lut_key] = modelmesh
+            if model_set is None:
+                model_set = ModelSet(obj)
+                self.model_set_lut[lut_key] = model_set
 
-            self.obj_mesh_mapping[obj] = modelmesh
+            self.obj_mesh_mapping[obj] = model_set
 
         self._registered_objects.update(objects)
-        for modelmesh in self.modelmesh_lut.values():
+        for model_set in self.model_set_lut.values():
 
-            child = modelmesh.obj
+            child = model_set.obj
             parent = child.parent
             while parent is not None and parent.type != 'ARMATURE':
                 child = parent
                 parent = child.parent
 
             if parent is None:
-                modelmesh.armature_object = None
-                modelmesh.attached_bone_name = None
+                model_set.armature_object = None
+                model_set.attached_bone_name = None
             else:
-                modelmesh.armature_object = parent
+                model_set.armature_object = parent
 
                 if len(child.parent_bone) > 0:
-                    modelmesh.attached_bone_name = child.parent_bone
+                    model_set.attached_bone_name = child.parent_bone
                 else:
-                    modelmesh.attached_bone_name = None
+                    model_set.attached_bone_name = None
 
     def evaluate_begin(self, context: bpy.types.Context, eval_shapekeys: bool):
 
-        model_meshes = self.modelmesh_lut.values()
+        model_meshes = self.model_set_lut.values()
 
         for mesh in model_meshes:
             mesh.prepare_modifiers(self._apply_modifiers, self._apply_armature)
@@ -181,7 +181,7 @@ class ModelSetManager:
             mesh.evaluate(self.depsgraph, eval_shapekeys)
 
     def evaluate_end(self):
-        for mesh in self.modelmesh_lut.values():
+        for mesh in self.model_set_lut.values():
             mesh.cleanup_modifiers()
 
         self.depsgraph = None
