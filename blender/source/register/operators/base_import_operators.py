@@ -233,12 +233,6 @@ class ImportModelBaseOperator(ImportMaterialOperator):
         default=False
     )
 
-    import_tangents: BoolProperty(
-        name="Import tangents",
-        description="Import tangents instead of generating them based on the UVs",
-        default=False
-    )
-
     import_lod_models: BoolProperty(
         name="Import LoD models",
         description="Import LoD models (will be stored in a separate collection)",
@@ -310,7 +304,6 @@ class ImportModelBaseOperator(ImportMaterialOperator):
 
         body.use_property_split = False
         body.prop(self, "create_render_layer_attributes")
-        body.prop(self, "import_tangents")
         body.prop(self, "import_lod_models")
 
     def _draw_panel_armature(self, layout):
@@ -353,7 +346,7 @@ class ImportModelBaseOperator(ImportMaterialOperator):
             self.vertex_merge_distance,
             self.merge_split_edges,
             self.create_render_layer_attributes,
-            self.import_tangents
+            False # removed for now
         )
 
         self.node_converter = i_node.NodeConverter(
