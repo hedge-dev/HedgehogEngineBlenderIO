@@ -5,7 +5,7 @@ Importers
 
 .. reference::
 
-	:File:		:menuselection:`File ==> Import ==> HEIO Formats`
+	:File:		:menuselection:`File --> Import --> HEIO Formats`
 
 
 .. important::
@@ -22,8 +22,8 @@ The addon currently supports importing several different file formats:
 - HE2 Collision mesh (or bullet mesh) files ( ``*.btmesh`` )
 - HE2 Point cloud files ( ``*.pcmodel``, ``*.pccol`` )
 
-Importers build on "previous" importers, e.g. the ``.model`` importer relies on the same import
-logic as the ``.material`` importer.
+Some importers build on "previous" importers, e.g. the ``.model`` importer relies on the same
+import logic as the ``.material`` importer to import materials.
 
 
 ----
@@ -72,13 +72,13 @@ an object:
 
 .. reference::
 
-	:Menu:		:menuselection:`Properties ==> Material Properties ==> Material Specials -> Import HE Material (*.material)`
+	:Menu:		:menuselection:`Properties --> Material Properties --> Material Specials --> Import HE Material (*.material)`
 
 
 ----
 
 Model / Terrain model import
-============
+============================
 
 Vertex merge mode
 	How to merge vertices of the imported model.
@@ -155,6 +155,6 @@ Remove unused vertices
 ----
 
 Point cloud import
-=================
+==================
 
 No special import settings, just makes use of previously listed import settings.
