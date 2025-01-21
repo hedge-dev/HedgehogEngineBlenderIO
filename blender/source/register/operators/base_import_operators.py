@@ -227,9 +227,9 @@ class ImportModelBaseOperator(ImportMaterialOperator):
         default=False
     )
 
-    create_mesh_layer_attributes: BoolProperty(
-        name="Create layer attributes",
-        description="Mesh layers will be imported as an integer attribute on polygons",
+    create_render_layer_attributes: BoolProperty(
+        name="Create render layer attributes",
+        description="Render layers will be imported as an integer attribute on polygons",
         default=False
     )
 
@@ -309,7 +309,7 @@ class ImportModelBaseOperator(ImportMaterialOperator):
             return
 
         body.use_property_split = False
-        body.prop(self, "create_mesh_layer_attributes")
+        body.prop(self, "create_render_layer_attributes")
         body.prop(self, "import_tangents")
         body.prop(self, "import_lod_models")
 
@@ -352,7 +352,7 @@ class ImportModelBaseOperator(ImportMaterialOperator):
             self.vertex_merge_mode,
             self.vertex_merge_distance,
             self.merge_split_edges,
-            self.create_mesh_layer_attributes,
+            self.create_render_layer_attributes,
             self.import_tangents
         )
 
