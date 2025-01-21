@@ -6,67 +6,15 @@ Material Editing
 .. attention::
 	Please make sure you have read these guides before continuing here
 
-	:Addon Configuration: 	:ref:`[Open] <guides-addon-configuration>` - Required to import some textures
-	:Project Setup: 		:ref:`[Open] <guides-project-setup>` - Required to correctly set up materials
+	:Project Setup: 		:ref:`[Open] <guides-project-setup>`
 
 
 HEIO allows for editing .material files which can be done either in the context of a model or in
 isolation.
 
-
-----
-
-
-Importing
-=========
-
-Usually, materials are automatically imported as part of a model or similar, but if you just
-want to edit one or multiple material files, you can do so by importing them directly.
-
-
-.. dropdown:: Import to project
-	:icon: download
-
-	If you just want to import materials into your project without automatically adding them to
-	any model open :ref:`the importer <bpy.ops.heio.import_material>`, select your
-	file(s) to import, configure the import properties and then confirm.
-
-	.. figure:: /images/guides_material_editing_import_1.png
-
-		Where to find the importer
-
-
-.. dropdown:: Import to project and add to model
-	:icon: download
-
-	To import materials to a specific object, first select the object that the materials should be
-	imported to (must be a mesh), then open
-	:ref:`the importer from the specials <bpy.ops.heio.import_material_active>`,
-	select your file(s) to import, configure the import properties and then confirm.
-
-	.. figure:: /images/guides_material_editing_import_2.png
-
-		Where to find the importer
-
-
-Texture images during import
-----------------------------
-
-Images used by materials can also be imported; If ``Import images`` has been disabled in the import
-properties, or an image file was not found / could not be read, the addon creates a 16x16
-placeholder texture in its place based on the connection of the template material.
-
-
-----
-
-
-Editing
-=======
-
 The addon does **not** attempt to get export-data from the materials node tree. Instead, HEIO does
 it the other way around: All edits are done from within the
 :doc:`HEIO Material Panel </user_interface/object/material>`.
-
 
 .. figure:: /images/guides_material_editing_panel.png
 
@@ -236,60 +184,3 @@ For more detailed information about SCA parameters, read
 
 - :doc:`HEIO SCA Parameters </user_interface/object/sca_parameters>`
 - :doc:`Material SCA parameters </game_documentation/sca_parameters>`
-
-----
-
-
-Exporting
-=========
-
-Once you are done editing your material(s), they can be exported as .material files. Usually, this
-is done automatically by e.g. the model exporter, but you can also export materials independently.
-
-.. important::
-
-	Materials are exported to files with their names!
-
-	E.g. a material with the name ``MySonicFur`` gets
-	exported as ``MySonicFur.material``, so make sure that your materials are correctly named before
-	exporting!
-
-
-.. warning::
-
-	If you want to export images too, you need to have
-	`Blender DDS Addon <https://github.com/matyalatte/Blender-DDS-Addon>`_ installed!
-
-
-.. dropdown:: Batch export materials
-	:icon: upload
-
-	The standard way of exporting materials is to export all materials of specific objects. Which
-	objects get picked depends on the :ref:`"limit to" export properties <tools-export-common-properties>`.
-
-	To export materials of objects, open :ref:`the exporter <bpy.ops.heio.export_material>`,
-	select a directory to export to, configure the export properties and confirm.
-
-	.. figure:: /images/guides_material_editing_export_1.png
-
-		Where to find the exporter
-
-
-	.. tip::
-
-		.. figure:: /images/guides_material_editing_export_collection.png
-			:align: right
-
-		You can set up a `collection exporter <https://docs.blender.org/manual/en/latest/scene_layout/collections/collections.html#exporters>`_ for this process!
-
-
-.. dropdown:: Export a single material
-	:icon: upload
-
-	You can export a single material by selecting it, opening
-	:ref:`the exporter in the material specials <bpy.ops.heio.export_material>`,
-	select a directory to export to, configure the export properties and confirm.
-
-	.. figure:: /images/guides_material_editing_export_2.png
-
-		Where to find the exporter

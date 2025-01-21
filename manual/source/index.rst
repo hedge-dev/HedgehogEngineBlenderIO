@@ -73,6 +73,14 @@ Sections
 
         .. container:: card
 
+            .. figure:: /images/index_guides.png
+                :target: tutorials/index.html
+
+            :doc:`/tutorials/index`
+                Step-by-step walkthroughs for creating example mods with HEIO
+
+        .. container:: card
+
             .. figure:: /images/index_game_documentation.png
                 :target: game_documentation/index.html
 
@@ -87,6 +95,7 @@ Sections
             :doc:`/target_configuration/index`
                 Configuring target games for HEIO
 
+
 .. container:: global-index-toc
 
     .. toctree::
@@ -95,5 +104,6 @@ Sections
 
         /user_interface/index
         /guides/index
+        /tutorials/index
         /game_documentation/index
         /target_configuration/index

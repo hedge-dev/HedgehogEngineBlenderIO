@@ -77,6 +77,9 @@ an object:
 
 ----
 
+.. _bpy.ops.heio.import_model:
+.. _bpy.ops.heio.import_terrain_model:
+
 Model / Terrain model import
 ============================
 
@@ -138,6 +141,8 @@ Armature
 
 
 ----
+
+.. _bpy.ops.heio.import_collision_mesh:
 
 Collision mesh import
 =====================

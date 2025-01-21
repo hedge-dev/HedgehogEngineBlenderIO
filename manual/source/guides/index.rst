@@ -25,11 +25,27 @@ Guides
 
       .. container:: card
 
+         .. figure:: /images/guides_index_asset_importing.png
+            :target: asset_importing.html
+
+         :doc:`asset_importing`
+            Importing assets
+
+      .. container:: card
+
          .. figure:: /images/guides_index_material_editing.png
             :target: material_editing.html
 
          :doc:`material_editing`
-            Importing, editing and exporting of materials
+            Editing of materials
+
+      .. container:: card
+
+         .. figure:: /images/guides_index_asset_exporting.png
+            :target: asset_exporting.html
+
+         :doc:`asset_exporting`
+            Exporting assets
 
 
 .. container:: global-index-toc
@@ -40,4 +56,6 @@ Guides
 
       addon_config
       project_setup
+      asset_importing
       material_editing
+      asset_exporting
