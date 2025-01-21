@@ -3,28 +3,35 @@
 Importers
 *********
 
-.. note::
+.. reference::
 
-	Basically all importers depend on the :ref:`target game <HEIO_Scene.target_game>` and will
+	:File:		:menuselection:`File ==> Import ==> HEIO Formats`
+
+
+.. important::
+
+	All importers depend on the :ref:`target game <HEIO_Scene.target_game>` and will
 	alter how the import is interpreted, so make sure to configure the correct target game before
 	importing anything!
 
+The addon currently supports importing several different file formats:
+
+- Material files ( ``*.material`` )
+- Model files ( ``*.model`` )
+- Terrain model files ( ``*.terrain-model`` )
+- HE2 Collision mesh (or bullet mesh) files ( ``*.btmesh`` )
+- HE2 Point cloud files ( ``*.pcmodel``, ``*.pccol`` )
+
+Importers build on "previous" importers, e.g. the ``.model`` importer relies on the same import
+logic as the ``.material`` importer.
+
+
+----
 
 .. _bpy.ops.heio.import_material:
 
 Material Import
 ===============
-
-.. reference::
-
-	:File:		:menuselection:`File --> Import --> HEIO Formats --> HE Material (*.material)`
-
-Imports HE Material files, including their textures, and sets up the materials shader nodes for an in-blender preview.
-
-.. note::
-
-	The materials do not get assigned to any object, and will be lost when closing the file.
-
 
 Create undefined parameters/textures
 	If the shader used by the material is defined by the target game, all parameters and textures
@@ -56,10 +63,98 @@ Use existing images
 .. _bpy.ops.heio.import_material_active:
 
 Active Material Import
-======================
+----------------------
+
+The standalone material import creates the materials but does not add them to any object.
+
+That is why a second material import is called, which allows you to import a material directly to
+an object:
 
 .. reference::
 
-	:Menu:		:menuselection:`Properties --> Material Properties --> Material Specials -> Import HE Material (*.material)`
+	:Menu:		:menuselection:`Properties ==> Material Properties ==> Material Specials -> Import HE Material (*.material)`
 
-Same as the regular Material Import, but assigns the materials to the active mesh after importing.
+
+----
+
+Model / Terrain model import
+============
+
+Vertex merge mode
+	How to merge vertices of the imported model.
+
+	- ``None``: Don't merge any vertices
+	- ``Per Submesh``: Merge vertices per submesh (material+render-layer)
+	- ``Per Group``: Merge vertices per mesh group
+	- ``All``: Merge vertices across the entire model
+
+	Merge distance
+		Distance beyond which two vertices should not be merged
+
+	Merge split edges
+		Whether to merge vertices that would result in a split edge (may mess up normals)
+
+
+Additional properties
+	Create render layer attributes
+		Import render layers as HEIO mesh properties, instead of relying on materials.
+
+		See :doc:`Render Layers </user_interface/object/mesh/render_layers>` for more info.
+
+
+	Import LoD models
+		Import Level-of-detail models if the imported file contains any.
+
+		See :doc:`LoD Info </user_interface/object/lod_info>` for more info.
+
+Armature
+	Bone Orientation
+		Different target games have different ways of orienting bones. HEIO corrects the bone
+		orientation so that armatures can be properly posed with mirroring and more.
+
+		For this purpose, the bone orientation can be specified on import:
+
+		- ``Auto``: Determine the orientation based on the target game
+		- ``X, Y``: Bones in the file are X forward and Y up
+		- ``X, Z``: Bones in the file are X forward and Z up
+		- ``Z, -X``: Bones in the file are Z forward and negative X up
+
+	Bone Length Mode
+		Files do not store a "Length" for bones, so HEIO has to calculate a length based on the
+		distance to a bones children. This mode changes how the length gets picked.
+
+		- ``Closest``: Use distance to closest child for length
+		- ``Furthest``: Use distance to farthest child for length
+		- ``Most Children``: Use distance to the child with most children itself for length
+		- ``First``: Use distance to the first child for length
+
+		If a bone has no children, the parent bones length will be used.
+
+	Minimum bone length
+		Minimum length a bone should have
+
+	Maximum leaf bone length
+		Maximum lenght a bone without children should have
+
+
+----
+
+Collision mesh import
+=====================
+
+Merge vertices
+	Whether to merge vertices.
+
+	Merge distance
+		Distance beyond which two vertices should not be merged.
+
+Remove unused vertices
+	Remove vertices that did not get used by any polygons on import.
+
+
+----
+
+Point cloud import
+=================
+
+No special import settings, just makes use of previously listed import settings.

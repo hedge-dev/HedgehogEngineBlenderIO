@@ -8,3 +8,5 @@ Object Related
 
    mesh/index
    material
+   lod_info
+   sca_parameters

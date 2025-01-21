@@ -33,8 +33,8 @@ Visual model properties
 Properties that affect .model and .terrain-model export
 
 - :doc:`Render Layers <render_layers>`
-- :doc:`LOD Info </user_interface/lod_info>`
-- :doc:`SCA Parameters </user_interface/sca_parameters>`
+- :doc:`LOD Info </user_interface/object/lod_info>`
+- :doc:`SCA Parameters </user_interface/object/sca_parameters>`
 
 Collision mesh properties
 -------------------------

@@ -115,4 +115,4 @@ Lists
 
 - :doc:`Parameters </user_interface/object/material_parameters>`
 - :doc:`Textures </user_interface/object/material_textures>`
-- :doc:`SCA Parameters </user_interface/sca_parameters>`
+- :doc:`SCA Parameters </user_interface/object/sca_parameters>`

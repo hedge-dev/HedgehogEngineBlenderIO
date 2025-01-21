@@ -234,7 +234,7 @@ released after.
 
 For more detailed information about SCA parameters, read
 
-- :doc:`HEIO SCA Parameters </user_interface/sca_parameters>`
+- :doc:`HEIO SCA Parameters </user_interface/object/sca_parameters>`
 - :doc:`Material SCA parameters </game_documentation/sca_parameters>`
 
 ----
