@@ -33,7 +33,6 @@ class MeshConverter:
     _vertex_merge_distance: float
     _merge_split_edges: bool
     _create_mesh_layer_attributes: bool
-    _create_meshgroup_attributes: bool
     _import_tangents: bool
 
     converted_models: dict[any, i_model.ModelInfo]
@@ -47,7 +46,6 @@ class MeshConverter:
             vertex_merge_distance: float,
             merge_split_edges: bool,
             create_mesh_layer_attributes: bool,
-            create_meshgroup_attributes: bool,
             import_tangents: bool):
 
         self._target_definition = target_definition
@@ -59,7 +57,6 @@ class MeshConverter:
         self._vertex_merge_distance = vertex_merge_distance
         self._merge_split_edges = merge_split_edges
         self._create_mesh_layer_attributes = create_mesh_layer_attributes
-        self._create_meshgroup_attributes = create_meshgroup_attributes
         self._import_tangents = import_tangents
 
         self.converted_models = dict()
@@ -309,11 +306,10 @@ class MeshConverter:
         self._convert_morphs(mesh, mesh_data)
         self._assign_materials(mesh, mesh_data)
 
+        self._create_polygon_meshgroup_attributes(mesh, mesh_data)
+
         if self._create_mesh_layer_attributes:
             self._create_polygon_layer_attributes(mesh, mesh_data)
-
-        if self._create_meshgroup_attributes:
-            self._create_polygon_meshgroup_attributes(mesh, mesh_data)
 
         self._convert_texcords(mesh, mesh_data)
         self._convert_colors(mesh, mesh_data)

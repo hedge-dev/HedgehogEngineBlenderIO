@@ -233,12 +233,6 @@ class ImportModelBaseOperator(ImportMaterialOperator):
         default=False
     )
 
-    create_meshgroup_attributes: BoolProperty(
-        name="Create meshgroup attributes",
-        description="Meshgrops will be imported as an integer attribute on polygons",
-        default=True
-    )
-
     import_tangents: BoolProperty(
         name="Import tangents",
         description="Import tangents instead of generating them based on the UVs",
@@ -316,7 +310,6 @@ class ImportModelBaseOperator(ImportMaterialOperator):
 
         body.use_property_split = False
         body.prop(self, "create_mesh_layer_attributes")
-        body.prop(self, "create_meshgroup_attributes")
         body.prop(self, "import_tangents")
         body.prop(self, "import_lod_models")
 
@@ -360,7 +353,6 @@ class ImportModelBaseOperator(ImportMaterialOperator):
             self.vertex_merge_distance,
             self.merge_split_edges,
             self.create_mesh_layer_attributes,
-            self.create_meshgroup_attributes,
             self.import_tangents
         )
 
