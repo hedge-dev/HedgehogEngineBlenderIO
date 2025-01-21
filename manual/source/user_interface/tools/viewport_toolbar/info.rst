@@ -18,3 +18,9 @@ Open Manual
 
 Open Discord Server
 	Opens the `invite link to the discord server <https://dc.railgun.works/hems>`_.
+
+
+.. _bpy.ops.heio.info_report:
+
+Report a bug / an issue
+	Opens the `Github issues page for HEIO <https://github.com/hedge-dev/HedgehogEngineBlenderIO/issues>`_.
