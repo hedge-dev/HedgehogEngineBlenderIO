@@ -5,5 +5,5 @@ Viewport Toolbar
 .. toctree::
 	:maxdepth: 1
 
-	material
+	general
 	info
