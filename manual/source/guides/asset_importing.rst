@@ -9,6 +9,13 @@ Asset importing
 	:Addon Configuration: 	:ref:`[Open] <guides-addon-configuration>`
 	:Project Setup: 		:ref:`[Open] <guides-project-setup>`
 
+
+.. tip::
+
+	All importers print a progress bar to the console, which can help estimate how long the import
+	is going to take until completion!
+
+
 Materials
 =========
 

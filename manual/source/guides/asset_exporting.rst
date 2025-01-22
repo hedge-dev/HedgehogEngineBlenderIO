@@ -10,6 +10,12 @@ Asset exporting
 	:Project Setup: 		:ref:`[Open] <guides-project-setup>`
 
 
+.. tip::
+
+	All exporters print a progress bar to the console, which can help estimate how long the export
+	is going to take until completion!
+
+
 Materials
 =========
 
@@ -33,18 +39,9 @@ is done automatically by e.g. the model exporter, but you can also export materi
 	To export materials of objects, open :ref:`the exporter <bpy.ops.heio.export_material>`,
 	select a directory to export to, configure the export properties and confirm.
 
-	.. figure:: /images/guides_material_editing_export_1.png
+	.. figure:: /images/guides_asset_exporting_material_1.png
 
 		Where to find the exporter
-
-
-	.. tip::
-
-		.. figure:: /images/guides_material_editing_export_collection.png
-			:align: right
-
-		You can set up a `collection exporter <https://docs.blender.org/manual/en/latest/scene_layout/collections/collections.html#exporters>`_ for this process!
-
 
 .. dropdown:: Export a single material
 	:icon: upload
@@ -53,7 +50,7 @@ is done automatically by e.g. the model exporter, but you can also export materi
 	:ref:`the exporter in the material specials <bpy.ops.heio.export_material>`,
 	select a directory to export to, configure the export properties and confirm.
 
-	.. figure:: /images/guides_material_editing_export_2.png
+	.. figure:: /images/guides_asset_exporting_material_2.png
 
 		Where to find the exporter
 
@@ -72,3 +69,124 @@ by disabling image export and instead use the original files.
 .. figure:: /images/guides_asset_exporting_materia_images_disable.png
 
 	How to disable image exporting
+
+
+Models
+======
+
+Models are exported by the :doc:`object trees </guides/object_trees>` in your project. One object
+gets exported as one file, unless you choose ``Merge`` for the mesh mode, in which case all object
+trees are exported to one selected file.
+
+By convention, a ``.model`` files object tree should have an armature as its root, but you can also
+export non-armature object trees.
+
+.. dropdown:: How to export .model files
+	:icon: upload
+
+	Open :ref:`the exporter <bpy.ops.heio.export_model>`, select a directory/file to export to,
+	configure the export properties and then confirm.
+
+	.. figure:: /images/guides_asset_exporting_model.png
+
+		Where to find the exporter
+
+
+Terrain models
+--------------
+
+Terrain models basically work just the same as regular models, just without morph models or
+bone and weight information.
+
+By convention, a ``.terrain-model`` files object tree should have a mesh as its root, but you can
+also export armature object trees, although the bone and weight information will be lost.
+
+.. dropdown:: How to export .terrain-model files
+	:icon: upload
+
+	Open :ref:`the exporter <bpy.ops.heio.export_terrain_model>`, select a directory/file to export to,
+	configure the export properties and then confirm.
+
+	.. figure:: /images/guides_asset_exporting_terrain_model.png
+
+		Where to find the exporter
+
+
+Collision meshes
+================
+
+Collision meshes too are exported by the :doc:`object trees </guides/object_trees>` in your
+project. One object gets exported as one file, unless you choose ``Merge`` for the mesh mode,
+in which case all object trees are exported to one selected file.
+
+By convention, a ``.btmesh`` files object tree should have a mesh as its root, but you can also
+export armature object trees, although the bone and weight information will be lost.
+
+.. dropdown:: How to export .terrain-model files
+	:icon: upload
+
+	Open :ref:`the exporter <bpy.ops.heio.export_collision_mesh>`, select a directory/file to export to,
+	configure the export properties and then confirm.
+
+	.. figure:: /images/guides_asset_exporting_bullet_mesh.png
+
+		Where to find the exporter
+
+
+Point Clouds
+============
+
+Point clouds export each object tree in your project as an instance, and (unless disabled) also the
+corresponding resource file (``.terrain-model``, etc).
+
+.. dropdown:: How to export .pcmodel or .pccol files
+	:icon: upload
+
+	Open :ref:`the exporter <bpy.ops.heio.export_point_cloud>`, select the type of point cloud to
+	export, select the file to export to, configure the export properties and then confirm.
+
+	.. figure:: /images/guides_asset_exporting_point_cloud.png
+
+		Where to find the exporter
+
+
+
+Collection exporters
+====================
+
+Every exporter is available as a collection exporter, which allows you to perform the same export
+at a single button press without having to re-set it up and select the export destination.
+
+These exporters will export only the contents of the collection they are added to, meaning you can
+easily isolate other objects from your export too.
+
+This way, you can set up multiple different exporters too, e.g. have one point cloud exporter for
+collisions, and one for terrain.
+
+.. figure:: /images/guides_asset_exporting_collection_exporters.png
+
+	The collection exporters added by HEIO
+
+
+.. warning::
+
+	Blenders collection exporters **do not** like directory exporters, and will tell you that you
+	have an invalid export filepath if no actual file specified, despite most exporters not needing
+	one.
+
+	In that case you must specify a "dummy" output file to make the exporter work.
+
+	.. figure:: /images/guides_asset_exporting_collection_exporters_dummy.png
+
+		A collection exporter with a dummy file path
+
+
+Collections as HE Point Clouds
+------------------------------
+
+This is an exporter unique to collection exporters. It exports all immediate child collectionns of
+the collection with the exporter to individual point cloud files.
+
+.. figure:: /images/guides_asset_exporting_collection_exporters_example.png
+
+	An example for a stage project with multiple collection that get exported as individual point cloud files

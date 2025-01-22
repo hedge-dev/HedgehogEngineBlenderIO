@@ -25,6 +25,11 @@ The addon currently supports importing several different file formats:
 Some importers build on "previous" importers, e.g. the ``.model`` importer relies on the same
 import logic as the ``.material`` importer to import materials.
 
+.. tip::
+
+	All importers print a progress bar to the console, which can help estimate how long the import
+	is going to take until completion!
+
 
 ----
 
@@ -159,7 +164,13 @@ Remove unused vertices
 
 ----
 
+
+.. _bpy.ops.heio.import_point_cloud:
+
 Point cloud import
 ==================
 
-No special import settings, just makes use of previously listed import settings.
+Models as instance collections
+	If an instance in a ``.pcmodel`` point cloud references a ``.model`` file, then that model will
+	be imported and used as an instance collection. Otherwise, each instance in the point cloud
+	will have its own armature object and mesh children.

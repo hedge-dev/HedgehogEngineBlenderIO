@@ -26,6 +26,11 @@ The addon currently supports exporting several different file formats:
 Some exporters build on "previous" exporters, e.g. the ``.model`` exporters relies on the same
 exporters logic as the ``.material`` exporters to export materials.
 
+.. tip::
+
+	All exporters print a progress bar to the console, which can help estimate how long the export
+	is going to take until completion!
+
 
 ----
 
@@ -112,6 +117,9 @@ Apply Poses
 
 ----
 
+.. _bpy.ops.heio.export_model:
+.. _bpy.ops.heio.export_terrain_model:
+
 Model / Terrain model export
 ============================
 
@@ -153,6 +161,9 @@ Advanced
 
 ----
 
+
+.. _bpy.ops.heio.export_collision_mesh:
+
 Collision mesh export
 =====================
 
@@ -160,6 +171,10 @@ No unique export options for collision mesh export.
 
 
 ----
+
+
+.. _bpy.ops.heio.export_point_cloud:
+.. _bpy.ops.heio.export_point_clouds:
 
 Point cloud export
 ==================

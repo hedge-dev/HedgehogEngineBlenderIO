@@ -88,6 +88,8 @@ tree contains more than just the root:
 If a collection has only one object tree, then that tree is used as is. Otherwise, the trees in the
 collection get interpreted as a rootless object tree.
 
+Point clouds import ``.model`` files as instance collections by default for convenience.
+
 
 Object tree naming
 ==================
