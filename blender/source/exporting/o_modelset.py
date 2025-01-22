@@ -106,6 +106,7 @@ class ModelSetManager:
     _apply_armature: bool
 
     _registered_objects: set[bpy.types.Object]
+    _registered_armatures: dict[bpy.types.Armature, str]
     model_set_lut: dict[bpy.types.Object | bpy.types.Mesh, ModelSet]
     obj_mesh_mapping: dict[bpy.types.Object, ModelSet]
 
@@ -122,11 +123,17 @@ class ModelSetManager:
         self._apply_armature = apply_armature
 
         self._registered_objects = set()
+        self._registered_armatures = {}
         self.model_set_lut = {}
         self.obj_mesh_mapping = {}
 
     def register_objects(self, objects: list[bpy.types.Object]):
         for obj in objects:
+            if obj.type == 'ARMATURE':
+                if obj.data not in self._registered_armatures:
+                    self._registered_armatures[obj.data] = obj.data.pose_position
+                continue
+
             if obj.type != 'MESH' or obj in self.obj_mesh_mapping:
                 continue
 
@@ -172,6 +179,10 @@ class ModelSetManager:
 
         model_meshes = self.model_set_lut.values()
 
+        if not self._apply_armature:
+            for armature in self._registered_armatures.keys():
+                armature.pose_position = 'REST'
+
         for mesh in model_meshes:
             mesh.prepare_modifiers(self._apply_modifiers, self._apply_armature)
 
@@ -179,6 +190,10 @@ class ModelSetManager:
 
         for mesh in model_meshes:
             mesh.evaluate(self.depsgraph, eval_shapekeys)
+
+        if not self._apply_armature:
+            for armature, pose in self._registered_armatures.items():
+                armature.pose_position = pose
 
     def evaluate_end(self):
         for mesh in self.model_set_lut.values():
