@@ -123,4 +123,5 @@ class HEIO_OT_Import_PointCloud(ImportPointCloudOperator):
 
         for collection in collections:
             context.collection.children.link(collection)
+
         return {'FINISHED'}
