@@ -170,6 +170,9 @@ class MeshConverter:
 
     @staticmethod
     def _create_polygon_meshgroup_attributes(mesh: bpy.types.Mesh, mesh_data):
+        if len(mesh_data.GroupNames) == 1 and len(mesh_data.GroupNames[0]) == 0:
+            return
+
         groups = mesh.heio_mesh.groups
         groups.initialize()
         group_indices = []
