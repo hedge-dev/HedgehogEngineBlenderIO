@@ -41,6 +41,14 @@ Guides
 
       .. container:: card
 
+         .. figure:: /images/guides_index_object_trees.png
+            :target: object_trees.html
+
+         :doc:`object_trees`
+            Understanding object trees
+
+      .. container:: card
+
          .. figure:: /images/guides_index_asset_exporting.png
             :target: asset_exporting.html
 
@@ -58,4 +66,5 @@ Guides
       project_setup
       asset_importing
       material_editing
+      object_trees
       asset_exporting

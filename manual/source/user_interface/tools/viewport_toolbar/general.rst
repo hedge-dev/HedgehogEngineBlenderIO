@@ -12,6 +12,8 @@ Various tools that are useful for editing.
 
 ----
 
+.. _bpy.ops.heio.split_meshgroups:
+
 Split mesh by groups
 --------------------
 
@@ -32,6 +34,8 @@ Split collision primitives
 	Split each collision primitive on the mesh into its own mesh (can make editing their position
 	and rotation easier)
 
+
+.. _bpy.ops.heio.merge_submeshes:
 
 Merge meshes as groups
 ----------------------

@@ -24,13 +24,6 @@ is done automatically by e.g. the model exporter, but you can also export materi
 	exported as ``MySonicFur.material``, so make sure that your materials are correctly named before
 	exporting!
 
-
-.. warning::
-
-	If you want to export images too, you need to have
-	`Blender DDS Addon <https://github.com/matyalatte/Blender-DDS-Addon>`_ installed!
-
-
 .. dropdown:: Batch export materials
 	:icon: upload
 
@@ -63,3 +56,19 @@ is done automatically by e.g. the model exporter, but you can also export materi
 	.. figure:: /images/guides_material_editing_export_2.png
 
 		Where to find the exporter
+
+
+Texture images during export
+----------------------------
+
+Textures are exported using the
+`Blender DDS Addon <https://github.com/matyalatte/Blender-DDS-Addon>`_ addon, so you need to have
+that installed if you want to do so.
+
+It should be noted that HE2 games often use BC6 or BC7 encoding, which can take very long to export
+for large textures. If you did not edit any textures, it'd be best if you don't export them at all
+by disabling image export and instead use the original files.
+
+.. figure:: /images/guides_asset_exporting_materia_images_disable.png
+
+	How to disable image exporting
