@@ -45,7 +45,7 @@ namespace HEIO.NET.Modeling.ConvertFrom
 
             if(removeUnusedVertices)
             {
-                RemoveUnusedVertices(result.Vertices, result.TriangleIndices);
+                RemoveUnusedVertices(result);
             }
 
             return result;
@@ -188,39 +188,39 @@ namespace HEIO.NET.Modeling.ConvertFrom
             }
         }
 
-        private static void RemoveUnusedVertices(IList<Vector3> vertices, IList<uint> triangleIndices)
+        private static void RemoveUnusedVertices(CollisionMeshData output)
         {
-            bool[] useChecks = new bool[vertices.Count];
-            for(int i = 0; i < triangleIndices.Count; i++)
+            bool[] useChecks = new bool[output.Vertices.Count];
+            for(int i = 0; i < output.TriangleIndices.Count; i++)
             {
-                useChecks[triangleIndices[i]] = true;
+                useChecks[output.TriangleIndices[i]] = true;
             }
 
             int unused = useChecks.Count(x => !x);
             if(unused > 0)
             {
-                Vector3[] usedVertices = new Vector3[vertices.Count - unused];
-                uint[] map = new uint[vertices.Count];
+                Vector3[] usedVertices = new Vector3[output.Vertices.Count - unused];
+                uint[] map = new uint[output.Vertices.Count];
                 uint targetIndex = 0;
 
-                for(int i = 0; i < vertices.Count; i++)
+                for(int i = 0; i < output.Vertices.Count; i++)
                 {
                     if(!useChecks[i])
                     {
                         continue;
                     }
 
-                    usedVertices[targetIndex] = vertices[i];
+                    usedVertices[targetIndex] = output.Vertices[i];
                     map[i] = targetIndex;
                     targetIndex++;
                 }
 
-                for(int i = 0; i < triangleIndices.Count; i++)
+                for(int i = 0; i < output.TriangleIndices.Count; i++)
                 {
-                    triangleIndices[i] = map[triangleIndices[i]];
+                    output.TriangleIndices[i] = map[output.TriangleIndices[i]];
                 }
 
-                vertices = usedVertices;
+                output.Vertices = usedVertices;
             }
         }
 
