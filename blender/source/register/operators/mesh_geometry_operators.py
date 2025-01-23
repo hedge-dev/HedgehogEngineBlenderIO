@@ -813,7 +813,7 @@ class HEIO_OT_CollisionPrimitivesToGeometry(HEIOBaseOperator):
                 flags = 0
                 for flag in primitive.collision_flags:
                     flags |= 1 << type_lut.value_lut[flag.value]
-                coltype_attribute_values.extend([flags] * len(faces))
+                colflag_attribute_values.extend([flags] * len(faces))
 
             group_index = len(heiomesh.groups)
             group_attribute_values.extend([group_index] * len(faces))
