@@ -41,6 +41,14 @@ Guides
 
       .. container:: card
 
+         .. figure:: /images/guides_index_collision_mesh_editing.png
+            :target: collision_mesh_editing.html
+
+         :doc:`collision_mesh_editing`
+            Editing of collision meshes
+
+      .. container:: card
+
          .. figure:: /images/guides_index_object_trees.png
             :target: object_trees.html
 
@@ -66,5 +74,6 @@ Guides
       project_setup
       asset_importing
       material_editing
+      collision_mesh_editing
       object_trees
       asset_exporting

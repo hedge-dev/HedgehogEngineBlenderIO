@@ -49,6 +49,8 @@ Root mesh copy
 	will be overwritten.
 
 
+.. _bpy.ops.heio.collision_primitives_to_geometry:
+
 Collision primitives to geometry
 --------------------------------
 
