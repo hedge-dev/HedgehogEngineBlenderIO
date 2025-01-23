@@ -256,9 +256,7 @@ worth the time it takes to make them, or simply not being performane enough.
 For cases like these, collision meshes have "primitives", which are simple, parameterized shapes
 that are placed in a collision mesh like objects.
 
-There are 4 types of primitives: Spheres, Boxes, Capsules and Cylinders.
-
-HEIO implements a custom viewport renderer to make those primitives visible and easier to edit:
+There are 4 types of primitives: Spheres, Boxes, Capsules and Cylinders:
 
 .. figure:: /images/guides_collision_mesh_editing_primitives.png
 
@@ -279,7 +277,32 @@ collision flags panel:
 Rendering primitives
 --------------------
 
-todo
+HEIO implements a custom viewport renderer to make those primitives visible and easier to edit.
+There are several settings that let you customize how primitives appear, available in the
+viewport overlay settings:
+
+.. figure:: /images/guides_collision_mesh_editing_primitive_overlay.png
+
+	The HEIO collision primitive overlay settings
+
+
+Random colors
+^^^^^^^^^^^^^
+
+Usually, each primitive type has the same color:
+
+- Spheres are red
+- Boxes are yellow
+- Capsules are green
+- Cylinders are cyan
+
+This may make viewing individual primitives difficult, especially when there are a lot of them.
+That is what the ``Random Colors`` toggle is for; When enabled, every primitive will be rendered
+with a different color:
+
+.. figure:: /images/guides_collision_mesh_editing_primitive_random.png
+
+	A portion of the stage collision from the DLC stage from Shadow Generations. Left with regular, and right with randomized colors.
 
 
 Editing primitives
