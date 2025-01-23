@@ -600,8 +600,7 @@ visible below the list:</p>
 worth the time it takes to make them, or simply not being performane enough.</p>
 <p>For cases like these, collision meshes have “primitives”, which are simple, parameterized shapes
 that are placed in a collision mesh like objects.</p>
-<p>There are 4 types of primitives: Spheres, Boxes, Capsules and Cylinders.</p>
-<p>HEIO implements a custom viewport renderer to make those primitives visible and easier to edit:</p>
+<p>There are 4 types of primitives: Spheres, Boxes, Capsules and Cylinders:</p>
 <figure class="align-default" id="id16">
 <img alt="../_images/guides_collision_mesh_editing_primitives.png" src="../_images/guides_collision_mesh_editing_primitives.png" />
 <figcaption>
@@ -621,7 +620,34 @@ collision flags panel:</p>
 </section>
 <section id="rendering-primitives">
 <h3>Rendering primitives<a class="headerlink" href="#rendering-primitives" title="Link to this heading">¶</a></h3>
-<p>todo</p>
+<p>HEIO implements a custom viewport renderer to make those primitives visible and easier to edit.
+There are several settings that let you customize how primitives appear, available in the
+viewport overlay settings:</p>
+<figure class="align-default" id="id18">
+<img alt="../_images/guides_collision_mesh_editing_primitive_overlay.png" src="../_images/guides_collision_mesh_editing_primitive_overlay.png" />
+<figcaption>
+<p><span class="caption-text">The HEIO collision primitive overlay settings</span><a class="headerlink" href="#id18" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<section id="random-colors">
+<h4>Random colors<a class="headerlink" href="#random-colors" title="Link to this heading">¶</a></h4>
+<p>Usually, each primitive type has the same color:</p>
+<ul class="simple">
+<li><p>Spheres are red</p></li>
+<li><p>Boxes are yellow</p></li>
+<li><p>Capsules are green</p></li>
+<li><p>Cylinders are cyan</p></li>
+</ul>
+<p>This may make viewing individual primitives difficult, especially when there are a lot of them.
+That is what the <code class="docutils literal notranslate"><span class="pre">Random</span> <span class="pre">Colors</span></code> toggle is for; When enabled, every primitive will be rendered
+with a different color:</p>
+<figure class="align-default" id="id19">
+<img alt="../_images/guides_collision_mesh_editing_primitive_random.png" src="../_images/guides_collision_mesh_editing_primitive_random.png" />
+<figcaption>
+<p><span class="caption-text">A portion of the stage collision from the DLC stage from Shadow Generations. Left with regular, and right with randomized colors.</span><a class="headerlink" href="#id19" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</section>
 </section>
 <section id="editing-primitives">
 <h3>Editing primitives<a class="headerlink" href="#editing-primitives" title="Link to this heading">¶</a></h3>
@@ -638,17 +664,17 @@ collision flags panel:</p>
 groups.</p>
 <p>However, editing the transforms from these few fields is incredibly cumbersome, especially the
 rotation, which is why HEIO adds new workspace tools to blender:</p>
-<figure class="align-default" id="id18">
+<figure class="align-default" id="id20">
 <img alt="../_images/guides_collision_mesh_editing_primitive_tool.png" src="../_images/guides_collision_mesh_editing_primitive_tool.png" />
 <figcaption>
-<p><span class="caption-text">The new collision primitives workspace tool</span><a class="headerlink" href="#id18" title="Link to this image">¶</a></p>
+<p><span class="caption-text">The new collision primitives workspace tool</span><a class="headerlink" href="#id20" title="Link to this image">¶</a></p>
 </figcaption>
 </figure>
 <p>When pressing down on the tool for a second, you can select between 2 tools:</p>
-<figure class="align-default" id="id19">
+<figure class="align-default" id="id21">
 <img alt="../_images/guides_collision_mesh_editing_primitive_tools.png" src="../_images/guides_collision_mesh_editing_primitive_tools.png" />
 <figcaption>
-<p><span class="caption-text">The different tools avaiable</span><a class="headerlink" href="#id19" title="Link to this image">¶</a></p>
+<p><span class="caption-text">The different tools avaiable</span><a class="headerlink" href="#id21" title="Link to this image">¶</a></p>
 </figcaption>
 </figure>
 <p>You will find 2 new workspace tools in total:</p>
@@ -661,10 +687,10 @@ rotation, which is why HEIO adds new workspace tools to blender:</p>
 will be looked into in the future.</p>
 </div>
 <p>When this tool is active, the tool properties show the primitives list of the active object</p>
-<figure class="align-default" id="id20">
+<figure class="align-default" id="id22">
 <img alt="../_images/guides_collision_mesh_editing_primitive_tool_properties.png" src="../_images/guides_collision_mesh_editing_primitive_tool_properties.png" />
 <figcaption>
-<p><span class="caption-text">The workspace properties</span><a class="headerlink" href="#id20" title="Link to this image">¶</a></p>
+<p><span class="caption-text">The workspace properties</span><a class="headerlink" href="#id22" title="Link to this image">¶</a></p>
 </figcaption>
 </figure>
 </section>
@@ -672,10 +698,10 @@ will be looked into in the future.</p>
 <h4>Transform collision primitives<a class="headerlink" href="#transform-collision-primitives" title="Link to this heading">¶</a></h4>
 <p>This tool is an extension to the select tool; It can select primitives, and when one is selected
 it displays transform gizmos to move, rotate and scale the selected primitive.</p>
-<figure class="align-default" id="id21" style="width: 50%">
+<figure class="align-default" id="id23" style="width: 50%">
 <img alt="../_images/guides_collision_mesh_editing_primitive_tool_gizmos.png" src="../_images/guides_collision_mesh_editing_primitive_tool_gizmos.png" />
 <figcaption>
-<p><span class="caption-text">The different available transform gizmos for primitives</span><a class="headerlink" href="#id21" title="Link to this image">¶</a></p>
+<p><span class="caption-text">The different available transform gizmos for primitives</span><a class="headerlink" href="#id23" title="Link to this image">¶</a></p>
 </figcaption>
 </figure>
 <p>These work mostly the same as the standard transform gizmos for objects:</p>
@@ -687,10 +713,10 @@ it displays transform gizmos to move, rotate and scale the selected primitive.</
 <li><p>Hold CTRL for snap mode</p></li>
 <li><p>Hold ALT while scaling to scale in one direction</p></li>
 </ul>
-<figure class="align-default" id="id22" style="width: 50%">
+<figure class="align-default" id="id24" style="width: 50%">
 <img alt="../_images/guides_collision_mesh_editing_primitive_onedir_scaling.gif" src="../_images/guides_collision_mesh_editing_primitive_onedir_scaling.gif" />
 <figcaption>
-<p><span class="caption-text">Scaling a primitive in one direction</span><a class="headerlink" href="#id22" title="Link to this image">¶</a></p>
+<p><span class="caption-text">Scaling a primitive in one direction</span><a class="headerlink" href="#id24" title="Link to this image">¶</a></p>
 </figcaption>
 </figure>
 <div class="admonition note">
@@ -715,10 +741,10 @@ dimensions either with the gizmos or by directly changing the properties in the 
 <p>In the event that you want to convert collision primitives to polygonal geometry, you can use the
 <a class="reference internal" href="../user_interface/tools/viewport_toolbar/general.html#bpy-ops-heio-collision-primitives-to-geometry"><span class="std std-ref">Collision primitives to geometry operator</span></a>,
 which does just that.</p>
-<figure class="align-default" id="id23">
+<figure class="align-default" id="id25">
 <img alt="../_images/guides_collision_mesh_editing_primitives_converted.png" src="../_images/guides_collision_mesh_editing_primitives_converted.png" />
 <figcaption>
-<p><span class="caption-text">The primitives from before converted to geometry at the default resolution</span><a class="headerlink" href="#id23" title="Link to this image">¶</a></p>
+<p><span class="caption-text">The primitives from before converted to geometry at the default resolution</span><a class="headerlink" href="#id25" title="Link to this image">¶</a></p>
 </figcaption>
 </figure>
 <p>You can change the resolution of the generated geometry in the operator window in the bottom left
@@ -818,7 +844,10 @@ convex).</p>
 </li>
 <li><a class="reference internal" href="#collision-primitives">Collision Primitives</a><ul>
 <li><a class="reference internal" href="#adding-primitives">Adding primitives</a></li>
-<li><a class="reference internal" href="#rendering-primitives">Rendering primitives</a></li>
+<li><a class="reference internal" href="#rendering-primitives">Rendering primitives</a><ul>
+<li><a class="reference internal" href="#random-colors">Random colors</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#editing-primitives">Editing primitives</a><ul>
 <li><a class="reference internal" href="#select-collision-primitive">Select collision primitive</a></li>
 <li><a class="reference internal" href="#transform-collision-primitives">Transform collision primitives</a></li>
