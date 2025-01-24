@@ -42,9 +42,9 @@ namespace HEIO.NET.Modeling
 
         public IList<Vector3>? PolygonNormals { get; set; }
 
-        public IList<Vector3>? PolygonTangents { get; set; }
+        public IList<UVDirection>? PolygonUVDirections { get; set; }
 
-        public IList<Vector3>? PolygonTangents2 { get; set; }
+        public IList<UVDirection>? PolygonUVDirections2 { get; set; }
 
         public IList<IList<Vector2>> TextureCoordinates { get; set; }
 
@@ -74,7 +74,7 @@ namespace HEIO.NET.Modeling
             Vertices = [];
             TriangleIndices = [];
             PolygonNormals = polygonDirections ? [] : null;
-            PolygonTangents = polygonDirections ? [] : null;
+            PolygonUVDirections = polygonDirections ? [] : null;
             TextureCoordinates = [];
             Colors = [];
             MeshSets = [];
@@ -88,8 +88,8 @@ namespace HEIO.NET.Modeling
             Vertex[] vertices,
             int[] triangleIndices,
             Vector3[]? polygonNormals,
-            Vector3[]? polygonTangents,
-            Vector3[]? polygonTangents2,
+            UVDirection[]? polygonUVDirections,
+            UVDirection[]? polygonUVDirections2,
             Vector2[][] textureCoordinates,
             Vector4[][] colors,
             MeshDataSetInfo[] meshSets,
@@ -101,8 +101,8 @@ namespace HEIO.NET.Modeling
             Vertices = vertices;
             TriangleIndices = triangleIndices;
             PolygonNormals = polygonNormals;
-            PolygonTangents = polygonTangents;
-            PolygonTangents2 = polygonTangents2;
+            PolygonUVDirections = polygonUVDirections;
+            PolygonUVDirections2 = polygonUVDirections2;
             TextureCoordinates = textureCoordinates;
             Colors = colors;
             MeshSets = meshSets;

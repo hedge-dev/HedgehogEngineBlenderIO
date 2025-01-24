@@ -12,29 +12,29 @@ namespace HEIO.NET.Modeling
 
         public Vector3 Normal { get; set; }
 
-        public Vector3 Tangent { get; set; }
+        public UVDirection UVDirection { get; set; }
 
-        public Vector3 Tangent2 { get; set; }
+        public UVDirection UVDirection2 { get; set; }
 
         public VertexWeight[] Weights { get; set; }
 
-        public Vertex(Vector3 position, int morphCount, Vector3 normal, Vector3 tangent, Vector3 tangent2, VertexWeight[] weights)
+        public Vertex(Vector3 position, int morphCount, Vector3 normal, UVDirection uvDirection, UVDirection uvDirection2, VertexWeight[] weights)
         {
             Position = position;
             MorphPositions = morphCount == 0 ? null : new Vector3[morphCount];
             Normal = normal;
-            Tangent = tangent;
-            Tangent2 = tangent2;
+            UVDirection = uvDirection;
+            UVDirection2 = uvDirection2;
             Weights = weights;
         }
 
-        public Vertex(Vector3 position, Vector3[]? morphPositions, Vector3 normal, Vector3 tangent, Vector3 tangent2, VertexWeight[] weights)
+        public Vertex(Vector3 position, Vector3[]? morphPositions, Vector3 normal, UVDirection uvDirection, UVDirection uvDirection2, VertexWeight[] weights)
         {
             Position = position;
             MorphPositions = morphPositions;
             Normal = normal;
-            Tangent = tangent;
-            Tangent2 = tangent2;
+            UVDirection = uvDirection;
+            UVDirection2 = uvDirection2;
             Weights = [.. weights.Where(x => x.Weight != 0).OrderBy(x => x.Index)];
         }
 

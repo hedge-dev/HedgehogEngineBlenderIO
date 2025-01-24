@@ -162,22 +162,22 @@ namespace HEIO.NET.Modeling.ConvertTo
                         {
                             if(element.Type == VertexType.Tangent)
                             {
-                                callback = (BinaryObjectWriter writer, GPUVertex vtx) => vec3Writer2(writer, vtx.Tangent);
+                                callback = (BinaryObjectWriter writer, GPUVertex vtx) => vec3Writer2(writer, vtx.UVDirection.Tangent);
                             }
                             else // bitangent
                             {
-                                callback = (BinaryObjectWriter writer, GPUVertex vtx) => vec3Writer2(writer, Vector3.Cross(vtx.Normal, vtx.Tangent));
+                                callback = (BinaryObjectWriter writer, GPUVertex vtx) => vec3Writer2(writer, vtx.UVDirection.Binormal);
                             }
                         }
                         else
                         {
                             if(element.Type == VertexType.Tangent)
                             {
-                                callback = (BinaryObjectWriter writer, GPUVertex vtx) => vec3Writer2(writer, vtx.Tangent2);
+                                callback = (BinaryObjectWriter writer, GPUVertex vtx) => vec3Writer2(writer, vtx.UVDirection2.Tangent);
                             }
                             else // bitangent
                             {
-                                callback = (BinaryObjectWriter writer, GPUVertex vtx) => vec3Writer2(writer, Vector3.Cross(vtx.Normal, vtx.Tangent2));
+                                callback = (BinaryObjectWriter writer, GPUVertex vtx) => vec3Writer2(writer, vtx.UVDirection2.Binormal);
                             }
                         }
 

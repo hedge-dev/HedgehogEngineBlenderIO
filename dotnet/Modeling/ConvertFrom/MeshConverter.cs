@@ -180,6 +180,7 @@ namespace HEIO.NET.Modeling.ConvertFrom
 
                         break;
                     case VertexType.Tangent:
+                    case VertexType.Binormal:
                         if(element.UsageIndex > 1)
                         {
                             continue;
@@ -189,11 +190,25 @@ namespace HEIO.NET.Modeling.ConvertFrom
 
                         if(element.UsageIndex == 0)
                         {
-                            callback = (BinaryObjectReader reader, ref GPUVertex vtx) => vtx.Tangent = Vector3.Normalize(vec3Reader2(reader));
+                            if(element.Type == VertexType.Tangent)
+                            {
+                                callback = (BinaryObjectReader reader, ref GPUVertex vtx) => vtx.UVDirection = new(Vector3.Normalize(vec3Reader2(reader)), vtx.UVDirection.Binormal);
+                            }
+                            else
+                            {
+                                callback = (BinaryObjectReader reader, ref GPUVertex vtx) => vtx.UVDirection = new(vtx.UVDirection.Tangent, Vector3.Normalize(vec3Reader2(reader)));
+                            }
                         }
                         else
                         {
-                            callback = (BinaryObjectReader reader, ref GPUVertex vtx) => vtx.Tangent2 = Vector3.Normalize(vec3Reader2(reader));
+                            if(element.Type == VertexType.Tangent)
+                            {
+                                callback = (BinaryObjectReader reader, ref GPUVertex vtx) => vtx.UVDirection2 = new(Vector3.Normalize(vec3Reader2(reader)), vtx.UVDirection2.Binormal);
+                            }
+                            else
+                            {
+                                callback = (BinaryObjectReader reader, ref GPUVertex vtx) => vtx.UVDirection2 = new(vtx.UVDirection2.Tangent, Vector3.Normalize(vec3Reader2(reader)));
+                            }
                         }
 
                         break;

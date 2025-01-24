@@ -74,6 +74,7 @@ class ImportOperator(HEIOBaseFileLoadOperator):
     def print_resolve_info(self, context):
         print_resolve_info(context, self.resolve_infos)
 
+
 class ImportMaterialOperator(ImportOperator):
 
     filter_glob: StringProperty(
@@ -257,7 +258,8 @@ class ImportModelBaseOperator(ImportMaterialOperator):
         items=(
             ('CLOSEST', "Closest", "Use distance to closest bone for length"),
             ('FURTHEST', "Furthest", "Use distance to farthest bone for length"),
-            ('MOSTCHILDREN', "Most Children", "Use distance to the child with most children itself for length"),
+            ('MOSTCHILDREN', "Most Children",
+             "Use distance to the child with most children itself for length"),
             ('FIRST', "First", "Use distance to the first child for length"),
         ),
         default='MOSTCHILDREN'
@@ -345,8 +347,7 @@ class ImportModelBaseOperator(ImportMaterialOperator):
             self.vertex_merge_mode,
             self.vertex_merge_distance,
             self.merge_split_edges,
-            self.create_render_layer_attributes,
-            False # removed for now
+            self.create_render_layer_attributes
         )
 
         self.node_converter = i_node.NodeConverter(
@@ -517,7 +518,8 @@ class ImportPointCloudOperator(ImportCollisionMeshOperator, ImportModelBaseOpera
         instances_collection = None
 
         if self.models_as_instance_collections:
-            instances_collection = bpy.data.collections.new("Instance collections")
+            instances_collection = bpy.data.collections.new(
+                "Instance collections")
             instances_collection.hide_viewport = True
             instances_collection.hide_render = True
             context.collection.children.link(instances_collection)
@@ -525,7 +527,6 @@ class ImportPointCloudOperator(ImportCollisionMeshOperator, ImportModelBaseOpera
         self.point_cloud_converter = i_pointcloud.PointCloudConverter(
             instances_collection
         )
-
 
     def import_point_cloud_models(self, context: bpy.types.Context, point_cloud_collection):
         progress_console.update("Importing Models")

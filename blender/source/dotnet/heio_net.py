@@ -34,6 +34,9 @@ class HEIO_NET:
     VERTEX: any = None
     '''class HEIO.NET.Modeling.Vertex'''
 
+    UV_DIRECTION: any = None
+    '''struct HEIO.NET.Modeling.UVDirection'''
+
     VERTEX_WEIGHT: any = None
     '''class HEIO.NET.Modeling.VertexWeight'''
 
@@ -61,6 +64,7 @@ class HEIO_NET:
             CollisionMeshData,
             CollisionMeshDataGroup,
             Vertex,
+            UVDirection,
             VertexWeight,
             VertexMergeMode,
             Topology
@@ -78,6 +82,7 @@ class HEIO_NET:
         cls.COLLISION_MESH_DATA = CollisionMeshData
         cls.COLLISION_MESH_DATA_GROUP = CollisionMeshDataGroup
         cls.VERTEX = Vertex
+        cls.UV_DIRECTION = UVDirection
         cls.VERTEX_WEIGHT = VertexWeight
         cls.VERTEX_MERGE_MODE = VertexMergeMode
         cls.TOPOLOGY = Topology

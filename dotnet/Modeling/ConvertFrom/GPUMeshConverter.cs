@@ -53,8 +53,8 @@ namespace HEIO.NET.Modeling.ConvertFrom
                     vertex.Position,
                     _morphCount,
                     vertex.Normal,
-                    vertex.Tangent,
-                    gpuMesh.MultiTangent ? vertex.Tangent2 : vertex.Tangent,
+                    vertex.UVDirection,
+                    gpuMesh.MultiTangent ? vertex.UVDirection2 : vertex.UVDirection,
                     [.. vertex.Weights
                         .Where(x => x.Weight != 0)
                         .Select(x => new VertexWeight(gpuMesh.BoneIndices[x.Index], x.Weight))
@@ -84,9 +84,9 @@ namespace HEIO.NET.Modeling.ConvertFrom
                 gpuMesh.Triangles.Count / 3
             ));
 
-            if(gpuMesh.MultiTangent && ResultData.PolygonTangents != null && ResultData.PolygonTangents2 == null)
+            if(gpuMesh.MultiTangent && ResultData.PolygonUVDirections != null && ResultData.PolygonUVDirections2 == null)
             {
-                ResultData.PolygonTangents2 = new List<Vector3>(ResultData.PolygonTangents);
+                ResultData.PolygonUVDirections2 = new List<UVDirection>(ResultData.PolygonUVDirections);
             }
 
             void AddBase<T, W>(IList<W> output, int fallbackLength, T fallback) where W : IList<T>
@@ -164,7 +164,8 @@ namespace HEIO.NET.Modeling.ConvertFrom
                 {
                     Vertex toAdd = vertex;
                     toAdd.Normal = default;
-                    toAdd.Tangent = default;
+                    toAdd.UVDirection = default;
+                    toAdd.UVDirection2 = default;
                     ResultData.Vertices.Add(toAdd);
                 }
                 else
@@ -211,8 +212,8 @@ namespace HEIO.NET.Modeling.ConvertFrom
 
                     ResultData.TriangleIndices.Add(vertexIndexOffset + t1);
                     ResultData.PolygonNormals?.Add(vertex.Normal);
-                    ResultData.PolygonTangents?.Add(vertex.Tangent);
-                    ResultData.PolygonTangents2?.Add(vertex.Tangent2);
+                    ResultData.PolygonUVDirections?.Add(vertex.UVDirection);
+                    ResultData.PolygonUVDirections2?.Add(vertex.UVDirection2);
 
                     for(int k = 0; k < ResultData.TextureCoordinates.Count; k++)
                     {

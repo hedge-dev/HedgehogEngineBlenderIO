@@ -9,9 +9,9 @@ namespace HEIO.NET.Modeling.GPU
 
         public Vector3 Normal { get; set; }
 
-        public Vector3 Tangent { get; set; }
+        public UVDirection UVDirection { get; set; }
 
-        public Vector3 Tangent2 { get; set; }
+        public UVDirection UVDirection2 { get; set; }
 
         public Vector2[] TextureCoordinates { get; set; }
 
@@ -22,11 +22,6 @@ namespace HEIO.NET.Modeling.GPU
 
         public GPUVertex(int texcoordSets, int colorSets, int weightCount)
         {
-            Position = default;
-            Normal = default;
-            Tangent = default;
-            Tangent2 = default;
-
             TextureCoordinates = new Vector2[texcoordSets];
             Colors = new Vector4[colorSets];
             Weights = new VertexWeight[weightCount];
@@ -49,8 +44,8 @@ namespace HEIO.NET.Modeling.GPU
             {
                 Position = Position,
                 Normal = Normal,
-                Tangent = Tangent,
-                Tangent2 = Tangent2,
+                UVDirection = UVDirection,
+                UVDirection2 = UVDirection2,
                 TextureCoordinates = textureCoordinates,
                 Colors = colors,
                 Weights = weights,

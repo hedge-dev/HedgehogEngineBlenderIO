@@ -33,7 +33,6 @@ class MeshConverter:
     _vertex_merge_distance: float
     _merge_split_edges: bool
     _create_mesh_layer_attributes: bool
-    _import_tangents: bool
 
     converted_models: dict[any, i_model.ModelInfo]
     _mesh_name_lookup: dict[str, i_model.ModelInfo]
@@ -45,8 +44,7 @@ class MeshConverter:
             vertex_merge_mode: str,
             vertex_merge_distance: float,
             merge_split_edges: bool,
-            create_mesh_layer_attributes: bool,
-            import_tangents: bool):
+            create_mesh_layer_attributes: bool):
 
         self._target_definition = target_definition
         self._material_converter = material_converter
@@ -57,7 +55,6 @@ class MeshConverter:
         self._vertex_merge_distance = vertex_merge_distance
         self._merge_split_edges = merge_split_edges
         self._create_mesh_layer_attributes = create_mesh_layer_attributes
-        self._import_tangents = import_tangents
 
         self.converted_models = dict()
         self._mesh_name_lookup = dict()
@@ -221,20 +218,6 @@ class MeshConverter:
                 output.color = (color.X, color.Y, color.Z, color.W)
 
     @staticmethod
-    def _convert_tangents(mesh: bpy.types.Mesh, mesh_data):
-        if mesh_data.PolygonTangents is None:
-            tangents = mesh.attributes.new("Tangent", 'FLOAT_VECTOR', 'POINT')
-
-            for output, v in zip(tangents.data, mesh_data.Vertices):
-                output.vector = (v.Tangent.X, -v.Tangent.Z, v.Tangent.Y)
-
-        else:
-            tangents = mesh.attributes.new("Tangent", 'FLOAT_VECTOR', 'CORNER')
-
-            for output, t in zip(tangents.data, mesh_data.PolygonTangents):
-                output.vector = (t.X, -t.Z, t.Y)
-
-    @staticmethod
     def _convert_normals(mesh: bpy.types.Mesh, mesh_data):
         if mesh_data.PolygonNormals is None:
             mesh.normals_split_custom_set_from_vertices(
@@ -316,9 +299,6 @@ class MeshConverter:
 
         self._convert_texcords(mesh, mesh_data)
         self._convert_colors(mesh, mesh_data)
-
-        if self._import_tangents:
-            self._convert_tangents(mesh, mesh_data)
 
         self._convert_normals(mesh, mesh_data)
 

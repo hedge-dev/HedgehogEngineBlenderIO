@@ -8,6 +8,7 @@ from ..dotnet import HEIO_NET, SharpNeedle, System
 from ..exceptions import HEIOUserException
 from ..utility import progress_console
 
+
 class RawVertex:
 
     position: Vector
@@ -57,8 +58,10 @@ class RawVertex:
              else None),
 
             o_transform.bpy_to_net_position(normal),
-            System.VECTOR3(0, 0, 0),
-            System.VECTOR3(0, 0, 0),
+            HEIO_NET.UV_DIRECTION(System.VECTOR3(
+                0, 0, 0), System.VECTOR3(0, 0, 0)),
+            HEIO_NET.UV_DIRECTION(System.VECTOR3(
+                0, 0, 0), System.VECTOR3(0, 0, 0)),
             weights
         )
 
@@ -68,10 +71,10 @@ class RawMeshData:
     vertices: list[RawVertex]
     triangle_indices: list[int]
 
-    polygon_tangents: list[Vector]
-    polygon_tangents2: list[Vector] | None
+    polygon_uv_directions: list[tuple[Vector, Vector]]
+    polygon_uv_directions2: list[tuple[Vector, Vector]] | None
 
-    textureCoordinates: list[any]
+    texture_coordinates: list[any]
     colors: list[any]
 
     mesh_sets: list[any]
@@ -84,10 +87,10 @@ class RawMeshData:
         self.vertices = []
         self.triangle_indices = []
 
-        self.polygon_tangents = []
-        self.polygon_tangents2 = None
+        self.polygon_uv_directions = []
+        self.polygon_uv_directions2 = None
 
-        self.textureCoordinates = []
+        self.texture_coordinates = []
         self.colors = []
 
         self.mesh_sets = []
@@ -98,28 +101,40 @@ class RawMeshData:
 
     def convert_to_net(self, matrix: tuple[Matrix, Matrix] | None, weight_index_map: dict[str, int] | None):
 
-        polygon_tangents = self.polygon_tangents
-        polygon_tangents2 = self.polygon_tangents2
+        polygon_tangents = self.polygon_uv_directions
+        polygon_tangents2 = self.polygon_uv_directions2
 
         if matrix is not None:
             normal_matrix = matrix[1]
-            polygon_tangents = [normal_matrix @ t for t in polygon_tangents]
+            polygon_tangents = [
+                (normal_matrix @ t, normal_matrix @ b)
+                for t, b in polygon_tangents
+            ]
 
             if polygon_tangents2 is not None:
-                polygon_tangents2 = [normal_matrix @ t for t in polygon_tangents2]
+                polygon_tangents2 = [
+                    (normal_matrix @ t, normal_matrix @ b)
+                    for t, b in polygon_tangents2
+                ]
+
+        to_net = o_transform.bpy_to_net_position
 
         return HEIO_NET.MESH_DATA(
-            "", # name is only important for import
+            "",  # name is only important for import
 
-            [v.convert_to_net(matrix, weight_index_map) for v in self.vertices],
+            [v.convert_to_net(matrix, weight_index_map)
+             for v in self.vertices],
+
             self.triangle_indices,
             None,
 
-            [o_transform.bpy_to_net_position(t) for t in polygon_tangents],
-            [o_transform.bpy_to_net_position(t) for t in polygon_tangents2]
-                if polygon_tangents2 is not None else None,
+            [HEIO_NET.UV_DIRECTION(to_net(t), to_net(b))
+             for t, b in polygon_tangents],
 
-            self.textureCoordinates,
+            [HEIO_NET.UV_DIRECTION(to_net(t), to_net(b))
+             for t, b in polygon_tangents2] if polygon_tangents2 is not None else None,
+
+            self.texture_coordinates,
             self.colors,
 
             self.mesh_sets,
@@ -158,7 +173,8 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
             topology: any,
             optimized_vertex_data: bool):
 
-        super().__init__(target_definition, object_manager, model_set_manager, write_dependencies)
+        super().__init__(target_definition, object_manager,
+                         model_set_manager, write_dependencies)
 
         self.mode = 'AUTO'
 
@@ -181,7 +197,8 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
             if len(model_set.evaluated_mesh.polygons) == 0:
                 continue
 
-            materials = [x.material for x in model_set.evaluated_object.material_slots]
+            materials = [
+                x.material for x in model_set.evaluated_object.material_slots]
             if any([m is None for m in materials]):
                 raise HEIOUserException(
                     f"Object \"{model_set.obj.name}\" has empty material slots!")
@@ -190,12 +207,12 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
 
         self._material_processor.convert_materials(all_materials)
 
-
     def _convert_vertices(self, model_set: o_modelset.ModelSet):
         groupnames = [g.name for g in model_set.evaluated_object.vertex_groups]
 
         if model_set.is_weighted:
             minWeight = 0.5 / 255
+
             def get_weights(vertex: bpy.types.MeshVertex):
                 return [(groupnames[g.group], g.weight) for g in vertex.groups if g.weight > minWeight]
 
@@ -219,7 +236,8 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
             def get_shape_positions(vertex: bpy.types.MeshVertex):
                 return None
 
-        loop_normals: list[Vector] = [x.vector.copy() for x in model_set.evaluated_mesh.vertex_normals]
+        loop_normals: list[Vector] = [x.vector.copy()
+                                      for x in model_set.evaluated_mesh.vertex_normals]
         for loop in model_set.evaluated_mesh.loops:
             # loops on the same vertex must share the same normal, no need to merge or compare
             loop_normals[loop.vertex_index] = loop.normal
@@ -258,7 +276,8 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
 
                 group_name_map.append(index)
 
-            group_attribute = model_set.evaluated_mesh.attributes.get(heiomesh.groups.attribute_name, None)
+            group_attribute = model_set.evaluated_mesh.attributes.get(
+                heiomesh.groups.attribute_name, None)
 
             if group_attribute is None:
                 def get_group_index(polygon: bpy.types.MeshPolygon):
@@ -282,7 +301,8 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
 
                 layer_name_map.append(index)
 
-            layer_attribute = model_set.evaluated_mesh.attributes.get(heiomesh.render_layers.attribute_name, None)
+            layer_attribute = model_set.evaluated_mesh.attributes.get(
+                heiomesh.render_layers.attribute_name, None)
 
             if layer_attribute is None:
                 def get_layer_index(polygon: bpy.types.MeshPolygon):
@@ -317,6 +337,7 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
                 layer_name_map.append(index)
 
             layer_count = len(layer_name_map)
+
             def get_layer_index(polygon: bpy.types.MeshPolygon):
                 if polygon.material_index >= layer_count:
                     return 0
@@ -340,7 +361,7 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
 
         def get_material_index(polygon: bpy.types.MeshPolygon):
             if polygon.material_index >= material_count:
-                    return 0
+                return 0
             return material_map[polygon.material_index]
 
         polygon_mapping = [(
@@ -392,6 +413,51 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
 
         return colors, color_attribute.data_type == 'BYTE_COLOR'
 
+    def _convert_uv_maps(self, mesh: bpy.types.Mesh, loop_order: list[bpy.types.MeshLoop]):
+        if len(mesh.uv_layers) == 0:
+            return [[System.VECTOR2(0, 0)] * len(loop_order)]
+
+        result = []
+
+        for uv_layer in mesh.uv_layers:
+            texcoords = []
+            for loop in loop_order:
+                uv = uv_layer.data[loop.index].uv
+                texcoords.append(System.VECTOR2(uv.x, uv.y))
+            result.append(texcoords)
+
+        return result
+
+    def _convert_uv_directions(self, mesh: bpy.types.Mesh, loop_order: list[bpy.types.MeshLoop]):
+        if len(mesh.uv_layers) == 0:
+
+            loop_normals: list[Vector] = [x.vector.copy()
+                                          for x in mesh.vertex_normals]
+            for loop in mesh.loops:
+                loop_normals[loop.vertex_index] = loop.normal
+
+            up_vec = Vector((0, 0, 1))
+
+            uv_directions = []
+            for n in loop_normals:
+                tangent = n.cross(up_vec)
+                binormal = n.cross(tangent)
+                uv_directions.append((tangent, binormal))
+
+            return [uv_directions[l.index] for l in loop_order], None
+
+        mesh.calc_tangents(uvmap=mesh.uv_layers[0].name)
+        uv_directions = [(l.tangent.copy(), l.bitangent.copy()) for l in loop_order]
+        mesh.free_tangents()
+
+        uv_directions2 = None
+        if len(mesh.uv_layers) > 2:
+            mesh.calc_tangents(uvmap=mesh.uv_layers[2].name)
+            uv_directions2 = [(l.tangent.copy(), l.bitangent.copy()) for l in loop_order]
+            mesh.free_tangents()
+
+        return uv_directions, uv_directions2
+
     def _convert_model_set(self, model_set: o_modelset.ModelSet):
         mesh = model_set.evaluated_mesh
         if len(mesh.polygons) == 0:
@@ -414,25 +480,11 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
 
         raw_meshdata.triangle_indices = [l.vertex_index for l in loop_order]
 
-        if len(mesh.uv_layers) == 0:
-            raw_meshdata.textureCoordinates.append(
-                [System.VECTOR2(0, 0)] * len(loop_order))
-            up_vec = Vector((0, 0, 1))
-            raw_meshdata.polygon_tangents = [
-                n.vector.cross(up_vec) for n in mesh.corner_normals]
+        raw_meshdata.polygon_uv_directions, raw_meshdata.polygon_uv_directions2 = self._convert_uv_directions(
+            mesh, loop_order)
 
-        else:
-            for uv_layer in mesh.uv_layers:
-                texcoords = []
-                for loop in loop_order:
-                    uv = uv_layer.data[loop.index].uv
-                    texcoords.append(System.VECTOR2(uv.x, uv.y))
-                raw_meshdata.textureCoordinates.append(texcoords)
-
-            mesh.calc_tangents(uvmap=mesh.uv_layers[0].name)
-            raw_meshdata.polygon_tangents = [
-                l.tangent.copy() for l in loop_order]
-            mesh.free_tangents()
+        raw_meshdata.texture_coordinates = self._convert_uv_maps(
+            mesh, loop_order)
 
         colors, byte_colors = self._convert_colors(mesh, loop_order)
         raw_meshdata.colors.append(colors)
@@ -446,7 +498,8 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
                 return
 
             materaial = materials[current_material]
-            sn_material = self._material_processor.get_converted_material(materaial)
+            sn_material = self._material_processor.get_converted_material(
+                materaial)
 
             def get_param_or(fallback, param_name):
                 if self._target_definition.hedgehog_engine_version == 1:
@@ -455,20 +508,24 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
                 if fallback:
                     return fallback
 
-                parameter = materaial.heio_material.parameters.find_next(param_name, 0, set(["BOOLEAN"]))
+                parameter = materaial.heio_material.parameters.find_next(
+                    param_name, 0, set(["BOOLEAN"]))
                 if parameter is not None:
                     return parameter.boolean_value
 
                 return False
 
-            enable_8_weight = get_param_or(model_set.obj.data.heio_mesh.force_enable_8_weights, "enable_max_bone_influences_8")
-            enable_multi_tangent = get_param_or(model_set.obj.data.heio_mesh.force_enable_multi_tangent, "enable_multi_tangent_space")
+            enable_8_weight = get_param_or(
+                model_set.obj.data.heio_mesh.force_enable_8_weights, "enable_max_bone_influences_8")
+            enable_multi_tangent = get_param_or(
+                model_set.obj.data.heio_mesh.force_enable_multi_tangent, "enable_multi_tangent_space")
 
             raw_meshdata.mesh_sets.append(HEIO_NET.MESH_DATA_SET_INFO(
                 byte_colors,
                 enable_8_weight,
                 enable_multi_tangent,
-                SharpNeedle.RESOURCE_REFERENCE[SharpNeedle.MATERIAL](sn_material),
+                SharpNeedle.RESOURCE_REFERENCE[SharpNeedle.MATERIAL](
+                    sn_material),
                 SharpNeedle.MESH_SLOT(layer_names[current_layer]),
                 set_size
             ))
@@ -504,7 +561,8 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
         add_group()
 
         if model_set.evaluated_shape_positions is not None:
-            raw_meshdata.morph_names = [x.name for x in model_set.obj.data.shape_keys.key_blocks[1:]]
+            raw_meshdata.morph_names = [
+                x.name for x in model_set.obj.data.shape_keys.key_blocks[1:]]
 
         return raw_meshdata
 
@@ -567,15 +625,18 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
 
         if root is not None and root.type == 'ARMATURE':
             for i, bone in enumerate(root.pose.bones):
-                node = o_sca_parameters.convert_to_model_node_prm(bone.bone.heio_node.sca_parameters, i, defaults)
+                node = o_sca_parameters.convert_to_model_node_prm(
+                    bone.bone.heio_node.sca_parameters, i, defaults)
                 sca_parameters.append(node)
 
         elif root is not None and root.type in MESH_DATA_TYPES:
-            node = o_sca_parameters.convert_to_model_node_prm(root.data.heio_mesh.sca_parameters, 0, defaults)
+            node = o_sca_parameters.convert_to_model_node_prm(
+                root.data.heio_mesh.sca_parameters, 0, defaults)
             sca_parameters.append(node)
 
         else:
-            node = o_sca_parameters.convert_to_model_node_prm(None, 0, defaults)
+            node = o_sca_parameters.convert_to_model_node_prm(
+                None, 0, defaults)
             sca_parameters.append(node)
 
         return [x for x in sca_parameters if x is not None]
@@ -595,7 +656,6 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
             node.ParentIndex = -1
             node.Transform = System.MATRIX4X4.Identity
             model_nodes = [node]
-
 
         if root is None:
             parent_matrix = Matrix.Identity(4)
@@ -619,7 +679,8 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
                 continue
 
             if model_nodes is not None and child_meshdata.morph_names is not None and len(child_meshdata.group_names) > 1:
-                raise HEIOUserException(f"Mesh \"{child.data.name}\" is a shape model, which cannot have more than one mesh group!")
+                raise HEIOUserException(
+                    f"Mesh \"{child.data.name}\" is a shape model, which cannot have more than one mesh group!")
 
             matrix = parent_matrix @ child.matrix_world
             normal_matrix = matrix.to_3x3().normalized()
@@ -647,6 +708,8 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
         if compile_data is None:
             return None
 
+        compile_data.SaveToJson("C:\\Users\\Justin113D\\Downloads")
+
         result = (name, compile_data, None)
 
         if root is None or self._target_definition.hedgehog_engine_version < 2:
@@ -662,16 +725,19 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
         if len(lod_info.levels) == 0:
             return result
 
-        progress_console.start("Preparing LOD mesh data for export", len(lod_info.levels) - 1)
+        progress_console.start(
+            "Preparing LOD mesh data for export", len(lod_info.levels) - 1)
 
         for i, level in enumerate(lod_info.levels.elements[1:]):
             if level.target is None or level.target in self._lod_output:
                 continue
 
-            progress_console.update(f"Converting mesh data for LOD object \"{level.target.name}\"", i)
+            progress_console.update(
+                f"Converting mesh data for LOD object \"{level.target.name}\"", i)
 
             lod_children = self._object_manager.lod_trees[level.target]
-            self._output_queue.append((level.target, self._assemble_compile_data_set(level.target, lod_children, name)))
+            self._output_queue.append(
+                (level.target, self._assemble_compile_data_set(level.target, lod_children, name)))
             self._lod_output[level.target] = None
 
         progress_console.end()
@@ -701,7 +767,8 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
             if len(queued) == 2:
                 continue
 
-            extension = ".terrain-model" if isinstance(model, SharpNeedle.TERRAIN_MODEL) else ".model"
+            extension = ".terrain-model" if isinstance(
+                model, SharpNeedle.TERRAIN_MODEL) else ".model"
 
             if queued[2] is None:
                 self._output[queued[0]] = (model, extension)
@@ -723,7 +790,8 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
                 if i > 0:
                     lod_models.append(self._lod_output[level.target])
 
-            self._output[queued[0]] = (HEIO_NET.MODEL_HELPER.CreateLODArchive(lod_models, lod_cascades, lod_unknowns), extension)
+            self._output[queued[0]] = (HEIO_NET.MODEL_HELPER.CreateLODArchive(
+                lod_models, lod_cascades, lod_unknowns), extension)
 
         self._output_queue.clear()
         progress_console.end()

@@ -14,23 +14,27 @@ namespace HEIO.NET.Modeling.ConvertTo
         private static readonly float _colorThreshold = new Vector4(2 / 255f).LengthSquared();
 
         public readonly int vertexIndex;
-        public readonly Vector3 tangent;
-        public readonly Vector3 tangent2;
+        public readonly UVDirection uvDirection;
+        public readonly UVDirection uvDirection2;
         public readonly Vector2[] textureCoordinates;
         public readonly Vector4[] colors;
 
-        public ProcessTriangleCorner(int vertexIndex, Vector3 tangent, Vector3 tangent2, Vector2[] textureCoordinates, Vector4[] colors)
+        public ProcessTriangleCorner(int vertexIndex, UVDirection uvDirection, UVDirection uvDirection2, Vector2[] textureCoordinates, Vector4[] colors)
         {
             this.vertexIndex = vertexIndex;
-            this.tangent = tangent;
-            this.tangent2 = tangent2;
+            this.uvDirection = uvDirection;
+            this.uvDirection2 = uvDirection2;
             this.textureCoordinates = textureCoordinates;
             this.colors = colors;
         }
 
         public bool Equals(ProcessTriangleCorner other)
         {
-            if(vertexIndex != other.vertexIndex || Vector3.Dot(tangent, other.tangent) < 0.995f)
+            if(vertexIndex != other.vertexIndex 
+                || Vector3.Dot(uvDirection.Tangent, other.uvDirection.Tangent) < 0.995f
+                || Vector3.Dot(uvDirection.Binormal, other.uvDirection.Binormal) < 0.995f
+                || Vector3.Dot(uvDirection2.Tangent, other.uvDirection2.Tangent) < 0.995f
+                || Vector3.Dot(uvDirection2.Binormal, other.uvDirection2.Binormal) < 0.995f)
             {
                 return false;
             }
@@ -88,12 +92,12 @@ namespace HEIO.NET.Modeling.ConvertTo
                 colors[j] = fallbackColor;
             }
 
-            Vector3 tangent = data.PolygonTangents![faceIndex];
+            UVDirection uvDirection = data.PolygonUVDirections![faceIndex];
 
             return new(
                 vertexIndex,
-                tangent,
-                data.PolygonTangents2?[faceIndex] ?? tangent,
+                uvDirection,
+                data.PolygonUVDirections2?[faceIndex] ?? uvDirection,
                 textureCoordinates,
                 colors
             );
@@ -128,7 +132,8 @@ namespace HEIO.NET.Modeling.ConvertTo
                 {
                     Position = vertex.Position,
                     Normal = vertex.Normal,
-                    Tangent = corner.tangent
+                    UVDirection = corner.uvDirection,
+                    UVDirection2 = corner.uvDirection2,
                 };
 
                 for(int j = 0; j < texcoordSets; j++)
