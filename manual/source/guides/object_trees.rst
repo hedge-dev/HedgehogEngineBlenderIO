@@ -102,12 +102,11 @@ These are the rules to obtaining the object trees name:
 - If an object tree...
 	- ... is an instance collection, use the collection name
 	- ... has a root...
-		- ... that is an armature, use the armature name
-		- ... that is a mesh, use the mesh name
-		- ... and none of the above apply, use the root object name
+		- ... that has data (mesh, armature, curve, etc.), use the data name
+		- ... and above does not apply, use the root object name
 	- ... has no root...
 		- ... and uses merged model export, use the specified filename
-		- ... and none of the above apply, throw an error
+		- ... and above does not apply, throw an error
 
 
 .. important::
