@@ -1,11 +1,11 @@
 import bpy
 import gpu
-from gpu_extras.batch import batch_for_shader
 from mathutils import Matrix
 import colorsys
 from random import Random
 
 from .cpt_shaders import CollisionMeshShaders
+from ...property_groups.mesh_properties import MESH_DATA_TYPES
 from ....utility import mesh_generators
 
 SHAPE_COLORS = {
@@ -79,7 +79,7 @@ class HEIO_3D_CollisionPrimitiveRenderer:
 
         for obj, obj_eval in zip(depsgraph.view_layer.objects, depsgraph.view_layer_eval.objects):
 
-            if obj.type != 'MESH' or not obj_eval.visible_in_viewport_get(view):
+            if obj.type not in MESH_DATA_TYPES or not obj_eval.visible_in_viewport_get(view):
                 continue
 
             for primitive in obj.data.heio_mesh.collision_primitives:

@@ -1,8 +1,9 @@
 import os
 import bpy
 
-from ...exporting import o_transform
-from ...exceptions import HEIOUserException, HEIODevException
+from ..property_groups.mesh_properties import MESH_DATA_TYPES
+
+from ...exceptions import HEIODevException
 from ...dotnet import SharpNeedle
 
 from .base_export_operators import (
@@ -20,7 +21,7 @@ class HEIO_OT_Export_Material(ExportMaterialOperator):
     def export(self, context):
         materials = set([
             slot.material
-            for obj in self.objects if obj.type == 'MESH'
+            for obj in self.objects if obj.type in MESH_DATA_TYPES
             for slot in obj.material_slots if slot.material is not None
         ])
 
@@ -37,7 +38,7 @@ class HEIO_OT_Export_Material_Active(ExportMaterialOperator):
     def poll(cls, context):
         return (
             context.active_object is not None
-            and context.active_object.type == 'MESH'
+            and context.active_object.type in MESH_DATA_TYPES
             and context.active_object.active_material is not None
         )
 

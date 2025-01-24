@@ -1,7 +1,7 @@
 import bpy
 from mathutils import Matrix
 from ...operators.base import HEIOBaseOperator
-
+from ...property_groups.mesh_properties import MESH_DATA_TYPES
 
 class HEIO_OT_View3D_SnapCursorToActiveCollisionPrimitive(HEIOBaseOperator):
     bl_idname = "heio.snap_cursor_to_active_collision_primitive"
@@ -9,7 +9,7 @@ class HEIO_OT_View3D_SnapCursorToActiveCollisionPrimitive(HEIOBaseOperator):
     bl_options = set()
 
     def _execute(self, context):
-        if context.object is None or context.object.type != 'MESH':
+        if context.object is None or context.object.type not in MESH_DATA_TYPES:
             return {'FINISHED'}
 
         primitive = context.object.data.heio_mesh.collision_primitives.active_element
@@ -30,7 +30,7 @@ class HEIO_OT_View3D_SnapActiveCollisionPrimitiveToCursor(HEIOBaseOperator):
     bl_options = set()
 
     def _execute(self, context):
-        if context.object is None or context.object.type != 'MESH':
+        if context.object is None or context.object.type not in MESH_DATA_TYPES:
             return {'FINISHED'}
 
         primitive = context.object.data.heio_mesh.collision_primitives.active_element

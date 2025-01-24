@@ -7,6 +7,7 @@ from .sca_parameter_panel import draw_sca_editor_menu
 from ..operators import material_parameter_operators as mpop
 from ..operators.material_operators import HEIO_OT_Material_SetupNodes_Active
 
+from ..property_groups.mesh_properties import MESH_DATA_TYPES
 from ..property_groups.material_properties import HEIO_Material
 from .. import definitions
 
@@ -302,7 +303,7 @@ class HEIO_PT_Material(PropertiesPanel):
         if obj is None:
             return "No active object"
 
-        if obj.type != 'MESH':
+        if obj.type not in MESH_DATA_TYPES:
             return "Active object not a mesh"
 
         if obj.active_material is None:

@@ -6,6 +6,8 @@ from .cpt_select_gizmo import (
     HEIO_OT_CollisionPrimitive_GizmoClicked
 )
 
+from ...property_groups.mesh_properties import MESH_DATA_TYPES
+
 
 class BaseCollisionPrimitiveSelectGizmoGroup(bpy.types.GizmoGroup):
     bl_space_type = 'VIEW_3D'
@@ -23,7 +25,7 @@ class BaseCollisionPrimitiveSelectGizmoGroup(bpy.types.GizmoGroup):
             and context.mode == 'OBJECT'
             and obj is not None
             and obj.visible_get(view_layer=context.view_layer)
-            and obj.type == 'MESH'
+            and obj.type not in MESH_DATA_TYPES
             and len(obj.data.heio_mesh.collision_primitives) > 0
         )
 

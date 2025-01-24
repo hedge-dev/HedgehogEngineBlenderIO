@@ -1,5 +1,8 @@
 import bpy
 import os
+
+from ..property_groups.mesh_properties import MESH_DATA_TYPES
+
 from ...utility import progress_console
 from ...dotnet import SharpNeedle, HEIO_NET
 
@@ -28,9 +31,9 @@ class HEIO_OT_Import_Material_Active(ImportMaterialOperator):
     @classmethod
     def poll(cls, context):
         return (
-            context.mode in ['OBJECT', 'MESH']
+            context.mode in {'OBJECT', 'MESH'}
             and context.active_object is not None
-            and context.active_object.type == 'MESH'
+            and context.active_object.type in MESH_DATA_TYPES
         )
 
     def import_(self, context):

@@ -1,5 +1,6 @@
 import bpy
-import bmesh
+
+from ..property_groups.mesh_properties import MESH_DATA_TYPES
 
 from .base import (
     HEIOBaseOperator,
@@ -8,40 +9,38 @@ from .base import (
     ListMove
 )
 
+class BaseLODInfoOperator(HEIOBaseOperator):
+    bl_options = {'UNDO', 'INTERNAL'}
 
-class HEIO_OT_LODInfo_Initialize(HEIOBaseOperator):
+    @staticmethod
+    def get_lod_info(context: bpy.types.Context):
+        obj = context.active_object
+        if obj is None:
+            return None
+
+        if obj.type in MESH_DATA_TYPES:
+            return obj.data.heio_mesh.lod_info
+        elif obj.type == 'ARMATURE':
+            return obj.data.heio_armature.lod_info
+
+        return None
+
+class HEIO_OT_LODInfo_Initialize(BaseLODInfoOperator):
     bl_idname = "heio.lod_info_initialize"
     bl_label = "Initalize LOD info"
     bl_description = "Set up the mesh/armature to use LOD meshes"
-    bl_options = {'UNDO', 'INTERNAL'}
 
     @classmethod
     def poll(cls, context):
-        return (
-            context.active_object is not None
-            and ((
-                context.active_object.type == 'MESH'
-                and len(context.active_object.data.heio_mesh.lod_info.levels) == 0
-            ) or (
-                context.active_object.type == 'ARMATURE'
-                and len(context.active_object.data.heio_armature.lod_info.levels) == 0
-            ))
-        )
+        lod_info = cls.get_lod_info(context)
+        return lod_info is not None and len(lod_info.levels) == 0
 
     def _execute(self, context):
-        obj = context.active_object
-
-        if obj.type == 'MESH':
-            lod_info = obj.data.heio_mesh.lod_info
-        else:
-            lod_info = obj.data.heio_armature.lod_info
-
-        lod_info.initialize()
-
+        self.get_lod_info(context).initialize()
         return {'FINISHED'}
 
 
-class HEIO_OT_LODInfo_Delete(HEIOBaseOperator):
+class HEIO_OT_LODInfo_Delete(BaseLODInfoOperator):
     bl_idname = "heio.lod_info_delete"
     bl_label = "Delete LOD info"
     bl_description = "Deletes the meshes/armatures LOD info"
@@ -49,54 +48,24 @@ class HEIO_OT_LODInfo_Delete(HEIOBaseOperator):
 
     @classmethod
     def poll(cls, context):
-        return (
-            context.active_object is not None
-            and ((
-                context.active_object.type == 'MESH'
-                and len(context.active_object.data.heio_mesh.lod_info.levels) > 0
-            ) or (
-                context.active_object.type == 'ARMATURE'
-                and len(context.active_object.data.heio_armature.lod_info.levels) > 0
-            ))
-        )
+        lod_info = cls.get_lod_info(context)
+        return lod_info is not None and len(lod_info.levels) > 0
 
     def _execute(self, context):
-        obj = context.active_object
-
-        if obj.type == 'MESH':
-            lod_info = obj.data.heio_mesh.lod_info
-        else:
-            lod_info = obj.data.heio_armature.lod_info
-
-        lod_info.delete()
-
+        self.get_lod_info(context).delete()
         return {'FINISHED'}
 
 
-class LODInfoListOperator(HEIOBaseOperator):
+class LODInfoListOperator(BaseLODInfoOperator):
     bl_options = {'UNDO', 'INTERNAL'}
 
     @classmethod
     def poll(cls, context):
-        return (
-            context.active_object is not None
-            and ((
-                context.active_object.type == 'MESH'
-                and len(context.active_object.data.heio_mesh.lod_info.levels) > 0
-            ) or (
-                context.active_object.type == 'ARMATURE'
-                and len(context.active_object.data.heio_armature.lod_info.levels) > 0
-            ))
-        )
+        lod_info = cls.get_lod_info(context)
+        return lod_info is not None and len(lod_info.levels) > 0
 
     def _execute(self, context):
-        obj = context.active_object
-
-        if obj.type == 'MESH':
-            lod_info = obj.data.heio_mesh.lod_info
-        else:
-            lod_info = obj.data.heio_armature.lod_info
-
+        lod_info = self.get_lod_info(context)
         self.list_execute(context, lod_info.levels)
         return {'FINISHED'}
 

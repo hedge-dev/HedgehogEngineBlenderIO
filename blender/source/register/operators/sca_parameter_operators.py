@@ -10,6 +10,7 @@ from .base import (
 )
 
 from .. import definitions
+from ..property_groups.mesh_properties import MESH_DATA_TYPES
 
 from ...exceptions import HEIODevException, HEIOUserException
 
@@ -41,7 +42,7 @@ class SCAParameterOperator(HEIOBaseOperator):
             return obj.active_material.heio_material.sca_parameters
 
         elif self.mode == "MESH":
-            if obj.type != 'MESH':
+            if obj.type not in MESH_DATA_TYPES:
                 raise HEIODevException("Active object is not a mesh!")
 
             return obj.data.heio_mesh.sca_parameters

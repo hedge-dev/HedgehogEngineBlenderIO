@@ -1,5 +1,6 @@
 import bpy
 
+from ..property_groups.mesh_properties import MESH_DATA_TYPES
 from .base_panel import PropertiesPanel
 from .sca_parameter_panel import draw_sca_editor_menu
 from .lod_info_panel import draw_lod_info_panel
@@ -394,7 +395,7 @@ class HEIO_PT_Mesh(PropertiesPanel):
         if obj is None:
             return "No active object"
 
-        if obj.type != 'MESH':
+        if obj.type not in MESH_DATA_TYPES:
             return "Active object not a mesh"
 
         return None

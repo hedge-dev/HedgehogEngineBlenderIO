@@ -2,6 +2,7 @@ from mathutils import Vector, Quaternion, Matrix
 
 from . import o_enum, o_mesh, o_modelset, o_transform
 from ..dotnet import HEIO_NET, SharpNeedle
+from ..register.property_groups.mesh_properties import MESH_DATA_TYPES
 from ..utility import progress_console
 
 class RawCollisionPrimitiveData:
@@ -130,13 +131,17 @@ class CollisionMeshProcessor(o_mesh.BaseMeshProcessor):
             layer_max = len(heiomesh.groups) - 1
             triangles = [list() for _ in heiomesh.groups]
             invalid_triangles = []
-            attribute = model_set.evaluated_mesh.attributes[heiomesh.groups.attribute_name]
 
-            for group, polygon in zip(attribute.data, model_set.evaluated_mesh.polygons):
-                if group.value > layer_max:
-                    invalid_triangles.append(polygon)
-                else:
-                    triangles[group.value].append(polygon)
+            attribute = model_set.evaluated_mesh.attributes.get(heiomesh.groups.attribute_name, None)
+
+            if attribute is not None:
+                for group, polygon in zip(attribute.data, model_set.evaluated_mesh.polygons):
+                    if group.value > layer_max:
+                        invalid_triangles.append(polygon)
+                    else:
+                        triangles[group.value].append(polygon)
+            else:
+                triangles[0] = list(model_set.evaluated_mesh.polygons)
 
             for i, group in enumerate(heiomesh.groups):
                 layer_triangles = triangles[i]
@@ -175,16 +180,24 @@ class CollisionMeshProcessor(o_mesh.BaseMeshProcessor):
             if heiomesh.collision_types.initialized and not heiomesh.collision_types.attribute_invalid:
                 raw_meshdata.type_values = [
                     t.value for t in heiomesh.collision_types]
-                attribute = model_set.evaluated_mesh.attributes[heiomesh.collision_types.attribute_name]
-                raw_meshdata.types = [
-                    attribute.data[x].value for x in triangle_order]
+                attribute = model_set.evaluated_mesh.attributes.get(heiomesh.collision_types.attribute_name, None)
+
+                if attribute is None:
+                    raw_meshdata.types = [0] * len(triangle_order)
+                else:
+                    raw_meshdata.types = [
+                        attribute.data[x].value for x in triangle_order]
 
             if heiomesh.collision_flags.initialized and not heiomesh.collision_flags.attribute_invalid:
                 raw_meshdata.flag_values = [
                     t.value for t in heiomesh.collision_flags]
-                attribute = model_set.evaluated_mesh.attributes[heiomesh.collision_flags.attribute_name]
-                raw_meshdata.flags = [
-                    attribute.data[x].value for x in triangle_order]
+                attribute = model_set.evaluated_mesh.attributes.get(heiomesh.collision_flags.attribute_name, None)
+
+                if attribute is None:
+                    raw_meshdata.flags = [0] * len(triangle_order)
+                else:
+                    raw_meshdata.flags = [
+                        attribute.data[x].value for x in triangle_order]
 
         for primitive in heiomesh.collision_primitives:
             flags = 0
@@ -213,7 +226,7 @@ class CollisionMeshProcessor(o_mesh.BaseMeshProcessor):
         else:
             parent_matrix = root.matrix_world.inverted()
 
-            if root.type == 'MESH':
+            if root.type in MESH_DATA_TYPES:
                 root_meshdata = self.get_meshdata(root)
                 if root_meshdata is not None:
                     meshdata, primitives = root_meshdata.convert_to_net(None)
@@ -221,7 +234,7 @@ class CollisionMeshProcessor(o_mesh.BaseMeshProcessor):
                     sn_primitives.extend(primitives)
 
         for child in children:
-            if child.type != 'MESH':
+            if child.type not in MESH_DATA_TYPES:
                 continue
 
             child_meshdata = self.get_meshdata(child)

@@ -1,6 +1,7 @@
 import bpy
 from mathutils import Vector
 from ..register.definitions import TargetDefinition
+from ..register.property_groups.mesh_properties import MESH_DATA_TYPES
 
 
 class ModelSet:
@@ -68,21 +69,23 @@ class ModelSet:
     def evaluate(self, depsgraph: bpy.types.Depsgraph, eval_shapekeys: bool):
         self.evaluated_object = self.obj.evaluated_get(depsgraph)
 
-        if self.evaluated_object.data.shape_keys is not None:
-            for shape_key in self.evaluated_object.data.shape_keys.key_blocks:
-                shape_key.value = 0
+        shape_keys: bpy.types.Key = self.evaluated_object.data.get("shape_keys", None)
+        if shape_keys is not None:
+            self.evaluated_object.show_only_shape_key = True
 
             if eval_shapekeys:
                 self.evaluated_shape_positions = []
-                for block in self.evaluated_object.data.shape_keys.key_blocks[1:]:
-                    block.value = 1
+                for i in range(1, len(shape_keys.key_blocks)):
+                    self.evaluated_object.active_shape_key_index = i
+
                     self.evaluated_shape_positions.append(
                         [v.co.copy() for v in self.evaluated_object.to_mesh(
                             preserve_all_data_layers=True,
                             depsgraph=depsgraph).vertices]
                     )
                     self.evaluated_object.to_mesh_clear()
-                    block.value = 0
+
+            self.evaluated_object.active_shape_key_index = 0
 
         self.evaluated_mesh = self.evaluated_object.to_mesh(
             preserve_all_data_layers=True,
@@ -134,7 +137,7 @@ class ModelSetManager:
                     self._registered_armatures[obj.data] = obj.data.pose_position
                 continue
 
-            if obj.type != 'MESH' or obj in self.obj_mesh_mapping:
+            if obj.type not in MESH_DATA_TYPES or obj in self.obj_mesh_mapping:
                 continue
 
             lut_key = None
@@ -191,12 +194,13 @@ class ModelSetManager:
         for mesh in model_meshes:
             mesh.evaluate(self.depsgraph, eval_shapekeys)
 
-        if not self._apply_armature:
-            for armature, pose in self._registered_armatures.items():
-                armature.pose_position = pose
 
     def evaluate_end(self):
         for mesh in self.model_set_lut.values():
             mesh.cleanup_modifiers()
+
+        if not self._apply_armature:
+            for armature, pose in self._registered_armatures.items():
+                armature.pose_position = pose
 
         self.depsgraph = None

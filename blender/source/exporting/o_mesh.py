@@ -3,10 +3,10 @@ import bpy
 
 from . import o_modelset, o_object_manager
 from ..register.definitions import TargetDefinition
+from ..register.property_groups.mesh_properties import MESH_DATA_TYPES
 from ..dotnet import SharpNeedle
 from ..exceptions import HEIODevException
 from ..utility import progress_console
-
 
 class BaseMeshProcessor:
 
@@ -82,7 +82,7 @@ class BaseMeshProcessor:
     def get_name(root: bpy.types.Object):
         if root.type == 'EMPTY' and root.instance_type == 'COLLECTION' and root.instance_collection is not None:
             return root.instance_collection.name
-        elif root.type in {'ARMATURE', 'MESH'}:
+        elif root.data is not None:
             return root.data.name
         else:
             return root.name

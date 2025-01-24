@@ -14,6 +14,8 @@ from .sca_parameter_properties import HEIO_SCA_Parameters
 from .lod_info_properties import HEIO_LODInfo
 from .. import definitions
 
+MESH_DATA_TYPES = {'MESH', 'CURVE', 'TEXTCURVE', 'SURFACE'}
+
 ITEM_ERROR_FALLBACK = [("ERROR_FALLBACK", "", "")]
 
 
@@ -105,7 +107,7 @@ class BaseMeshInfoList(BaseList):
         if len(self) == 0:
             self._on_init()
 
-        if self.attribute_name not in self.id_data.attributes:
+        if isinstance(self.id_data, bpy.types.Mesh) and self.attribute_name not in self.id_data.attributes:
             self.id_data.attributes.new(self.attribute_name, "INT", "FACE")
 
     def _on_init(self):
@@ -113,6 +115,7 @@ class BaseMeshInfoList(BaseList):
 
     def delete(self):
         self.clear()
+
         attribute = self.attribute
         if attribute is not None and not self._check_attribute_invalid(attribute):
             self.id_data.attributes.remove(attribute)
@@ -123,7 +126,7 @@ class BaseMeshInfoList(BaseList):
 
     @property
     def initialized(self):
-        return len(self) > 0 and self.attribute_name in self.id_data.attributes
+        return len(self) > 0 and (not isinstance(self.id_data, bpy.types.Mesh) or self.attribute_name in self.id_data.attributes)
 
     @property
     def attribute_name(self):
@@ -131,6 +134,9 @@ class BaseMeshInfoList(BaseList):
 
     @property
     def attribute(self):
+        if not isinstance(self.id_data, bpy.types.Mesh):
+            return None
+
         return self.id_data.attributes.get(self.attribute_name, None)
 
     @property
@@ -346,3 +352,6 @@ class HEIO_Mesh(bpy.types.PropertyGroup):
     @classmethod
     def register(cls):
         bpy.types.Mesh.heio_mesh = PointerProperty(type=cls)
+        bpy.types.Curve.heio_mesh = PointerProperty(type=cls)
+        bpy.types.TextCurve.heio_mesh = PointerProperty(type=cls)
+        bpy.types.SurfaceCurve.heio_mesh = PointerProperty(type=cls)

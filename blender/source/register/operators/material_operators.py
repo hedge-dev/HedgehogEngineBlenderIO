@@ -4,6 +4,7 @@ from bpy.types import Context
 
 from .base import HEIOBaseOperator, HEIOBasePopupOperator
 from .. import definitions
+from ..property_groups.mesh_properties import MESH_DATA_TYPES
 
 from ...utility.material_setup import (
     setup_and_update_materials
@@ -30,12 +31,12 @@ class MaterialOperator(HEIOBasePopupOperator):
         results = set()
 
         def add(obj: bpy.types.Object):
-            if obj.type == 'MESH':
+            if obj.type in MESH_DATA_TYPES:
                 for mat in obj.data.materials:
                     results.add(mat)
 
         if targetmode == 'ACTIVE':
-            if (context.active_object.type == 'MESH'
+            if (context.active_object.type in MESH_DATA_TYPES
                     and context.active_object.active_material is not None):
                 results.add(context.active_object.active_material)
         elif targetmode == 'SELECTED':

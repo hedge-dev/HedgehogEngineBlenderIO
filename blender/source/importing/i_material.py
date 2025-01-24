@@ -125,7 +125,7 @@ class MaterialConverter:
 
             material_properties: HEIO_Material = material.heio_material
 
-            if sn_material.ShaderName[-1] == ']':
+            if len(sn_material.ShaderName) > 0 and sn_material.ShaderName[-1] == ']':
                 index = sn_material.ShaderName.index('[')
                 material_properties.shader_name = sn_material.ShaderName[:index]
                 material_properties.variant_name = sn_material.ShaderName[(

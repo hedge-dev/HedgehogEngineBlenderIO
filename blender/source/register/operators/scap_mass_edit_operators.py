@@ -2,7 +2,7 @@ import bpy
 from bpy.props import BoolProperty
 
 from .base import HEIOBaseOperator
-
+from ..property_groups.mesh_properties import MESH_DATA_TYPES
 
 class BaseSCAPMassEditOperator(HEIOBaseOperator):
     bl_options = {'UNDO', 'INTERNAL'}
@@ -31,7 +31,7 @@ class BaseSCAPMassEditOperator(HEIOBaseOperator):
                 parameters_list.add(bone.bone.heio_node.sca_parameters)
         else:
             for obj in context.view_layer.objects:
-                if obj.type != 'MESH' or not obj.visible_get(view_layer=context.view_layer) or not obj.select_get(view_layer=context.view_layer):
+                if obj.type not in MESH_DATA_TYPES or not obj.visible_get(view_layer=context.view_layer) or not obj.select_get(view_layer=context.view_layer):
                     continue
 
                 if props.mode == 'MATERIAL':
@@ -67,7 +67,7 @@ class HEIO_OT_SCAP_MassEdit_Select(BaseSCAPMassEditOperator):
 
         if context.mode == 'OBJECT':
             for obj in context.view_layer.objects:
-                if obj.type != 'MESH' or not obj.visible_get(view_layer=context.view_layer):
+                if obj.type not in MESH_DATA_TYPES or not obj.visible_get(view_layer=context.view_layer):
                     continue
                 if check_has_param(obj.data.heio_mesh.sca_parameters):
                     obj.select_set(True, view_layer=context.view_layer)

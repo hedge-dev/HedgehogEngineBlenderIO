@@ -16,6 +16,7 @@ from . import (
     node_panel
 )
 
+from ..property_groups.mesh_properties import MESH_DATA_TYPES
 from ...utility.draw import draw_error_box
 
 
@@ -191,7 +192,7 @@ class HEIO_PT_VTP_ObjectData(ViewportToolPanel):
     @staticmethod
     def draw_materials_list(layout: bpy.types.UILayout, context: bpy.types.Context):
         obj = context.active_object
-        if obj is None or obj.type != 'MESH':
+        if obj is None or obj.type not in MESH_DATA_TYPES:
             return
 
         layout.label(text=f"Active object: {obj.name}")

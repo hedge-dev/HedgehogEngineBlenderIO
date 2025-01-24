@@ -1,6 +1,7 @@
 import bpy
 from bpy.types import Object as BObject
 
+from ..register.property_groups.mesh_properties import MESH_DATA_TYPES
 
 class ObjectManager:
 
@@ -62,7 +63,7 @@ class ObjectManager:
     def _get_lod_trees(root):
         result = {}
 
-        if root.type == 'MESH':
+        if root.type in MESH_DATA_TYPES:
             lod_info = root.data.heio_mesh.lod_info
         elif root.type == 'ARMATURE':
             lod_info = root.data.heio_armature.lod_info

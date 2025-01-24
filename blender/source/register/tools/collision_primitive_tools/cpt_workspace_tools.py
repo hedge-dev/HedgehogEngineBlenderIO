@@ -5,6 +5,7 @@ import os
 from .cpt_select_gizmo_group import HEIO_GGT_CollisionPrimitive_Select
 from .cpt_transform_gizmo_group import HEIO_GGT_CollisionPrimitive_Transform
 
+from ...property_groups.mesh_properties import MESH_DATA_TYPES
 from ...ui.mesh_panel import HEIO_PT_Mesh, HEIO_UL_CollisionPrimitiveList
 from ....utility import general
 
@@ -19,7 +20,7 @@ class BaseCollisionPrimitiveWorkSpaceTool(WorkSpaceTool):
         if (context.mode != 'OBJECT'
                 or context.region.type == 'TOOL_HEADER'
                 or context.active_object is None
-                or context.active_object.type != 'MESH'):
+                or context.active_object.type not in MESH_DATA_TYPES):
             return
 
         primitives = context.active_object.data.heio_mesh.collision_primitives

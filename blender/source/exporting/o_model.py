@@ -3,10 +3,10 @@ from mathutils import Vector, Matrix
 
 from . import o_mesh, o_modelset, o_transform, o_material, o_object_manager, o_sca_parameters
 from ..register.definitions import TargetDefinition
+from ..register.property_groups.mesh_properties import MESH_DATA_TYPES
 from ..dotnet import HEIO_NET, SharpNeedle, System
 from ..exceptions import HEIOUserException
 from ..utility import progress_console
-
 
 class RawVertex:
 
@@ -258,10 +258,14 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
 
                 group_name_map.append(index)
 
-            group_attribute = model_set.evaluated_mesh.attributes[heiomesh.groups.attribute_name]
+            group_attribute = model_set.evaluated_mesh.attributes.get(heiomesh.groups.attribute_name, None)
 
-            def get_group_index(polygon: bpy.types.MeshPolygon):
-                return group_name_map[group_attribute.data[polygon.index].value]
+            if group_attribute is None:
+                def get_group_index(polygon: bpy.types.MeshPolygon):
+                    return 0
+            else:
+                def get_group_index(polygon: bpy.types.MeshPolygon):
+                    return group_name_map[group_attribute.data[polygon.index].value]
 
         layer_name_lut = {}
         layer_name_map = []
@@ -278,10 +282,14 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
 
                 layer_name_map.append(index)
 
-            layer_attribute = model_set.evaluated_mesh.attributes[heiomesh.render_layers.attribute_name]
+            layer_attribute = model_set.evaluated_mesh.attributes.get(heiomesh.render_layers.attribute_name, None)
 
-            def get_layer_index(polygon: bpy.types.MeshPolygon):
-                return layer_name_map[layer_attribute.data[polygon.index].value]
+            if layer_attribute is None:
+                def get_layer_index(polygon: bpy.types.MeshPolygon):
+                    return 0
+            else:
+                def get_layer_index(polygon: bpy.types.MeshPolygon):
+                    return layer_name_map[layer_attribute.data[polygon.index].value]
 
         else:
             for material_slot in model_set.evaluated_object.material_slots:
@@ -308,8 +316,12 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
 
                 layer_name_map.append(index)
 
-                def get_layer_index(polygon: bpy.types.MeshPolygon):
-                    return layer_name_map[polygon.material_index]
+            layer_count = len(layer_name_map)
+            def get_layer_index(polygon: bpy.types.MeshPolygon):
+                if polygon.material_index >= layer_count:
+                    return 0
+
+                return layer_name_map[polygon.material_index]
 
         material_lut = {}
         material_map = []
@@ -324,7 +336,11 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
 
             material_map.append(index)
 
+        material_count = len(material_map)
+
         def get_material_index(polygon: bpy.types.MeshPolygon):
+            if polygon.material_index >= material_count:
+                    return 0
             return material_map[polygon.material_index]
 
         polygon_mapping = [(
@@ -554,7 +570,7 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
                 node = o_sca_parameters.convert_to_model_node_prm(bone.bone.heio_node.sca_parameters, i, defaults)
                 sca_parameters.append(node)
 
-        elif root is not None and root.type == 'MESH':
+        elif root is not None and root.type in MESH_DATA_TYPES:
             node = o_sca_parameters.convert_to_model_node_prm(root.data.heio_mesh.sca_parameters, 0, defaults)
             sca_parameters.append(node)
 
@@ -587,14 +603,14 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
         else:
             parent_matrix = root.matrix_world.inverted()
 
-            if root.type == 'MESH':
+            if root.type in MESH_DATA_TYPES:
                 root_meshdata = self.get_meshdata(root)
                 if root_meshdata is not None:
                     sn_meshdata.append(
                         root_meshdata.convert_to_net(None, weight_index_map))
 
         for child in children:
-            if child.type != 'MESH':
+            if child.type not in MESH_DATA_TYPES:
                 continue
 
             child_meshdata = self.get_meshdata(child)
@@ -638,7 +654,7 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
 
         if root.type == 'ARMATURE':
             lod_info = root.data.heio_armature.lod_info
-        elif root.type == 'MESH':
+        elif root.type in MESH_DATA_TYPES:
             lod_info = root.data.heio_mesh.lod_info
         else:
             return result

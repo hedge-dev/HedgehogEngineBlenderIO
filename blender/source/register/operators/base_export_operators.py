@@ -236,7 +236,7 @@ class ExportBaseMeshDataOperator(ExportObjectSelectionOperator):
     apply_modifiers: BoolProperty(
         name="Apply modifiers",
         description="Apply modifiers before exporting",
-        default=False
+        default=True
     )
 
     apply_poses: BoolProperty(

@@ -9,6 +9,8 @@ from .base import (
     ListMove
 )
 
+from ..property_groups.mesh_properties import MESH_DATA_TYPES
+
 from ...exceptions import HEIOUserException, HEIODevException
 from ...utility import attribute_utils
 
@@ -41,7 +43,7 @@ class BaseMeshInfoOperator(HEIOBaseOperator):
     def poll(cls, context):
         return (
             context.active_object is not None
-            and context.active_object.type == 'MESH'
+            and context.active_object.type in MESH_DATA_TYPES
         )
 
     def get_list(self, context: bpy.types.Context):
@@ -211,7 +213,7 @@ class MeshListOperator(BaseMeshInfoOperator):
     def _execute(self, context):
         list = self.get_list(context)
 
-        if self.type not in NO_ATTRIB:
+        if self.type not in NO_ATTRIB and context.active_object.type == 'MESH':
             if not list.initialized:
                 raise HEIOUserException("Not initialized!")
 
@@ -225,7 +227,8 @@ class MeshListOperator(BaseMeshInfoOperator):
 
         self.list_execute(context, list)
 
-        context.active_object.data.update()
+        if context.active_object.type == 'MESH':
+            context.active_object.data.update()
         return {'FINISHED'}
 
 
