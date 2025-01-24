@@ -16,6 +16,21 @@ An object tree is a collection of objects, usually with a root object that is th
 all objects in the tree.
 
 
+What counts as a "Mesh"?
+------------------------
+
+There are 4 object types that are considered for their mesh data:
+
+- Meshes
+- Curves
+- Surfaces
+- Texts
+
+Metaballs are **not** considered for their merging behavior, which combines multiple objects
+into one and thus breaks the core functionality behind object trees. If you want to export
+metaball models, you must convert them to meshes by hand.
+
+
 Types of object trees
 =====================
 
