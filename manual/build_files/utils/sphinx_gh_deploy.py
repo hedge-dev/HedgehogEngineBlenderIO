@@ -5,7 +5,7 @@ import re
 import subprocess
 from click import ClickException, echo
 
-import ghp_import  # type: ignore
+import ghp_import
 from packaging import version
 
 import sphinx
