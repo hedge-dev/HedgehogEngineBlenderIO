@@ -44,9 +44,7 @@ class HEIO_UL_LODInfoLevels(bpy.types.UIList):
             index,
             flt_flag):
 
-        layout.active = index > 0
-
-        if not layout.active:
+        if index == 0:
             icon = 'BLANK1'
             name = "self"
 
@@ -59,12 +57,16 @@ class HEIO_UL_LODInfoLevels(bpy.types.UIList):
             name = item.target.name
 
         split = layout.split(factor=0.7)
-        split.label(text=name, icon=icon)
+
+        row = split.row()
+        row.active = index > 0
+        row.label(text=name, icon=icon)
+
         split.prop(item, "cascade", text="")
 
 
 class HEIO_MT_LODInfoLevelContextMenu(bpy.types.Menu):
-    bl_label = "LOD info operations"
+    bl_label = "LoD info operations"
 
     def draw(self, context):
         self.layout.operator(lodo.HEIO_OT_LODInfo_Delete.bl_idname)
@@ -76,7 +78,7 @@ def draw_lod_info_panel(
         lod_info: HEIO_LODInfo):
 
     header, body = layout.panel("heio_lod_info", default_closed=True)
-    header.label(text="LOD Info")
+    header.label(text="LoD Info")
     if not body:
         return
 

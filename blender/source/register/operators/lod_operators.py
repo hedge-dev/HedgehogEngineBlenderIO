@@ -27,8 +27,8 @@ class BaseLODInfoOperator(HEIOBaseOperator):
 
 class HEIO_OT_LODInfo_Initialize(BaseLODInfoOperator):
     bl_idname = "heio.lod_info_initialize"
-    bl_label = "Initalize LOD info"
-    bl_description = "Set up the mesh/armature to use LOD meshes"
+    bl_label = "Initalize LoD info"
+    bl_description = "Set up the mesh/armature to use LoD meshes"
 
     @classmethod
     def poll(cls, context):
@@ -42,8 +42,8 @@ class HEIO_OT_LODInfo_Initialize(BaseLODInfoOperator):
 
 class HEIO_OT_LODInfo_Delete(BaseLODInfoOperator):
     bl_idname = "heio.lod_info_delete"
-    bl_label = "Delete LOD info"
-    bl_description = "Deletes the meshes/armatures LOD info"
+    bl_label = "Delete LoD info"
+    bl_description = "Deletes the meshes/armatures LoD info"
     bl_options = {'UNDO', 'INTERNAL'}
 
     @classmethod
@@ -72,20 +72,20 @@ class LODInfoListOperator(BaseLODInfoOperator):
 
 class HEIO_OT_LODInfo_Add(LODInfoListOperator, ListAdd):
     bl_idname = "heio.lod_info_add"
-    bl_label = "Add LOD info level"
-    bl_description = "Adds an LOD info level to the mesh/armature"
+    bl_label = "Add LoD info level"
+    bl_description = "Adds an LoD info level to the mesh/armature"
 
 
 class HEIO_OT_LODInfo_Remove(LODInfoListOperator, ListRemove):
     bl_idname = "heio.lod_info_remove"
-    bl_label = "Remove LOD info level"
-    bl_description = "Removes the selected LOD info level from the mesh/armature"
+    bl_label = "Remove LoD info level"
+    bl_description = "Removes the selected LoD info level from the mesh/armature"
 
     def list_execute(self, context: bpy.types.Context, target_list):
 
         if target_list.active_index < 1:
             self.report(
-                {'ERROR'}, f"The first LOD level is required!")
+                {'ERROR'}, f"The first LoD level is required!")
             return {'CANCELLED'}
 
         return super().list_execute(context, target_list)
@@ -93,18 +93,18 @@ class HEIO_OT_LODInfo_Remove(LODInfoListOperator, ListRemove):
 
 class HEIO_OT_LODInfo_Move(LODInfoListOperator, ListMove):
     bl_idname = "heio.lod_info_move"
-    bl_label = "Move LOD info level"
-    bl_description = "Moves the selected LOD info level in the mesh/armature"
+    bl_label = "Move LoD info level"
+    bl_description = "Moves the selected LoD info level in the mesh/armature"
 
     def list_execute(self, context, target_list):
         if target_list.active_index < 1:
             self.report(
-                {'ERROR'}, f"The first LOD level cannot be moved!")
+                {'ERROR'}, f"The first LoD level cannot be moved!")
             return {'CANCELLED'}
 
         if target_list.active_index == 1 and self.direction == 'UP':
             self.report(
-                {'ERROR'}, f"The second LOD level cannot be moved up!")
+                {'ERROR'}, f"The second LoD level cannot be moved up!")
             return {'CANCELLED'}
 
         return super().list_execute(context, target_list)

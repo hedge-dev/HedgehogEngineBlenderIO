@@ -11,8 +11,8 @@ from .base_list import BaseList
 
 class HEIO_LODInfoLevel(bpy.types.PropertyGroup):
     cascade: IntProperty(
-        name="LOD Cascade",
-        description="The cascade before which to start displaying this lod mesh",
+        name="LoD Cascade",
+        description="The cascade until which to start displaying the target LoD model",
         min=0,
         max=31
     )
@@ -25,7 +25,7 @@ class HEIO_LODInfoLevel(bpy.types.PropertyGroup):
 
     target: PointerProperty(
         name="Target",
-        description="Target object to use for this lod level",
+        description="Target object tree to use for this LoD item",
         type=bpy.types.Object
     )
 
