@@ -73,11 +73,11 @@ Sections
 
         .. container:: card
 
-            .. figure:: /images/index_guides.png
+            .. figure:: /images/index_tutorials.png
                 :target: tutorials/index.html
 
             :doc:`/tutorials/index`
-                Step-by-step walkthroughs for creating example mods with HEIO
+                Step-by-step walkthroughs for creating mods with HEIO
 
         .. container:: card
 
