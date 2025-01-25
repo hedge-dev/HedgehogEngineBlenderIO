@@ -3,7 +3,7 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Object Trees" href="object_trees.html" /><link rel="prev" title="Material Editing" href="material_editing.html" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="LoD Models" href="lod_models.html" /><link rel="prev" title="Object Trees" href="object_trees.html" />
         <link rel="canonical" href="https://hedge-dev.github.io/HedgehogEngineBlenderIO/guides/collision_mesh_editing.html" />
 
     <!-- Generated with Sphinx 8.1.3 and Furo 2024.08.06 -->
@@ -250,8 +250,9 @@
 <li class="toctree-l2"><a class="reference internal" href="project_setup.html">Project setup</a></li>
 <li class="toctree-l2"><a class="reference internal" href="asset_importing.html">Asset importing</a></li>
 <li class="toctree-l2"><a class="reference internal" href="material_editing.html">Material Editing</a></li>
-<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Collision mesh editing</a></li>
 <li class="toctree-l2"><a class="reference internal" href="object_trees.html">Object Trees</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Collision mesh editing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lod_models.html">LoD Models</a></li>
 <li class="toctree-l2"><a class="reference internal" href="asset_exporting.html">Asset exporting</a></li>
 </ul>
 </li>
@@ -395,10 +396,10 @@ in Shadow Generations:</p>
 the majority of the entire stage. By splitting it with the
 <a class="reference internal" href="../user_interface/tools/viewport_toolbar/general.html#bpy-ops-heio-split-meshgroups"><span class="std std-ref">“Split mesh by groups”</span></a> operator and changing the viewport
 object color to “random”, we can make out the individual shapes:</p>
-<figure class="align-default" id="id4">
+<figure class="align-default" id="id1">
 <img alt="../_images/guides_collision_mesh_editing_shape_colors.png" src="../_images/guides_collision_mesh_editing_shape_colors.png" />
 <figcaption>
-<p><span class="caption-text">The individual shapes in the collision mesh made visible</span><a class="headerlink" href="#id4" title="Link to this image">¶</a></p>
+<p><span class="caption-text">The individual shapes in the collision mesh made visible</span><a class="headerlink" href="#id1" title="Link to this image">¶</a></p>
 </figcaption>
 </figure>
 <section id="convex-shapes">
@@ -409,10 +410,10 @@ things can collide with in the game.</p>
 described by vertices, and has no actual polygon information. To collide with a convex shape,
 the game simply checks if something is “inside” the space between the shapes’ vertices.</p>
 <p>You can turn a mesh group convex in the groups properties:</p>
-<figure class="align-default" id="id5">
+<figure class="align-default" id="id2">
 <img alt="../_images/guides_collision_mesh_editing_convex_shape_toggle.png" src="../_images/guides_collision_mesh_editing_convex_shape_toggle.png" />
 <figcaption>
-<p><span class="caption-text">How to make a mesh group convex</span><a class="headerlink" href="#id5" title="Link to this image">¶</a></p>
+<p><span class="caption-text">How to make a mesh group convex</span><a class="headerlink" href="#id2" title="Link to this image">¶</a></p>
 </figcaption>
 </figure>
 <p>While internally, these shapes don’t have polygonal information, they would be difficult to work
@@ -420,10 +421,10 @@ with in blender, as you cannot see disconnected vertices outside of blenders edi
 that HEIO divides a mesh into shapes by assigning polygons to a group, not vertices. That is why
 HEIO imports convex shapes with generated polygons, instead of just the vertices.</p>
 <p>Exporting a convex shape with concave areas will result in those concave areas disappearing:</p>
-<figure class="align-default" id="id6">
+<figure class="align-default" id="id3">
 <img alt="../_images/guides_collision_mesh_editing_concave_vs_convex.png" src="../_images/guides_collision_mesh_editing_concave_vs_convex.png" />
 <figcaption>
-<p><span class="caption-text">Meshes with concave features, and their exported convex counterparts</span><a class="headerlink" href="#id6" title="Link to this image">¶</a></p>
+<p><span class="caption-text">Meshes with concave features, and their exported convex counterparts</span><a class="headerlink" href="#id3" title="Link to this image">¶</a></p>
 </figcaption>
 </figure>
 </section>
@@ -436,10 +437,10 @@ it (and more).</p>
 <p>While mostly the same, some layers differ between the games, e.g. the layer with the value <code class="docutils literal notranslate"><span class="pre">9</span></code> is
 called <code class="docutils literal notranslate"><span class="pre">Solid</span> <span class="pre">Mesh</span></code> in Shadow generations and <code class="docutils literal notranslate"><span class="pre">Leaf</span></code> in Sonic Frontiers.</p>
 <p>You can change the layer in the mesh group settings:</p>
-<figure class="align-default" id="id7">
+<figure class="align-default" id="id4">
 <img alt="../_images/guides_collision_mesh_editing_layer.png" src="../_images/guides_collision_mesh_editing_layer.png" />
 <figcaption>
-<p><span class="caption-text">Where to change the layer of a mesh group</span><a class="headerlink" href="#id7" title="Link to this image">¶</a></p>
+<p><span class="caption-text">Where to change the layer of a mesh group</span><a class="headerlink" href="#id4" title="Link to this image">¶</a></p>
 </figcaption>
 </figure>
 <p>To make editing the layer easier, each target game comes with a list of layers attached to values
@@ -458,14 +459,14 @@ movement and plays the “You stray from the path” mini event.</p>
 called <code class="docutils literal notranslate"><span class="pre">Wet</span> <span class="pre">3</span></code> in Shadow generations and <code class="docutils literal notranslate"><span class="pre">Sand</span> <span class="pre">2</span></code> in Sonic Frontiers.</p>
 <p>Types act likes materials, where each mesh has a list of types and where every polygon in the mesh
 gets assigned to an item in that list.</p>
-<section id="setup">
-<h3>Setup<a class="headerlink" href="#setup" title="Link to this heading">¶</a></h3>
-<p>When first opening the list menu, found in the same panel as the mesh groups, you are met with a
-button that says “Initialize mesh info” (unless it’s an imported mesh that already had types):</p>
-<figure class="align-default" id="id8">
+<section id="types-setup">
+<h3>Types setup<a class="headerlink" href="#types-setup" title="Link to this heading">¶</a></h3>
+<p>When first opening the collision types subpanel you are met with a button that says “Initialize
+mesh info” (unless it’s an imported mesh that already had types):</p>
+<figure class="align-default" id="id5">
 <img alt="../_images/guides_collision_mesh_editing_initialize_types.png" src="../_images/guides_collision_mesh_editing_initialize_types.png" />
 <figcaption>
-<p><span class="caption-text">The collision types panel on a mesh</span><a class="headerlink" href="#id8" title="Link to this image">¶</a></p>
+<p><span class="caption-text">The collision types panel on a mesh</span><a class="headerlink" href="#id5" title="Link to this image">¶</a></p>
 </figcaption>
 </figure>
 <p>Pressing it will do 2 things:</p>
@@ -475,15 +476,15 @@ button that says “Initialize mesh info” (unless it’s an imported mesh that
 </ul>
 <p>The attribute group is responsible for assigning each polygon which type slot is used, so don’t
 delete it!</p>
-<figure class="align-default" id="id9">
+<figure class="align-default" id="id6">
 <img alt="../_images/guides_collision_mesh_editing_types_connection.png" src="../_images/guides_collision_mesh_editing_types_connection.png" />
 <figcaption>
-<p><span class="caption-text">The collision types list and the mesh attribute that it relies on</span><a class="headerlink" href="#id9" title="Link to this image">¶</a></p>
+<p><span class="caption-text">The collision types list and the mesh attribute that it relies on</span><a class="headerlink" href="#id6" title="Link to this image">¶</a></p>
 </figcaption>
 </figure>
 </section>
-<section id="editing-the-list">
-<h3>Editing the list<a class="headerlink" href="#editing-the-list" title="Link to this heading">¶</a></h3>
+<section id="editing-the-types-list">
+<h3>Editing the types list<a class="headerlink" href="#editing-the-types-list" title="Link to this heading">¶</a></h3>
 <p>You can add, remove and move slots. A polygon connects to the same slot, even after it is moved.
 By clicking the type name, you can choose from a list of types defined by the target game.</p>
 <p>Similar to the layer, you can choose a custom value here too by toggling the chainlink icon next
@@ -492,8 +493,8 @@ to the type dropdown. <strong>Values above 255 do not get exported.</strong></p>
 right of the panel and clicking the <code class="docutils literal notranslate"><span class="pre">delete</span> <span class="pre">mesh</span> <span class="pre">info</span></code> button. This will remove all items from
 the list, as well as delete the <code class="docutils literal notranslate"><span class="pre">HEIOCollisionType</span></code> attribute.</p>
 </section>
-<section id="editing-polygons">
-<h3>Editing polygons<a class="headerlink" href="#editing-polygons" title="Link to this heading">¶</a></h3>
+<section id="editing-polygons-types">
+<h3>Editing polygons types<a class="headerlink" href="#editing-polygons-types" title="Link to this heading">¶</a></h3>
 <p>Just like materials, you can edit as polygons collision type by entering edit mode. This will make
 tree operators visible below the list, which act 1:1 how they do for materials, but for the
 collision types instead:</p>
@@ -502,10 +503,10 @@ collision types instead:</p>
 <li><p><code class="docutils literal notranslate"><span class="pre">Select</span></code> will select all polygons assigned to the selected collision type slot</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">Deselect</span></code> will deselect all polygons assigned to the selected collision type slot</p></li>
 </ul>
-<figure class="align-default" id="id10">
+<figure class="align-default" id="id7">
 <img alt="../_images/guides_collision_mesh_editing_type_editing.png" src="../_images/guides_collision_mesh_editing_type_editing.png" />
 <figcaption>
-<p><span class="caption-text">The three type editing operators visible below the types list</span><a class="headerlink" href="#id10" title="Link to this image">¶</a></p>
+<p><span class="caption-text">The three type editing operators visible below the types list</span><a class="headerlink" href="#id7" title="Link to this image">¶</a></p>
 </figcaption>
 </figure>
 </section>
@@ -514,10 +515,10 @@ collision types instead:</p>
 <p>Since convex shapes have no polygons, they can only have one type across the entire shape.</p>
 <p>You can change a convex shapes type below the convex toggle, which works just like changing types
 in the types list:</p>
-<figure class="align-default" id="id11">
+<figure class="align-default" id="id8">
 <img alt="../_images/guides_collision_mesh_editing_type_convex_shape.png" src="../_images/guides_collision_mesh_editing_type_convex_shape.png" />
 <figcaption>
-<p><span class="caption-text">Where to edit the collision type of a convex shape</span><a class="headerlink" href="#id11" title="Link to this image">¶</a></p>
+<p><span class="caption-text">Where to edit the collision type of a convex shape</span><a class="headerlink" href="#id8" title="Link to this image">¶</a></p>
 </figcaption>
 </figure>
 </section>
@@ -530,14 +531,14 @@ Frontiers, and <code class="docutils literal notranslate"><span class="pre">Amoe
 <p>While mostly the same, some flags differ between the games, e.g. the flag with the value <code class="docutils literal notranslate"><span class="pre">2</span></code> is
 called <code class="docutils literal notranslate"><span class="pre">Slider</span></code> in Shadow generations and <code class="docutils literal notranslate"><span class="pre">Rest</span></code> in Sonic Frontiers.</p>
 <p>Types act similar to materials, where each polygon can have an arbitrary number of flags assigned.</p>
-<section id="id1">
-<h3>Setup<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h3>
-<p>When first opening the list menu, found right below the types, you are met with a button
-that says “Initialize mesh info” (unless it’s an imported mesh that already had flags):</p>
-<figure class="align-default" id="id12">
+<section id="flags-setup">
+<h3>Flags setup<a class="headerlink" href="#flags-setup" title="Link to this heading">¶</a></h3>
+<p>When first opening the collision flags panel you are met with a button that says “Initialize mesh
+info” (unless it’s an imported mesh that already had flags):</p>
+<figure class="align-default" id="id9">
 <img alt="../_images/guides_collision_mesh_editing_initialize_flags.png" src="../_images/guides_collision_mesh_editing_initialize_flags.png" />
 <figcaption>
-<p><span class="caption-text">The collision flags panel on a mesh</span><a class="headerlink" href="#id12" title="Link to this image">¶</a></p>
+<p><span class="caption-text">The collision flags panel on a mesh</span><a class="headerlink" href="#id9" title="Link to this image">¶</a></p>
 </figcaption>
 </figure>
 <p>Pressing it will do 2 things:</p>
@@ -547,15 +548,15 @@ that says “Initialize mesh info” (unless it’s an imported mesh that alread
 </ul>
 <p>The attribute group is responsible for assigning each polygon which type slot is used, so don’t
 delete it!</p>
-<figure class="align-default" id="id13">
+<figure class="align-default" id="id10">
 <img alt="../_images/guides_collision_mesh_editing_flags_connection.png" src="../_images/guides_collision_mesh_editing_flags_connection.png" />
 <figcaption>
-<p><span class="caption-text">The collision flags list and the mesh attribute that it relies on</span><a class="headerlink" href="#id13" title="Link to this image">¶</a></p>
+<p><span class="caption-text">The collision flags list and the mesh attribute that it relies on</span><a class="headerlink" href="#id10" title="Link to this image">¶</a></p>
 </figcaption>
 </figure>
 </section>
-<section id="id2">
-<h3>Editing the list<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h3>
+<section id="editing-the-flags-list">
+<h3>Editing the flags list<a class="headerlink" href="#editing-the-flags-list" title="Link to this heading">¶</a></h3>
 <p>You can add, remove and move slots. A polygon connects to the same slots, even after any of them
 is moved. By clicking the slot name, you can choose from a list of types defined by the target game.</p>
 <p>Similar to the layer and type, you can choose a custom value here too by toggling the chainlink
@@ -564,8 +565,8 @@ icon next to the flags dropdown. <strong>Values above 31 do not get exported.</s
 right of the panel and clicking the <code class="docutils literal notranslate"><span class="pre">delete</span> <span class="pre">mesh</span> <span class="pre">info</span></code> button. This will remove all items from
 the list, as well as delete the <code class="docutils literal notranslate"><span class="pre">HEIOCollisionFlags</span></code> attribute.</p>
 </section>
-<section id="id3">
-<h3>Editing polygons<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h3>
+<section id="editing-polygons-flags">
+<h3>Editing polygons flags<a class="headerlink" href="#editing-polygons-flags" title="Link to this heading">¶</a></h3>
 <p>Different from materials, a polygon can have more than one flag, as well as none at all. You can
 edit the flags assigned to a polygon by entering edit mode, which will make four operators
 visible below the list:</p>
@@ -575,10 +576,10 @@ visible below the list:</p>
 <li><p><code class="docutils literal notranslate"><span class="pre">Select</span></code> will select all polygons added to the selected collision type slot</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">Deselect</span></code> will deselect all polygons added to the selected collision type slot</p></li>
 </ul>
-<figure class="align-default" id="id14">
+<figure class="align-default" id="id11">
 <img alt="../_images/guides_collision_mesh_editing_flags_editing.png" src="../_images/guides_collision_mesh_editing_flags_editing.png" />
 <figcaption>
-<p><span class="caption-text">The four flags editing operators visible below the flags list</span><a class="headerlink" href="#id14" title="Link to this image">¶</a></p>
+<p><span class="caption-text">The four flags editing operators visible below the flags list</span><a class="headerlink" href="#id11" title="Link to this image">¶</a></p>
 </figcaption>
 </figure>
 </section>
@@ -586,10 +587,10 @@ visible below the list:</p>
 <h3>Flags on convex shapes<a class="headerlink" href="#flags-on-convex-shapes" title="Link to this heading">¶</a></h3>
 <p>Since convex shapes have no polygons, they can only have one set of flags across the entire shape.</p>
 <p>You can add and remove flags in the list below the convex collision type:</p>
-<figure class="align-default" id="id15">
+<figure class="align-default" id="id12">
 <img alt="../_images/guides_collision_mesh_editing_flags_convex_shape.png" src="../_images/guides_collision_mesh_editing_flags_convex_shape.png" />
 <figcaption>
-<p><span class="caption-text">Where to edit the collision flags of a convex shape</span><a class="headerlink" href="#id15" title="Link to this image">¶</a></p>
+<p><span class="caption-text">Where to edit the collision flags of a convex shape</span><a class="headerlink" href="#id12" title="Link to this image">¶</a></p>
 </figcaption>
 </figure>
 </section>
@@ -601,20 +602,20 @@ worth the time it takes to make them, or simply not being performane enough.</p>
 <p>For cases like these, collision meshes have “primitives”, which are simple, parameterized shapes
 that are placed in a collision mesh like objects.</p>
 <p>There are 4 types of primitives: Spheres, Boxes, Capsules and Cylinders:</p>
-<figure class="align-default" id="id16">
+<figure class="align-default" id="id13">
 <img alt="../_images/guides_collision_mesh_editing_primitives.png" src="../_images/guides_collision_mesh_editing_primitives.png" />
 <figcaption>
-<p><span class="caption-text">The 4 types of primitive shapes, from left to right: Sphere, Boxe, Capsule and Cylinder.</span><a class="headerlink" href="#id16" title="Link to this image">¶</a></p>
+<p><span class="caption-text">The 4 types of primitive shapes, from left to right: Sphere, Boxe, Capsule and Cylinder.</span><a class="headerlink" href="#id13" title="Link to this image">¶</a></p>
 </figcaption>
 </figure>
 <section id="adding-primitives">
 <h3>Adding primitives<a class="headerlink" href="#adding-primitives" title="Link to this heading">¶</a></h3>
 <p>You can add and remove primitives in the collision primitive panel, which is found below the
 collision flags panel:</p>
-<figure class="align-default" id="id17">
+<figure class="align-default" id="id14">
 <img alt="../_images/guides_collision_mesh_editing_primitive_list.png" src="../_images/guides_collision_mesh_editing_primitive_list.png" />
 <figcaption>
-<p><span class="caption-text">The collision primitives list panel</span><a class="headerlink" href="#id17" title="Link to this image">¶</a></p>
+<p><span class="caption-text">The collision primitives list panel</span><a class="headerlink" href="#id14" title="Link to this image">¶</a></p>
 </figcaption>
 </figure>
 </section>
@@ -623,10 +624,10 @@ collision flags panel:</p>
 <p>HEIO implements a custom viewport renderer to make those primitives visible and easier to edit.
 There are several settings that let you customize how primitives appear, available in the
 viewport overlay settings:</p>
-<figure class="align-default" id="id18">
+<figure class="align-default" id="id15">
 <img alt="../_images/guides_collision_mesh_editing_primitive_overlay.png" src="../_images/guides_collision_mesh_editing_primitive_overlay.png" />
 <figcaption>
-<p><span class="caption-text">The HEIO collision primitive overlay settings</span><a class="headerlink" href="#id18" title="Link to this image">¶</a></p>
+<p><span class="caption-text">The HEIO collision primitive overlay settings</span><a class="headerlink" href="#id15" title="Link to this image">¶</a></p>
 </figcaption>
 </figure>
 <section id="random-colors">
@@ -641,10 +642,10 @@ viewport overlay settings:</p>
 <p>This may make viewing individual primitives difficult, especially when there are a lot of them.
 That is what the <code class="docutils literal notranslate"><span class="pre">Random</span> <span class="pre">Colors</span></code> toggle is for; When enabled, every primitive will be rendered
 with a different color:</p>
-<figure class="align-default" id="id19">
+<figure class="align-default" id="id16">
 <img alt="../_images/guides_collision_mesh_editing_primitive_random.png" src="../_images/guides_collision_mesh_editing_primitive_random.png" />
 <figcaption>
-<p><span class="caption-text">A portion of the stage collision from the DLC stage from Shadow Generations. Left with regular, and right with randomized colors.</span><a class="headerlink" href="#id19" title="Link to this image">¶</a></p>
+<p><span class="caption-text">A portion of the stage collision from the DLC stage from Shadow Generations. Left with regular, and right with randomized colors.</span><a class="headerlink" href="#id16" title="Link to this image">¶</a></p>
 </figcaption>
 </figure>
 </section>
@@ -664,17 +665,17 @@ with a different color:</p>
 groups.</p>
 <p>However, editing the transforms from these few fields is incredibly cumbersome, especially the
 rotation, which is why HEIO adds new workspace tools to blender:</p>
-<figure class="align-default" id="id20">
+<figure class="align-default" id="id17">
 <img alt="../_images/guides_collision_mesh_editing_primitive_tool.png" src="../_images/guides_collision_mesh_editing_primitive_tool.png" />
 <figcaption>
-<p><span class="caption-text">The new collision primitives workspace tool</span><a class="headerlink" href="#id20" title="Link to this image">¶</a></p>
+<p><span class="caption-text">The new collision primitives workspace tool</span><a class="headerlink" href="#id17" title="Link to this image">¶</a></p>
 </figcaption>
 </figure>
 <p>When pressing down on the tool for a second, you can select between 2 tools:</p>
-<figure class="align-default" id="id21">
+<figure class="align-default" id="id18">
 <img alt="../_images/guides_collision_mesh_editing_primitive_tools.png" src="../_images/guides_collision_mesh_editing_primitive_tools.png" />
 <figcaption>
-<p><span class="caption-text">The different tools avaiable</span><a class="headerlink" href="#id21" title="Link to this image">¶</a></p>
+<p><span class="caption-text">The different tools avaiable</span><a class="headerlink" href="#id18" title="Link to this image">¶</a></p>
 </figcaption>
 </figure>
 <p>You will find 2 new workspace tools in total:</p>
@@ -687,10 +688,10 @@ rotation, which is why HEIO adds new workspace tools to blender:</p>
 will be looked into in the future.</p>
 </div>
 <p>When this tool is active, the tool properties show the primitives list of the active object</p>
-<figure class="align-default" id="id22">
+<figure class="align-default" id="id19">
 <img alt="../_images/guides_collision_mesh_editing_primitive_tool_properties.png" src="../_images/guides_collision_mesh_editing_primitive_tool_properties.png" />
 <figcaption>
-<p><span class="caption-text">The workspace properties</span><a class="headerlink" href="#id22" title="Link to this image">¶</a></p>
+<p><span class="caption-text">The workspace properties</span><a class="headerlink" href="#id19" title="Link to this image">¶</a></p>
 </figcaption>
 </figure>
 </section>
@@ -698,10 +699,10 @@ will be looked into in the future.</p>
 <h4>Transform collision primitives<a class="headerlink" href="#transform-collision-primitives" title="Link to this heading">¶</a></h4>
 <p>This tool is an extension to the select tool; It can select primitives, and when one is selected
 it displays transform gizmos to move, rotate and scale the selected primitive.</p>
-<figure class="align-default" id="id23" style="width: 50%">
+<figure class="align-default" id="id20" style="width: 50%">
 <img alt="../_images/guides_collision_mesh_editing_primitive_tool_gizmos.png" src="../_images/guides_collision_mesh_editing_primitive_tool_gizmos.png" />
 <figcaption>
-<p><span class="caption-text">The different available transform gizmos for primitives</span><a class="headerlink" href="#id23" title="Link to this image">¶</a></p>
+<p><span class="caption-text">The different available transform gizmos for primitives</span><a class="headerlink" href="#id20" title="Link to this image">¶</a></p>
 </figcaption>
 </figure>
 <p>These work mostly the same as the standard transform gizmos for objects:</p>
@@ -713,10 +714,10 @@ it displays transform gizmos to move, rotate and scale the selected primitive.</
 <li><p>Hold CTRL for snap mode</p></li>
 <li><p>Hold ALT while scaling to scale in one direction</p></li>
 </ul>
-<figure class="align-default" id="id24" style="width: 50%">
+<figure class="align-default" id="id21" style="width: 50%">
 <img alt="../_images/guides_collision_mesh_editing_primitive_onedir_scaling.gif" src="../_images/guides_collision_mesh_editing_primitive_onedir_scaling.gif" />
 <figcaption>
-<p><span class="caption-text">Scaling a primitive in one direction</span><a class="headerlink" href="#id24" title="Link to this image">¶</a></p>
+<p><span class="caption-text">Scaling a primitive in one direction</span><a class="headerlink" href="#id21" title="Link to this image">¶</a></p>
 </figcaption>
 </figure>
 <div class="admonition note">
@@ -741,10 +742,10 @@ dimensions either with the gizmos or by directly changing the properties in the 
 <p>In the event that you want to convert collision primitives to polygonal geometry, you can use the
 <a class="reference internal" href="../user_interface/tools/viewport_toolbar/general.html#bpy-ops-heio-collision-primitives-to-geometry"><span class="std std-ref">Collision primitives to geometry operator</span></a>,
 which does just that.</p>
-<figure class="align-default" id="id25">
+<figure class="align-default" id="id22">
 <img alt="../_images/guides_collision_mesh_editing_primitives_converted.png" src="../_images/guides_collision_mesh_editing_primitives_converted.png" />
 <figcaption>
-<p><span class="caption-text">The primitives from before converted to geometry at the default resolution</span><a class="headerlink" href="#id25" title="Link to this image">¶</a></p>
+<p><span class="caption-text">The primitives from before converted to geometry at the default resolution</span><a class="headerlink" href="#id22" title="Link to this image">¶</a></p>
 </figcaption>
 </figure>
 <p>You can change the resolution of the generated geometry in the operator window in the bottom left
@@ -762,23 +763,23 @@ convex).</p>
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="object_trees.html">
+          <a class="next-page" href="lod_models.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Object Trees</div>
+                <div class="title">LoD Models</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
-          <a class="prev-page" href="material_editing.html">
+          <a class="prev-page" href="object_trees.html">
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">Material Editing</div>
+                <div class="title">Object Trees</div>
                 
               </div>
             </a>
@@ -791,7 +792,7 @@ convex).</p>
             Made with 
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2025-01-23</div>
+              Last updated on 2025-01-25</div>
           </div>
           <div class="right-details">
             
@@ -829,16 +830,16 @@ convex).</p>
 </li>
 <li><a class="reference internal" href="#layers">Layers</a></li>
 <li><a class="reference internal" href="#types">Types</a><ul>
-<li><a class="reference internal" href="#setup">Setup</a></li>
-<li><a class="reference internal" href="#editing-the-list">Editing the list</a></li>
-<li><a class="reference internal" href="#editing-polygons">Editing polygons</a></li>
+<li><a class="reference internal" href="#types-setup">Types setup</a></li>
+<li><a class="reference internal" href="#editing-the-types-list">Editing the types list</a></li>
+<li><a class="reference internal" href="#editing-polygons-types">Editing polygons types</a></li>
 <li><a class="reference internal" href="#types-on-convex-shapes">Types on convex shapes</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#flags">Flags</a><ul>
-<li><a class="reference internal" href="#id1">Setup</a></li>
-<li><a class="reference internal" href="#id2">Editing the list</a></li>
-<li><a class="reference internal" href="#id3">Editing polygons</a></li>
+<li><a class="reference internal" href="#flags-setup">Flags setup</a></li>
+<li><a class="reference internal" href="#editing-the-flags-list">Editing the flags list</a></li>
+<li><a class="reference internal" href="#editing-polygons-flags">Editing polygons flags</a></li>
 <li><a class="reference internal" href="#flags-on-convex-shapes">Flags on convex shapes</a></li>
 </ul>
 </li>

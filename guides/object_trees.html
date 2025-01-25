@@ -3,7 +3,7 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Asset exporting" href="asset_exporting.html" /><link rel="prev" title="Collision mesh editing" href="collision_mesh_editing.html" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Collision mesh editing" href="collision_mesh_editing.html" /><link rel="prev" title="Material Editing" href="material_editing.html" />
         <link rel="canonical" href="https://hedge-dev.github.io/HedgehogEngineBlenderIO/guides/object_trees.html" />
 
     <!-- Generated with Sphinx 8.1.3 and Furo 2024.08.06 -->
@@ -250,8 +250,9 @@
 <li class="toctree-l2"><a class="reference internal" href="project_setup.html">Project setup</a></li>
 <li class="toctree-l2"><a class="reference internal" href="asset_importing.html">Asset importing</a></li>
 <li class="toctree-l2"><a class="reference internal" href="material_editing.html">Material Editing</a></li>
-<li class="toctree-l2"><a class="reference internal" href="collision_mesh_editing.html">Collision mesh editing</a></li>
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Object Trees</a></li>
+<li class="toctree-l2"><a class="reference internal" href="collision_mesh_editing.html">Collision mesh editing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lod_models.html">LoD Models</a></li>
 <li class="toctree-l2"><a class="reference internal" href="asset_exporting.html">Asset exporting</a></li>
 </ul>
 </li>
@@ -386,6 +387,19 @@ stages with point clouds.</p>
 <h2>What is an “object tree”?<a class="headerlink" href="#what-is-an-object-tree" title="Link to this heading">¶</a></h2>
 <p>An object tree is a collection of objects, usually with a root object that is the final parent to
 all objects in the tree.</p>
+<section id="what-counts-as-a-mesh">
+<h3>What counts as a “Mesh”?<a class="headerlink" href="#what-counts-as-a-mesh" title="Link to this heading">¶</a></h3>
+<p>There are 4 object types that are considered for their mesh data:</p>
+<ul class="simple">
+<li><p>Meshes</p></li>
+<li><p>Curves</p></li>
+<li><p>Surfaces</p></li>
+<li><p>Texts</p></li>
+</ul>
+<p>Metaballs are <strong>not</strong> considered for their merging behavior, which combines multiple objects
+into one and thus breaks the core functionality behind object trees. If you want to export
+metaball models, you must convert them to meshes by hand.</p>
+</section>
 </section>
 <section id="types-of-object-trees">
 <h2>Types of object trees<a class="headerlink" href="#types-of-object-trees" title="Link to this heading">¶</a></h2>
@@ -463,9 +477,8 @@ object tree itself.</p>
 <li><p>… is an instance collection, use the collection name</p></li>
 <li><dl class="simple">
 <dt>… has a root…</dt><dd><ul>
-<li><p>… that is an armature, use the armature name</p></li>
-<li><p>… that is a mesh, use the mesh name</p></li>
-<li><p>… and none of the above apply, use the root object name</p></li>
+<li><p>… that has data (mesh, armature, curve, etc.), use the data name</p></li>
+<li><p>… and above does not apply, use the root object name</p></li>
 </ul>
 </dd>
 </dl>
@@ -473,7 +486,7 @@ object tree itself.</p>
 <li><dl class="simple">
 <dt>… has no root…</dt><dd><ul>
 <li><p>… and uses merged model export, use the specified filename</p></li>
-<li><p>… and none of the above apply, throw an error</p></li>
+<li><p>… and above does not apply, throw an error</p></li>
 </ul>
 </dd>
 </dl>
@@ -507,23 +520,23 @@ are specifically being sourced from root objects, being:</p>
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="asset_exporting.html">
+          <a class="next-page" href="collision_mesh_editing.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Asset exporting</div>
+                <div class="title">Collision mesh editing</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
-          <a class="prev-page" href="collision_mesh_editing.html">
+          <a class="prev-page" href="material_editing.html">
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">Collision mesh editing</div>
+                <div class="title">Material Editing</div>
                 
               </div>
             </a>
@@ -536,7 +549,7 @@ are specifically being sourced from root objects, being:</p>
             Made with 
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2025-01-23</div>
+              Last updated on 2025-01-25</div>
           </div>
           <div class="right-details">
             
@@ -568,7 +581,10 @@ are specifically being sourced from root objects, being:</p>
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Object Trees</a><ul>
-<li><a class="reference internal" href="#what-is-an-object-tree">What is an “object tree”?</a></li>
+<li><a class="reference internal" href="#what-is-an-object-tree">What is an “object tree”?</a><ul>
+<li><a class="reference internal" href="#what-counts-as-a-mesh">What counts as a “Mesh”?</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#types-of-object-trees">Types of object trees</a><ul>
 <li><a class="reference internal" href="#rooted-trees">Rooted trees</a><ul>
 <li><a class="reference internal" href="#splitting-a-rooted-model">Splitting a rooted model</a></li>

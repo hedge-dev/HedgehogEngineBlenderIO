@@ -3,7 +3,7 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Collision mesh editing" href="collision_mesh_editing.html" /><link rel="prev" title="Asset importing" href="asset_importing.html" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Object Trees" href="object_trees.html" /><link rel="prev" title="Asset importing" href="asset_importing.html" />
         <link rel="canonical" href="https://hedge-dev.github.io/HedgehogEngineBlenderIO/guides/material_editing.html" />
 
     <!-- Generated with Sphinx 8.1.3 and Furo 2024.08.06 -->
@@ -250,8 +250,9 @@
 <li class="toctree-l2"><a class="reference internal" href="project_setup.html">Project setup</a></li>
 <li class="toctree-l2"><a class="reference internal" href="asset_importing.html">Asset importing</a></li>
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Material Editing</a></li>
-<li class="toctree-l2"><a class="reference internal" href="collision_mesh_editing.html">Collision mesh editing</a></li>
 <li class="toctree-l2"><a class="reference internal" href="object_trees.html">Object Trees</a></li>
+<li class="toctree-l2"><a class="reference internal" href="collision_mesh_editing.html">Collision mesh editing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lod_models.html">LoD Models</a></li>
 <li class="toctree-l2"><a class="reference internal" href="asset_exporting.html">Asset exporting</a></li>
 </ul>
 </li>
@@ -388,31 +389,23 @@
 </dd>
 </dl>
 </div>
-<p>HEIO allows for editing .material files which can be done either in the context of a model or in
-isolation.</p>
-<p>The addon does <strong>not</strong> attempt to get export-data from the materials node tree. Instead, HEIO does
-it the other way around: All edits are done from within the
-<a class="reference internal" href="../user_interface/object/material.html"><span class="doc">HEIO Material Panel</span></a>.</p>
+<p>Hedgehog engine games store model rendering information in <code class="docutils literal notranslate"><span class="pre">.material</span></code> files, which are very
+similar to how blender handles materials. As such, HEIO adds a new panel to the material editor
+that makes it possible to edit every single aspect of a hedgehog engine material!</p>
+<section id="the-heio-material-panel">
+<h2>The HEIO material panel<a class="headerlink" href="#the-heio-material-panel" title="Link to this heading">¶</a></h2>
+<p>A new panel is visible in the material properties (regardless of the render engine used):</p>
 <figure class="align-default" id="id1">
 <img alt="../_images/guides_material_editing_panel.png" src="../_images/guides_material_editing_panel.png" />
 <figcaption>
 <p><span class="caption-text">Where to find the HEIO Materia Panel</span><a class="headerlink" href="#id1" title="Link to this image">¶</a></p>
 </figcaption>
 </figure>
-<p>Whenever an HEIO Material property is edited the addon will (try to) update the materials node-tree
-accordingly to allow for a realtime preview, but this can only occur if the used shader
-has a properly set up material template, which is not the case for the majority of shaders. For
-that reason, most shaders will use a generic fallback template and may end up looking inaccurate
-to ingame.</p>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<div class="line-block">
-<div class="line">If you are interested in contributing missing material templates, go to [TODO].</div>
-<div class="line">Every bit of help is appreciated!</div>
-</div>
-</div>
+</section>
+<section id="editing-materials">
+<h2>Editing materials<a class="headerlink" href="#editing-materials" title="Link to this heading">¶</a></h2>
 <section id="setting-up-the-shader">
-<h2>Setting up the shader<a class="headerlink" href="#setting-up-the-shader" title="Link to this heading">¶</a></h2>
+<h3>Setting up the shader<a class="headerlink" href="#setting-up-the-shader" title="Link to this heading">¶</a></h3>
 <p>The heart of every material is its shader: A shader is essentially a small program telling the GPU
 how a model gets rendered. Materials tell the game which shader to use as well as passing over
 options like parameters and textures to be used by the shader.</p>
@@ -436,7 +429,7 @@ the larger shader list. If the shader you want to use is not part of the selecti
 <p>If no shader is selected, the addon will show a warning sign in the property.
 Always make sure to select a shader!</p>
 <section id="shader-variants">
-<h3>Shader variants<a class="headerlink" href="#shader-variants" title="Link to this heading">¶</a></h3>
+<h4>Shader variants<a class="headerlink" href="#shader-variants" title="Link to this heading">¶</a></h4>
 <p>Hedgehog Engine 1 games made use of “shader variants”, which are shaders with specific
 technical features, like enabling bone deformations or vertex colors. Each character in a
 variant name denotes one feature, e.g. <code class="docutils literal notranslate"><span class="pre">b</span></code> may enable <code class="docutils literal notranslate"><span class="pre">bone</span> <span class="pre">deformation</span></code>.</p>
@@ -449,30 +442,9 @@ variant name denotes one feature, e.g. <code class="docutils literal notranslate
 </figure>
 <p>Each target games shader features and their purposes are documented <a class="reference internal" href="../game_documentation/shader_features.html"><span class="doc">here</span></a>.</p>
 </section>
-<section id="node-setup">
-<span id="guides-material-editing-node-setup"></span><h3>Node Setup<a class="headerlink" href="#node-setup" title="Link to this heading">¶</a></h3>
-<p>After selecting the shader (and variant) that you want to use, its time to set up the nodes.
-This is done entirely automatically by the addon, and you should never have to interact with
-the nodes of an HEIO material.</p>
-<p>To generate the nodes, simply click the
-<a class="reference internal" href="../user_interface/tools/viewport_toolbar/general.html#bpy-ops-heio-material-setup-nodes"><span class="std std-ref">Setup/Update nodes</span></a> button.</p>
-<figure class="align-default">
-<img alt="../_images/guides_material_editing_setup_nodes.png" src="../_images/guides_material_editing_setup_nodes.png" />
-</figure>
-<p>Additionally, whenever you change any of the HEIO Material properties, the addon will automatically
-update the values and images inside the node tree!</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>This is done automatically on import!</p>
-<p>You only (and <strong>always</strong>) have to press it after changing the shader of a material yourself.</p>
-</div>
 </section>
-</section>
-<section id="material-properties">
-<h2>Material Properties<a class="headerlink" href="#material-properties" title="Link to this heading">¶</a></h2>
-<p>Materials have 3 types of properties that change how the shader behaves:</p>
-<section id="general">
-<h3>General<a class="headerlink" href="#general" title="Link to this heading">¶</a></h3>
+<section id="general-properties">
+<span id="guides-material-editing-node-setup"></span><h3>General properties<a class="headerlink" href="#general-properties" title="Link to this heading">¶</a></h3>
 <p>These are direct material settings that are strictly part of every material.</p>
 <p><em>Clip Threshold</em> and <a class="reference external" href="https://docs.blender.org/manual/en/latest/render/eevee/material_settings.html#bpy-types-material-use-backface-culling">Backface Culling</a>
 are default blender material properties added here for convenience and have the same effect ingame
@@ -529,9 +501,8 @@ which allows you to set the DDS encoding to use when exporting for each image.</
 </figure>
 </div>
 </section>
-</section>
 <section id="sca-parameters">
-<h2>SCA Parameters<a class="headerlink" href="#sca-parameters" title="Link to this heading">¶</a></h2>
+<h3>SCA Parameters<a class="headerlink" href="#sca-parameters" title="Link to this heading">¶</a></h3>
 <p>SCA parameters are additional information that can be attached to a file in Sonic Lost World and games
 released after.</p>
 <p>For more detailed information about SCA parameters, read</p>
@@ -541,18 +512,61 @@ released after.</p>
 </ul>
 </section>
 </section>
+<section id="blender-material-preview">
+<h2>Blender material preview<a class="headerlink" href="#blender-material-preview" title="Link to this heading">¶</a></h2>
+<p>Blenders material system differs wildly from how games handle them, using nodes for every material
+instead of shaders. However, this shall not get in the way of previewing materials in blender!</p>
+<p>Registered shaders in the addon (may) have a material node template, which is then copy-pasted into
+the material and automatically updated with the parameters and textures.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Material templates have to be created manually, which is why many may be missing from the addon
+as a whole. In those cases, a fallback template will be used that won’t accurately reflect
+how the material looks ingame.</p>
+</div>
+<section id="applying-templates">
+<h3>Applying templates<a class="headerlink" href="#applying-templates" title="Link to this heading">¶</a></h3>
+<p>Templates are automatically applied on import, but not for manually set up materials. To apply the
+material template, you must press the <a class="reference internal" href="../user_interface/object/material.html#bpy-ops-heio-material-setup-nodes-active"><span class="std std-ref">Setup/Update nodes</span></a>
+button:</p>
+<figure class="align-default" id="id5">
+<img alt="../_images/guides_material_editing_setup_nodes.png" src="../_images/guides_material_editing_setup_nodes.png" />
+<figcaption>
+<p><span class="caption-text">Where to find the setup/update nodes button</span><a class="headerlink" href="#id5" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p><strong>You will also have to do this whenever you change the shader of a material!</strong></p>
+</div>
+<p>You can also update nodes of multiple materials at once using the
+<a class="reference internal" href="../user_interface/tools/viewport_toolbar/general.html#bpy-ops-heio-material-setup-nodes"><span class="std std-ref">Setup/Update Material Nodes</span></a> button:</p>
+<figure class="align-default" id="id6">
+<img alt="../_images/guides_material_editing_setup_nodes_mass.png" src="../_images/guides_material_editing_setup_nodes_mass.png" />
+<figcaption>
+<p><span class="caption-text">Where to find the setup/update material nodes button</span><a class="headerlink" href="#id6" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="updating-materials">
+<h3>Updating materials<a class="headerlink" href="#updating-materials" title="Link to this heading">¶</a></h3>
+<p>Once a material template is applied, you are done! Now, whenever you edit parameters or textures
+the addon will automatically update the node tree too!</p>
+</section>
+</section>
+</section>
 
         </article>
       </div>
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="collision_mesh_editing.html">
+          <a class="next-page" href="object_trees.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Collision mesh editing</div>
+                <div class="title">Object Trees</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
@@ -576,7 +590,7 @@ released after.</p>
             Made with 
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2025-01-23</div>
+              Last updated on 2025-01-25</div>
           </div>
           <div class="right-details">
             
@@ -608,18 +622,23 @@ released after.</p>
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Material Editing</a><ul>
+<li><a class="reference internal" href="#the-heio-material-panel">The HEIO material panel</a></li>
+<li><a class="reference internal" href="#editing-materials">Editing materials</a><ul>
 <li><a class="reference internal" href="#setting-up-the-shader">Setting up the shader</a><ul>
 <li><a class="reference internal" href="#shader-variants">Shader variants</a></li>
-<li><a class="reference internal" href="#node-setup">Node Setup</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#material-properties">Material Properties</a><ul>
-<li><a class="reference internal" href="#general">General</a></li>
+<li><a class="reference internal" href="#general-properties">General properties</a></li>
 <li><a class="reference internal" href="#parameters">Parameters</a></li>
 <li><a class="reference internal" href="#textures">Textures</a></li>
+<li><a class="reference internal" href="#sca-parameters">SCA Parameters</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#sca-parameters">SCA Parameters</a></li>
+<li><a class="reference internal" href="#blender-material-preview">Blender material preview</a><ul>
+<li><a class="reference internal" href="#applying-templates">Applying templates</a></li>
+<li><a class="reference internal" href="#updating-materials">Updating materials</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
