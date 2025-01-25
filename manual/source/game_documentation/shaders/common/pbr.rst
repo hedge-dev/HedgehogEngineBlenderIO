@@ -19,7 +19,7 @@ Albedo
 
 Albedo is the base color of a surface and is used with "diffuse" lighting.
 
-.. figure:: /images/gamedoc_shaders_pbr_albedo.png
+.. figure:: /game_documentation/images/shaders_pbr_albedo.png
 
 	Materials with various albedo colors in Shadow Generations
 
@@ -32,7 +32,7 @@ Smoothness
 Smoothness determines how reflective a surface is. The lower the smoothness, the blurrier the
 reflection. This is represented by a value between 0 and 1.
 
-.. figure:: /images/gamedoc_shaders_pbr_smoothness.png
+.. figure:: /game_documentation/images/shaders_pbr_smoothness.png
 
 	Materials with full specularity and a gradually increasing smoothness in Shadow Generations
 
@@ -52,7 +52,7 @@ specularity acting as the "layer transparency".
 It's represented by a value between 0 and 1; Usually a specular value of 0.125 is considered the
 "default".
 
-.. figure:: /images/gamedoc_shaders_pbr_specular.png
+.. figure:: /game_documentation/images/shaders_pbr_specular.png
 
 	Gold-ish (#FFAA00) materials with a gradually increasing specularity in Shadow Generations
 
@@ -82,7 +82,7 @@ lighting.
 
 It too is represented by a value between 0 and 1. Usually a metallic value of 0 is considered the "default".
 
-.. figure:: /images/gamedoc_shaders_pbr_metallic.png
+.. figure:: /game_documentation/images/shaders_pbr_metallic.png
 
 	Gold-ish (#FFAA00) materials with a gradually increasing metallicness in Shadow Generations
 
@@ -99,7 +99,7 @@ Combining Specular and Metallic
 
 While rarely done, it is possible to use specular and metallic lighting together.
 
-.. figure:: /images/gamedoc_shaders_pbr_specular_metallic.png
+.. figure:: /game_documentation/images/shaders_pbr_specular_metallic.png
 
 	Gold-ish (#FFAA00) materials with a smoothness of 0.85 and gradually increasing specularity and metallicness in Shadow Generations
 
@@ -112,7 +112,7 @@ Emission
 Emission is essentially the colored "glow" of the surface, like the light coming from a lamp.
 This is unaffected by any lighting that may hit the surface.
 
-.. figure:: /images/gamedoc_shaders_pbr_emission.png
+.. figure:: /game_documentation/images/shaders_pbr_emission.png
 
 	Black materials with various emission colors in Shadow Generations
 
@@ -123,7 +123,7 @@ beyond the 0-1 range, which the rendering engine may process in various ways.
 Additionally, emission is often accompanied by a "Luminance" parameter that changes how bright
 the emission texture appears.
 
-.. figure:: /images/gamedoc_shaders_pbr_luminance.png
+.. figure:: /game_documentation/images/shaders_pbr_luminance.png
 
 	Black materials with white emission and gradually increasing luminance in Shadow Generations
 
@@ -148,7 +148,7 @@ ambient lighting.
 
 Thus the default value, at which no ambient light is occluded, is 1.
 
-.. figure:: /images/gamedoc_shaders_pbr_ambient_occlusion.png
+.. figure:: /game_documentation/images/shaders_pbr_ambient_occlusion.png
 
 	Gold-ish (#FFAA00) materials with different lighting values and gradually decreasing ambient occlusion in Shadow Generations
 
@@ -162,14 +162,14 @@ Thus the default value, at which no ambient light is occluded, is 1.
 Ambient occlusion is often used to simulate shadows in narrow spaces and corners, as ambient light
 is more likely to get trapped in such spaces.
 
-.. figure:: /images/gamedoc_shaders_pbr_ao_composition.png
+.. figure:: /game_documentation/images/shaders_pbr_ao_composition.png
 
 	An example scene of how ambient occlusion looks in practive (rendered with blender cycles)
 
 .. dropdown:: Compositing setup used above
 	:icon: workflow
 
-	.. figure:: /images/gamedoc_shaders_pbr_ao_composition_nodes.png
+	.. figure:: /game_documentation/images/shaders_pbr_ao_composition_nodes.png
 
 
 Examples
@@ -184,7 +184,7 @@ Let's look at some examples:
 Example 1: ARK Techno Panels
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. figure:: /images/gamedoc_shaders_pbr_example_1.png
+.. figure:: /game_documentation/images/shaders_pbr_example_1.png
 
 	``m01_techno_panel_emsa_sy1`` from the ARK in Shadow Generations
 
@@ -192,7 +192,7 @@ Example 1: ARK Techno Panels
 Example 2: Rail Canyon Asphalt
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. figure:: /images/gamedoc_shaders_pbr_example_2.png
+.. figure:: /game_documentation/images/shaders_pbr_example_2.png
 
 	``m06_ds_asphalt_base_sy1`` from Rail Canyon in Shadow Generations
 
@@ -200,7 +200,7 @@ Example 2: Rail Canyon Asphalt
 Example 3: Kingdom Valley Wood bark
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. figure:: /images/gamedoc_shaders_pbr_example_3.png
+.. figure:: /game_documentation/images/shaders_pbr_example_3.png
 
 	``m03_kdv_wood02_dfsp_n_ih1`` from Kingdom Valley in Shadow Generations
 
@@ -208,7 +208,7 @@ Example 3: Kingdom Valley Wood bark
 Example 4: Sunset Heights Building wall
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. figure:: /images/gamedoc_shaders_pbr_example_4.png
+.. figure:: /game_documentation/images/shaders_pbr_example_4.png
 
 	``m06_ds_wall_window18_fh1`` from Sunet Heights in Shadow Generations
 
@@ -216,7 +216,7 @@ Example 4: Sunset Heights Building wall
 Example 5: Chaos Island Rock cliff
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. figure:: /images/gamedoc_shaders_pbr_example_5.png
+.. figure:: /game_documentation/images/shaders_pbr_example_5.png
 
 	``m05_rockcliff01_sy1`` (top layer) from Chaos Island in Shadow Generations
 
@@ -224,6 +224,6 @@ Example 5: Chaos Island Rock cliff
 Example 6: Radical Highway Tunnel Wall
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. figure:: /images/gamedoc_shaders_pbr_example_6.png
+.. figure:: /game_documentation/images/shaders_pbr_example_6.png
 
 	``m06_ds_tunnel_d_kk1`` from Radical Highway in Shadow Generations

@@ -12,7 +12,7 @@ Use as base color
 
 Their default use is to multiply their color into the base color of a material:
 
-.. figure:: /images/gamedoc_shaders_vertex_colors_default.png
+.. figure:: /game_documentation/images/shaders_vertex_colors_default.png
 	:figwidth: 75%
 
 	A material without (left) and with (right) vertex colors applied to the base color via multiplication in blender
@@ -29,7 +29,7 @@ Masking and blending
 
 The second most common use case for vertex colors is to mask or blend multiple layers of textures:
 
-.. figure:: /images/gamedoc_shaders_vertex_colors_blending.png
+.. figure:: /game_documentation/images/shaders_vertex_colors_blending.png
 	:figwidth: 75%
 
 	Vertex colors (left) used to blend two different textures together (right) in blender

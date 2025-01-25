@@ -3,14 +3,14 @@
 Dithering
 =========
 
-.. figure:: /images/gamedoc_shaders_dithering_texture.png
+.. figure:: /game_documentation/images/shaders_dithering_texture.png
 	:figwidth: 160
 	:width: 128
 	:align: right
 
 	The dithering texture used in Shadow Generations
 
-.. figure:: /images/gamedoc_shaders_dithering.gif
+.. figure:: /game_documentation/images/shaders_dithering.gif
 	:figwidth: 288
 	:width: 256
 	:align: right

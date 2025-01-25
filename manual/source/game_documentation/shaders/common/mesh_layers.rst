@@ -37,6 +37,6 @@ materials "clip threshold". If it is, the pixel is discarded.
 In hedgehog Engine 2 games, this layer will attempt to use
 :doc:`deferred rendering </game_documentation/shaders/common/deferred_rendering>`.
 
-.. figure:: /images/gamedoc_shaders_mesh_layers_punchthrough.png
+.. figure:: /game_documentation/images/shaders_mesh_layers_punchthrough.png
 
 	An example transparency mask (left), the mask used with transparency blending (middle) and te mask used with transparency clipping (right)

@@ -91,7 +91,7 @@ Diffuse
 							- ``BC3_UNORM`` when transparent
 
 
-.. figure:: images/material_editing_textures_he1_dif.png
+.. figure:: /game_documentation/images/textures_he1_dif.png
 	:align: right
 	:figwidth: 40%
 
@@ -118,7 +118,7 @@ Opacity
 	:Recommended encoding:	``BC1_UNORM``
 
 
-.. figure:: images/material_editing_textures_he1_alp.png
+.. figure:: /game_documentation/images/textures_he1_alp.png
 	:align: right
 	:figwidth: 40%
 
@@ -147,14 +147,14 @@ Falloff
 	:Recommended encoding:	``BC1_UNORM``
 
 
-.. figure:: images/material_editing_textures_he1_fal.png
+.. figure:: /game_documentation/images/textures_he1_fal.png
 	:align: right
 	:figwidth: 40%
 
 	``chr_sonic_body01_fal_HD.dds`` from Sonic Generations
 
 
-.. figure:: images/material_editing_textures_fal.gif
+.. figure:: /game_documentation/images/textures_fal.gif
 	:align: right
 	:figwidth: 40%
 
@@ -204,7 +204,7 @@ Depending on the shader, these have 3 different layouts:
 Cubemap
 ^^^^^^^
 
-.. figure:: images/material_editing_textures_he1_cm.png
+.. figure:: /game_documentation/images/textures_he1_cm.png
 	:align: right
 	:figwidth: 40%
 
@@ -224,14 +224,14 @@ Uses 6 square areas, one for each side of a cube, to represent reflections from 
 Spherical environment map
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. figure:: images/material_editing_textures_he1_sem.png
+.. figure:: /game_documentation/images/textures_he1_sem.png
 	:align: right
 	:figwidth: 40%
 
 	``ghz_obj_kk1_giant_batabata_body_ref.dds`` from Sonic Generations
 
 
-.. figure:: images/material_editing_textures_he1_sem.gif
+.. figure:: /game_documentation/images/textures_he1_sem.gif
 	:align: right
 	:figwidth: 40%
 
@@ -252,7 +252,7 @@ Also known as `MatCap <https://learn.foundry.com/modo/content/help/pages/shading
 Dual paraboloid environment map
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. figure:: images/material_editing_textures_he1_dpem.png
+.. figure:: /game_documentation/images/textures_he1_dpem.png
 	:align: right
 	:figwidth: 40%
 
@@ -281,7 +281,7 @@ Emission
 	:Recommended encoding:	``BC1_UNORM``
 
 
-.. figure:: images/material_editing_textures_he1_ems.png
+.. figure:: /game_documentation/images/textures_he1_ems.png
 	:align: right
 	:figwidth: 40%
 
@@ -312,14 +312,14 @@ Specular textures contain 2 different maps:
 - The `blinn phong lighting <https://en.wikipedia.org/wiki/Blinn%E2%80%93Phong_reflection_model>`_ specular color in the RGB channels
 - The environment map (reflection) influence in the alpha channel
 
-.. figure:: images/material_editing_textures_he1_spc_rgb.png
+.. figure:: /game_documentation/images/textures_he1_spc_rgb.png
 	:align: left
 	:figwidth: 40%
 
 	The color component of ``chr_sonic_body01_spc_HD.dds`` from Sonic Generations
 
 
-.. figure:: images/material_editing_textures_he1_spc_a.png
+.. figure:: /game_documentation/images/textures_he1_spc_a.png
 	:align: right
 	:figwidth: 40%
 
@@ -343,7 +343,7 @@ Gloss
 	:Recommended encoding:	``BC1_UNORM``
 
 
-.. figure:: images/material_editing_textures_he1_pow.png
+.. figure:: /game_documentation/images/textures_he1_pow.png
 	:align: right
 	:figwidth: 40%
 
@@ -375,7 +375,7 @@ Normal map
 	:Composition:			``Color``
 	:Recommended encoding:	``BC1_UNORM``
 
-.. figure:: images/material_editing_textures_he1_nrm.png
+.. figure:: /game_documentation/images/textures_he1_nrm.png
 	:align: right
 	:figwidth: 40%
 

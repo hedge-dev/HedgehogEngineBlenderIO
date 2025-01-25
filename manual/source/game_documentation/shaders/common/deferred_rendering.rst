@@ -24,26 +24,26 @@ Here are some example frame buffers for a scene that uses deferred rendering:
     :header-rows: 0
     :align: center
 
-    * - .. figure:: /images/gamedoc_shaders_deferred_rendering_albedo.png
+    * - .. figure:: /game_documentation/images/shaders_deferred_rendering_albedo.png
 
             The :ref:`albedo <shaders.common.pbr.albedo>` buffer
 
-      - .. figure:: /images/gamedoc_shaders_deferred_rendering_pbr.png
+      - .. figure:: /game_documentation/images/shaders_deferred_rendering_pbr.png
 
             The :ref:`specular <shaders.common.pbr.specular>`, inverted :ref:`smoothness <shaders.common.pbr.smoothness>` and :ref:`ambient occlusion <shaders.common.pbr.ambient_occlusion>` buffer
 
-    * - .. figure:: /images/gamedoc_shaders_deferred_rendering_normal.png
+    * - .. figure:: /game_documentation/images/shaders_deferred_rendering_normal.png
 
             The normals buffer
 
-      - .. figure:: /images/gamedoc_shaders_deferred_rendering_emission.png
+      - .. figure:: /game_documentation/images/shaders_deferred_rendering_emission.png
 
             The :ref:`Emission <shaders.common.pbr.emission>` buffer
 
 
 These, as well as some niche other buffers, can now be combined with lighting and result in this:
 
-.. figure:: /images/gamedoc_shaders_deferred_rendering_combined.png
+.. figure:: /game_documentation/images/shaders_deferred_rendering_combined.png
 
     A composited scene of Kingdom Valley from Shadow Generations
 

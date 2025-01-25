@@ -19,7 +19,7 @@ pointing in.
 You can visualize these in blender while in edit mode by enabling any of the "Normals"
 checks in the mesh edit overlay:
 
-.. figure:: /images/gamedoc_shaders_normal_mapping_blender_display.png
+.. figure:: /game_documentation/images/shaders_normal_mapping_blender_display.png
     :figwidth: 75%
 
     A mesh in blenders edit mode with vertex normals visualized
@@ -40,7 +40,7 @@ sunlight direction:
 - At 90° we have a light influence of 0 and the surface is fully "shaded".
 - Angles between 90° and 0° have a negative light influence that gets rounded up to 0.
 
-.. figure:: /images/gamedoc_shaders_normal_mapping_sunlight.png
+.. figure:: /game_documentation/images/shaders_normal_mapping_sunlight.png
     :figwidth: 75%
 
     A mesh in blenders edit mode with vertex normals visualized
@@ -66,7 +66,7 @@ sunlight direction:
 
     Here is how you can calculate it in blender:
 
-    .. figure:: /images/gamedoc_shaders_normal_mapping_sunlight_nodes.png
+    .. figure:: /game_documentation/images/shaders_normal_mapping_sunlight_nodes.png
 
         The blender node setup for calculating the dot product using a sunlight vector
 
@@ -110,7 +110,7 @@ value range from -1 to 1 gets remapped to the color channel range from 0 to 1 wi
 The default color, at which a normal map does not alter the surface normal, is #8080FF
 (the color code for {0,0,1}).
 
-.. figure:: /images/gamedoc_shaders_normal_mapping_tex_lit.png
+.. figure:: /game_documentation/images/shaders_normal_mapping_tex_lit.png
     :figwidth: 75%
 
     A normal map image and a surface with the normal map applied and hit by a sunlight angled at 45°.
@@ -124,7 +124,7 @@ derive the blue channel based on the red and green channels while rendering.
 | If the X and Y components sampled from a normal map are not a unit away from the origin, then the
   engine calculates a Z component that makes the normal a unit vector.
 
-.. figure:: /images/gamedoc_shaders_normal_mapping_blue_calc.png
+.. figure:: /game_documentation/images/shaders_normal_mapping_blue_calc.png
     :figwidth: 75%
 
     A normal map without the blue channel (left) and the same one with the blue channel derived from the red and green channel (right)
@@ -159,7 +159,7 @@ The naive answer would be to just take whatever direction "right" is in object s
 work as long as all normal maps are facing perfectly upwards, but the moment a texture gets
 slightly rotated, the lighting looks very off.
 
-.. figure:: /images/gamedoc_shaders_normal_mapping_tangent_problem.png
+.. figure:: /game_documentation/images/shaders_normal_mapping_tangent_problem.png
     :figwidth: 75%
 
     Surfaces with normal maps and lighting applied. The top row UVs were left as is while the bottom ones have been rotated by 135°. The normal maps on the left use blender provided tangents, while the ones on the right use custom tangents based on the normal direction in object space.
@@ -172,7 +172,7 @@ automatically aligns the tangent with how a standard normal map would be used.
 The easiest way to visualize MikkTSpace is by using a texture that shows "up" and "right" and
 displaying those via a material:
 
-.. figure:: /images/gamedoc_shaders_normal_mapping_mikktspace.png
+.. figure:: /game_documentation/images/shaders_normal_mapping_mikktspace.png
     :figwidth: 75%
 
     MikkTSpace visualized using a texture. Green points "up", red points "right"
@@ -195,7 +195,7 @@ Height mapping
 Height maps are exactly what the name implies: a texture depicting a height. We can use such a
 height map to generate a normal texture:
 
-.. figure:: /images/gamedoc_shaders_normal_mapping_heightmap.png
+.. figure:: /game_documentation/images/shaders_normal_mapping_heightmap.png
 
     A height map image and a the corresponding normal map generated from it
 
@@ -218,7 +218,7 @@ detailed mesh onto a simpler one and save it to an image.
 
 You can read more about it `here <https://docs.blender.org/manual/en/latest/render/cycles/baking.html>`_.
 
-.. figure:: /images/gamedoc_shaders_normal_mapping_baking.png
+.. figure:: /game_documentation/images/shaders_normal_mapping_baking.png
     :figwidth: 75%
 
     A detailed mesh (top left), a low poly sphere (top right), the normal map that was baked from the detailed mesh onto the low poly sphere (bottom left) and the low poly sphere with the normal map applied (bottom right)

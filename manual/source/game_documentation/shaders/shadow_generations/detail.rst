@@ -139,7 +139,7 @@ diffuse1
     (influenced by the
     :ref:`camera distance <shaders.shadow_generations.detail.behavior.distance_blending>`).
 
-    .. figure:: /images/gamedoc_shaders_overlay_ref.png
+    .. figure:: /game_documentation/images/shaders_overlay_ref.png
         :figwidth: 75%
 
         An image overlaid over various base colors
