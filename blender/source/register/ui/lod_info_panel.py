@@ -58,7 +58,7 @@ class HEIO_UL_LODInfoLevels(bpy.types.UIList):
             icon = 'NONE'
             name = item.target.name
 
-        split = layout.split(factor=0.5)
+        split = layout.split(factor=0.7)
         split.label(text=name, icon=icon)
         split.prop(item, "cascade", text="")
 
