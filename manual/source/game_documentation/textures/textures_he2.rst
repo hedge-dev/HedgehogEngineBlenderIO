@@ -93,7 +93,7 @@ Albedo
 	:Recommended encoding:	- ``BC1_UNORM`` when opaque,
  							- ``BC7_UNORM`` when transparent
 
-.. figure:: /images/guides_material_editing_textures_he2_dif.png
+.. figure:: images/material_editing_textures_he2_dif.png
 	:align: right
 	:figwidth: 40%
 
@@ -122,7 +122,7 @@ Transparency
 	:Recommended encoding:	``BC4_UNORM``
 
 
-.. figure:: /images/guides_material_editing_textures_he2_alp.png
+.. figure:: images/material_editing_textures_he2_alp.png
 	:align: right
 	:figwidth: 40%
 
@@ -151,14 +151,14 @@ Falloff
 	:Recommended encoding:	``BC1_UNORM``
 
 
-.. figure:: /images/guides_material_editing_textures_he2_fal.png
+.. figure:: images/material_editing_textures_he2_fal.png
 	:align: right
 	:figwidth: 40%
 
 	``chr_big_fur_fal.dds`` from Sonic X Shadow Generations
 
 
-.. figure:: /images/guides_material_editing_textures_fal.gif
+.. figure:: images/material_editing_textures_fal.gif
 	:align: right
 	:figwidth: 40%
 
@@ -193,7 +193,7 @@ Emission
 	:Recommended encoding:	``BC6H_UF16``
 
 
-.. figure:: /images/guides_material_editing_textures_he2_ems.png
+.. figure:: images/material_editing_textures_he2_ems.png
 	:align: right
 	:figwidth: 40%
 
@@ -223,7 +223,7 @@ PRM
 							- ``BC3_UNORM`` when alpha channel is needed
 
 
-.. figure:: /images/guides_material_editing_textures_he2_prm.png
+.. figure:: images/material_editing_textures_he2_prm.png
 	:align: right
 	:figwidth: 40%
 
@@ -259,19 +259,19 @@ Each channel contains one PBR map:
 	  - :ref:`Specular <shaders.common.pbr.specular>`
 	  - 0.5
 	  - The engine multiplies the sampled value by 0.25.
-	  - .. figure:: /images/guides_material_editing_textures_he2_prm_r.png
+	  - .. figure:: images/material_editing_textures_he2_prm_r.png
 
 	* - Green
 	  - :ref:`Smoothness <shaders.common.pbr.smoothness>`
 	  - 0.8
 	  - Blender uses a roughness setup, which is just the inverse of smoothness
-	  - .. figure:: /images/guides_material_editing_textures_he2_prm_g.png
+	  - .. figure:: images/material_editing_textures_he2_prm_g.png
 
 	* - Blue
 	  - :ref:`Metallic <shaders.common.pbr.metallic>`
 	  - 0
 	  -
-	  - .. figure:: /images/guides_material_editing_textures_he2_prm_b.png
+	  - .. figure:: images/material_editing_textures_he2_prm_b.png
 
 	* - Alpha
 	  - :ref:`Ambient Occlusion <shaders.common.pbr.ambient_occlusion>`
@@ -279,7 +279,7 @@ Each channel contains one PBR map:
 	  - Many tutorials claim that AO is just multiplied into the albedo channel, which is **not** true.
 
 	    AO gets mixed into the lighting, which is difficult to replicate in render engines like Cycles, but doable in Eevee.
-	  - .. figure:: /images/guides_material_editing_textures_he2_prm_a.png
+	  - .. figure:: images/material_editing_textures_he2_prm_a.png
 
 
 .. important::
@@ -324,7 +324,7 @@ Normal map
 	:Composition:			``RG``
 	:Recommended encoding:	``BC5_UNORM``
 
-.. figure:: /images/guides_material_editing_textures_he2_nrm.png
+.. figure:: images/material_editing_textures_he2_nrm.png
 	:align: right
 	:figwidth: 40%
 
@@ -362,7 +362,7 @@ Flow map
 	:Recommended encoding:	``BC5_UNORM``
 
 
-.. figure:: /images/guides_material_editing_textures_he2_flw.png
+.. figure:: images/material_editing_textures_he2_flw.png
 	:align: right
 	:figwidth: 40%
 
@@ -394,7 +394,7 @@ Fur noise
 	:Recommended encoding:	``BC3_UNORM``
 
 
-.. figure:: /images/guides_material_editing_textures_he2_fur.png
+.. figure:: images/material_editing_textures_he2_fur.png
 	:align: right
 	:figwidth: 40%
 
@@ -426,7 +426,7 @@ Iridescence reflection
 	:Recommended encoding:	``BC1_UNORM``
 
 
-.. figure:: /images/guides_material_editing_textures_he2_ref.png
+.. figure:: images/material_editing_textures_he2_ref.png
 	:align: right
 	:figwidth: 40%
 
@@ -452,7 +452,7 @@ Offset map
 	:Recommended encoding:	``BC5_UNORM``
 
 
-.. figure:: /images/guides_material_editing_textures_he2_off.png
+.. figure:: images/material_editing_textures_he2_off.png
 	:align: right
 	:figwidth: 40%
 

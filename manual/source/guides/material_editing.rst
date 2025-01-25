@@ -19,7 +19,7 @@ The HEIO material panel
 
 A new panel is visible in the material properties (regardless of the render engine used):
 
-.. figure:: /images/guides_material_editing_panel.png
+.. figure:: images/material_editing_panel.png
 
 	Where to find the HEIO Materia Panel
 
@@ -46,7 +46,7 @@ to use a custom shader.
 In 99.9% of cases, you dont need to use the custom shader feature, and can disable it.
 Upon doing so, the shader name textfield will be swapped out for a dropdown.
 
-.. figure:: /images/guides_material_editing_shader.png
+.. figure:: images/material_editing_shader.png
 
 	Difference between a custom shader and a preset shader
 
@@ -68,7 +68,7 @@ variant name denotes one feature, e.g. ``b`` may enable ``bone deformation``.
 
 If a shader has variants, you can select those via a second dropdown.
 
-.. figure:: /images/guides_material_editing_shader_variants.png
+.. figure:: images/material_editing_shader_variants.png
 
 	Available shader variants for the shader ``Common_de`` for Sonic Unleashed
 
@@ -138,7 +138,7 @@ For more detailed information about textures, read
 	Textures are exported using the `Blender DDS Addon <https://github.com/matyalatte/Blender-DDS-Addon>`_,
 	which allows you to set the DDS encoding to use when exporting for each image.
 
-	.. figure:: /images/guides_material_editing_dds_encoding.png
+	.. figure:: images/material_editing_dds_encoding.png
 
 		Where to find the DDS encoding settings
 
@@ -178,7 +178,7 @@ Templates are automatically applied on import, but not for manually set up mater
 material template, you must press the :ref:`Setup/Update nodes <bpy.ops.heio.material_setup_nodes_active>`
 button:
 
-.. figure:: /images/guides_material_editing_setup_nodes.png
+.. figure:: images/material_editing_setup_nodes.png
 
 	Where to find the setup/update nodes button
 
@@ -191,7 +191,7 @@ button:
 You can also update nodes of multiple materials at once using the
 :ref:`Setup/Update Material Nodes <bpy.ops.heio.material_setup_nodes>` button:
 
-.. figure:: /images/guides_material_editing_setup_nodes_mass.png
+.. figure:: images/material_editing_setup_nodes_mass.png
 
 	Where to find the setup/update material nodes button
 

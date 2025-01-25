@@ -32,7 +32,7 @@ want to edit one or multiple material files, you can do so by importing them dir
 	any model open :ref:`the importer <bpy.ops.heio.import_material>`, select your
 	file(s) to import, configure the import properties and then confirm.
 
-	.. figure:: /images/guides_asset_importing_material_1.png
+	.. figure:: images/asset_importing_material_1.png
 
 		Where to find the importer
 
@@ -45,7 +45,7 @@ want to edit one or multiple material files, you can do so by importing them dir
 	:ref:`the importer from the specials <bpy.ops.heio.import_material_active>`,
 	select your file(s) to import, configure the import properties and then confirm.
 
-	.. figure:: /images/guides_asset_importing_material_2.png
+	.. figure:: images/asset_importing_material_2.png
 
 		Where to find the importer
 
@@ -75,7 +75,7 @@ Usually models are imported standalone, but can also be part of a ``.pcmodel`` f
 	Open :ref:`the importer <bpy.ops.heio.import_model>`, select your
 	file(s) to import, configure the import properties and then confirm.
 
-	.. figure:: /images/guides_asset_importing_model.png
+	.. figure:: images/asset_importing_model.png
 
 		Where to find the importer
 
@@ -97,7 +97,7 @@ referenced by ``.terrain-instanceinfo`` files (HE1) (not yet supported)
 	Open :ref:`the importer <bpy.ops.heio.import_terrain_model>`, select your
 	file(s) to import, configure the import properties and then confirm.
 
-	.. figure:: /images/guides_asset_importing_terrain_model.png
+	.. figure:: images/asset_importing_terrain_model.png
 
 		Where to find the importer
 
@@ -115,7 +115,7 @@ Collision meshes usually part of a ``.pcmodel`` file, but can also be imported s
 	Open :ref:`the importer <bpy.ops.heio.import_collision_mesh>`, select your
 	file(s) to import, configure the import properties and then confirm.
 
-	.. figure:: /images/guides_asset_importing_bulletmesh.png
+	.. figure:: images/asset_importing_bulletmesh.png
 
 		Where to find the importer
 
@@ -141,6 +141,6 @@ When imported, HEIO will also attempt to import the referenced resource files, s
 	Open :ref:`the importer <bpy.ops.heio.import_point_cloud>`, select your
 	file(s) to import, configure the import properties and then confirm.
 
-	.. figure:: /images/guides_asset_importing_pointcloud.png
+	.. figure:: images/asset_importing_pointcloud.png
 
 		Where to find the importer

@@ -9,7 +9,7 @@ Guides
 
       .. container:: card
 
-         .. figure:: /images/guides_index_addon_config.png
+         .. figure:: images/index_addon_config.png
             :target: addon_config.html
 
          :doc:`addon_config`
@@ -17,7 +17,7 @@ Guides
 
       .. container:: card
 
-         .. figure:: /images/guides_index_project_setup.png
+         .. figure:: images/index_project_setup.png
             :target: project_setup.html
 
          :doc:`project_setup`
@@ -25,7 +25,7 @@ Guides
 
       .. container:: card
 
-         .. figure:: /images/guides_index_asset_importing.png
+         .. figure:: images/index_asset_importing.png
             :target: asset_importing.html
 
          :doc:`asset_importing`
@@ -33,7 +33,7 @@ Guides
 
       .. container:: card
 
-         .. figure:: /images/guides_index_material_editing.png
+         .. figure:: images/index_material_editing.png
             :target: material_editing.html
 
          :doc:`material_editing`
@@ -41,7 +41,7 @@ Guides
 
       .. container:: card
 
-         .. figure:: /images/guides_index_object_trees.png
+         .. figure:: images/index_object_trees.png
             :target: object_trees.html
 
          :doc:`object_trees`
@@ -49,7 +49,7 @@ Guides
 
       .. container:: card
 
-         .. figure:: /images/guides_index_collision_mesh_editing.png
+         .. figure:: images/index_collision_mesh_editing.png
             :target: collision_mesh_editing.html
 
          :doc:`collision_mesh_editing`
@@ -57,7 +57,7 @@ Guides
 
       .. container:: card
 
-         .. figure:: /images/guides_index_lod_models.png
+         .. figure:: images/index_lod_models.png
             :target: lod_models.html
 
          :doc:`lod_models`
@@ -65,7 +65,7 @@ Guides
 
       .. container:: card
 
-         .. figure:: /images/guides_index_asset_exporting.png
+         .. figure:: images/index_asset_exporting.png
             :target: asset_exporting.html
 
          :doc:`asset_exporting`

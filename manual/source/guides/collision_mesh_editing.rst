@@ -26,7 +26,7 @@ the majority of the entire stage. By splitting it with the
 :ref:`"Split mesh by groups" <bpy.ops.heio.split_meshgroups>` operator and changing the viewport
 object color to "random", we can make out the individual shapes:
 
-.. figure:: /images/guides_collision_mesh_editing_shape_colors.png
+.. figure:: images/collision_mesh_editing_shape_colors.png
 
 	The individual shapes in the collision mesh made visible
 
@@ -44,7 +44,7 @@ the game simply checks if something is "inside" the space between the shapes' ve
 
 You can turn a mesh group convex in the groups properties:
 
-.. figure:: /images/guides_collision_mesh_editing_convex_shape_toggle.png
+.. figure:: images/collision_mesh_editing_convex_shape_toggle.png
 
 	How to make a mesh group convex
 
@@ -56,7 +56,7 @@ HEIO imports convex shapes with generated polygons, instead of just the vertices
 
 Exporting a convex shape with concave areas will result in those concave areas disappearing:
 
-.. figure:: /images/guides_collision_mesh_editing_concave_vs_convex.png
+.. figure:: images/collision_mesh_editing_concave_vs_convex.png
 
 	Meshes with concave features, and their exported convex counterparts
 
@@ -73,7 +73,7 @@ called ``Solid Mesh`` in Shadow generations and ``Leaf`` in Sonic Frontiers.
 
 You can change the layer in the mesh group settings:
 
-.. figure:: /images/guides_collision_mesh_editing_layer.png
+.. figure:: images/collision_mesh_editing_layer.png
 
 	Where to change the layer of a mesh group
 
@@ -108,7 +108,7 @@ Types setup
 When first opening the collision types subpanel you are met with a button that says "Initialize
 mesh info" (unless it's an imported mesh that already had types):
 
-.. figure:: /images/guides_collision_mesh_editing_initialize_types.png
+.. figure:: images/collision_mesh_editing_initialize_types.png
 
 	The collision types panel on a mesh
 
@@ -120,7 +120,7 @@ Pressing it will do 2 things:
 The attribute group is responsible for assigning each polygon which type slot is used, so don't
 delete it!
 
-.. figure:: /images/guides_collision_mesh_editing_types_connection.png
+.. figure:: images/collision_mesh_editing_types_connection.png
 
 	The collision types list and the mesh attribute that it relies on
 
@@ -150,7 +150,7 @@ collision types instead:
 - ``Select`` will select all polygons assigned to the selected collision type slot
 - ``Deselect`` will deselect all polygons assigned to the selected collision type slot
 
-.. figure:: /images/guides_collision_mesh_editing_type_editing.png
+.. figure:: images/collision_mesh_editing_type_editing.png
 
 	The three type editing operators visible below the types list
 
@@ -163,7 +163,7 @@ Since convex shapes have no polygons, they can only have one type across the ent
 You can change a convex shapes type below the convex toggle, which works just like changing types
 in the types list:
 
-.. figure:: /images/guides_collision_mesh_editing_type_convex_shape.png
+.. figure:: images/collision_mesh_editing_type_convex_shape.png
 
 	Where to edit the collision type of a convex shape
 
@@ -187,7 +187,7 @@ Flags setup
 When first opening the collision flags panel you are met with a button that says "Initialize mesh
 info" (unless it's an imported mesh that already had flags):
 
-.. figure:: /images/guides_collision_mesh_editing_initialize_flags.png
+.. figure:: images/collision_mesh_editing_initialize_flags.png
 
 	The collision flags panel on a mesh
 
@@ -199,7 +199,7 @@ Pressing it will do 2 things:
 The attribute group is responsible for assigning each polygon which type slot is used, so don't
 delete it!
 
-.. figure:: /images/guides_collision_mesh_editing_flags_connection.png
+.. figure:: images/collision_mesh_editing_flags_connection.png
 
 	The collision flags list and the mesh attribute that it relies on
 
@@ -230,7 +230,7 @@ visible below the list:
 - ``Select`` will select all polygons added to the selected collision type slot
 - ``Deselect`` will deselect all polygons added to the selected collision type slot
 
-.. figure:: /images/guides_collision_mesh_editing_flags_editing.png
+.. figure:: images/collision_mesh_editing_flags_editing.png
 
 	The four flags editing operators visible below the flags list
 
@@ -242,7 +242,7 @@ Since convex shapes have no polygons, they can only have one set of flags across
 
 You can add and remove flags in the list below the convex collision type:
 
-.. figure:: /images/guides_collision_mesh_editing_flags_convex_shape.png
+.. figure:: images/collision_mesh_editing_flags_convex_shape.png
 
 	Where to edit the collision flags of a convex shape
 
@@ -258,7 +258,7 @@ that are placed in a collision mesh like objects.
 
 There are 4 types of primitives: Spheres, Boxes, Capsules and Cylinders:
 
-.. figure:: /images/guides_collision_mesh_editing_primitives.png
+.. figure:: images/collision_mesh_editing_primitives.png
 
 	The 4 types of primitive shapes, from left to right: Sphere, Boxe, Capsule and Cylinder.
 
@@ -269,7 +269,7 @@ Adding primitives
 You can add and remove primitives in the collision primitive panel, which is found below the
 collision flags panel:
 
-.. figure:: /images/guides_collision_mesh_editing_primitive_list.png
+.. figure:: images/collision_mesh_editing_primitive_list.png
 
 	The collision primitives list panel
 
@@ -281,7 +281,7 @@ HEIO implements a custom viewport renderer to make those primitives visible and 
 There are several settings that let you customize how primitives appear, available in the
 viewport overlay settings:
 
-.. figure:: /images/guides_collision_mesh_editing_primitive_overlay.png
+.. figure:: images/collision_mesh_editing_primitive_overlay.png
 
 	The HEIO collision primitive overlay settings
 
@@ -300,7 +300,7 @@ This may make viewing individual primitives difficult, especially when there are
 That is what the ``Random Colors`` toggle is for; When enabled, every primitive will be rendered
 with a different color:
 
-.. figure:: /images/guides_collision_mesh_editing_primitive_random.png
+.. figure:: images/collision_mesh_editing_primitive_random.png
 
 	A portion of the stage collision from the DLC stage from Shadow Generations. Left with regular, and right with randomized colors.
 
@@ -324,14 +324,14 @@ groups.
 However, editing the transforms from these few fields is incredibly cumbersome, especially the
 rotation, which is why HEIO adds new workspace tools to blender:
 
-.. figure:: /images/guides_collision_mesh_editing_primitive_tool.png
+.. figure:: images/collision_mesh_editing_primitive_tool.png
 
 	The new collision primitives workspace tool
 
 
 When pressing down on the tool for a second, you can select between 2 tools:
 
-.. figure:: /images/guides_collision_mesh_editing_primitive_tools.png
+.. figure:: images/collision_mesh_editing_primitive_tools.png
 
 	The different tools avaiable
 
@@ -351,7 +351,7 @@ This allows you to select a primitive shape in viewport by clicking it with your
 
 When this tool is active, the tool properties show the primitives list of the active object
 
-.. figure:: /images/guides_collision_mesh_editing_primitive_tool_properties.png
+.. figure:: images/collision_mesh_editing_primitive_tool_properties.png
 
 	The workspace properties
 
@@ -362,7 +362,7 @@ Transform collision primitives
 This tool is an extension to the select tool; It can select primitives, and when one is selected
 it displays transform gizmos to move, rotate and scale the selected primitive.
 
-.. figure:: /images/guides_collision_mesh_editing_primitive_tool_gizmos.png
+.. figure:: images/collision_mesh_editing_primitive_tool_gizmos.png
 	:figwidth: 50%
 
 	The different available transform gizmos for primitives
@@ -377,7 +377,7 @@ These work mostly the same as the standard transform gizmos for objects:
 - Hold CTRL for snap mode
 - Hold ALT while scaling to scale in one direction
 
-.. figure:: /images/guides_collision_mesh_editing_primitive_onedir_scaling.gif
+.. figure:: images/collision_mesh_editing_primitive_onedir_scaling.gif
 	:figwidth: 50%
 
 	Scaling a primitive in one direction
@@ -409,7 +409,7 @@ In the event that you want to convert collision primitives to polygonal geometry
 :ref:`Collision primitives to geometry operator <bpy.ops.heio.collision_primitives_to_geometry>`,
 which does just that.
 
-.. figure:: /images/guides_collision_mesh_editing_primitives_converted.png
+.. figure:: images/collision_mesh_editing_primitives_converted.png
 
 	The primitives from before converted to geometry at the default resolution
 

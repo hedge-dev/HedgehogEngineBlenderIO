@@ -39,7 +39,7 @@ is done automatically by e.g. the model exporter, but you can also export materi
 	To export materials of objects, open :ref:`the exporter <bpy.ops.heio.export_material>`,
 	select a directory to export to, configure the export properties and confirm.
 
-	.. figure:: /images/guides_asset_exporting_material_1.png
+	.. figure:: images/asset_exporting_material_1.png
 
 		Where to find the exporter
 
@@ -50,7 +50,7 @@ is done automatically by e.g. the model exporter, but you can also export materi
 	:ref:`the exporter in the material specials <bpy.ops.heio.export_material>`,
 	select a directory to export to, configure the export properties and confirm.
 
-	.. figure:: /images/guides_asset_exporting_material_2.png
+	.. figure:: images/asset_exporting_material_2.png
 
 		Where to find the exporter
 
@@ -66,7 +66,7 @@ It should be noted that HE2 games often use BC6 or BC7 encoding, which can take 
 for large textures. If you did not edit any textures, it'd be best if you don't export them at all
 by disabling image export and instead use the original files.
 
-.. figure:: /images/guides_asset_exporting_materia_images_disable.png
+.. figure:: images/asset_exporting_materia_images_disable.png
 
 	How to disable image exporting
 
@@ -87,7 +87,7 @@ export non-armature object trees.
 	Open :ref:`the exporter <bpy.ops.heio.export_model>`, select a directory/file to export to,
 	configure the export properties and then confirm.
 
-	.. figure:: /images/guides_asset_exporting_model.png
+	.. figure:: images/asset_exporting_model.png
 
 		Where to find the exporter
 
@@ -107,7 +107,7 @@ also export armature object trees, although the bone and weight information will
 	Open :ref:`the exporter <bpy.ops.heio.export_terrain_model>`, select a directory/file to export to,
 	configure the export properties and then confirm.
 
-	.. figure:: /images/guides_asset_exporting_terrain_model.png
+	.. figure:: images/asset_exporting_terrain_model.png
 
 		Where to find the exporter
 
@@ -128,7 +128,7 @@ export armature object trees, although the bone and weight information will be l
 	Open :ref:`the exporter <bpy.ops.heio.export_collision_mesh>`, select a directory/file to export to,
 	configure the export properties and then confirm.
 
-	.. figure:: /images/guides_asset_exporting_bullet_mesh.png
+	.. figure:: images/asset_exporting_bullet_mesh.png
 
 		Where to find the exporter
 
@@ -145,7 +145,7 @@ corresponding resource file (``.terrain-model``, etc).
 	Open :ref:`the exporter <bpy.ops.heio.export_point_cloud>`, select the type of point cloud to
 	export, select the file to export to, configure the export properties and then confirm.
 
-	.. figure:: /images/guides_asset_exporting_point_cloud.png
+	.. figure:: images/asset_exporting_point_cloud.png
 
 		Where to find the exporter
 
@@ -163,7 +163,7 @@ easily isolate other objects from your export too.
 This way, you can set up multiple different exporters too, e.g. have one point cloud exporter for
 collisions, and one for terrain.
 
-.. figure:: /images/guides_asset_exporting_collection_exporters.png
+.. figure:: images/asset_exporting_collection_exporters.png
 
 	The collection exporters added by HEIO
 
@@ -176,7 +176,7 @@ collisions, and one for terrain.
 
 	In that case you must specify a "dummy" output file to make the exporter work.
 
-	.. figure:: /images/guides_asset_exporting_collection_exporters_dummy.png
+	.. figure:: images/asset_exporting_collection_exporters_dummy.png
 
 		A collection exporter with a dummy file path
 
@@ -187,6 +187,6 @@ Collections as HE Point Clouds
 This is an exporter unique to collection exporters. It exports all immediate child collectionns of
 the collection with the exporter to individual point cloud files.
 
-.. figure:: /images/guides_asset_exporting_collection_exporters_example.png
+.. figure:: images/asset_exporting_collection_exporters_example.png
 
 	An example for a stage project with multiple collection that get exported as individual point cloud files

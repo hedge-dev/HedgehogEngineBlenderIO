@@ -8,7 +8,7 @@ Project setup
 Setting up a new project is very simple, and only involves changing the :ref:`target game <HEIO_Scene.target_game>` right now.
 
 
-.. figure:: /images/guides_project_setup.png
+.. figure:: images/project_setup.png
 	:align: right
 	:figwidth: 45%
 

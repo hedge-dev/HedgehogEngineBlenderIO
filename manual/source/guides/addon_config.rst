@@ -10,7 +10,7 @@ Before doing anything, you may want to take a look at the addon preferences.
 
 You can find the addon preferences under :menuselection:`Edit --> Preferences --> Add-ons --> Hedgehog Engine I/O`
 
-.. figure:: /images/guides_addon_config.png
+.. figure:: images/addon_config.png
 
 	The addons preferences
 

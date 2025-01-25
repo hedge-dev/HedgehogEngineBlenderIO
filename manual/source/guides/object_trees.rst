@@ -44,7 +44,7 @@ HEIO imports ``.model`` files as rooted trees with children, where the armature 
 which has at least 1 mesh object as a child. If a ``.model`` has more than one mesh group, each
 mesh group gets imported as its own mesh object:
 
-.. figure:: /images/guides_object_trees_shadow_sxsg.png
+.. figure:: images/object_trees_shadow_sxsg.png
 
 	The object tree of ``chr_shadow.model`` from Shadow Generations
 
@@ -53,7 +53,7 @@ Meanwhile ``.terrain-model`` files, while they can have more than one mesh group
 imported as a single mesh to make reusing the same mesh in a stage project easier (and also
 because there exists not a single ``.terrain-model`` file with more than one mesh group):
 
-.. figure:: /images/guides_object_trees_ark_sxsg.png
+.. figure:: images/object_trees_ark_sxsg.png
 
 	The object tree of ``w01_fararkparts_a_ins.terrain-model`` from Shadow Generations
 
@@ -69,7 +69,7 @@ Yet, you can split a mesh that consists of multiple mesh groups up into multiple
 are added as child objects to the object that was split, by using the
 :ref:`Split mesh by groups <bpy.ops.heio.split_meshgroups>` operator:
 
-.. figure:: /images/guides_object_trees_mesh_splitting.png
+.. figure:: images/object_trees_mesh_splitting.png
 
 	The collision mesh ``w03a10_s15_col.btmesh`` from Shadow Generations being split by its mesh groups.
 
@@ -95,7 +95,7 @@ Instance collection trees
 Instance collections are used for easily reusing object trees, especially useful when an object
 tree contains more than just the root:
 
-.. figure:: /images/guides_object_trees_collection_instancing.png
+.. figure:: images/object_trees_collection_instancing.png
 
 	The model ``Mot_w01_ring_b_ins.model`` from Shadow Generations being used multiple times by collection instances.
 
