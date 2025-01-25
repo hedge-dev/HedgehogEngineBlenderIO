@@ -708,8 +708,6 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
         if compile_data is None:
             return None
 
-        compile_data.SaveToJson("C:\\Users\\Justin113D\\Downloads")
-
         result = (name, compile_data, None)
 
         if root is None or self._target_definition.hedgehog_engine_version < 2:
