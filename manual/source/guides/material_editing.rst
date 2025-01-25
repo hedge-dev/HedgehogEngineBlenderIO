@@ -9,29 +9,24 @@ Material Editing
 	:Project Setup: 		:ref:`[Open] <guides-project-setup>`
 
 
-HEIO allows for editing .material files which can be done either in the context of a model or in
-isolation.
+Hedgehog engine games store model rendering information in ``.material`` files, which are very
+similar to how blender handles materials. As such, HEIO adds a new panel to the material editor
+that makes it possible to edit every single aspect of a hedgehog engine material!
 
-The addon does **not** attempt to get export-data from the materials node tree. Instead, HEIO does
-it the other way around: All edits are done from within the
-:doc:`HEIO Material Panel </user_interface/object/material>`.
+
+The HEIO material panel
+=======================
+
+A new panel is visible in the material properties (regardless of the render engine used):
 
 .. figure:: /images/guides_material_editing_panel.png
 
 	Where to find the HEIO Materia Panel
 
 
-Whenever an HEIO Material property is edited the addon will (try to) update the materials node-tree
-accordingly to allow for a realtime preview, but this can only occur if the used shader
-has a properly set up material template, which is not the case for the majority of shaders. For
-that reason, most shaders will use a generic fallback template and may end up looking inaccurate
-to ingame.
 
-.. seealso::
-
-	| If you are interested in contributing missing material templates, go to [TODO].
-	| Every bit of help is appreciated!
-
+Editing materials
+=================
 
 Setting up the shader
 ---------------------
@@ -81,36 +76,9 @@ Each target games shader features and their purposes are documented :doc:`here <
 
 .. _guides_material_editing_node_setup:
 
-Node Setup
-^^^^^^^^^^
 
-After selecting the shader (and variant) that you want to use, its time to set up the nodes.
-This is done entirely automatically by the addon, and you should never have to interact with
-the nodes of an HEIO material.
-
-To generate the nodes, simply click the
-:ref:`Setup/Update nodes <bpy.ops.heio.material_setup_nodes>` button.
-
-.. figure:: /images/guides_material_editing_setup_nodes.png
-
-
-Additionally, whenever you change any of the HEIO Material properties, the addon will automatically
-update the values and images inside the node tree!
-
-.. note::
-	This is done automatically on import!
-
-	You only (and **always**) have to press it after changing the shader of a material yourself.
-
-
-Material Properties
--------------------
-
-Materials have 3 types of properties that change how the shader behaves:
-
-
-General
-^^^^^^^
+General properties
+------------------
 
 These are direct material settings that are strictly part of every material.
 
@@ -121,8 +89,9 @@ as they do here.
 :ref:`Use additive blending <HEIO_Material.use_additive_blending>` does exactly as it says: Instead
 of alpha blending, it makes the shader use `additive blending <https://www.learnopengles.com/tag/additive-blending/>`_.
 
+
 Parameters
-^^^^^^^^^^
+----------
 
 These are values that get passed to the shader, like a diffuse color or similar.
 
@@ -154,7 +123,7 @@ For more detailed information about parameters, read
 
 
 Textures
-^^^^^^^^
+--------
 
 Textures are very simple: You have slots with certain types, and these get used by the shader for
 various purposes.
@@ -184,3 +153,51 @@ For more detailed information about SCA parameters, read
 
 - :doc:`HEIO SCA Parameters </user_interface/object/sca_parameters>`
 - :doc:`Material SCA parameters </game_documentation/sca_parameters>`
+
+
+Blender material preview
+========================
+
+Blenders material system differs wildly from how games handle them, using nodes for every material
+instead of shaders. However, this shall not get in the way of previewing materials in blender!
+
+Registered shaders in the addon (may) have a material node template, which is then copy-pasted into
+the material and automatically updated with the parameters and textures.
+
+.. note::
+
+	Material templates have to be created manually, which is why many may be missing from the addon
+	as a whole. In those cases, a fallback template will be used that won't accurately reflect
+	how the material looks ingame.
+
+
+Applying templates
+------------------
+
+Templates are automatically applied on import, but not for manually set up materials. To apply the
+material template, you must press the :ref:`Setup/Update nodes <bpy.ops.heio.material_setup_nodes_active>`
+button:
+
+.. figure:: /images/guides_material_editing_setup_nodes.png
+
+	Where to find the setup/update nodes button
+
+
+.. important::
+
+	**You will also have to do this whenever you change the shader of a material!**
+
+
+You can also update nodes of multiple materials at once using the
+:ref:`Setup/Update Material Nodes <bpy.ops.heio.material_setup_nodes>` button:
+
+.. figure:: /images/guides_material_editing_setup_nodes_mass.png
+
+	Where to find the setup/update material nodes button
+
+
+Updating materials
+------------------
+
+Once a material template is applied, you are done! Now, whenever you edit parameters or textures
+the addon will automatically update the node tree too!
