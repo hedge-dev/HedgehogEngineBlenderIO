@@ -102,11 +102,11 @@ Types act likes materials, where each mesh has a list of types and where every p
 gets assigned to an item in that list.
 
 
-Setup
------
+Types setup
+-----------
 
-When first opening the list menu, found in the same panel as the mesh groups, you are met with a
-button that says "Initialize mesh info" (unless it's an imported mesh that already had types):
+When first opening the collision types subpanel you are met with a button that says "Initialize
+mesh info" (unless it's an imported mesh that already had types):
 
 .. figure:: /images/guides_collision_mesh_editing_initialize_types.png
 
@@ -125,8 +125,8 @@ delete it!
 	The collision types list and the mesh attribute that it relies on
 
 
-Editing the list
-----------------
+Editing the types list
+----------------------
 
 You can add, remove and move slots. A polygon connects to the same slot, even after it is moved.
 By clicking the type name, you can choose from a list of types defined by the target game.
@@ -139,8 +139,8 @@ right of the panel and clicking the ``delete mesh info`` button. This will remov
 the list, as well as delete the ``HEIOCollisionType`` attribute.
 
 
-Editing polygons
-----------------
+Editing polygons types
+----------------------
 
 Just like materials, you can edit as polygons collision type by entering edit mode. This will make
 tree operators visible below the list, which act 1:1 how they do for materials, but for the
@@ -181,11 +181,11 @@ called ``Slider`` in Shadow generations and ``Rest`` in Sonic Frontiers.
 Types act similar to materials, where each polygon can have an arbitrary number of flags assigned.
 
 
-Setup
------
+Flags setup
+-----------
 
-When first opening the list menu, found right below the types, you are met with a button
-that says "Initialize mesh info" (unless it's an imported mesh that already had flags):
+When first opening the collision flags panel you are met with a button that says "Initialize mesh
+info" (unless it's an imported mesh that already had flags):
 
 .. figure:: /images/guides_collision_mesh_editing_initialize_flags.png
 
@@ -204,8 +204,8 @@ delete it!
 	The collision flags list and the mesh attribute that it relies on
 
 
-Editing the list
-----------------
+Editing the flags list
+----------------------
 
 You can add, remove and move slots. A polygon connects to the same slots, even after any of them
 is moved. By clicking the slot name, you can choose from a list of types defined by the target game.
@@ -218,8 +218,8 @@ right of the panel and clicking the ``delete mesh info`` button. This will remov
 the list, as well as delete the ``HEIOCollisionFlags`` attribute.
 
 
-Editing polygons
-----------------
+Editing polygons flags
+----------------------
 
 Different from materials, a polygon can have more than one flag, as well as none at all. You can
 edit the flags assigned to a polygon by entering edit mode, which will make four operators

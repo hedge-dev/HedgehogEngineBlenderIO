@@ -29,7 +29,7 @@ Guides
             :target: asset_importing.html
 
          :doc:`asset_importing`
-            Importing assets
+            Importing assets from files
 
       .. container:: card
 
@@ -37,15 +37,7 @@ Guides
             :target: material_editing.html
 
          :doc:`material_editing`
-            Editing of materials
-
-      .. container:: card
-
-         .. figure:: /images/guides_index_collision_mesh_editing.png
-            :target: collision_mesh_editing.html
-
-         :doc:`collision_mesh_editing`
-            Editing of collision meshes
+            Editing materials for export
 
       .. container:: card
 
@@ -57,11 +49,27 @@ Guides
 
       .. container:: card
 
+         .. figure:: /images/guides_index_collision_mesh_editing.png
+            :target: collision_mesh_editing.html
+
+         :doc:`collision_mesh_editing`
+            The different components of collision meshes explained
+
+      .. container:: card
+
+         .. figure:: /images/guides_index_lod_models.png
+            :target: lod_models.html
+
+         :doc:`lod_models`
+            Working with \ **L**\ evel-\ **o**\ f-\ **D**\ etail models
+
+      .. container:: card
+
          .. figure:: /images/guides_index_asset_exporting.png
             :target: asset_exporting.html
 
          :doc:`asset_exporting`
-            Exporting assets
+            Exporting assets to files
 
 
 .. container:: global-index-toc
@@ -74,6 +82,7 @@ Guides
       project_setup
       asset_importing
       material_editing
-      collision_mesh_editing
       object_trees
+      collision_mesh_editing
+      lod_models
       asset_exporting
