@@ -71,7 +71,7 @@ namespace HEIO.NET
             }
 
             DependencyResolverManager dependencyManager = new();
-            resolveInfo = dependencyManager.ResolveDependencies(modelFiles, ResolveModelMaterials);
+            resolveInfo = dependencyManager.ResolveDependencies(modelFiles);
 
             return [.. result];
         }
@@ -89,44 +89,6 @@ namespace HEIO.NET
             }
 
             return result;
-        }
-
-        internal static void ResolveModelMaterials(IResourceResolver resolver, ModelBase model, IFile file, HashSet<string> unresolved)
-        {
-            void ResolveMeshGroup(MeshGroup group)
-            {
-                foreach(Mesh mesh in group)
-                {
-                    if(mesh.Material.IsValid())
-                    {
-                        continue;
-                    }
-
-                    string filename = $"{mesh.Material.Name}.material";
-
-                    if(resolver.Open<Material>(filename) is Material material)
-                    {
-                        mesh.Material = material;
-                    }
-                    else
-                    {
-                        unresolved.Add(filename);
-                    }
-                }
-            }
-
-            foreach(MeshGroup group in model.Groups)
-            {
-                ResolveMeshGroup(group);
-            }
-
-            if(model is Model modelmodel && modelmodel.Morphs?.Count > 0)
-            {
-                foreach(MorphModel morph in modelmodel.Morphs)
-                {
-                    ResolveMeshGroup(morph.Meshgroup!);
-                }
-            }
         }
 
         public static Material[] GetMaterials(ModelSet[] models)

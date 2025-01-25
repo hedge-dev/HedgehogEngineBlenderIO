@@ -172,7 +172,7 @@ namespace HEIO.NET
                 }
             }
 
-            ResolveInfo terrainResolveInfo = dependencyManager.ResolveDependencies(modelFiles, ModelHelper.ResolveModelMaterials);
+            ResolveInfo terrainResolveInfo = dependencyManager.ResolveDependencies(modelFiles);
             resolveInfo = ResolveInfo.Combine(pointCloudInfo, terrainResolveInfo);
 
 

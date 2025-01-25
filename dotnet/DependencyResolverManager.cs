@@ -1,4 +1,5 @@
-﻿using SharpNeedle.IO;
+﻿using SharpNeedle.Framework.HedgehogEngine.Mirage;
+using SharpNeedle.IO;
 using SharpNeedle.Resource;
 using System;
 using System.Collections.Generic;
@@ -27,6 +28,24 @@ namespace HEIO.NET
         private readonly Dictionary<IDirectory, ResolverInfo> _resolvers = [];
 
         public int MaxDependencyDepth { get; set; } = 4;
+
+        public ResolveInfo ResolveDependencies<T>(IEnumerable<(T, IFile)> data) where T : ResourceBase
+        {
+            return ResolveDependencies(data, (resolver, resource, file, unresolved) =>
+            {
+                try
+                {
+                    resource.ResolveDependencies(resolver);
+                }
+                catch(ResourceResolveException exc)
+                {
+                    foreach(string missingResource in exc.Resources)
+                    {
+                        unresolved.Add(missingResource);
+                    }
+                }
+            });
+        }
 
         public ResolveInfo ResolveDependencies<T>(IEnumerable<(T, IFile)> data, Action<IResourceResolver, T, IFile, HashSet<string>> resolveFunc)
         {
@@ -74,7 +93,7 @@ namespace HEIO.NET
 
             List<DependencyResourceResolver> dependencyResolvers = [];
             HashSet<string> missingDependencies = [];
-            Dictionary<string, IFile> packedDependencies= [];
+            Dictionary<string, IFile> packedDependencies = [];
 
 
             if(directory.GetFile("!DEPENDENCIES.txt") is IFile dependenciesFile)
@@ -124,7 +143,7 @@ namespace HEIO.NET
             );
 
             result = new(
-                resolver, 
+                resolver,
                 [.. missingDependencies],
                 [.. packedDependencies.Select(x => (x.Key, x.Value))]
             );
@@ -173,7 +192,7 @@ namespace HEIO.NET
                 }
             }
         }
-    
+
 
         private static string[] ReadDependencyLines(IFile file)
         {
