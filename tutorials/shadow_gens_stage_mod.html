@@ -7,7 +7,7 @@
         <link rel="canonical" href="https://hedge-dev.github.io/HedgehogEngineBlenderIO/tutorials/shadow_gens_stage_mod.html" />
 
     <!-- Generated with Sphinx 8.1.3 and Furo 2024.08.06 -->
-        <title>Shadow Generations stage mod - HEIO 0.0.1 Manual</title>
+        <title>Tutorial 1: Shadow Generations stage mod - HEIO 0.0.1 Manual</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
@@ -257,7 +257,7 @@
 </ul>
 </li>
 <li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">Tutorials</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle navigation of Tutorials</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
-<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Shadow Generations stage mod</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Tutorial 1: Shadow Generations stage mod</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../game_documentation/index.html">Game documentation</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle navigation of Game documentation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -381,15 +381,612 @@
           </label>
         </div>
         <article role="main" id="furo-main-content">
-          <section id="shadow-generations-stage-mod">
-<h1>Shadow Generations stage mod<a class="headerlink" href="#shadow-generations-stage-mod" title="Link to this heading">¶</a></h1>
+          <section id="tutorial-1-shadow-generations-stage-mod">
+<h1>Tutorial 1: Shadow Generations stage mod<a class="headerlink" href="#tutorial-1-shadow-generations-stage-mod" title="Link to this heading">¶</a></h1>
 <p>Welcome to this beginner tutorial for a Shadow Generations stage mod!
 Here you will learn the basics of how to create a stage mod with HEIO!</p>
+<p>In this example, we will modify Kingdom Valley Act 1 from Shadow Generations.</p>
 <p>Let’s get started then, shall we?</p>
-<section id="installing-heio">
-<h2>Installing HEIO<a class="headerlink" href="#installing-heio" title="Link to this heading">¶</a></h2>
-<p>Of course, before we begin, you must install HEIO itself! You can find the installation guide
-<a class="reference internal" href="../getting_started/installation.html"><span class="doc">here</span></a>.</p>
+<div class="admonition attention">
+<p class="admonition-title">Attention</p>
+<p>This tutorial assumes you know the basics of how to work with blender!</p>
+</div>
+<section id="part-0-the-tools">
+<h2>Part 0: The tools<a class="headerlink" href="#part-0-the-tools" title="Link to this heading">¶</a></h2>
+<p>Before we begin, you should make sure you have all the tools needed:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../getting_started/installation.html"><span class="doc">Installing HEIO</span></a> for… well, HEIO</p></li>
+<li><p><a class="reference external" href="https://hedgedocs.com/tools/hedgehog-engine/common/files/">HedgeArcPack</a> for unpacking and packing archive files</p></li>
+<li><p><a class="reference external" href="https://github.com/thesupersonic16/HedgeModManager">HedgeModManager</a> for running the mod</p></li>
+<li><p><a class="reference external" href="https://store.steampowered.com/app/2513280">Sonix X Shadow Generations</a> (should be obvious why)</p></li>
+</ul>
+</section>
+<section id="part-1-preparing-the-files">
+<h2>Part 1: Preparing the files<a class="headerlink" href="#part-1-preparing-the-files" title="Link to this heading">¶</a></h2>
+<p>First, you will want to prepare the files needed for the mod to run in the first place.</p>
+<section id="creating-the-mod">
+<h3>Creating the mod<a class="headerlink" href="#creating-the-mod" title="Link to this heading">¶</a></h3>
+<p>Before we touch any files, let’s first create the mod that will hold all the final files:</p>
+<ol class="arabic simple">
+<li><p>Open HedgeModManager</p></li>
+<li><p>Select Shadow Generations</p></li>
+<li><p>Click the “Add Mod” button</p></li>
+<li><p>Select “Making one (for developers!)”</p></li>
+<li><p>Enter your name in the “Author” field and change the title to “HEIO Tutorial” (or whatever you want it to be named)</p></li>
+<li><p>Press “Ok”</p></li>
+</ol>
+<p>This should create and open a new directory for your mod, where we will put the files needed to get
+everything working.</p>
+</section>
+<section id="which-files">
+<h3>Which files?<a class="headerlink" href="#which-files" title="Link to this heading">¶</a></h3>
+<p>Open the directory in which SXSG is installed. The easiest way to do this is by right
+clicking the game in your steam launcher, going to “manage” and clicking “Browse local files”.</p>
+<figure class="align-default" id="id1">
+<img alt="../_images/shadow_gens_local_files.png" src="../_images/shadow_gens_local_files.png" />
+<figcaption>
+<p><span class="caption-text">How to open the directory where SXSG is installed</span><a class="headerlink" href="#id1" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>Shadow Generations stores all stage specific files under <code class="docutils literal notranslate"><span class="pre">/image/x64/raw/stage</span></code>, so navigate
+there. Inside that directory, you are met with many more directories and <code class="docutils literal notranslate"><span class="pre">.pac</span></code> files, but none
+of them are named after the actual stage names! what now?</p>
+<p>Sonic Team organizes the stage by the zone and act (or challenge) numbers, which are documented
+<a class="reference external" href="https://hedgedocs.com/docs/hedgehog-engine/miller/levels/ids/">here</a>. Going by that list,
+Kingdom Valley Act 1 should be stored under <code class="docutils literal notranslate"><span class="pre">w03a10</span></code>.</p>
+<p>Inside that directory you will find more <code class="docutils literal notranslate"><span class="pre">.pac</span></code> files, which is exactly what we are looking for!
+These are like <code class="docutils literal notranslate"><span class="pre">.zip</span></code> files invented by Sonic team, and they are optimized for faster reading
+to reduce loading times ingame.</p>
+<p>For now, let’s focus on the visual terrain of the stage. Sonic Team stores that in <code class="docutils literal notranslate"><span class="pre">_trr_s##</span></code>
+files, of which we have one here: <code class="docutils literal notranslate"><span class="pre">w03a10_trr_s00.pac</span></code>!</p>
+<p>To open it, we use <strong>HedgeArcPack</strong>. Simply drag and drop the <code class="docutils literal notranslate"><span class="pre">w03a10_trr_s00.pac</span></code> onto
+<code class="docutils literal notranslate"><span class="pre">HedgeArcPack.exe</span></code> and voilá! Now we can access the files inside!</p>
+<p>But before we continue, you should copy the unpacked directory to your mod directory- but not just
+into the mod directory itself! It should be put inside the same relative directory to the <code class="docutils literal notranslate"><span class="pre">raw</span></code>
+directory! Create the directories necessary in your mods <code class="docutils literal notranslate"><span class="pre">raw</span></code> directory, and then copy the unpacked
+<code class="docutils literal notranslate"><span class="pre">w03a10_trr_s00</span></code> directory into it:</p>
+<figure class="align-default" id="id2">
+<img alt="../_images/shadow_gens_stage_mod_copy_unpacked.png" src="../_images/shadow_gens_stage_mod_copy_unpacked.png" />
+<figcaption>
+<p><span class="caption-text">Where to copy the unpacked directory</span><a class="headerlink" href="#id2" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</section>
+</section>
+<section id="part-2-importing-the-files-into-blender">
+<h2>Part 2: Importing the files into blender<a class="headerlink" href="#part-2-importing-the-files-into-blender" title="Link to this heading">¶</a></h2>
+<p>Next, we should import the terrain files into blender, but which files actually belong to
+the terrain? Well:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">.terrain-model</span></code>: Stores models exclusively used for terrain geometry</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">.model</span></code>: Geometry that, while usually reserved for interactive objects, may also be used for stage terrain.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">.material</span></code>: Geometry material information</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">.dds</span></code>: Image textures</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">.pcmodel</span></code>: “Point clouds” that store which models are placed where in the stage.</p></li>
+</ul>
+<section id="importing-stage-geometry">
+<h3>Importing stage geometry<a class="headerlink" href="#importing-stage-geometry" title="Link to this heading">¶</a></h3>
+<p>While each of these can be loaded individually, we are interested in the <code class="docutils literal notranslate"><span class="pre">.pcmodel</span></code> files. So
+let’s try importing one into blender!</p>
+<p>First, make sure your blender project scene has the correct target game of <code class="docutils literal notranslate"><span class="pre">Shadow</span> <span class="pre">Generations</span></code>:</p>
+<figure class="align-default" id="id3">
+<img alt="../_images/project_setup.png" src="../_images/project_setup.png" />
+<figcaption>
+<p><span class="caption-text">Where to change the target game</span><a class="headerlink" href="#id3" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>Next make sure you can see the console output! You will find out why later:</p>
+<figure class="align-default" id="id4">
+<img alt="../_images/shadow_gens_stage_mod_toggle_console.png" src="../_images/shadow_gens_stage_mod_toggle_console.png" />
+<figcaption>
+<p><span class="caption-text">How to toggle the console</span><a class="headerlink" href="#id4" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>Now open the <code class="docutils literal notranslate"><span class="pre">.pcmodel</span></code> importer:</p>
+<figure class="align-default" id="id5">
+<img alt="../_images/asset_importing_pointcloud.png" src="../_images/asset_importing_pointcloud.png" />
+<figcaption>
+<p><span class="caption-text">Where to find the point cloud importer</span><a class="headerlink" href="#id5" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>There, navigate to the originally unpacked <code class="docutils literal notranslate"><span class="pre">w03a10_trr_s00</span></code> directory, <strong>NOT THE COPY IN YOUR
+MOD</strong>; You should find multiple <code class="docutils literal notranslate"><span class="pre">.pcmodel</span></code> files, and while HEIO <em>can</em> import multiple at once,
+we should import just two for now.</p>
+<p>Choose the files <code class="docutils literal notranslate"><span class="pre">w03a10_s15_place_near.pcmodel</span></code> and <code class="docutils literal notranslate"><span class="pre">w03a10_s15_course.pcmodel</span></code> and confirm.</p>
+<p>The import process may take a while, which is what we opened the console for: HEIO prints a status
+bar to the console to make waiting a bit more bearable:</p>
+<figure class="align-default" id="id6">
+<img alt="../_images/shadow_gens_stage_mod_console_output.png" src="../_images/shadow_gens_stage_mod_console_output.png" />
+<figcaption>
+<p><span class="caption-text">The importer status in the console</span><a class="headerlink" href="#id6" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>Once the importer is finished you are met with- Wait, what is that? 10 Files could not be found?
+Oh no! What now??</p>
+</section>
+<section id="working-with-dependencies">
+<h3>Working with dependencies<a class="headerlink" href="#working-with-dependencies" title="Link to this heading">¶</a></h3>
+<p>After importing, you will (probably) be met with a text popup that says the following:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span><span class="hll">10 files could not be found.
+</span>(You can attempt to reimport images using the &quot;Reimport missing images&quot; operator found in the viewport tools)
+
+Some files may be located in the following archives and need to be unpacked:
+        C:\Program Files (x86)\Steam\steamapps\common\SONIC_X_SHADOW_GENERATIONS\image\x64\raw\stage\w03a10\w03a10_trr_cmn.pac
+
+List of unresolved files:
+        m03_kdv_relief05_dfsp_n_ih1.material
+        m03_kdv_brick15_dfsp_y_ih1.material
+        m03_kdv_bridge04_dfsp_r_ih1.material
+        m03_kdv_pillar01_dfsp_z_ih1.material
+        m03_kdv_bridge10_dfsp_z_ih1.material
+        m03_kdv_bridge11_dfsp_z_ih1.material
+        m03_obj_door03_sphere_nk1.material
+        w03_kdv_bridge11_dfsp_z_ih1_abd.dds
+        w03_kdv_bridge11_dfsp_z_ih1_prm.dds
+        w03_kdv_bridge11_dfsp_z_ih1_nrm.dds
+
+
+2 images are streamed and could not be loaded, either because the streaming package (.ntsp file) was not found, or because the streaming package does not contain the texture that is being looked for.
+Please make sure that the NTSP filepath in the addon configuration is correctly set.
+You can attempt to reimport images using the &quot;Reimport missing images&quot; operator found in the viewport tools.
+
+Following streaming packages were not found altogether:
+        w01_stage.ntsp
+        w03_stage.ntsp
+
+List of missing streamed images:
+        w01_dummytex_white_abd
+        w03_kdv_wall05_dfsp_z_ih1_abd
+</pre></div>
+</div>
+<p>Unfortunately, importing the stage won’t be that simple. Not all files for the stage are in a single
+<code class="docutils literal notranslate"><span class="pre">.pac</span></code> archive, and some images are streamed.</p>
+<p>Fortunately, HEIO tells us exactly what we need to do: <code class="docutils literal notranslate"><span class="pre">w03a10_trr_s00.pac</span></code> contains a
+dependency to <code class="docutils literal notranslate"><span class="pre">w03a10_trr_cmn.pac</span></code>, the solution? Unpack it too!</p>
+<p>Go back to the directory where you unpacked <code class="docutils literal notranslate"><span class="pre">w03a10_trr_s00.pac</span></code> and unpack
+<code class="docutils literal notranslate"><span class="pre">w03a10_trr_cmn.pac</span></code> too.</p>
+<p>This will now find all missing files for <code class="docutils literal notranslate"><span class="pre">w03a10_s15_place_near.pcmodel</span></code>, but some terrain models
+use materials even higher up in the dependency tree. To avoid constantly reimporting, open the
+<code class="docutils literal notranslate"><span class="pre">!DEPENDENCIES.txt</span></code> file inside <code class="docutils literal notranslate"><span class="pre">w03a10_trr_cmn</span></code>:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>stage\w03_common
+</pre></div>
+</div>
+<p>As you can see, it references <code class="docutils literal notranslate"><span class="pre">w03_common.pac</span></code> that is found a directory further up. Let’s
+unpack that too! And inside there, you will see it depends on <code class="docutils literal notranslate"><span class="pre">EffectCommon</span></code>, but we can ignore
+that, as it is for effect textures, which the stage geometry does not use.</p>
+<p>Lets revert our previous import with <code class="docutils literal notranslate"><span class="pre">CTRL</span> <span class="pre">+</span> <span class="pre">Z</span></code> and import the two <code class="docutils literal notranslate"><span class="pre">.pcmodel</span></code> files again!
+Aaaaaand… Oh no! we still could not load some images! Is the addon broken??</p>
+</section>
+<section id="loading-streamed-textures">
+<h3>Loading streamed textures<a class="headerlink" href="#loading-streamed-textures" title="Link to this heading">¶</a></h3>
+<p>No, the addon is working just as it should, we just forgot to set up texture streaming.</p>
+<p>To reduce time spent reading many medium sized files, Shadow Generations stores many textures
+inside texture streaming packages. You can find them in the <code class="docutils literal notranslate"><span class="pre">image/x64/raw/texture_streaming</span></code>
+directory:</p>
+<figure class="align-default" id="id7">
+<img alt="../_images/shadow_gens_stage_mod_texture_streaming.png" src="../_images/shadow_gens_stage_mod_texture_streaming.png" />
+<figcaption>
+<p><span class="caption-text">The texture streaming directory</span><a class="headerlink" href="#id7" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>In order for HEIO to load them, all we need to do is open the addon preferences and fill the path
+to the <code class="docutils literal notranslate"><span class="pre">texture_streaming</span></code> directory into the <code class="docutils literal notranslate"><span class="pre">NTSP</span> <span class="pre">Directory</span></code> property for Shadow Generations:</p>
+<figure class="align-default" id="id8">
+<img alt="../_images/addon_config.png" src="../_images/addon_config.png" />
+<figcaption>
+<p><span class="caption-text">Where to find the addon preferences</span><a class="headerlink" href="#id8" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>Now, all we need to do is run the <a class="reference internal" href="../user_interface/tools/viewport_toolbar/general.html#bpy-ops-heio-reimport-images"><span class="std std-ref">Reimport missing images</span></a> operator inside the
+<code class="docutils literal notranslate"><span class="pre">w03a10_trr_s00</span></code> directory:</p>
+<figure class="align-default" id="id9">
+<img alt="../_images/shadow_gens_stage_mod_reimport_images.png" src="../_images/shadow_gens_stage_mod_reimport_images.png" />
+<figcaption>
+<p><span class="caption-text">Where to find the reimport missing images operator</span><a class="headerlink" href="#id9" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>After it has finished running, there should be no popup, which means all relevant files were
+imported now! Hooray!</p>
+</section>
+</section>
+<section id="part-3-editing-the-stage-terrain">
+<h2>Part 3: Editing the stage terrain<a class="headerlink" href="#part-3-editing-the-stage-terrain" title="Link to this heading">¶</a></h2>
+<p>Now that we have everything we need, lets do some editing!</p>
+<section id="blender-preview">
+<h3>Blender preview<a class="headerlink" href="#blender-preview" title="Link to this heading">¶</a></h3>
+<p>But first, let’s look at the imported stage in all it’s glory by enabling viewport shading. Doing
+so will reveal some weird, textureless geometry that is not seen ingame:</p>
+<figure class="align-default" id="id10">
+<img alt="../_images/shadow_gens_stage_mod_shadow_casters.png" src="../_images/shadow_gens_stage_mod_shadow_casters.png" />
+<figcaption>
+<p><span class="caption-text">Texturesless geometry that is not visible ingame</span><a class="headerlink" href="#id10" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>As you can see, they match the rough shape of the rock cliffs, which has a good reason: The actual
+cliffs are configured to not cast shadows, which is instead done using this “shadow caster”
+geometry!</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>If you want to hide them, or put them in a sub-collection (which HEIO allows) then you can do
+so easily; All of these (should) have the same material, which means you can select
+one of them and then automatically select the rest by using
+<span class="menuselection">Select ‣ Select Linked ‣ Material</span>:</p>
+<figure class="align-default" id="id11" style="width: 70%">
+<img alt="../_images/shadow_gens_stage_mod_hide_shadow_casters.png" src="../_images/shadow_gens_stage_mod_hide_shadow_casters.png" />
+<figcaption>
+<p><span class="caption-text">Where to find the select linked operator</span><a class="headerlink" href="#id11" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</div>
+</section>
+<section id="placing-terrain">
+<h3>Placing terrain<a class="headerlink" href="#placing-terrain" title="Link to this heading">¶</a></h3>
+<p>Let’s try placing terrain now! How about we copy and paste one of the tours at the beginning?</p>
+<p>Select these 4 objects (there is a shadowcaster object hidden inside the top object):</p>
+<figure class="align-default" id="id12">
+<img alt="../_images/shadow_gens_stage_mod_tower_objects.png" src="../_images/shadow_gens_stage_mod_tower_objects.png" />
+<figcaption>
+<p><span class="caption-text">The objects to select</span><a class="headerlink" href="#id12" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>Now duplicate them using the
+<a class="reference external" href="https://docs.blender.org/manual/en/latest/scene_layout/object/editing/duplicate_linked.html">Duplicate Linked</a>
+operator (<code class="docutils literal notranslate"><span class="pre">ALT</span> <span class="pre">+</span> <span class="pre">D</span></code>) so that we reuse the same terrain models and place them right after the
+previous tower in the stage:</p>
+<figure class="align-default" id="id13">
+<img alt="../_images/shadow_gens_stage_mod_tower_objects_duplicated.png" src="../_images/shadow_gens_stage_mod_tower_objects_duplicated.png" />
+<figcaption>
+<p><span class="caption-text">The duplicated geometry moved to a new position</span><a class="headerlink" href="#id13" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="bringing-the-changes-to-the-game">
+<h3>Bringing the changes to the game<a class="headerlink" href="#bringing-the-changes-to-the-game" title="Link to this heading">¶</a></h3>
+<p>Next, let’s bring this new tower to the game, shall we?</p>
+<p>First, you must create a new collection with the name <code class="docutils literal notranslate"><span class="pre">PCMODEL</span> <span class="pre">Collections</span></code> and move the two
+imported collections into it:</p>
+<figure class="align-default" id="id14">
+<img alt="../_images/shadow_gens_stage_mod_tower_pcmodel_collection.png" src="../_images/shadow_gens_stage_mod_tower_pcmodel_collection.png" />
+<figcaption>
+<p><span class="caption-text">How to organize the collections</span><a class="headerlink" href="#id14" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>Next, set up a collection exporter on the <code class="docutils literal notranslate"><span class="pre">PCMODEL</span> <span class="pre">Collections</span></code> collection that uses the
+<code class="docutils literal notranslate"><span class="pre">Collections</span> <span class="pre">as</span> <span class="pre">HE</span> <span class="pre">Point</span> <span class="pre">clouds</span></code> exporter:</p>
+<figure class="align-default" id="id15">
+<img alt="../_images/shadow_gens_stage_mod_tower_collection_exporter.png" src="../_images/shadow_gens_stage_mod_tower_collection_exporter.png" />
+<figcaption>
+<p><span class="caption-text">How to create the collection exporter</span><a class="headerlink" href="#id15" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>You will want to configure two things in the exporter:</p>
+<ol class="arabic simple">
+<li><p>The filepath should point to a <code class="docutils literal notranslate"><span class="pre">dummy.pcmodel</span></code> files <strong>in your mods w03a10_trr_s00 directory</strong>. This file won’t actually be exported, but blender demands you input the path to a file for the exporter to work, so we abide by that demand.</p></li>
+<li><p>Disable <code class="docutils literal notranslate"><span class="pre">Write</span> <span class="pre">Resources</span></code> in the <code class="docutils literal notranslate"><span class="pre">Point</span> <span class="pre">Cloud</span></code> panel. This prevents any <code class="docutils literal notranslate"><span class="pre">.terrain-model</span></code> files and similar from being written, and only actually writes the <code class="docutils literal notranslate"><span class="pre">.pcmodel</span></code> files. We do this because we did not actually modify or add any new terrain models, and so we can save ourselves the time of exporting those again and just use the ones already in the directory.</p></li>
+</ol>
+<figure class="align-default" id="id16">
+<img alt="../_images/shadow_gens_stage_mod_tower_collection_exporter_setup.png" src="../_images/shadow_gens_stage_mod_tower_collection_exporter_setup.png" />
+<figcaption>
+<p><span class="caption-text">How the exporter should roughly look</span><a class="headerlink" href="#id16" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>Once it’s set up, hit <code class="docutils literal notranslate"><span class="pre">Export</span> <span class="pre">All</span></code>! This should take less than a second.</p>
+<p>You can verify whether the <code class="docutils literal notranslate"><span class="pre">.pcmodel</span></code> files have been written by going to the export directory and
+sorting by the last-changed-date:</p>
+<figure class="align-default" id="id17">
+<img alt="../_images/shadow_gens_stage_mod_tower_collection_exporter_result.png" src="../_images/shadow_gens_stage_mod_tower_collection_exporter_result.png" />
+<figcaption>
+<p><span class="caption-text">The exported files</span><a class="headerlink" href="#id17" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="preparing-the-files-for-the-mod">
+<h3>Preparing the files for the mod<a class="headerlink" href="#preparing-the-files-for-the-mod" title="Link to this heading">¶</a></h3>
+<p>One more step that we need to do to get the changes working ingame: We have to convert the directory
+back into a <code class="docutils literal notranslate"><span class="pre">.pac</span></code> file. Nothing easier than that! Simply drag &amp; drop the <code class="docutils literal notranslate"><span class="pre">w03a10_trr_s00</span></code> in
+your mod directory onto <code class="docutils literal notranslate"><span class="pre">HedgeArcPack.exe</span></code>!</p>
+<p>A console window will open and ask you which archive type to use, for which we use <code class="docutils literal notranslate"><span class="pre">sxsg</span></code>. Once
+entered, press enter, and the program will do its thing. After a second, you should have a fresh
+<code class="docutils literal notranslate"><span class="pre">w03a10_trr_s00.pac</span></code> file.</p>
+</section>
+<section id="testing-the-mod">
+<h3>Testing the mod<a class="headerlink" href="#testing-the-mod" title="Link to this heading">¶</a></h3>
+<p>That’s it now! Start the HedgeModManager, enable the mod, and make your way into Kingdom Valley
+Act 1, where you should see this:</p>
+<figure class="align-default" id="id18">
+<img alt="../_images/shadow_gens_stage_mod_tower_ingame.png" src="../_images/shadow_gens_stage_mod_tower_ingame.png" />
+<figcaption>
+<p><span class="caption-text">The duplicated tower object ingame</span><a class="headerlink" href="#id18" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>However, once you try to land on it, you promptly fall through… what went wrong? Where is the
+collision?</p>
+</section>
+</section>
+<section id="part-4-editing-the-stage-collision">
+<h2>Part 4: Editing the stage collision<a class="headerlink" href="#part-4-editing-the-stage-collision" title="Link to this heading">¶</a></h2>
+<p>Stage collision is stored in different files from stage terrain, using <code class="docutils literal notranslate"><span class="pre">.btmesh</span></code> and <code class="docutils literal notranslate"><span class="pre">.pccol</span></code>
+files instead.</p>
+<section id="importing-the-collision-files">
+<h3>Importing the collision files<a class="headerlink" href="#importing-the-collision-files" title="Link to this heading">¶</a></h3>
+<p>The steps here are very similar to those before:</p>
+<ol class="arabic simple">
+<li><p>Go to the original <code class="docutils literal notranslate"><span class="pre">w03a10</span></code> directory</p></li>
+<li><p>Stage collision is stored in <code class="docutils literal notranslate"><span class="pre">_misc</span></code> archives, so unpack <code class="docutils literal notranslate"><span class="pre">w03a10_misc.pac</span></code></p></li>
+<li><p>Copy the unpacked directory to your mods <code class="docutils literal notranslate"><span class="pre">w03a10</span></code> directory for later.</p></li>
+<li><p>In your blender project, create a new <code class="docutils literal notranslate"><span class="pre">PCCOL</span> <span class="pre">Collections</span></code> collection and select it</p></li>
+<li><p>Open the point cloud importer again</p></li>
+<li><p>Import the <code class="docutils literal notranslate"><span class="pre">w03a10_s15_place_near.pccol</span></code> and <code class="docutils literal notranslate"><span class="pre">w03a10_s15_course.pccol</span></code> files from the unpacked <code class="docutils literal notranslate"><span class="pre">w03a10_misc</span></code> directory</p></li>
+</ol>
+<p>After importing, we have a small problem: These collections have the same name as the <code class="docutils literal notranslate"><span class="pre">.pcmodel</span></code>
+collections! What now?</p>
+<p>The answer is simple: add a <code class="docutils literal notranslate"><span class="pre">.pcmodel</span></code> to the name of the terrain collections, and replace the
+<code class="docutils literal notranslate"><span class="pre">.001</span></code> of the collision collections with a <code class="docutils literal notranslate"><span class="pre">.pccol</span></code>. HEIO will not include those extensions
+when exporting later:</p>
+<figure class="align-default" id="id19">
+<img alt="../_images/shadow_gens_stage_mod_tower_pc_collections.png" src="../_images/shadow_gens_stage_mod_tower_pc_collections.png" />
+<figcaption>
+<p><span class="caption-text">How the collections should now be set up</span><a class="headerlink" href="#id19" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="editing-the-collision">
+<h3>Editing the collision<a class="headerlink" href="#editing-the-collision" title="Link to this heading">¶</a></h3>
+<p>First, you should hide the PCMODEL collection, so that we can look at the collision unobstructed.
+Doing so, we noticed an issue… Almost all of the collision geometry is one big mesh!</p>
+<p>While you can edit the mesh as is, there is an easier way: We can split the mesh up by its “shapes”
+using the <a class="reference internal" href="../user_interface/tools/viewport_toolbar/general.html#bpy-ops-heio-split-meshgroups"><span class="std std-ref">“Split mesh by groups”</span></a> operator:</p>
+<figure class="align-default" id="id20">
+<img alt="../_images/shadow_gens_stage_mod_collision_split.png" src="../_images/shadow_gens_stage_mod_collision_split.png" />
+<figcaption>
+<p><span class="caption-text">Where to find the “Split mesh by groups” operator</span><a class="headerlink" href="#id20" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>To use it, simply select the big collision object with the name <code class="docutils literal notranslate"><span class="pre">w03a10_s15_col</span></code>, then click the
+split operator and confirm the popup.</p>
+<p>To make distinguishing between the different shapes easier you can change the viewport color mode
+to <code class="docutils literal notranslate"><span class="pre">Random</span></code>, which will give every object a different color:</p>
+<figure class="align-default" id="id21">
+<img alt="../_images/shadow_gens_stage_mod_viewport_random_colors.png" src="../_images/shadow_gens_stage_mod_viewport_random_colors.png" />
+<figcaption>
+<p><span class="caption-text">The random color mode in action</span><a class="headerlink" href="#id21" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>Now we can simply duplicate the collision responsible for the tower and move it over to where our
+duplicated terrain tower is!</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>If you want to have the collision properly aligned with the terrain:</p>
+<ol class="arabic simple">
+<li><p>delete the old duplicated tower</p></li>
+<li><p>select both the collision and terrain objects for the tower</p></li>
+<li><p>link-duplicate them at the same time</p></li>
+<li><p>move them over again</p></li>
+</ol>
+</div>
+<p>Et voilá, now the tower collision should stand!</p>
+<figure class="align-default" id="id22">
+<img alt="../_images/shadow_gens_stage_mod_tower_collision_duplicated.png" src="../_images/shadow_gens_stage_mod_tower_collision_duplicated.png" />
+<figcaption>
+<p><span class="caption-text">The duplicated tower collision</span><a class="headerlink" href="#id22" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You won’t have to merge the collision back together, it works as is! (In fact, merging it back
+together would make things a bit too complicated for this tutorial).</p>
+</div>
+<div class="admonition hint">
+<p class="admonition-title">Hint</p>
+<p>If you are interested in learning more about how collision models work  and why you can split them,
+then you can read the <a class="reference internal" href="../guides/collision_mesh_editing.html"><span class="doc">HEIO Collision mesh editing guide</span></a>.</p>
+</div>
+</section>
+<section id="setting-up-the-exporter">
+<h3>Setting up the exporter<a class="headerlink" href="#setting-up-the-exporter" title="Link to this heading">¶</a></h3>
+<p>Now, just like for the terrain, set up a collection exporter for the PCCOL parent collection.</p>
+<p>Make sure that the filepath points to <code class="docutils literal notranslate"><span class="pre">dummy.pccol</span></code> in your mods <code class="docutils literal notranslate"><span class="pre">w03a10_misc</span></code> directory and to
+set the <code class="docutils literal notranslate"><span class="pre">Collection</span> <span class="pre">Type</span></code> tp <code class="docutils literal notranslate"><span class="pre">Collision</span></code>.</p>
+<p>This time however, we want to leave <code class="docutils literal notranslate"><span class="pre">Write</span> <span class="pre">Resources</span></code> enabled, as we modified a mesh itself and
+not the pcmodel file! Fortunately, exporting collision meshes does not occupy much time, which is
+why we can do that without worry:</p>
+<figure class="align-default" id="id23">
+<img alt="../_images/shadow_gens_stage_mod_tower_collection_exporter_setup_col.png" src="../_images/shadow_gens_stage_mod_tower_collection_exporter_setup_col.png" />
+<figcaption>
+<p><span class="caption-text">How the exporter should roughly look</span><a class="headerlink" href="#id23" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>Now press <code class="docutils literal notranslate"><span class="pre">Export</span> <span class="pre">All</span></code>. Now several files in your output directory should have been exporter:</p>
+<figure class="align-default" id="id24">
+<img alt="../_images/shadow_gens_stage_mod_collision_export_result.png" src="../_images/shadow_gens_stage_mod_collision_export_result.png" />
+<figcaption>
+<p><span class="caption-text">The exported files</span><a class="headerlink" href="#id24" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>You can trigger all collection exporters at once using the <code class="docutils literal notranslate"><span class="pre">Export</span> <span class="pre">All</span> <span class="pre">Collections</span></code> operator
+in the <code class="docutils literal notranslate"><span class="pre">File</span></code> menu, right below the <code class="docutils literal notranslate"><span class="pre">Export</span></code> submenu.</p>
+</div>
+</section>
+<section id="testing-the-mod-again">
+<h3>Testing the mod again<a class="headerlink" href="#testing-the-mod-again" title="Link to this heading">¶</a></h3>
+<p>Once again, time to test the mod! Convert the <code class="docutils literal notranslate"><span class="pre">w03a10_misc</span></code> directory to a <code class="docutils literal notranslate"><span class="pre">.pac</span></code> (and the
+<code class="docutils literal notranslate"><span class="pre">w03a10_trr_s00</span></code> directory too, if you changed where the tower terrain was placed), start the
+game and boot into the stage.</p>
+<p>This time, upon jumping on the tower, you should not fall through:</p>
+<figure class="align-default" id="id25">
+<img alt="../_images/shadow_gens_stage_mod_tower_ingame_collision.png" src="../_images/shadow_gens_stage_mod_tower_ingame_collision.png" />
+<figcaption>
+<p><span class="caption-text">Standing on the duplicated tower object ingame</span><a class="headerlink" href="#id25" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</section>
+</section>
+<section id="part-5-adding-custom-terrain-and-collision">
+<h2>Part 5: Adding custom terrain and collision<a class="headerlink" href="#part-5-adding-custom-terrain-and-collision" title="Link to this heading">¶</a></h2>
+<p>Time to get really spicy by adding our own terrain and collision models!</p>
+<section id="the-terrain-model">
+<h3>The terrain model<a class="headerlink" href="#the-terrain-model" title="Link to this heading">¶</a></h3>
+<p>Let’s start with the terrain by adding our beloved Suzanne: Place the cursor on the duplicated
+tower and add a new monkey model. Add a subdivision surface modifier to it to make it nice and
+smooth. Make sure that the object is part of your <code class="docutils literal notranslate"><span class="pre">w03a10_s15_place_near.pcmodel</span></code> collection!</p>
+<p>Next, we need to configure some SCA parameters so the model casts and receives shadows ingame.
+Open the objects mesh properties, in which you open the <code class="docutils literal notranslate"><span class="pre">HEIO</span> <span class="pre">Mesh</span> <span class="pre">Properties</span></code> panel, in which
+you open the <code class="docutils literal notranslate"><span class="pre">SCA</span> <span class="pre">Parameters</span></code> subpanel.</p>
+<p>This subpanel has a list and 5 buttons to the right. Press the button at the very bottom and
+select the <code class="docutils literal notranslate"><span class="pre">ShadowCa</span></code> preset and confirm. The new SCA parameter should appear in the list with
+a checkbox; Toggle the checkbox on. This enables Shadow casting for the object.</p>
+<p>Do the same for the <code class="docutils literal notranslate"><span class="pre">ShadowRe</span></code> preset, which enabled Shadow receiving.</p>
+<figure class="align-default" id="id26">
+<img alt="../_images/shadow_gens_stage_mod_suzanne_sca_parameters.png" src="../_images/shadow_gens_stage_mod_suzanne_sca_parameters.png" />
+<figcaption>
+<p><span class="caption-text">How the SCA parameters should look after setting them up.</span><a class="headerlink" href="#id26" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="the-terrain-material">
+<h3>The terrain material<a class="headerlink" href="#the-terrain-material" title="Link to this heading">¶</a></h3>
+<p>Next, add a material to Suzanne and name it <code class="docutils literal notranslate"><span class="pre">Suzanne</span></code>. In this new material, open the
+<code class="docutils literal notranslate"><span class="pre">HEIO</span> <span class="pre">Material</span> <span class="pre">Properties</span></code> panel and disable the <code class="docutils literal notranslate"><span class="pre">Custom</span> <span class="pre">Shader</span></code> property. This will
+exchange the shader text field with a dropdown. In that dropdown select <code class="docutils literal notranslate"><span class="pre">Common_d</span></code>, which
+is a very simple PBR shader. Once switched press the <code class="docutils literal notranslate"><span class="pre">Setup/Update</span> <span class="pre">Nodes</span></code> button to enable
+material previewing in blender.</p>
+<p>Right now the material appears completely black - this happens because we don’t have a texture.
+Create a new texture in the <code class="docutils literal notranslate"><span class="pre">Texture</span> <span class="pre">Paint</span></code> workspace, name it <code class="docutils literal notranslate"><span class="pre">Suzanne_abd</span></code>, make it 16x16,
+uncheck <code class="docutils literal notranslate"><span class="pre">Alpha</span></code> and give it a color of your choice - i will use red:</p>
+<figure class="align-default" id="id27">
+<img alt="../_images/shadow_gens_stage_mod_suzanne_texture.png" src="../_images/shadow_gens_stage_mod_suzanne_texture.png" />
+<figcaption>
+<p><span class="caption-text">How to create the texture</span><a class="headerlink" href="#id27" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>If you name your image after the object like <code class="docutils literal notranslate"><span class="pre">Suzanne</span></code> it will be used as the lightmap!</p>
+<p>This also happens when you name it after the object + <code class="docutils literal notranslate"><span class="pre">_ao</span></code>, like <code class="docutils literal notranslate"><span class="pre">Suzanne_ao</span></code>, in which
+case the image gets used for the ambient occlusion lightmap!</p>
+</div>
+<p>Now open the DDS settings (provided by the DDS addon; hopefully you installed it in part 0!) and
+change the DXGI format to <code class="docutils literal notranslate"><span class="pre">BC1_UNORM</span></code>:</p>
+<figure class="align-default" id="id28">
+<img alt="../_images/shadow_gens_stage_mod_suzanne_texture_dds.png" src="../_images/shadow_gens_stage_mod_suzanne_texture_dds.png" />
+<figcaption>
+<p><span class="caption-text">Where to find the DDS settings</span><a class="headerlink" href="#id28" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>With the texture set up, go back to the <code class="docutils literal notranslate"><span class="pre">HEIO</span> <span class="pre">material</span> <span class="pre">properties</span></code> panel, open the <code class="docutils literal notranslate"><span class="pre">textures</span></code>
+subpanel and select the <code class="docutils literal notranslate"><span class="pre">diffuse</span></code> texture. With it selected, click on the <code class="docutils literal notranslate"><span class="pre">Image</span></code> box below
+the list and select your freshly created <code class="docutils literal notranslate"><span class="pre">Suzanne</span></code> texture.</p>
+<p>Somehow, the model is still black; That is because the model has no vertex colors. Go into the mesh
+properties, open the color attributes subpanel and create a new, <strong>white</strong> color attribute. Now the
+model should be the color of your texture!</p>
+<p>Go back into the <code class="docutils literal notranslate"><span class="pre">HEIO</span> <span class="pre">Material</span> <span class="pre">Properties</span></code> panel, open the <code class="docutils literal notranslate"><span class="pre">General</span></code> subpanel and change the
+<code class="docutils literal notranslate"><span class="pre">Render</span> <span class="pre">Layer</span></code> to <code class="docutils literal notranslate"><span class="pre">Opaque</span></code> (using <code class="docutils literal notranslate"><span class="pre">automatic</span></code> would export with <code class="docutils literal notranslate"><span class="pre">Transparent</span></code>, which we
+don’t want).</p>
+<p>Next, open the <code class="docutils literal notranslate"><span class="pre">Parameters</span></code> subpanel and select the <code class="docutils literal notranslate"><span class="pre">PBRFactor</span></code> entry at the bottom of the
+list. This has 4 values:</p>
+<ol class="arabic simple">
+<li><p>Specular</p></li>
+<li><p>Smoothness</p></li>
+<li><p>Metallic</p></li>
+<li><p>and an unused one.</p></li>
+</ol>
+<p>Why don’t we go with a shiny plastic look? Use 0.125 for specular (which is usually considered
+standard and physically accurate) and 0.8 for smoothness. Nice, now the model looks (somewhat) like
+plastic!</p>
+<figure class="align-default" id="id29">
+<img alt="../_images/shadow_gens_stage_mod_suzanne_preview.png" src="../_images/shadow_gens_stage_mod_suzanne_preview.png" />
+<figcaption>
+<p><span class="caption-text">How i made my suzanne look</span><a class="headerlink" href="#id29" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<figure class="align-default" id="id30">
+<img alt="../_images/shadow_gens_stage_mod_suzanne_material.png" src="../_images/shadow_gens_stage_mod_suzanne_material.png" />
+<figcaption>
+<p><span class="caption-text">My material settings</span><a class="headerlink" href="#id30" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="exporting-the-terrain-model">
+<h3>Exporting the terrain-model<a class="headerlink" href="#exporting-the-terrain-model" title="Link to this heading">¶</a></h3>
+<p>To avoid spending unnecessary time exporting all models in the stage, lets export this model
+on its own (exporting the imported textures would take forever!).</p>
+<p>Select the Suzanne object (and only Suzanne!), then open the terrain-model exporter:</p>
+<figure class="align-default" id="id31">
+<img alt="../_images/asset_exporting_terrain_model.png" src="../_images/asset_exporting_terrain_model.png" />
+<figcaption>
+<p><span class="caption-text">Where to find the terrain-model exporter</span><a class="headerlink" href="#id31" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>In the exporter properties enable <code class="docutils literal notranslate"><span class="pre">Limit</span> <span class="pre">to</span> <span class="pre">Selected</span> <span class="pre">Objects</span></code>:</p>
+<figure class="align-default" id="id32">
+<img alt="../_images/shadow_gens_stage_mod_suzanne_export_settings.png" src="../_images/shadow_gens_stage_mod_suzanne_export_settings.png" />
+<figcaption>
+<p><span class="caption-text">How to change which objects to include in the exporter</span><a class="headerlink" href="#id32" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>Now navigate to your mods <code class="docutils literal notranslate"><span class="pre">w03a10_trr_s00</span></code> directory and confirm. This should now create</p>
+<ul class="simple">
+<li><p>A <code class="docutils literal notranslate"><span class="pre">Suzanne.terrain-model</span></code> file</p></li>
+<li><p>A <code class="docutils literal notranslate"><span class="pre">Suzanne.material</span></code> file</p></li>
+<li><p>A <code class="docutils literal notranslate"><span class="pre">Suzanne_abd.dds</span></code> file</p></li>
+</ul>
+<figure class="align-default" id="id33">
+<img alt="../_images/shadow_gens_stage_mod_suzanne_export_result.png" src="../_images/shadow_gens_stage_mod_suzanne_export_result.png" />
+<figcaption>
+<p><span class="caption-text">The exported files</span><a class="headerlink" href="#id33" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>Now run the <code class="docutils literal notranslate"><span class="pre">PCMODEL</span> <span class="pre">Collections</span></code> colletion exporter. The terrain part is done!</p>
+</section>
+<section id="the-collision-mesh">
+<h3>The collision mesh<a class="headerlink" href="#the-collision-mesh" title="Link to this heading">¶</a></h3>
+<p>Now all that is missing is the collision mesh!</p>
+<p>Select your terrain Suzanne and duplicate it (not linked). Move the duplicate over to the
+<code class="docutils literal notranslate"><span class="pre">w03a10_s15_place_near.pccol</span></code> collection.</p>
+<p>Rename the object to <code class="docutils literal notranslate"><span class="pre">Suzanne_col</span></code>, and rename its mesh data to <code class="docutils literal notranslate"><span class="pre">Suzanne_col</span></code> too:</p>
+<figure class="align-default" id="id34">
+<img alt="../_images/shadow_gens_stage_mod_suzanne_col_names.png" src="../_images/shadow_gens_stage_mod_suzanne_col_names.png" />
+<figcaption>
+<p><span class="caption-text">The suzanne collision model setup</span><a class="headerlink" href="#id34" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>Next remove the subdivision surface modifier, as well as the material.</p>
+<p>What we need to do now determines how Shadow interacts with the collision: In the mesh properties
+open the <code class="docutils literal notranslate"><span class="pre">HEIO</span> <span class="pre">Mesh</span> <span class="pre">properties</span></code> panel again, and in there open the <code class="docutils literal notranslate"><span class="pre">Groups</span></code> subpanel.</p>
+<p>Press the <code class="docutils literal notranslate"><span class="pre">Initialize</span> <span class="pre">mesh</span> <span class="pre">info</span></code> button and change the Collision layer of the freshly created
+group to <code class="docutils literal notranslate"><span class="pre">Solid</span></code> to make it a solid collision mesh:</p>
+<figure class="align-default" id="id35">
+<img alt="../_images/shadow_gens_stage_mod_suzanne_col_group.png" src="../_images/shadow_gens_stage_mod_suzanne_col_group.png" />
+<figcaption>
+<p><span class="caption-text">The group with its collision layer</span><a class="headerlink" href="#id35" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>Next open the <code class="docutils literal notranslate"><span class="pre">Collision</span> <span class="pre">Types</span></code> subpanel and initialize the mesh info here too. Clck on the list
+entry and select <code class="docutils literal notranslate"><span class="pre">Earth</span></code> - this determines the footstep sounds and particles when interacting
+with the collision. There Unfortunately is no “plastic” type, which is why we settle for earth.</p>
+<p>That’s it! Now run the PCCOL Exporter!</p>
+</section>
+<section id="the-final-test-ingame">
+<h3>The final test ingame<a class="headerlink" href="#the-final-test-ingame" title="Link to this heading">¶</a></h3>
+<p>As per usual, pack both directories in your mod again and boot up the stage ingame. Suzanne should
+be right there, and we can interact with her too:</p>
+<figure class="align-default" id="id36">
+<img alt="../_images/shadow_gens_stage_mod_suzanne_ingame.png" src="../_images/shadow_gens_stage_mod_suzanne_ingame.png" />
+<figcaption>
+<p><span class="caption-text">Suzanne ingame</span><a class="headerlink" href="#id36" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</section>
+</section>
+<section id="part-6-you-re-done-now-what">
+<h2>Part 6: You’re done! Now what?<a class="headerlink" href="#part-6-you-re-done-now-what" title="Link to this heading">¶</a></h2>
+<p><strong>Congratulations!</strong> You have learned the basics of Shadow Generations stage modding! Most of this
+translates to Sonic Frontiers stage modding too!</p>
+<p>If you want to learn more about how HEIO works, check out the <a class="reference internal" href="../guides/index.html"><span class="doc">Guides</span></a> section!</p>
+<p>With that said, i hope you found this tutorial helpful! If you still have questions you can join
+the <a class="reference external" href="https://dc.railgun.works/hems">Hedgehog Engine Modding Discord Server</a>.</p>
 </section>
 </section>
 
@@ -427,7 +1024,7 @@ Here you will learn the basics of how to create a stage mod with HEIO!</p>
             Made with 
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2025-01-25</div>
+              Last updated on 2025-01-26</div>
           </div>
           <div class="right-details">
             
@@ -458,8 +1055,43 @@ Here you will learn the basics of how to create a stage mod with HEIO!</p>
         <div class="toc-tree-container">
           <div class="toc-tree">
             <ul>
-<li><a class="reference internal" href="#">Shadow Generations stage mod</a><ul>
-<li><a class="reference internal" href="#installing-heio">Installing HEIO</a></li>
+<li><a class="reference internal" href="#">Tutorial 1: Shadow Generations stage mod</a><ul>
+<li><a class="reference internal" href="#part-0-the-tools">Part 0: The tools</a></li>
+<li><a class="reference internal" href="#part-1-preparing-the-files">Part 1: Preparing the files</a><ul>
+<li><a class="reference internal" href="#creating-the-mod">Creating the mod</a></li>
+<li><a class="reference internal" href="#which-files">Which files?</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#part-2-importing-the-files-into-blender">Part 2: Importing the files into blender</a><ul>
+<li><a class="reference internal" href="#importing-stage-geometry">Importing stage geometry</a></li>
+<li><a class="reference internal" href="#working-with-dependencies">Working with dependencies</a></li>
+<li><a class="reference internal" href="#loading-streamed-textures">Loading streamed textures</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#part-3-editing-the-stage-terrain">Part 3: Editing the stage terrain</a><ul>
+<li><a class="reference internal" href="#blender-preview">Blender preview</a></li>
+<li><a class="reference internal" href="#placing-terrain">Placing terrain</a></li>
+<li><a class="reference internal" href="#bringing-the-changes-to-the-game">Bringing the changes to the game</a></li>
+<li><a class="reference internal" href="#preparing-the-files-for-the-mod">Preparing the files for the mod</a></li>
+<li><a class="reference internal" href="#testing-the-mod">Testing the mod</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#part-4-editing-the-stage-collision">Part 4: Editing the stage collision</a><ul>
+<li><a class="reference internal" href="#importing-the-collision-files">Importing the collision files</a></li>
+<li><a class="reference internal" href="#editing-the-collision">Editing the collision</a></li>
+<li><a class="reference internal" href="#setting-up-the-exporter">Setting up the exporter</a></li>
+<li><a class="reference internal" href="#testing-the-mod-again">Testing the mod again</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#part-5-adding-custom-terrain-and-collision">Part 5: Adding custom terrain and collision</a><ul>
+<li><a class="reference internal" href="#the-terrain-model">The terrain model</a></li>
+<li><a class="reference internal" href="#the-terrain-material">The terrain material</a></li>
+<li><a class="reference internal" href="#exporting-the-terrain-model">Exporting the terrain-model</a></li>
+<li><a class="reference internal" href="#the-collision-mesh">The collision mesh</a></li>
+<li><a class="reference internal" href="#the-final-test-ingame">The final test ingame</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#part-6-you-re-done-now-what">Part 6: You’re done! Now what?</a></li>
 </ul>
 </li>
 </ul>
