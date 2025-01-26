@@ -23,7 +23,7 @@ Before we begin, you should make sure you have all the tools needed:
 - :doc:`Installing HEIO </getting_started/installation>` for... well, HEIO
 - `HedgeArcPack <https://hedgedocs.com/tools/hedgehog-engine/common/files/>`_ for unpacking and packing archive files
 - `HedgeModManager <https://github.com/thesupersonic16/HedgeModManager>`_ for running the mod
-- `Sonix X Shadow Generations <https://store.steampowered.com/app/2513280>`_ (should be obvious why)
+- `Sonic X Shadow Generations <https://store.steampowered.com/app/2513280>`_ (should be obvious why)
 
 Part 1: Preparing the files
 ===========================
