@@ -310,13 +310,17 @@ class HEIO_OT_SplitMeshGroups(HEIOBasePopupOperator):
                 attribute_utils.decrease_int_values(
                     None, split_mesh, layers.attribute_name, i)
 
-    def _split_collision_primitives(self, context, base):
+    def _split_collision_primitives(self, base):
+        collections = list(base.users_collection)
+
         for i, primitive in enumerate(base.data.heio_mesh.collision_primitives):
             split_mesh = bpy.data.meshes.new(f"{base.data.name}_primitive{i}")
             split_object = bpy.data.objects.new(
                 f"{base.name}_primitive{i}", split_mesh)
             split_object.parent = base
-            context.collection.objects.link(split_object)
+
+            for col in collections:
+                col.objects.link(split_object)
 
             split_primitive = split_mesh.heio_mesh.collision_primitives.new()
             split_primitive.shape_type = primitive.shape_type
@@ -357,6 +361,8 @@ class HEIO_OT_SplitMeshGroups(HEIOBasePopupOperator):
             raise HEIOUserException(f"Mesh has less than 2 mesh groups!")
 
         base_matrix = context.active_object.matrix_world
+
+        collections = list(obj.users_collection)
 
         for i, mesh_group in enumerate(mesh_groups):
             split_mesh = mesh.copy()
@@ -419,7 +425,9 @@ class HEIO_OT_SplitMeshGroups(HEIOBasePopupOperator):
             split_obj = bpy.data.objects.new(f"{obj.name}_{mesh_group.name}", split_mesh)
             split_obj.parent = obj
             split_obj.matrix_world = base_matrix @ Matrix.Translation(center)
-            context.collection.objects.link(split_obj)
+
+            for col in collections:
+                col.objects.link(split_obj)
 
             split_mesh.heio_mesh.groups.delete()
             split_mesh.heio_mesh.groups.copy_from(mesh_group)
@@ -439,7 +447,7 @@ class HEIO_OT_SplitMeshGroups(HEIOBasePopupOperator):
             obj.data.name = mesh.name + "_split"
 
         if self.split_collision_primitives:
-            self._split_collision_primitives(context, obj)
+            self._split_collision_primitives(obj)
 
         obj.data.clear_geometry()
         obj.data.materials.clear()
