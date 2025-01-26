@@ -367,16 +367,21 @@ class ImportModelBaseOperator(ImportMaterialOperator):
         col_name = "HEIO LOD Imports"
         if col_name in bpy.data.collections:
             lod_collection = bpy.data.collections[col_name]
+            created = False
         else:
             lod_collection = bpy.data.collections.new(col_name)
             lod_collection.hide_render = True
             lod_collection.hide_viewport = True
+            created = True
 
         if col_name not in context.scene.collection.children:
             context.scene.collection.children.link(lod_collection)
 
         for model_info in model_infos:
             model_info.setup_lod_info(lod_collection, context)
+
+        if created and len(lod_collection.objects) == 0:
+            bpy.data.collections.remove(lod_collection)
 
     def _import_model_files(self, context: bpy.types.Context, type):
         progress_console.update("Resolving & reading files")
@@ -518,15 +523,23 @@ class ImportPointCloudOperator(ImportCollisionMeshOperator, ImportModelBaseOpera
         instances_collection = None
 
         if self.models_as_instance_collections:
-            instances_collection = bpy.data.collections.new(
-                "Instance collections")
-            instances_collection.hide_viewport = True
-            instances_collection.hide_render = True
-            context.collection.children.link(instances_collection)
+            collection_name = "HEIO Instance collections"
+            if collection_name in bpy.data.collections:
+                instances_collection = bpy.data.collections[collection_name]
+                created = False
+            else:
+                instances_collection = bpy.data.collections.new(collection_name)
+                instances_collection.hide_viewport = True
+                instances_collection.hide_render = True
+                context.collection.children.link(instances_collection)
+                created = True
 
         self.point_cloud_converter = i_pointcloud.PointCloudConverter(
             instances_collection
         )
+
+        if instances_collection is not None and created and len(instances_collection.objects) == 0:
+            bpy.data.collections.remove(instances_collection)
 
     def import_point_cloud_models(self, context: bpy.types.Context, point_cloud_collection):
         progress_console.update("Importing Models")
