@@ -78,6 +78,8 @@ More information about setting up nodes can be found :ref:`in the guides <guides
 
 ----
 
+.. _bpy.ops.heio.reimport_images:
+
 Reimport missing images
 -----------------------
 
