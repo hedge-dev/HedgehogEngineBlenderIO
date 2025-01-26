@@ -54,6 +54,7 @@ class PointCloudProcessor:
 
             point.Position, point.Rotation, point.Scale = \
                 o_transform.bpy_matrix_to_net_transforms(root.matrix_world)
+            point.Field28 = 1
 
             pointcloud.Instances.Add(point)
 
