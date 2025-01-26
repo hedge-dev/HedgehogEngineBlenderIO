@@ -567,6 +567,8 @@ Go back into the ``HEIO Material Properties`` panel, open the ``General`` subpan
 ``Render Layer`` to ``Opaque`` (using ``automatic`` would export with ``Transparent``, which we
 don't want).
 
+Also make sure to enable backface culling (improves performance).
+
 Next, open the ``Parameters`` subpanel and select the ``PBRFactor`` entry at the bottom of the
 list. This has 4 values:
 
