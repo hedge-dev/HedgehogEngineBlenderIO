@@ -160,9 +160,15 @@ class HEIO_OT_Export_PointClouds(ExportPointCloudOperator):
             processor.compile_output()
             processor.write_output_to_files(directory)
 
+        extension = ".pc" + self.cloud_type.lower()
+
         for pc in pointclouds:
+            if pc.Name.endswith(extension):
+                pc.Name = pc.Name[:-len(extension)]
+
             filepath = os.path.join(
-                directory, pc.Name + ".pc" + self.cloud_type.lower())
+                directory, pc.Name + extension)
+
             SharpNeedle.RESOURCE_EXTENSIONS.Write(pc, filepath)
 
         return {'FINISHED'}
