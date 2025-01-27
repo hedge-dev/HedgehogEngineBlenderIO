@@ -4,15 +4,25 @@ Tutorial 1: Shadow Generations stage mod
 ########################################
 
 Welcome to this beginner tutorial for a Shadow Generations stage mod!
-Here you will learn the basics of how to create a stage mod with HEIO!
+Here you will learn the basics of how to modify and create your own stage geometry for Shadow
+Generations!
 
-In this example, we will modify Kingdom Valley Act 1 from Shadow Generations.
+In this example, we will modify Kingdom Valley Act 1.
 
 Let's get started then, shall we?
 
 .. attention::
 
-	This tutorial assumes you know the basics of how to work with blender!
+	This tutorial expects you know about the basics of working with blender!
+
+	This includes:
+
+	- Navigating the blender UI
+	- Understanding and working with...
+		- Collections
+		- Objects (creating, moving, organizing, etc)
+		- Object properties
+	- How blender materials work
 
 
 Part 0: The tools
@@ -40,7 +50,7 @@ Before we touch any files, let's first create the mod that will hold all the fin
 2. Select Shadow Generations
 3. Click the "Add Mod" button
 4. Select "Making one (for developers!)"
-5. Enter your name in the "Author" field and change the title to "HEIO Tutorial" (or whatever you want it to be named)
+5. Enter your name in the "Author" field and change the title to "HEIO Tutorial 1" (or whatever you want it to be named)
 6. Press "Ok"
 
 This should create and open a new directory for your mod, where we will put the files needed to get

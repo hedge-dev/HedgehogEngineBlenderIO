@@ -49,6 +49,22 @@ Guides
 
       .. container:: card
 
+         .. figure:: images/index_mesh_groups.png
+            :target: mesh_groups.html
+
+         :doc:`mesh_groups`
+            Working with mesh groups
+
+      .. container:: card
+
+         .. figure:: images/index_render_layers.png
+            :target: render_layers.html
+
+         :doc:`render_layers`
+            Render layers explained
+
+      .. container:: card
+
          .. figure:: images/index_collision_mesh_editing.png
             :target: collision_mesh_editing.html
 
@@ -62,6 +78,14 @@ Guides
 
          :doc:`lod_models`
             Working with \ **L**\ evel-\ **o**\ f-\ **D**\ etail models
+
+      .. container:: card
+
+         .. figure:: images/index_sca_parameter_editing.png
+            :target: sca_parameter_editing.html
+
+         :doc:`sca_parameter_editing`
+            SCA parameter editing made easy
 
       .. container:: card
 
@@ -83,6 +107,9 @@ Guides
       asset_importing
       material_editing
       object_trees
+      mesh_groups
+      render_layers
       collision_mesh_editing
       lod_models
+      sca_parameter_editing
       asset_exporting
