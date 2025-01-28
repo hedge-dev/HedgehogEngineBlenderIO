@@ -251,8 +251,11 @@
 <li class="toctree-l2"><a class="reference internal" href="../guides/asset_importing.html">Asset importing</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../guides/material_editing.html">Material Editing</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../guides/object_trees.html">Object Trees</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/mesh_groups.html">Mesh Groups</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/render_layers.html">Render Layers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../guides/collision_mesh_editing.html">Collision mesh editing</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../guides/lod_models.html">LoD Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/sca_parameter_editing.html">SCA Parameter editing</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../guides/asset_exporting.html">Asset exporting</a></li>
 </ul>
 </li>
@@ -384,12 +387,27 @@
           <section id="tutorial-1-shadow-generations-stage-mod">
 <h1>Tutorial 1: Shadow Generations stage mod<a class="headerlink" href="#tutorial-1-shadow-generations-stage-mod" title="Link to this heading">¶</a></h1>
 <p>Welcome to this beginner tutorial for a Shadow Generations stage mod!
-Here you will learn the basics of how to create a stage mod with HEIO!</p>
-<p>In this example, we will modify Kingdom Valley Act 1 from Shadow Generations.</p>
+Here you will learn the basics of how to modify and create your own stage geometry for Shadow
+Generations!</p>
+<p>In this example, we will modify Kingdom Valley Act 1.</p>
 <p>Let’s get started then, shall we?</p>
 <div class="admonition attention">
 <p class="admonition-title">Attention</p>
-<p>This tutorial assumes you know the basics of how to work with blender!</p>
+<p>This tutorial expects you know about the basics of working with blender!</p>
+<p>This includes:</p>
+<ul class="simple">
+<li><p>Navigating the blender UI</p></li>
+<li><dl class="simple">
+<dt>Understanding and working with…</dt><dd><ul>
+<li><p>Collections</p></li>
+<li><p>Objects (creating, moving, organizing, etc)</p></li>
+<li><p>Object properties</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p>How blender materials work</p></li>
+</ul>
 </div>
 <section id="part-0-the-tools">
 <h2>Part 0: The tools<a class="headerlink" href="#part-0-the-tools" title="Link to this heading">¶</a></h2>
@@ -412,7 +430,7 @@ Here you will learn the basics of how to create a stage mod with HEIO!</p>
 <li><p>Select Shadow Generations</p></li>
 <li><p>Click the “Add Mod” button</p></li>
 <li><p>Select “Making one (for developers!)”</p></li>
-<li><p>Enter your name in the “Author” field and change the title to “HEIO Tutorial” (or whatever you want it to be named)</p></li>
+<li><p>Enter your name in the “Author” field and change the title to “HEIO Tutorial 1” (or whatever you want it to be named)</p></li>
 <li><p>Press “Ok”</p></li>
 </ol>
 <p>This should create and open a new directory for your mod, where we will put the files needed to get
@@ -621,7 +639,7 @@ one of them and then automatically select the rest by using
 </section>
 <section id="placing-terrain">
 <h3>Placing terrain<a class="headerlink" href="#placing-terrain" title="Link to this heading">¶</a></h3>
-<p>Let’s try placing terrain now! How about we copy and paste one of the tours at the beginning?</p>
+<p>Let’s try placing terrain now! How about we copy and paste one of the towers at the beginning?</p>
 <p>Select these 4 objects (there is a shadowcaster object hidden inside the top object):</p>
 <figure class="align-default" id="id12">
 <img alt="../_images/shadow_gens_stage_mod_tower_objects.png" src="../_images/shadow_gens_stage_mod_tower_objects.png" />
@@ -773,8 +791,8 @@ duplicated terrain tower is!</p>
 </figure>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>You won’t have to merge the collision back together, it works as is! (In fact, merging it back
-together would make things a bit too complicated for this tutorial).</p>
+<p>You won’t have to merge the collision back together, it works as is! But if you want to merge it,
+do so using the merge operator (found right below the split operator).</p>
 </div>
 <div class="admonition hint">
 <p class="admonition-title">Hint</p>
@@ -1025,7 +1043,7 @@ the <a class="reference external" href="https://dc.railgun.works/hems">Hedgehog 
             Made with 
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2025-01-26</div>
+              Last updated on 2025-01-28</div>
           </div>
           <div class="right-details">
             
