@@ -15,7 +15,7 @@ Shapes
 
 Collision meshes are divided into "shapes", each of which is a single collision unit within the
 mesh for better performance. HEIO divides collision meshes into shapes using
-:doc:`mesh groups </user_interface/object/mesh/groups>`.
+:doc:`mesh groups <mesh_groups>`.
 
 Sonic team sometimes favors big collision meshes with many shapes over reusing individual collision
 files, probably to avoid time spent reading files. An example is the start of Kingdom Valley Act 1
@@ -142,8 +142,8 @@ the list, as well as delete the ``HEIOCollisionType`` attribute.
 Editing polygons types
 ----------------------
 
-Just like materials, you can edit as polygons collision type by entering edit mode. This will make
-tree operators visible below the list, which act 1:1 how they do for materials, but for the
+Just like materials, you can edit a polygons collision type by entering edit mode. This will make
+three operators visible below the list, which act 1:1 how they do for materials, but for the
 collision types instead:
 
 - ``Assign`` will assign all selected polygons to the selected collision type slot
@@ -153,6 +153,13 @@ collision types instead:
 .. figure:: images/collision_mesh_editing_type_editing.png
 
 	The three type editing operators visible below the types list
+
+
+Deleting types info
+^^^^^^^^^^^^^^^^^^^
+
+You can delete the collision types mesh info entirely by opening the context menu (button at the
+bottom right of the list) and clicking ``Delete mesh info`` to delete the list and attribute.
 
 
 Types on convex shapes
@@ -233,6 +240,13 @@ visible below the list:
 .. figure:: images/collision_mesh_editing_flags_editing.png
 
 	The four flags editing operators visible below the flags list
+
+
+Deleting flags info
+^^^^^^^^^^^^^^^^^^^
+
+You can delete the collision flags mesh info entirely by opening the context menu (button at the
+bottom right of the list) and clicking ``Delete mesh info`` to delete the list and attribute.
 
 
 Flags on convex shapes

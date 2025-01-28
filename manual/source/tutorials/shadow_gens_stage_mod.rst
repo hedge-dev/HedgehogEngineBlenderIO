@@ -289,7 +289,7 @@ geometry!
 Placing terrain
 ---------------
 
-Let's try placing terrain now! How about we copy and paste one of the tours at the beginning?
+Let's try placing terrain now! How about we copy and paste one of the towers at the beginning?
 
 Select these 4 objects (there is a shadowcaster object hidden inside the top object):
 
@@ -451,8 +451,8 @@ Et voilá, now the tower collision should stand!
 
 .. note::
 
-	You won't have to merge the collision back together, it works as is! (In fact, merging it back
-	together would make things a bit too complicated for this tutorial).
+	You won't have to merge the collision back together, it works as is! But if you want to merge it,
+	do so using the merge operator (found right below the split operator).
 
 
 .. hint::
