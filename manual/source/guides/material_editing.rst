@@ -89,6 +89,7 @@ as they do here.
 :ref:`Use additive blending <HEIO_Material.use_additive_blending>` does exactly as it says: Instead
 of alpha blending, it makes the shader use `additive blending <https://www.learnopengles.com/tag/additive-blending/>`_.
 
+For info on render layers read the :doc:`render layers <render_layers>` guide.
 
 Parameters
 ----------
