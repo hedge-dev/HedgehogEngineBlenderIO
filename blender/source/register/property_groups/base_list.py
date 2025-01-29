@@ -2,12 +2,17 @@ import bpy
 from bpy.props import IntProperty
 
 
+def _on_active_index_updated(self, context):
+    self._on_active_index_updated(context)
+
+
 class BaseList(bpy.types.PropertyGroup):
 
     active_index: IntProperty(
         name="Active element index",
         description="Index of active item in the list",
-        default=-1
+        default=-1,
+        update=_on_active_index_updated
     )
 
     @property
@@ -43,6 +48,9 @@ class BaseList(bpy.types.PropertyGroup):
         pass
 
     def _on_clear(self):
+        pass
+
+    def _on_active_index_updated(self, context: bpy.types.Context):
         pass
 
     def get_index(self, value):

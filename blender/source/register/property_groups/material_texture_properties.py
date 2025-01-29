@@ -1,3 +1,6 @@
+from ...utility.material_setup import (
+    get_node_of_type
+)
 import bpy
 from bpy.types import Material
 from bpy.props import (
@@ -13,9 +16,6 @@ from .base_list import BaseList
 from .. import definitions
 TEXTURE_MODES = {"sRGB", "Linear", "Normal"}
 
-from ...utility.material_setup import (
-    get_node_of_type
-)
 
 TEXTURE_WRAP_MAPPING = {
     "REPEAT": (False, False),
@@ -147,7 +147,6 @@ class HEIO_MaterialTexture(bpy.types.PropertyGroup):
 
         return None
 
-
     def update_nodes(self, target_definition: definitions.TargetDefinition):
 
         texture_mode = self.get_texture_mode(target_definition)
@@ -179,7 +178,6 @@ class HEIO_MaterialTexture(bpy.types.PropertyGroup):
             uv = nodes[3]
             for i in range(4):
                 uv.inputs[i].default_value = self.texcoord_index == i
-
 
     def reset_nodes(self):
         nodes = self.get_nodes()
@@ -219,3 +217,15 @@ class HEIO_MaterialTextureList(BaseList):
         if index == -1:
             return None
         return self[index]
+
+    def _on_active_index_updated(self, context):
+        element = self.active_element
+        if element is None:
+            return
+
+        tex_node = element.get_nodes()[0]
+        if tex_node is None:
+            return
+
+        material: bpy.types.Material = self.id_data
+        material.node_tree.nodes.active = tex_node
