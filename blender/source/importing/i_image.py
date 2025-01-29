@@ -6,8 +6,6 @@ from ..register.definitions import TargetDefinition
 from ..utility.material_setup import get_first_connected_socket
 from ..utility import progress_console
 
-TEXTURE_MODES = {"sRGB", "Linear", "Normal"}
-
 
 class ImageLoader:
 
@@ -146,24 +144,7 @@ class ImageLoader:
             image.generated_color = self._get_placeholder_image_color(node)
             image.heio_image.reimport_name = image_name
 
-        texture_mode = None
-
-        if node is not None:
-            label_mode = node.label.split(";")[0]
-            if label_mode in TEXTURE_MODES:
-                texture_mode = label_mode
-
-        if texture_mode is None:
-            if texture.name in self._target_definition.default_texture_modes:
-                texture_mode = self._target_definition.default_texture_modes[texture.name]
-
-        if texture_mode is not None:
-            if texture_mode == 'sRGB':
-                image.colorspace_settings.is_data = False
-                image.colorspace_settings.name = 'sRGB'
-            elif texture_mode == 'Linear' or texture_mode == 'Normal':
-                image.colorspace_settings.is_data = True
-                image.colorspace_settings.name = 'Non-Color'
+        texture_mode = texture.get_texture_mode(self._target_definition)
 
         if texture_mode == 'Normal' and from_loaded and self._invert_normal_map_y_channel:
             print(f"Flipping normals of image \"{image_name}\"..")

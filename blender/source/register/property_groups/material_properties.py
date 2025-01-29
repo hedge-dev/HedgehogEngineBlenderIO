@@ -361,16 +361,16 @@ class HEIO_Material(bpy.types.PropertyGroup):
         update_layer_node("Transparent", {'TRANSPARENT', 'PUNCHTHROUGH'})
         update_layer_node("Special", {'SPECIAL'})
 
-    def update_material_nodes(self):
+    def update_material_nodes(self, target_definition):
 
         for parameter in self.parameters:
             parameter.update_nodes()
 
         for texture in self.textures:
-            texture.update_nodes()
+            texture.update_nodes(target_definition)
 
     def update_material_all(self, target_definition: TargetDefinition | None):
-        self.update_material_nodes()
+        self.update_material_nodes(target_definition)
         self.update_material_properties(target_definition)
 
     @classmethod

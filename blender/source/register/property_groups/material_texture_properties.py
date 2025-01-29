@@ -10,6 +10,9 @@ from bpy.props import (
 
 from .base_list import BaseList
 
+from .. import definitions
+TEXTURE_MODES = {"sRGB", "Linear", "Normal"}
+
 from ...utility.material_setup import (
     get_node_of_type
 )
@@ -25,7 +28,8 @@ TEXTURE_WRAP_MAPPING = {
 
 
 def _update_texture(texture, context):
-    texture.update_nodes()
+    target_definition = definitions.get_target_definition(context)
+    texture.update_nodes(target_definition)
 
 
 class HEIO_MaterialTexture(bpy.types.PropertyGroup):
@@ -130,9 +134,32 @@ class HEIO_MaterialTexture(bpy.types.PropertyGroup):
 
         return (texture_node, has_texture_node, tiling_node, uv_node)
 
-    def update_nodes(self):
-        nodes = self.get_nodes()
+    def get_texture_mode(self, target_definition: definitions.TargetDefinition):
+        node = self.get_nodes()[0]
 
+        if node is not None:
+            label_mode = node.label.split(";")[0]
+            if label_mode in TEXTURE_MODES:
+                return label_mode
+
+        if self.name in target_definition.default_texture_modes:
+            return target_definition.default_texture_modes[self.name]
+
+        return None
+
+
+    def update_nodes(self, target_definition: definitions.TargetDefinition):
+
+        texture_mode = self.get_texture_mode(target_definition)
+        if texture_mode is not None and self.image is not None:
+            if texture_mode == 'sRGB':
+                self.image.colorspace_settings.is_data = False
+                self.image.colorspace_settings.name = 'sRGB'
+            elif texture_mode == 'Linear' or texture_mode == 'Normal':
+                self.image.colorspace_settings.is_data = True
+                self.image.colorspace_settings.name = 'Non-Color'
+
+        nodes = self.get_nodes()
         if nodes[0] is not None:
             texture = nodes[0]
             texture.image = self.image
