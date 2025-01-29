@@ -440,11 +440,12 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
 
             uv_directions = []
             for n in loop_normals:
-                tangent = n.cross(up_vec)
-                binormal = n.cross(tangent)
+                tangent = n.cross(up_vec).normalized()
+                binormal = n.cross(tangent).normalized()
+                tangent = n.cross(binormal).normalized()
                 uv_directions.append((tangent, binormal))
 
-            return [uv_directions[l.index] for l in loop_order], None
+            return [uv_directions[l.vertex_index] for l in loop_order], None
 
         mesh.calc_tangents(uvmap=mesh.uv_layers[0].name)
         uv_directions = [(l.tangent.copy(), l.bitangent.copy()) for l in loop_order]
