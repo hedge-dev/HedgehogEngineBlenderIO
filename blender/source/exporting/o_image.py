@@ -37,9 +37,8 @@ def export_material_images(
 
 	from blender_dds_addon.ui.export_dds import export_as_dds # type: ignore
 	context.scene.dds_options.allow_slow_codec = True
-	depsgraph = context.evaluated_depsgraph_get()
 
-	images = set()
+	images: set[bpy.types.Image] = set()
 	normal_images = set()
 	for material in materials:
 		for texture in material.heio_material.textures:
@@ -62,8 +61,8 @@ def export_material_images(
 		if export_mode != 'OVERWRITE' and os.path.isfile(filepath):
 			continue
 
-		# evaluating so the DDS addon doesnt overwrite any image data
-		export_image: bpy.types.Image = image.evaluated_get(depsgraph)
+		# creating a copy so the DDS addon doesnt overwrite any image data
+		export_image = image.copy()
 
 		if image in normal_images:
 			pixels = numpy.array(export_image.pixels, dtype=numpy.float32)
@@ -71,5 +70,7 @@ def export_material_images(
 			export_image.pixels = pixels
 
 		export_as_dds(context, export_image, filepath)
+
+		bpy.data.images.remove(export_image)
 
 	progress_console.end()
