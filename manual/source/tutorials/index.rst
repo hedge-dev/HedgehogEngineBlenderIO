@@ -1,7 +1,7 @@
 
-*********
+#########
 Tutorials
-*********
+#########
 
 These are step-by-step walkthroughs to creating specific mods with the intention of helping you
 get into working with HEIO.
@@ -16,7 +16,16 @@ get into working with HEIO.
             :target: shadow_gens_stage_mod.html
 
          :doc:`shadow_gens_stage_mod`
-            A beginners tutorial for modding Shadow Generations stages with HEIO
+            A beginners tutorial for creating a Shadow Generations stage mode with HEIO
+
+      .. container:: card
+
+         .. figure:: images/index_shadow_gens_chr_mod.png
+            :target: shadow_gens_character_mod.html
+
+         :doc:`shadow_gens_character_mod`
+            A beginners tutorial for creating a Shadow Generations character mod with HEIO
+
 
 .. container:: global-index-toc
 
@@ -25,3 +34,4 @@ get into working with HEIO.
       :maxdepth: 1
 
       shadow_gens_stage_mod
+      shadow_gens_character_mod

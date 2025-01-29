@@ -3,13 +3,11 @@
 Tutorial 1: Shadow Generations stage mod
 ########################################
 
-Welcome to this beginner tutorial for a Shadow Generations stage mod!
-Here you will learn the basics of how to modify and create your own stage geometry for Shadow
-Generations!
+Welcome to the first beginner tutorial for Shadow Generations modding!
+
+Here you will learn the basics of how to modify and create your own stage geometry mod.
 
 In this example, we will modify Kingdom Valley Act 1.
-
-Let's get started then, shall we?
 
 .. attention::
 
@@ -26,7 +24,7 @@ Let's get started then, shall we?
 
 
 Part 0: The tools
-=======================
+=================
 
 Before we begin, you should make sure you have all the tools needed:
 
@@ -685,7 +683,11 @@ Part 6: You're done! Now what?
 **Congratulations!** You have learned the basics of Shadow Generations stage modding! Most of this
 translates to Sonic Frontiers stage modding too!
 
-If you want to learn more about how HEIO works, check out the :doc:`Guides </guides/index>` section!
+If you want to learn more about how HEIO works, check out the :doc:`Guides </guides/index>`
+section!
+
+I recommend you look at stage models, their materials and other related things to see how they
+are set up as reference for your own mods!
 
 With that said, i hope you found this tutorial helpful! If you still have questions you can join
 the `Hedgehog Engine Modding Discord Server <https://dc.railgun.works/hems>`_.
