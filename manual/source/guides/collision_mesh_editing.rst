@@ -401,6 +401,16 @@ These work mostly the same as the standard transform gizmos for objects:
 	Not all shape types show all rotate gizmos. E.g. the sphere shows no rotate gizmos at all,
 	since there is no point in rotating a sphere.
 
+Cursor snapping
+^^^^^^^^^^^^^^^
+
+While using any of the workspace tools you can find two new operators in the snap menu
+specific to collision primitives. The names should be self-explanatory:
+
+.. figure:: images/collision_mesh_editing_primitive_snapping.png
+
+	The new cursor snapping operators
+
 
 Splitting
 ---------

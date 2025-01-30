@@ -80,13 +80,13 @@ OPS_PAGE_MAP = {
     "heio.info_discord": "tools/viewport_toolbar/info",
     "heio.info_report": "tools/viewport_toolbar/info",
     "heio.info_dds_addon": "tools/viewport_toolbar/info",
-    # "heio.collision_primitive_gizmo_clicked": "",
-    # "heio.collision_primitive_move": "",
-    # "heio.collision_primitive_rotate": "",
-    # "heio.collision_primitive_viewrotate": "",
-    # "heio.collision_primitive_scale": "",
-    # "heio.snap_active_collision_primitive_to_cursor": "",
-    # "heio.snap_cursor_to_active_collision_primitive": "",
+    "heio.collision_primitive_gizmo_clicked": "tools/collision_primitive_tools",
+    "heio.collision_primitive_move": "tools/collision_primitive_tools",
+    "heio.collision_primitive_rotate": "tools/collision_primitive_tools",
+    "heio.collision_primitive_viewrotate": "tools/collision_primitive_tools",
+    "heio.collision_primitive_scale": "tools/collision_primitive_tools",
+    "heio.snap_active_collision_primitive_to_cursor": "tools/collision_primitive_tools",
+    "heio.snap_cursor_to_active_collision_primitive": "tools/collision_primitive_tools",
 }
 
 def _to_link(path: str, dir: str):
