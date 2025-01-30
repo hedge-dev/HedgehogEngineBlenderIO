@@ -1,4 +1,8 @@
 
+.. _bpy.types.HEIO_Material:
+.. _bpy.ops.heio.material_setup_nodes:
+.. _bpy.ops.heio.material_setup_nodes_active:
+
 *******************
 Material Properties
 *******************
@@ -8,14 +12,14 @@ Material Properties
 	:Panel:		:menuselection:`Properties --> Material Properties --> HEIO Material`
 
 
-.. _HEIO_Material.custom_shader:
+.. _bpy.types.HEIO_Material.custom_shader:
 
 Custom Shader
 	If checked, all material properties can be fully customized, without being tied to a
 	pre-defined shader from the :ref:`target game <HEIO_Scene.target_game>`
 
 
-.. _HEIO_Scene.show_all_shaders:
+.. _bpy.types.HEIO_Scene.show_all_shaders:
 
 Show All Shaders
 	Most target games have over 100 shaders, many of which are for very niche use cases and will
@@ -34,8 +38,8 @@ Show All Shaders
 		addon
 
 
-.. _HEIO_Material.shader_name:
-.. _HEIO_Material.shader_definition:
+.. _bpy.types.HEIO_Material.shader_name:
+.. _bpy.types.HEIO_Material.shader_definition:
 
 Shader
 	Every material specified the shader it uses by its name, which determine how the parameters
@@ -49,8 +53,8 @@ Shader
 		textures.
 
 
-.. _HEIO_Material.variant_name:
-.. _HEIO_Material.variant_definition:
+.. _bpy.types.HEIO_Material.variant_name:
+.. _bpy.types.HEIO_Material.variant_definition:
 
 Variant
 	Some shaders, primarily from Hedgehog Engine 1 games, had several variations per shader to use
@@ -71,7 +75,8 @@ General
 =======
 
 
-.. _HEIO_Material.render_layer:
+.. _bpy.types.HEIO_Material.render_layer:
+.. _bpy.types.HEIO_Material.special_render_layer_name:
 
 Render Layer
 	The render layer to use when exporting a model. This is a property that is not actually tied to
@@ -96,7 +101,7 @@ Backface Culling
 	added here for convenience.
 
 
-.. _HEIO_Material.use_additive_blending:
+.. _bpy.types.HEIO_Material.use_additive_blending:
 
 Use additive blending
 	Will render the material using additive blending, instead of normal blending.

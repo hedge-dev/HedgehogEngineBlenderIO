@@ -1,7 +1,11 @@
 
+.. _bpy.types.HEIO_SCA_Parameter:
+.. _bpy.types.HEIO_Node:
 .. _bpy.ops.heio.sca_parameters_add:
 .. _bpy.ops.heio.sca_parameters_remove:
 .. _bpy.ops.heio.sca_parameters_move:
+.. _bpy.ops.heio.sca_parameters_newfrompreset:
+.. _bpy.ops.heio.sca_parameters_newfrompreset.preset:
 
 **************
 SCA Parameters
@@ -20,13 +24,13 @@ SCA Parameter Properties
 ========================
 
 
-.. _HEIO_SCA_Parameter.name:
+.. _bpy.types.HEIO_SCA_Parameter.name:
 
 Name
 	Name of the parameter. Has a size limit of 8 characters
 
 
-.. _HEIO_SCA_Parameter.value_type:
+.. _bpy.types.HEIO_SCA_Parameter.value_type:
 
 Type
 	Value type of the parameter.
@@ -38,9 +42,9 @@ Type
 		:ref:`target game <HEIO_Scene.target_game>` and will assign the type appropriately.
 
 
-.. _HEIO_SCA_Parameter.value:
-.. _HEIO_SCA_Parameter.float_value:
-.. _HEIO_SCA_Parameter.boolean_value:
+.. _bpy.types.HEIO_SCA_Parameter.value:
+.. _bpy.types.HEIO_SCA_Parameter.float_value:
+.. _bpy.types.HEIO_SCA_Parameter.boolean_value:
 
 Value
 	Value of the parameter. All value types share the same internal value.

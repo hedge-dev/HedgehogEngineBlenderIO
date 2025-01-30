@@ -18,6 +18,11 @@ classes.extend(ui.to_register)
 classes.extend(tools.to_register)
 
 
+def manual_hook():
+    mapping = manual.get_mapping(classes)
+    return "https://hedge-dev.github.io/HedgehogEngineBlenderIO", mapping
+
+
 def register():
     """Loading API classes into blender"""
 
@@ -33,33 +38,19 @@ def register():
         elif hasattr(cls, "register"):
             cls.register()
 
-    # kc = bpy.context.window_manager.keyconfigs.addon
-    # if kc is not None:
-    #     km = kc.keymaps.new(name="Hedgehog Engine I/O", space_type='EMPTY')
-
-    #     for cls in classes:
-    #         if hasattr(cls, "register_keymap"):
-    #             cls.register_keymap(km)
-
-    bpy.utils.register_manual_map(manual.add_manual_map)
+    bpy.utils.register_manual_map(manual_hook)
 
 
 def unregister():
     """Unloading classes loaded in register(), as well as various cleanup"""
 
-    bpy.utils.unregister_manual_map(manual.add_manual_map)
+    bpy.utils.unregister_manual_map(manual_hook)
 
     for cls in classes:
         if not hasattr(cls, "DONT_REGISTER_CLASS"):
             bpy.utils.unregister_class(cls)
         elif hasattr(cls, "unregister"):
             cls.unregister()
-
-    # kc = bpy.context.window_manager.keyconfigs.addon
-    # if kc is not None:
-    #     keymap = kc.keymaps.get("Hedgehog Engine I/O", None)
-    #     if keymap is not None:
-    #         kc.keymaps.remove(keymap)
 
 
 def reload_package(module_dict_main):

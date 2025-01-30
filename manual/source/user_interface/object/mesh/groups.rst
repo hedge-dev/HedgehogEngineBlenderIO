@@ -1,4 +1,6 @@
 
+.. _bpy.types.HEIO_MeshGroup:
+
 ***********
 Mesh Groups
 ***********
@@ -28,8 +30,15 @@ name does not get exported here.
 
 Mesh groups have several properties specific to collision meshes
 
+
+.. _bpy.types.HEIO_MeshGroup.collision_layer:
+.. _bpy.types.HEIO_CollisionLayer:
+
 Collision Layer
 	Determines how entities interact with the collision shape
+
+
+.. _bpy.types.HEIO_MeshGroup.is_convex_collision:
 
 Is Convex Collision
 	Whether the shape is convex (has no "indents" or holes). This strips the shape of all polygons
@@ -37,10 +46,16 @@ Is Convex Collision
 
 	Without polygons, convex shapes can only have one set of polygon specific info:
 
+
+.. _bpy.types.HEIO_MeshGroup.convex_type:
+
 	Convex collision type
 		The collision type to use on the entire convex shape.
 
 		See :doc:`Collision Types <collision_types>` for more info.
+
+
+.. _bpy.types.HEIO_MeshGroup.convex_flags:
 
 	Convex collision flags
 		A list of collision flags to use on the entire convex shape.

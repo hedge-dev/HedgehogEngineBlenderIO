@@ -68,12 +68,6 @@ class HEIO_MaterialParameter(bpy.types.PropertyGroup):
         update=_update_parameter
     )
 
-    is_color: BoolProperty(
-        name="Is Color",
-        description="Whether the parameter is a color",
-        default=False
-    )
-
     def _get_float_nodes(self):
         if not isinstance(self.id_data, Material):
             return (None, None, None)

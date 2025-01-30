@@ -24,3 +24,9 @@ Open Discord Server
 
 Report a bug / an issue
 	Opens the `Github issues page for HEIO <https://github.com/hedge-dev/HedgehogEngineBlenderIO/issues>`_.
+
+
+.. _bpy.ops.heio.info_dds_addon:
+
+Open DDS Addon repository website
+	Opens the `DDS addon repository website <https://github.com/matyalatte/Blender-DDS-Addon>`_.

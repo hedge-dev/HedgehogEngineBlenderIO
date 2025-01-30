@@ -1,4 +1,6 @@
 
+.. _bpy.types.HEIO_RenderLayer:
+
 ******************
 Mesh Render Layers
 ******************

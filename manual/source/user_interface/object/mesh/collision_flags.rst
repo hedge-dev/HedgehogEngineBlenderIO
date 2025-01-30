@@ -1,4 +1,6 @@
 
+.. _bpy.types.HEIO_CollisionFlag:
+
 ***************
 Collision Flags
 ***************

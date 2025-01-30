@@ -1,4 +1,5 @@
 
+.. _bpy.types.HEIO_MaterialParameter:
 .. _bpy.ops.heio.material_parameters_add:
 .. _bpy.ops.heio.material_parameters_remove:
 .. _bpy.ops.heio.material_parameters_move:
@@ -22,7 +23,7 @@ Parameter Properties
 ====================
 
 
-.. _HEIO_MaterialParameter.name:
+.. _bpy.types.HEIO_MaterialParameter.name:
 
 Name
 	Name of the parameter. Cannot be empty.
@@ -30,7 +31,7 @@ Name
 	Cannot be edited when material is not using a custom shader.
 
 
-.. _HEIO_MaterialParameter.value_type:
+.. _bpy.types.HEIO_MaterialParameter.value_type:
 
 Type
 	Type of the parameter
@@ -44,9 +45,9 @@ Type
 		the color will change the internal float value and vice versa.
 
 
-.. _HEIO_MaterialParameter.float_value:
-.. _HEIO_MaterialParameter.color_value:
-.. _HEIO_MaterialParameter.boolean_type:
+.. _bpy.types.HEIO_MaterialParameter.float_value:
+.. _bpy.types.HEIO_MaterialParameter.color_value:
+.. _bpy.types.HEIO_MaterialParameter.boolean_value:
 
 Value
 	Value of the parameter. Depends on the type.

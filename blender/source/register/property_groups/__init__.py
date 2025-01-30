@@ -29,7 +29,7 @@ to_register = [
 
     node_properties.HEIO_Node,
 
-    mesh_properties.HEIO_MeshLayer,
+    mesh_properties.HEIO_RenderLayer,
     mesh_properties.HEIO_RenderLayerList,
     mesh_properties.HEIO_CollisionLayer,
     mesh_properties.HEIO_CollisionType,

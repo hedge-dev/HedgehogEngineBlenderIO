@@ -147,14 +147,14 @@ class BaseMeshInfoList(BaseList):
 ############################################################
 
 
-class HEIO_MeshLayer(BaseMeshInfo):
+class HEIO_RenderLayer(BaseMeshInfo):
     pass
 
 
 class HEIO_RenderLayerList(BaseMeshInfoList):
 
     elements: CollectionProperty(
-        type=HEIO_MeshLayer
+        type=HEIO_RenderLayer
     )
 
     def _on_init(self):

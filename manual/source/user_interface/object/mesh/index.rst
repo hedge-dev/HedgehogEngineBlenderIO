@@ -1,4 +1,14 @@
 
+.. _bpy.ops.heio.mesh_info_initialize:
+.. _bpy.ops.heio.mesh_info_delete:
+.. _bpy.ops.heio.mesh_info_assign:
+.. _bpy.ops.heio.collision_flag_remove:
+.. _bpy.ops.heio.mesh_info_de_select.select:
+.. _bpy.ops.heio.mesh_info_de_select:
+.. _bpy.ops.heio.mesh_info_add:
+.. _bpy.ops.heio.mesh_info_remove:
+.. _bpy.ops.heio.mesh_info_move:
+
 ***************
 Mesh Properties
 ***************

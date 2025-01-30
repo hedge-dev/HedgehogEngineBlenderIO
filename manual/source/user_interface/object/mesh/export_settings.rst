@@ -9,6 +9,9 @@ Export Settings
 
 Various export settings for meshes.
 
+
+.. _bpy.types.HEIO_Mesh.force_enable_8_weights:
+
 Force enable 8-weight export
 	Forces the mesh to export with a weight limit of 8 per vertex, instead of the usual 4.
 
@@ -16,6 +19,9 @@ Force enable 8-weight export
 	boolean parameter to a material.
 
 	This feature is only available in HE2 games.
+
+
+.. _bpy.types.HEIO_Mesh.force_enable_multi_tangent:
 
 Force enable multi tangent export
 	Forces the mesh to export with a second set of tangents based on the third UV map.

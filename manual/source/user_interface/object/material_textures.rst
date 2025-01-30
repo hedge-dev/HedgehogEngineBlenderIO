@@ -2,6 +2,7 @@
 .. _bpy.ops.heio.material_textures_add:
 .. _bpy.ops.heio.material_textures_remove:
 .. _bpy.ops.heio.material_textures_move:
+.. _bpy.types.HEIO_MaterialTexture:
 
 *****************
 Material Textures
@@ -20,7 +21,7 @@ Texture Properties
 ==================
 
 
-.. _HEIO_MaterialTexture.name:
+.. _bpy.types.HEIO_MaterialTexture.name:
 
 Type Name
 	Type name of the texture. Cannot be empty.
@@ -33,7 +34,7 @@ Type Name
 		of textures is important and changes how same-named textures get used!
 
 
-.. _HEIO_MaterialTexture.image:
+.. _bpy.types.HEIO_MaterialTexture.image:
 
 Image
 	Image to use for the texture.
@@ -43,14 +44,14 @@ Image
 		is provided.
 
 
-.. _HEIO_MaterialTexture.texcoord_index:
+.. _bpy.types.HEIO_MaterialTexture.texcoord_index:
 
 Texture coordinate index
 	The UVmap to use (0-based index).
 
 
-.. _HEIO_MaterialTexture.wrapmode_u:
-.. _HEIO_MaterialTexture.wrapmode_v:
+.. _bpy.types.HEIO_MaterialTexture.wrapmode_u:
+.. _bpy.types.HEIO_MaterialTexture.wrapmode_v:
 
 Wrapmode U & V
 	How the texture should be sampled after exceeding the 0-1 uv range.

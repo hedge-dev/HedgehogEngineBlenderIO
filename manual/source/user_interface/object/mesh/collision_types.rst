@@ -1,4 +1,6 @@
 
+.. _bpy.types.HEIO_CollisionType:
+
 ***************
 Collision Types
 ***************
