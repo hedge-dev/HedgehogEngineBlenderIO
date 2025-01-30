@@ -10,7 +10,7 @@ Exporters
 
 .. important::
 
-	All exporters depend on the :ref:`target game <HEIO_Scene.target_game>` and will
+	All exporters depend on the :ref:`target game <bpy.types.HEIO_Scene.target_game>` and will
 	alter how the export is structured, so make sure to configure the correct target game before
 	exporting anything!
 

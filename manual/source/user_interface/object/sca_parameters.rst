@@ -39,7 +39,7 @@ Type
 
 		When exported, SCA parameters do not specify their type. Instead, when importing,
 		the addon looks up if the parameter is defined by the
-		:ref:`target game <HEIO_Scene.target_game>` and will assign the type appropriately.
+		:ref:`target game <bpy.types.HEIO_Scene.target_game>` and will assign the type appropriately.
 
 
 .. _bpy.types.HEIO_SCA_Parameter.value:

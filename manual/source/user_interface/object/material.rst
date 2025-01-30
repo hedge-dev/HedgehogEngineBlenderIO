@@ -1,7 +1,5 @@
 
 .. _bpy.types.HEIO_Material:
-.. _bpy.ops.heio.material_setup_nodes:
-.. _bpy.ops.heio.material_setup_nodes_active:
 
 *******************
 Material Properties
@@ -16,7 +14,7 @@ Material Properties
 
 Custom Shader
 	If checked, all material properties can be fully customized, without being tied to a
-	pre-defined shader from the :ref:`target game <HEIO_Scene.target_game>`
+	pre-defined shader from the :ref:`target game <bpy.types.HEIO_Scene.target_game>`
 
 
 .. _bpy.types.HEIO_Scene.show_all_shaders:

@@ -39,7 +39,7 @@ Every game has its own list of shaders. A full list of the usable shaders for ea
 found :doc:`here </game_documentation/shaders/index>`.
 
 If you created a new material, it will be set up to use a
-:ref:`custom shader <HEIO_Material.custom_shader>` and have no shader set. Custom Shaders are only
+:ref:`custom shader <bpy.types.HEIO_Material.custom_shader>` and have no shader set. Custom Shaders are only
 useful if the shader you want to use is somehow not set up for the target game, or when you want
 to use a custom shader.
 
@@ -53,7 +53,7 @@ Upon doing so, the shader name textfield will be swapped out for a dropdown.
 
 By default, the list of shaders is (usually) a small selection of commonly used shaders from
 the larger shader list. If the shader you want to use is not part of the selection, enable
-:ref:`"Show all shaders" <HEIO_Scene.show_all_shaders>`.
+:ref:`"Show all shaders" <bpy.types.HEIO_Scene.show_all_shaders>`.
 
 If no shader is selected, the addon will show a warning sign in the property.
 Always make sure to select a shader!
@@ -86,7 +86,7 @@ These are direct material settings that are strictly part of every material.
 are default blender material properties added here for convenience and have the same effect ingame
 as they do here.
 
-:ref:`Use additive blending <HEIO_Material.use_additive_blending>` does exactly as it says: Instead
+:ref:`Use additive blending <bpy.types.HEIO_Material.use_additive_blending>` does exactly as it says: Instead
 of alpha blending, it makes the shader use `additive blending <https://www.learnopengles.com/tag/additive-blending/>`_.
 
 For info on render layers read the :doc:`render layers <render_layers>` guide.

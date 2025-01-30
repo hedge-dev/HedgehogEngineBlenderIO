@@ -12,7 +12,7 @@ Mesh Render Layers
 
 ``.model`` and ``.terrain-model`` files not only divide a model into sub-mesh by materials, but
 also by render layers. Usually render layers and materials line up and can be specified via a
-materials :ref:`render layer <HEIO_Material.render_layer>` property, but sometimes more control
+materials :ref:`render layer <bpy.types.HEIO_Material.render_layer>` property, but sometimes more control
 is desired.
 
 In those cases, HEIO lets you specify the render layer per polygon, just like materials, using

@@ -84,7 +84,7 @@ Texture Nodes
 -------------
 
 To properly make use of textures, you need to set up several nodes, of which their names need to end
-with the :ref:`texture type name <HEIO_MaterialTexture.name>` they are set up for.
+with the :ref:`texture type name <bpy.types.HEIO_MaterialTexture.name>` they are set up for.
 
 .. figure:: /images/target_configuration_material_template_texture_example.png
 

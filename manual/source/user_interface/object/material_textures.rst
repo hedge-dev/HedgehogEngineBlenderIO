@@ -14,7 +14,7 @@ Material Textures
 
 A list of textures that the material uses for rendering.
 
-When the material uses a :ref:`custom shader <HEIO_Material.custom_shader>`, the parameters can
+When the material uses a :ref:`custom shader <bpy.types.HEIO_Material.custom_shader>`, the parameters can
 be freely added, edited and removed. Otherwise they are set up based on the selected shader.
 
 Texture Properties

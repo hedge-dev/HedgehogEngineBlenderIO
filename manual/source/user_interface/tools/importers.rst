@@ -10,7 +10,7 @@ Importers
 
 .. important::
 
-	All importers depend on the :ref:`target game <HEIO_Scene.target_game>` and will
+	All importers depend on the :ref:`target game <bpy.types.HEIO_Scene.target_game>` and will
 	alter how the import is interpreted, so make sure to configure the correct target game before
 	importing anything!
 
@@ -43,7 +43,7 @@ Create undefined parameters/textures
 	not defined by the target game for the shader will be ignored and lost after importing.
 
 	Enabling this option will import all parameters and textures, even if they are not defined.
-	If that happens :ref:`custom shader <HEIO_Material.custom_shader>` will be enabled.
+	If that happens :ref:`custom shader <bpy.types.HEIO_Material.custom_shader>` will be enabled.
 
 
 Import images

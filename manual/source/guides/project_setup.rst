@@ -5,7 +5,7 @@
 Project setup
 #############
 
-Setting up a new project is very simple, and only involves changing the :ref:`target game <HEIO_Scene.target_game>` right now.
+Setting up a new project is very simple, and only involves changing the :ref:`target game <bpy.types.HEIO_Scene.target_game>` right now.
 
 
 .. figure:: images/project_setup.png
