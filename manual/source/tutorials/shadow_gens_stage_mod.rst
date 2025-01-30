@@ -568,8 +568,14 @@ subpanel and select the ``diffuse`` texture. With it selected, click on the ``Im
 the list and select your freshly created ``Suzanne`` texture.
 
 Somehow, the model is still black; That is because the model has no vertex colors. Go into the mesh
-properties, open the color attributes subpanel and create a new, **white** color attribute. Now the
-model should be the color of your texture!
+properties, open the color attributes subpanel and create a new, **white** color attribute that
+uses byte colors:
+
+.. figure:: images/shadow_gens_stage_mod_vertex_colors.png
+
+	Where to add the vertex color attribute
+
+Now the model should be the color of your texture!
 
 Go back into the ``HEIO Material Properties`` panel, open the ``General`` subpanel and change the
 ``Render Layer`` to ``Opaque`` (using ``automatic`` would export with ``Transparent``, which we
