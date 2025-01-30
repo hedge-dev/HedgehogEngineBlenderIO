@@ -222,6 +222,8 @@
 <li class="toctree-l4"><a class="reference internal" href="../tools/viewport_toolbar/info.html">Info Tools</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="../tools/collision_primitive_overlay.html">Collision primitive overlay</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../tools/collision_primitive_tools.html">Collision primitive tools</a></li>
 </ul>
 </li>
 <li class="toctree-l2 current has-children"><a class="reference internal" href="index.html">Object Related</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of Object Related</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
@@ -386,7 +388,7 @@
         </div>
         <article role="main" id="furo-main-content">
           <section id="lod-info">
-<h1>LoD Info<a class="headerlink" href="#lod-info" title="Link to this heading">¶</a></h1>
+<span id="bpy-ops-heio-lod-info-move"></span><span id="bpy-ops-heio-lod-info-remove"></span><span id="bpy-ops-heio-lod-info-add"></span><span id="bpy-ops-heio-lod-info-delete"></span><span id="bpy-ops-heio-lod-info-initialize"></span><span id="bpy-types-heio-armature"></span><span id="bpy-types-heio-lodinfolevel"></span><span id="bpy-types-heio-lodinfo"></span><h1>LoD Info<a class="headerlink" href="#lod-info" title="Link to this heading">¶</a></h1>
 <div class="refbox admonition" id="id1">
 <p class="admonition-title">Reference</p>
 <dl class="field-list simple">
@@ -404,12 +406,16 @@ at varying distances from the camera to reduce the time needed to display the mo
 of optimization in modern games.</p>
 <section id="lod-info-item">
 <h2>LoD Info item<a class="headerlink" href="#lod-info-item" title="Link to this heading">¶</a></h2>
-<dl>
-<dt>Object</dt><dd><p>The root of the object tree to export for the LoD level.</p>
+<dl id="bpy-types-heio-lodinfolevel-target">
+<dt>Target</dt><dd><p>The root of the object tree to export for the LoD level.</p>
 <p>The first item in the LoD info list is reserved for the object on which the LoD info is defined.</p>
 </dd>
-<dt>Cascade</dt><dd><p>Distance cascade until which to display the model(?). Ranges from 0 to 31.</p>
+</dl>
+<dl class="simple" id="bpy-types-heio-lodinfolevel-cascade">
+<dt>Cascade</dt><dd><p>Distance cascade until which to display the model. Ranges from 0 to 31.</p>
 </dd>
+</dl>
+<dl class="simple" id="bpy-types-heio-lodinfolevel-unknown">
 <dt>Unknown</dt><dd><p>Always found to be -1. Unknown what it does.</p>
 </dd>
 </dl>

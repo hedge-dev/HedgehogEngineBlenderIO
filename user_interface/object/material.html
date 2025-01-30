@@ -222,6 +222,8 @@
 <li class="toctree-l4"><a class="reference internal" href="../tools/viewport_toolbar/info.html">Info Tools</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="../tools/collision_primitive_overlay.html">Collision primitive overlay</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../tools/collision_primitive_tools.html">Collision primitive tools</a></li>
 </ul>
 </li>
 <li class="toctree-l2 current has-children"><a class="reference internal" href="index.html">Object Related</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of Object Related</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
@@ -386,7 +388,7 @@
         </div>
         <article role="main" id="furo-main-content">
           <section id="material-properties">
-<h1>Material Properties<a class="headerlink" href="#material-properties" title="Link to this heading">¶</a></h1>
+<span id="bpy-types-heio-material"></span><h1>Material Properties<a class="headerlink" href="#material-properties" title="Link to this heading">¶</a></h1>
 <div class="refbox admonition" id="id1">
 <p class="admonition-title">Reference</p>
 <dl class="field-list simple">
@@ -395,12 +397,12 @@
 </dd>
 </dl>
 </div>
-<dl class="simple" id="heio-material-custom-shader">
+<dl class="simple" id="bpy-types-heio-material-custom-shader">
 <dt>Custom Shader</dt><dd><p>If checked, all material properties can be fully customized, without being tied to a
-pre-defined shader from the <a class="reference internal" href="../settings.html#heio-scene-target-game"><span class="std std-ref">target game</span></a></p>
+pre-defined shader from the <a class="reference internal" href="../settings.html#bpy-types-heio-scene-target-game"><span class="std std-ref">target game</span></a></p>
 </dd>
 </dl>
-<dl id="heio-scene-show-all-shaders">
+<dl id="bpy-types-heio-scene-show-all-shaders">
 <dt>Show All Shaders</dt><dd><p>Most target games have over 100 shaders, many of which are for very niche use cases and will
 only rarely need to be used. For each game, a hand picked list of shaders is displayed by
 default, which should suffice for most users.</p>
@@ -415,7 +417,7 @@ addon</p>
 </div>
 </dd>
 </dl>
-<span id="heio-material-shader-name"></span><dl id="heio-material-shader-definition">
+<span id="bpy-types-heio-material-shader-name"></span><dl id="bpy-types-heio-material-shader-definition">
 <dt>Shader</dt><dd><p>Every material specified the shader it uses by its name, which determine how the parameters
 and textures get used to render it ingame.</p>
 <p>When the material uses a custom shader, then shader is an editable text.
@@ -427,7 +429,7 @@ textures.</p>
 </div>
 </dd>
 </dl>
-<span id="heio-material-variant-name"></span><dl id="heio-material-variant-definition">
+<span id="bpy-types-heio-material-variant-name"></span><dl id="bpy-types-heio-material-variant-definition">
 <dt>Variant</dt><dd><p>Some shaders, primarily from Hedgehog Engine 1 games, had several variations per shader to use
 which enabled different features, such as enabling bone deformation.</p>
 <p>When the material uses a custom shader, then the shader properties will be an editable text.
@@ -441,7 +443,7 @@ templates and set it up accordingly for the material.</p>
 </dl>
 <section id="general">
 <h2>General<a class="headerlink" href="#general" title="Link to this heading">¶</a></h2>
-<dl id="heio-material-render-layer">
+<span id="bpy-types-heio-material-render-layer"></span><dl id="bpy-types-heio-material-special-render-layer-name">
 <dt>Render Layer</dt><dd><p>The render layer to use when exporting a model. This is a property that is not actually tied to
 materials, but to mesh-sets of a model, but since blender has nothing like mesh-sets,
 the layer gets derived from materials on export.</p>
@@ -459,7 +461,7 @@ name.</p>
 added here for convenience.</p>
 </dd>
 </dl>
-<dl class="simple" id="heio-material-use-additive-blending">
+<dl class="simple" id="bpy-types-heio-material-use-additive-blending">
 <dt>Use additive blending</dt><dd><p>Will render the material using additive blending, instead of normal blending.</p>
 </dd>
 </dl>

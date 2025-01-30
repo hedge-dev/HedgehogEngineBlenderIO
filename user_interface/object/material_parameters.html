@@ -222,6 +222,8 @@
 <li class="toctree-l4"><a class="reference internal" href="../tools/viewport_toolbar/info.html">Info Tools</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="../tools/collision_primitive_overlay.html">Collision primitive overlay</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../tools/collision_primitive_tools.html">Collision primitive tools</a></li>
 </ul>
 </li>
 <li class="toctree-l2 current has-children"><a class="reference internal" href="index.html">Object Related</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of Object Related</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
@@ -386,7 +388,7 @@
         </div>
         <article role="main" id="furo-main-content">
           <section id="material-parameters">
-<span id="bpy-ops-heio-material-parameters-move"></span><span id="bpy-ops-heio-material-parameters-remove"></span><span id="bpy-ops-heio-material-parameters-add"></span><h1>Material Parameters<a class="headerlink" href="#material-parameters" title="Link to this heading">¶</a></h1>
+<span id="bpy-ops-heio-material-parameters-move"></span><span id="bpy-ops-heio-material-parameters-remove"></span><span id="bpy-ops-heio-material-parameters-add"></span><span id="bpy-types-heio-materialparameter"></span><h1>Material Parameters<a class="headerlink" href="#material-parameters" title="Link to this heading">¶</a></h1>
 <div class="refbox admonition" id="id1">
 <p class="admonition-title">Reference</p>
 <dl class="field-list simple">
@@ -397,16 +399,16 @@
 </div>
 <p>A list of parameters that either get used the shader for rendering, or that alter certain
 properties of the shader.</p>
-<p>When the material uses a <a class="reference internal" href="material.html#heio-material-custom-shader"><span class="std std-ref">custom shader</span></a>, the parameters can
+<p>When the material uses a <a class="reference internal" href="material.html#bpy-types-heio-material-custom-shader"><span class="std std-ref">custom shader</span></a>, the parameters can
 be freely added, edited and removed. Otherwise they are set up based on the selected shader.</p>
 <section id="parameter-properties">
 <h2>Parameter Properties<a class="headerlink" href="#parameter-properties" title="Link to this heading">¶</a></h2>
-<dl id="heio-materialparameter-name">
+<dl id="bpy-types-heio-materialparameter-name">
 <dt>Name</dt><dd><p>Name of the parameter. Cannot be empty.</p>
 <p>Cannot be edited when material is not using a custom shader.</p>
 </dd>
 </dl>
-<dl id="heio-materialparameter-value-type">
+<dl id="bpy-types-heio-materialparameter-value-type">
 <dt>Type</dt><dd><p>Type of the parameter</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">Float</span></code>: A 4-component floating point vector</p></li>
@@ -420,7 +422,7 @@ the color will change the internal float value and vice versa.</p>
 </div>
 </dd>
 </dl>
-<span id="heio-materialparameter-color-value"></span><span id="heio-materialparameter-float-value"></span><dl class="simple" id="heio-materialparameter-boolean-type">
+<span id="bpy-types-heio-materialparameter-color-value"></span><span id="bpy-types-heio-materialparameter-float-value"></span><dl class="simple" id="bpy-types-heio-materialparameter-boolean-value">
 <dt>Value</dt><dd><p>Value of the parameter. Depends on the type.</p>
 </dd>
 </dl>

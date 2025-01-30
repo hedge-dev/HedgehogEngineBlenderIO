@@ -222,6 +222,8 @@
 <li class="toctree-l4"><a class="reference internal" href="../../tools/viewport_toolbar/info.html">Info Tools</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="../../tools/collision_primitive_overlay.html">Collision primitive overlay</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../tools/collision_primitive_tools.html">Collision primitive tools</a></li>
 </ul>
 </li>
 <li class="toctree-l2 current has-children"><a class="reference internal" href="../index.html">Object Related</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of Object Related</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
@@ -396,12 +398,14 @@
 </dl>
 </div>
 <p>Various export settings for meshes.</p>
-<dl>
+<dl id="bpy-types-heio-mesh-force-enable-8-weights">
 <dt>Force enable 8-weight export</dt><dd><p>Forces the mesh to export with a weight limit of 8 per vertex, instead of the usual 4.</p>
 <p>Usually enabled per mesh-set by adding and enabling the <code class="docutils literal notranslate"><span class="pre">enable_max_bone_influence_8</span></code>
 boolean parameter to a material.</p>
 <p>This feature is only available in HE2 games.</p>
 </dd>
+</dl>
+<dl id="bpy-types-heio-mesh-force-enable-multi-tangent">
 <dt>Force enable multi tangent export</dt><dd><p>Forces the mesh to export with a second set of tangents based on the third UV map.</p>
 <p>Usually enabled per mesh-set by adding and enabling the <code class="docutils literal notranslate"><span class="pre">enable_multi_tangent_space</span></code>
 boolean parameter to a material.</p>

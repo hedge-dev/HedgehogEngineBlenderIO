@@ -222,6 +222,8 @@
 <li class="toctree-l4"><a class="reference internal" href="viewport_toolbar/info.html">Info Tools</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="collision_primitive_overlay.html">Collision primitive overlay</a></li>
+<li class="toctree-l3"><a class="reference internal" href="collision_primitive_tools.html">Collision primitive tools</a></li>
 </ul>
 </li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../object/index.html">Object Related</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of Object Related</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -397,7 +399,7 @@
 </div>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
-<p>All importers depend on the <a class="reference internal" href="../settings.html#heio-scene-target-game"><span class="std std-ref">target game</span></a> and will
+<p>All importers depend on the <a class="reference internal" href="../settings.html#bpy-types-heio-scene-target-game"><span class="std std-ref">target game</span></a> and will
 alter how the import is interpreted, so make sure to configure the correct target game before
 importing anything!</p>
 </div>
@@ -423,7 +425,7 @@ is going to take until completion!</p>
 <dt>Create undefined parameters/textures</dt><dd><p>If the shader used by the material is defined by the target game, all parameters and textures
 not defined by the target game for the shader will be ignored and lost after importing.</p>
 <p>Enabling this option will import all parameters and textures, even if they are not defined.
-If that happens <a class="reference internal" href="../object/material.html#heio-material-custom-shader"><span class="std std-ref">custom shader</span></a> will be enabled.</p>
+If that happens <a class="reference internal" href="../object/material.html#bpy-types-heio-material-custom-shader"><span class="std std-ref">custom shader</span></a> will be enabled.</p>
 </dd>
 <dt>Import images</dt><dd><p>Will attempt to load the images of a material into blender.</p>
 <div class="admonition note">

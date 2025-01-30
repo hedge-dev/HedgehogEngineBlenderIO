@@ -222,6 +222,8 @@
 <li class="toctree-l4"><a class="reference internal" href="info.html">Info Tools</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="../collision_primitive_overlay.html">Collision primitive overlay</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../collision_primitive_tools.html">Collision primitive tools</a></li>
 </ul>
 </li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../object/index.html">Object Related</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of Object Related</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -386,7 +388,7 @@
         </div>
         <article role="main" id="furo-main-content">
           <section id="sca-parameter-mass-edit">
-<h1>SCA Parameter Mass-edit<a class="headerlink" href="#sca-parameter-mass-edit" title="Link to this heading">¶</a></h1>
+<span id="bpy-types-heio-scap-massedit"></span><h1>SCA Parameter Mass-edit<a class="headerlink" href="#sca-parameter-mass-edit" title="Link to this heading">¶</a></h1>
 <p>SCA parameter often need to be edited across multiple objects or bones, which can be a hassle.
 That’s where these mass-edit tools come in handy: They allow you to select, add, update and remove
 SCA parameters across a wider selection of objects or bones.</p>
@@ -395,7 +397,7 @@ SCA parameters across a wider selection of objects or bones.</p>
 <h2>Properties<a class="headerlink" href="#properties" title="Link to this heading">¶</a></h2>
 <p>There are several properties to configure how to edit sca parameters:</p>
 <section id="mode">
-<h3>Mode<a class="headerlink" href="#mode" title="Link to this heading">¶</a></h3>
+<span id="bpy-types-heio-scap-massedit-mode"></span><h3>Mode<a class="headerlink" href="#mode" title="Link to this heading">¶</a></h3>
 <p>The type of sca parameters to edit.</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">Model</span></code> in object mode: target the SCA parameters on selected mesh objects.</p></li>
@@ -403,36 +405,40 @@ SCA parameters across a wider selection of objects or bones.</p>
 <li><p><code class="docutils literal notranslate"><span class="pre">Material</span></code>: Target sca parameters of materials on selected objects.</p></li>
 </ul>
 </section>
+<section id="use-preset">
+<span id="bpy-types-heio-scap-massedit-use-preset"></span><h3>Use Preset<a class="headerlink" href="#use-preset" title="Link to this heading">¶</a></h3>
+<p>Whether to lock the name and type to a preset provided by the target game.</p>
+</section>
 <section id="name">
-<h3>Name<a class="headerlink" href="#name" title="Link to this heading">¶</a></h3>
+<span id="bpy-types-heio-scap-massedit-value-name-enum"></span><span id="bpy-types-heio-scap-massedit-value-name"></span><h3>Name<a class="headerlink" href="#name" title="Link to this heading">¶</a></h3>
 <p>The name of the sca parameter to target. Can either be manually specified as a text, or be selected
 from a range of presets by clicking the <code class="docutils literal notranslate"><span class="pre">use</span> <span class="pre">preset</span></code> toggle to the right of the name.</p>
 </section>
 <section id="value-type">
-<h3>Value Type<a class="headerlink" href="#value-type" title="Link to this heading">¶</a></h3>
+<span id="bpy-types-heio-scap-massedit-value-type"></span><h3>Value Type<a class="headerlink" href="#value-type" title="Link to this heading">¶</a></h3>
 <p>Type to use when adding/updating the parameter. Is pre-determined if <code class="docutils literal notranslate"><span class="pre">use</span> <span class="pre">preset</span></code> is enabled.</p>
 </section>
 <section id="value">
-<h3>Value<a class="headerlink" href="#value" title="Link to this heading">¶</a></h3>
+<span id="bpy-types-heio-scap-massedit-boolean-value"></span><span id="bpy-types-heio-scap-massedit-float-value"></span><span id="bpy-types-heio-scap-massedit-value"></span><h3>Value<a class="headerlink" href="#value" title="Link to this heading">¶</a></h3>
 <p>The value to target and/or update/add. Kind of value depends on the value type.</p>
 </section>
 </section>
 <section id="operators">
 <h2>Operators<a class="headerlink" href="#operators" title="Link to this heading">¶</a></h2>
 <section id="select">
-<h3>Select<a class="headerlink" href="#select" title="Link to this heading">¶</a></h3>
+<span id="bpy-ops-heio-scap-massedit-select"></span><h3>Select<a class="headerlink" href="#select" title="Link to this heading">¶</a></h3>
 <p>Select all objects/bones that contain the targeted parameter name.</p>
 </section>
 <section id="select-exact">
-<h3>Select exact<a class="headerlink" href="#select-exact" title="Link to this heading">¶</a></h3>
+<span id="bpy-ops-heio-scap-massedit-select-exact"></span><h3>Select exact<a class="headerlink" href="#select-exact" title="Link to this heading">¶</a></h3>
 <p>Select all objects/bones that contain the targeted parameter name and specified value (value type not checked).</p>
 </section>
 <section id="set">
-<h3>Set<a class="headerlink" href="#set" title="Link to this heading">¶</a></h3>
+<span id="bpy-ops-heio-scap-massedit-set"></span><h3>Set<a class="headerlink" href="#set" title="Link to this heading">¶</a></h3>
 <p>Add or update the targeted SCA parameter on all selected objects/bones.</p>
 </section>
 <section id="remove">
-<h3>Remove<a class="headerlink" href="#remove" title="Link to this heading">¶</a></h3>
+<span id="bpy-ops-heio-scap-massedit-remove"></span><h3>Remove<a class="headerlink" href="#remove" title="Link to this heading">¶</a></h3>
 <p>Remove the targeted SCA parameters with the same name on all selected objects/bones.</p>
 </section>
 </section>
@@ -506,6 +512,7 @@ from a range of presets by clicking the <code class="docutils literal notranslat
 <li><a class="reference internal" href="#">SCA Parameter Mass-edit</a><ul>
 <li><a class="reference internal" href="#properties">Properties</a><ul>
 <li><a class="reference internal" href="#mode">Mode</a></li>
+<li><a class="reference internal" href="#use-preset">Use Preset</a></li>
 <li><a class="reference internal" href="#name">Name</a></li>
 <li><a class="reference internal" href="#value-type">Value Type</a></li>
 <li><a class="reference internal" href="#value">Value</a></li>

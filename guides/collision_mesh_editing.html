@@ -222,6 +222,8 @@
 <li class="toctree-l4"><a class="reference internal" href="../user_interface/tools/viewport_toolbar/info.html">Info Tools</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="../user_interface/tools/collision_primitive_overlay.html">Collision primitive overlay</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../user_interface/tools/collision_primitive_tools.html">Collision primitive tools</a></li>
 </ul>
 </li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../user_interface/object/index.html">Object Related</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of Object Related</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -743,6 +745,17 @@ it displays transform gizmos to move, rotate and scale the selected primitive.</
 since there is no point in rotating a sphere.</p>
 </div>
 </section>
+<section id="cursor-snapping">
+<h4>Cursor snapping<a class="headerlink" href="#cursor-snapping" title="Link to this heading">¶</a></h4>
+<p>While using any of the workspace tools you can find two new operators in the snap menu
+specific to collision primitives. The names should be self-explanatory:</p>
+<figure class="align-default" id="id22">
+<img alt="../_images/collision_mesh_editing_primitive_snapping.png" src="../_images/collision_mesh_editing_primitive_snapping.png" />
+<figcaption>
+<p><span class="caption-text">The new cursor snapping operators</span><a class="headerlink" href="#id22" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</section>
 </section>
 <section id="splitting">
 <h3>Splitting<a class="headerlink" href="#splitting" title="Link to this heading">¶</a></h3>
@@ -759,10 +772,10 @@ dimensions either with the gizmos or by directly changing the properties in the 
 <p>In the event that you want to convert collision primitives to polygonal geometry, you can use the
 <a class="reference internal" href="../user_interface/tools/viewport_toolbar/general.html#bpy-ops-heio-collision-primitives-to-geometry"><span class="std std-ref">Collision primitives to geometry operator</span></a>,
 which does just that.</p>
-<figure class="align-default" id="id22">
+<figure class="align-default" id="id23">
 <img alt="../_images/collision_mesh_editing_primitives_converted.png" src="../_images/collision_mesh_editing_primitives_converted.png" />
 <figcaption>
-<p><span class="caption-text">The primitives from before converted to geometry at the default resolution</span><a class="headerlink" href="#id22" title="Link to this image">¶</a></p>
+<p><span class="caption-text">The primitives from before converted to geometry at the default resolution</span><a class="headerlink" href="#id23" title="Link to this image">¶</a></p>
 </figcaption>
 </figure>
 <p>You can change the resolution of the generated geometry in the operator window in the bottom left
@@ -875,6 +888,7 @@ convex).</p>
 <li><a class="reference internal" href="#editing-primitives">Editing primitives</a><ul>
 <li><a class="reference internal" href="#select-collision-primitive">Select collision primitive</a></li>
 <li><a class="reference internal" href="#transform-collision-primitives">Transform collision primitives</a></li>
+<li><a class="reference internal" href="#cursor-snapping">Cursor snapping</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#splitting">Splitting</a></li>

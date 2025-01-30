@@ -222,6 +222,8 @@
 <li class="toctree-l4"><a class="reference internal" href="info.html">Info Tools</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="../collision_primitive_overlay.html">Collision primitive overlay</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../collision_primitive_tools.html">Collision primitive tools</a></li>
 </ul>
 </li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../object/index.html">Object Related</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of Object Related</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -400,15 +402,25 @@
 <section id="split-mesh-by-groups">
 <span id="bpy-ops-heio-split-meshgroups"></span><h2>Split mesh by groups<a class="headerlink" href="#split-mesh-by-groups" title="Link to this heading">¶</a></h2>
 <p>Split a mesh into multiple mesh objects by its <a class="reference internal" href="../../object/mesh/groups.html"><span class="doc">mesh groups</span></a>.</p>
-<dl class="simple">
+<dl class="simple" id="bpy-ops-heio-split-meshgroups-root-mesh-copy">
 <dt>Root mesh copy</dt><dd><p>Create a copy of the mesh before splitting. Otherwise, the original mesh will be cleared from
 the split geometry.</p>
 </dd>
+</dl>
+<dl class="simple" id="bpy-ops-heio-split-meshgroups-origins-to-bounding-box-centers">
 <dt>Origins to bounding box centers</dt><dd><p>Place the origins of the split objects at the center of the geometry, instead of remaining where
 it originall was.</p>
 </dd>
+</dl>
+<dl class="simple" id="bpy-ops-heio-split-meshgroups-remove-empty-splits">
 <dt>Remove empty splits</dt><dd><p>Remove splits that ended up empty</p>
 </dd>
+</dl>
+<dl class="simple" id="bpy-ops-heio-split-meshgroups-remove-empty-info">
+<dt>Remove empty info</dt><dd><p>Leave mesh info (groups, render layers, etc.) on the split uninitialized if it ends up empty either way.</p>
+</dd>
+</dl>
+<dl class="simple" id="bpy-ops-heio-split-meshgroups-split-collision-primitives">
 <dt>Split collision primitives</dt><dd><p>Split each collision primitive on the mesh into its own mesh (can make editing their position
 and rotation easier)</p>
 </dd>
@@ -419,7 +431,7 @@ and rotation easier)</p>
 <p>Merge a meshes child mesh objects into itself while retaining
 <a class="reference internal" href="../../object/mesh/groups.html"><span class="doc">mesh groups</span></a>,
 <a class="reference internal" href="../../object/mesh/render_layers.html"><span class="doc">render layers</span></a> and other HEIO mesh info.</p>
-<dl class="simple">
+<dl class="simple" id="bpy-ops-heio-merge-submeshes-root-mesh-copy">
 <dt>Root mesh copy</dt><dd><p>Create a copy of the mesh before merging its children into it. Otherwise, the original mesh
 will be overwritten.</p>
 </dd>
@@ -428,10 +440,12 @@ will be overwritten.</p>
 <section id="collision-primitives-to-geometry">
 <span id="bpy-ops-heio-collision-primitives-to-geometry"></span><h2>Collision primitives to geometry<a class="headerlink" href="#collision-primitives-to-geometry" title="Link to this heading">¶</a></h2>
 <p>Convert collision primitives into polygonal geometry on the mesh they are stored on.</p>
-<dl class="simple">
+<dl class="simple" id="bpy-ops-heio-collision-primitives-to-geometry-mesh-copy">
 <dt>Root mesh copy</dt><dd><p>Create a copy of the mesh before converting the primitives. Otherwise, the original mesh
 will be overwritten.</p>
 </dd>
+</dl>
+<dl class="simple" id="bpy-ops-heio-collision-primitives-to-geometry-resolution">
 <dt>Resolution</dt><dd><p>Polygon resolution level of round primitives.</p>
 </dd>
 </dl>

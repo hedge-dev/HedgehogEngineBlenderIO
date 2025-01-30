@@ -222,6 +222,8 @@
 <li class="toctree-l4"><a class="reference internal" href="../../tools/viewport_toolbar/info.html">Info Tools</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="../../tools/collision_primitive_overlay.html">Collision primitive overlay</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../tools/collision_primitive_tools.html">Collision primitive tools</a></li>
 </ul>
 </li>
 <li class="toctree-l2 current has-children"><a class="reference internal" href="../index.html">Object Related</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of Object Related</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
@@ -386,7 +388,7 @@
         </div>
         <article role="main" id="furo-main-content">
           <section id="collision-primitives">
-<h1>Collision Primitives<a class="headerlink" href="#collision-primitives" title="Link to this heading">¶</a></h1>
+<span id="bpy-types-heio-collisionprimitive"></span><h1>Collision Primitives<a class="headerlink" href="#collision-primitives" title="Link to this heading">¶</a></h1>
 <div class="refbox admonition" id="id1">
 <p class="admonition-title">Reference</p>
 <dl class="field-list simple">
@@ -402,7 +404,7 @@ is overkill.</p>
 Collision primitive edit tools.</p>
 <section id="collision-primitive-properties">
 <h2>Collision primitive properties<a class="headerlink" href="#collision-primitive-properties" title="Link to this heading">¶</a></h2>
-<dl>
+<dl class="simple" id="bpy-types-heio-collisionprimitive-shape-type">
 <dt>Shape type</dt><dd><p>The type of primitive shape. There are 4 different shapes:</p>
 <ul class="simple">
 <li><p>Sphere</p></li>
@@ -411,19 +413,31 @@ Collision primitive edit tools.</p>
 <li><p>Capsule</p></li>
 </ul>
 </dd>
+</dl>
+<dl class="simple" id="bpy-types-heio-collisionprimitive-position">
 <dt>Position</dt><dd><p>Position of the primitive in object space</p>
 </dd>
+</dl>
+<dl class="simple" id="bpy-types-heio-collisionprimitive-rotation">
 <dt>Rotation</dt><dd><p>Rotation of the primitive in object space</p>
 </dd>
+</dl>
+<dl id="bpy-types-heio-collisionprimitive-dimensions">
 <dt>Dimensions</dt><dd><p>Dimensions of the primitive in object space.</p>
 <p>Utilized different depending on the shape type used.</p>
 </dd>
+</dl>
+<dl id="bpy-types-heio-collisionprimitive-collision-layer">
 <dt>Collision Layer</dt><dd><p>The collision layer to use for the primitive.</p>
 <p>See <a class="reference internal" href="groups.html"><span class="doc">Collision Layer</span></a> for more info.</p>
 </dd>
+</dl>
+<dl id="bpy-types-heio-collisionprimitive-collision-type">
 <dt>Collision Type</dt><dd><p>The collision type to use for the primitive.</p>
 <p>See <a class="reference internal" href="collision_types.html"><span class="doc">Collision Types</span></a> for more info.</p>
 </dd>
+</dl>
+<dl id="bpy-types-heio-collisionprimitive-collision-flags">
 <dt>Collision Flags</dt><dd><p>A list of collision flags to use on the primitive.</p>
 <p>See <a class="reference internal" href="collision_flags.html"><span class="doc">Collision Flags</span></a> for more info.</p>
 </dd>

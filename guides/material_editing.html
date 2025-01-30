@@ -222,6 +222,8 @@
 <li class="toctree-l4"><a class="reference internal" href="../user_interface/tools/viewport_toolbar/info.html">Info Tools</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="../user_interface/tools/collision_primitive_overlay.html">Collision primitive overlay</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../user_interface/tools/collision_primitive_tools.html">Collision primitive tools</a></li>
 </ul>
 </li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../user_interface/object/index.html">Object Related</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of Object Related</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -419,7 +421,7 @@ options like parameters and textures to be used by the shader.</p>
 <p>Every game has its own list of shaders. A full list of the usable shaders for each game can be
 found <a class="reference internal" href="../game_documentation/shaders/index.html"><span class="doc">here</span></a>.</p>
 <p>If you created a new material, it will be set up to use a
-<a class="reference internal" href="../user_interface/object/material.html#heio-material-custom-shader"><span class="std std-ref">custom shader</span></a> and have no shader set. Custom Shaders are only
+<a class="reference internal" href="../user_interface/object/material.html#bpy-types-heio-material-custom-shader"><span class="std std-ref">custom shader</span></a> and have no shader set. Custom Shaders are only
 useful if the shader you want to use is somehow not set up for the target game, or when you want
 to use a custom shader.</p>
 <p>In 99.9% of cases, you dont need to use the custom shader feature, and can disable it.
@@ -432,7 +434,7 @@ Upon doing so, the shader name textfield will be swapped out for a dropdown.</p>
 </figure>
 <p>By default, the list of shaders is (usually) a small selection of commonly used shaders from
 the larger shader list. If the shader you want to use is not part of the selection, enable
-<a class="reference internal" href="../user_interface/object/material.html#heio-scene-show-all-shaders"><span class="std std-ref">“Show all shaders”</span></a>.</p>
+<a class="reference internal" href="../user_interface/object/material.html#bpy-types-heio-scene-show-all-shaders"><span class="std std-ref">“Show all shaders”</span></a>.</p>
 <p>If no shader is selected, the addon will show a warning sign in the property.
 Always make sure to select a shader!</p>
 <section id="shader-variants">
@@ -456,7 +458,7 @@ variant name denotes one feature, e.g. <code class="docutils literal notranslate
 <p><em>Clip Threshold</em> and <a class="reference external" href="https://docs.blender.org/manual/en/latest/render/eevee/material_settings.html#bpy-types-material-use-backface-culling">Backface Culling</a>
 are default blender material properties added here for convenience and have the same effect ingame
 as they do here.</p>
-<p><a class="reference internal" href="../user_interface/object/material.html#heio-material-use-additive-blending"><span class="std std-ref">Use additive blending</span></a> does exactly as it says: Instead
+<p><a class="reference internal" href="../user_interface/object/material.html#bpy-types-heio-material-use-additive-blending"><span class="std std-ref">Use additive blending</span></a> does exactly as it says: Instead
 of alpha blending, it makes the shader use <a class="reference external" href="https://www.learnopengles.com/tag/additive-blending/">additive blending</a>.</p>
 <p>For info on render layers read the <a class="reference internal" href="render_layers.html"><span class="doc">render layers</span></a> guide.</p>
 </section>

@@ -222,6 +222,8 @@
 <li class="toctree-l4"><a class="reference internal" href="../../tools/viewport_toolbar/info.html">Info Tools</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="../../tools/collision_primitive_overlay.html">Collision primitive overlay</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../tools/collision_primitive_tools.html">Collision primitive tools</a></li>
 </ul>
 </li>
 <li class="toctree-l2 current has-children"><a class="reference internal" href="../index.html">Object Related</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of Object Related</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
@@ -386,7 +388,7 @@
         </div>
         <article role="main" id="furo-main-content">
           <section id="mesh-groups">
-<h1>Mesh Groups<a class="headerlink" href="#mesh-groups" title="Link to this heading">¶</a></h1>
+<span id="bpy-types-heio-meshgroup"></span><h1>Mesh Groups<a class="headerlink" href="#mesh-groups" title="Link to this heading">¶</a></h1>
 <div class="refbox admonition" id="id1">
 <p class="admonition-title">Reference</p>
 <dl class="field-list simple">
@@ -408,22 +410,30 @@ not needed.</p>
 <p>In <code class="docutils literal notranslate"><span class="pre">.btmesh</span></code> files, they are used to divide parts of a collision mesh into “shapes”. The group
 name does not get exported here.</p>
 <p>Mesh groups have several properties specific to collision meshes</p>
-<dl>
+<span id="bpy-types-heio-meshgroup-collision-layer"></span><dl class="simple" id="bpy-types-heio-collisionlayer">
 <dt>Collision Layer</dt><dd><p>Determines how entities interact with the collision shape</p>
 </dd>
+</dl>
+<dl id="bpy-types-heio-meshgroup-is-convex-collision">
 <dt>Is Convex Collision</dt><dd><p>Whether the shape is convex (has no “indents” or holes). This strips the shape of all polygons
 information on export, but takes less CPU power to collide with.</p>
 <p>Without polygons, convex shapes can only have one set of polygon specific info:</p>
-<dl>
+</dd>
+</dl>
+<blockquote id="bpy-types-heio-meshgroup-convex-type">
+<div><dl>
 <dt>Convex collision type</dt><dd><p>The collision type to use on the entire convex shape.</p>
 <p>See <a class="reference internal" href="collision_types.html"><span class="doc">Collision Types</span></a> for more info.</p>
 </dd>
+</dl>
+</div></blockquote>
+<blockquote id="bpy-types-heio-meshgroup-convex-flags">
+<div><dl>
 <dt>Convex collision flags</dt><dd><p>A list of collision flags to use on the entire convex shape.</p>
 <p>See <a class="reference internal" href="collision_flags.html"><span class="doc">Collision Flags</span></a> for more info.</p>
 </dd>
 </dl>
-</dd>
-</dl>
+</div></blockquote>
 </section>
 </section>
 

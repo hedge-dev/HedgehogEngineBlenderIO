@@ -222,6 +222,8 @@
 <li class="toctree-l4"><a class="reference internal" href="../tools/viewport_toolbar/info.html">Info Tools</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="../tools/collision_primitive_overlay.html">Collision primitive overlay</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../tools/collision_primitive_tools.html">Collision primitive tools</a></li>
 </ul>
 </li>
 <li class="toctree-l2 current has-children"><a class="reference internal" href="index.html">Object Related</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of Object Related</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
@@ -386,7 +388,7 @@
         </div>
         <article role="main" id="furo-main-content">
           <section id="sca-parameters">
-<span id="bpy-ops-heio-sca-parameters-move"></span><span id="bpy-ops-heio-sca-parameters-remove"></span><span id="bpy-ops-heio-sca-parameters-add"></span><h1>SCA Parameters<a class="headerlink" href="#sca-parameters" title="Link to this heading">¶</a></h1>
+<span id="bpy-ops-heio-sca-parameters-newfrompreset-preset"></span><span id="bpy-ops-heio-sca-parameters-newfrompreset"></span><span id="bpy-ops-heio-sca-parameters-move"></span><span id="bpy-ops-heio-sca-parameters-remove"></span><span id="bpy-ops-heio-sca-parameters-add"></span><span id="bpy-types-heio-node"></span><span id="bpy-types-heio-sca-parameter"></span><h1>SCA Parameters<a class="headerlink" href="#sca-parameters" title="Link to this heading">¶</a></h1>
 <div class="refbox admonition" id="id1">
 <p class="admonition-title">Reference</p>
 <dl class="field-list simple">
@@ -405,21 +407,21 @@
 information to the game.</p>
 <section id="sca-parameter-properties">
 <h2>SCA Parameter Properties<a class="headerlink" href="#sca-parameter-properties" title="Link to this heading">¶</a></h2>
-<dl class="simple" id="heio-sca-parameter-name">
+<dl class="simple" id="bpy-types-heio-sca-parameter-name">
 <dt>Name</dt><dd><p>Name of the parameter. Has a size limit of 8 characters</p>
 </dd>
 </dl>
-<dl id="heio-sca-parameter-value-type">
+<dl id="bpy-types-heio-sca-parameter-value-type">
 <dt>Type</dt><dd><p>Value type of the parameter.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>When exported, SCA parameters do not specify their type. Instead, when importing,
 the addon looks up if the parameter is defined by the
-<a class="reference internal" href="../settings.html#heio-scene-target-game"><span class="std std-ref">target game</span></a> and will assign the type appropriately.</p>
+<a class="reference internal" href="../settings.html#bpy-types-heio-scene-target-game"><span class="std std-ref">target game</span></a> and will assign the type appropriately.</p>
 </div>
 </dd>
 </dl>
-<span id="heio-sca-parameter-float-value"></span><span id="heio-sca-parameter-value"></span><dl class="simple" id="heio-sca-parameter-boolean-value">
+<span id="bpy-types-heio-sca-parameter-float-value"></span><span id="bpy-types-heio-sca-parameter-value"></span><dl class="simple" id="bpy-types-heio-sca-parameter-boolean-value">
 <dt>Value</dt><dd><p>Value of the parameter. All value types share the same internal value.</p>
 </dd>
 </dl>

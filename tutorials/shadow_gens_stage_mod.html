@@ -222,6 +222,8 @@
 <li class="toctree-l4"><a class="reference internal" href="../user_interface/tools/viewport_toolbar/info.html">Info Tools</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="../user_interface/tools/collision_primitive_overlay.html">Collision primitive overlay</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../user_interface/tools/collision_primitive_tools.html">Collision primitive tools</a></li>
 </ul>
 </li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../user_interface/object/index.html">Object Related</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of Object Related</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -896,8 +898,15 @@ change the DXGI format to <code class="docutils literal notranslate"><span class
 subpanel and select the <code class="docutils literal notranslate"><span class="pre">diffuse</span></code> texture. With it selected, click on the <code class="docutils literal notranslate"><span class="pre">Image</span></code> box below
 the list and select your freshly created <code class="docutils literal notranslate"><span class="pre">Suzanne</span></code> texture.</p>
 <p>Somehow, the model is still black; That is because the model has no vertex colors. Go into the mesh
-properties, open the color attributes subpanel and create a new, <strong>white</strong> color attribute. Now the
-model should be the color of your texture!</p>
+properties, open the color attributes subpanel and create a new, <strong>white</strong> color attribute that
+uses byte colors:</p>
+<figure class="align-default" id="id29">
+<img alt="../_images/shadow_gens_stage_mod_vertex_colors.png" src="../_images/shadow_gens_stage_mod_vertex_colors.png" />
+<figcaption>
+<p><span class="caption-text">Where to add the vertex color attribute</span><a class="headerlink" href="#id29" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>Now the model should be the color of your texture!</p>
 <p>Go back into the <code class="docutils literal notranslate"><span class="pre">HEIO</span> <span class="pre">Material</span> <span class="pre">Properties</span></code> panel, open the <code class="docutils literal notranslate"><span class="pre">General</span></code> subpanel and change the
 <code class="docutils literal notranslate"><span class="pre">Render</span> <span class="pre">Layer</span></code> to <code class="docutils literal notranslate"><span class="pre">Opaque</span></code> (using <code class="docutils literal notranslate"><span class="pre">automatic</span></code> would export with <code class="docutils literal notranslate"><span class="pre">Transparent</span></code>, which we
 don’t want).</p>
@@ -913,16 +922,16 @@ list. This has 4 values:</p>
 <p>Why don’t we go with a shiny plastic look? Use 0.125 for specular (which is usually considered
 standard and physically accurate) and 0.8 for smoothness. Nice, now the model looks (somewhat) like
 plastic!</p>
-<figure class="align-default" id="id29">
+<figure class="align-default" id="id30">
 <img alt="../_images/shadow_gens_stage_mod_suzanne_preview.png" src="../_images/shadow_gens_stage_mod_suzanne_preview.png" />
 <figcaption>
-<p><span class="caption-text">How i made my suzanne look</span><a class="headerlink" href="#id29" title="Link to this image">¶</a></p>
+<p><span class="caption-text">How i made my suzanne look</span><a class="headerlink" href="#id30" title="Link to this image">¶</a></p>
 </figcaption>
 </figure>
-<figure class="align-default" id="id30">
+<figure class="align-default" id="id31">
 <img alt="../_images/shadow_gens_stage_mod_suzanne_material.png" src="../_images/shadow_gens_stage_mod_suzanne_material.png" />
 <figcaption>
-<p><span class="caption-text">My material settings</span><a class="headerlink" href="#id30" title="Link to this image">¶</a></p>
+<p><span class="caption-text">My material settings</span><a class="headerlink" href="#id31" title="Link to this image">¶</a></p>
 </figcaption>
 </figure>
 </section>
@@ -931,17 +940,17 @@ plastic!</p>
 <p>To avoid spending unnecessary time exporting all models in the stage, lets export this model
 on its own (exporting the imported textures would take forever!).</p>
 <p>Select the Suzanne object (and only Suzanne!), then open the terrain-model exporter:</p>
-<figure class="align-default" id="id31">
+<figure class="align-default" id="id32">
 <img alt="../_images/asset_exporting_terrain_model.png" src="../_images/asset_exporting_terrain_model.png" />
 <figcaption>
-<p><span class="caption-text">Where to find the terrain-model exporter</span><a class="headerlink" href="#id31" title="Link to this image">¶</a></p>
+<p><span class="caption-text">Where to find the terrain-model exporter</span><a class="headerlink" href="#id32" title="Link to this image">¶</a></p>
 </figcaption>
 </figure>
 <p>In the exporter properties enable <code class="docutils literal notranslate"><span class="pre">Limit</span> <span class="pre">to</span> <span class="pre">Selected</span> <span class="pre">Objects</span></code>:</p>
-<figure class="align-default" id="id32">
+<figure class="align-default" id="id33">
 <img alt="../_images/shadow_gens_stage_mod_suzanne_export_settings.png" src="../_images/shadow_gens_stage_mod_suzanne_export_settings.png" />
 <figcaption>
-<p><span class="caption-text">How to change which objects to include in the exporter</span><a class="headerlink" href="#id32" title="Link to this image">¶</a></p>
+<p><span class="caption-text">How to change which objects to include in the exporter</span><a class="headerlink" href="#id33" title="Link to this image">¶</a></p>
 </figcaption>
 </figure>
 <p>Now navigate to your mods <code class="docutils literal notranslate"><span class="pre">w03a10_trr_s00</span></code> directory and confirm. This should now create</p>
@@ -950,10 +959,10 @@ on its own (exporting the imported textures would take forever!).</p>
 <li><p>A <code class="docutils literal notranslate"><span class="pre">Suzanne.material</span></code> file</p></li>
 <li><p>A <code class="docutils literal notranslate"><span class="pre">Suzanne_abd.dds</span></code> file</p></li>
 </ul>
-<figure class="align-default" id="id33">
+<figure class="align-default" id="id34">
 <img alt="../_images/shadow_gens_stage_mod_suzanne_export_result.png" src="../_images/shadow_gens_stage_mod_suzanne_export_result.png" />
 <figcaption>
-<p><span class="caption-text">The exported files</span><a class="headerlink" href="#id33" title="Link to this image">¶</a></p>
+<p><span class="caption-text">The exported files</span><a class="headerlink" href="#id34" title="Link to this image">¶</a></p>
 </figcaption>
 </figure>
 <p>Now run the <code class="docutils literal notranslate"><span class="pre">PCMODEL</span> <span class="pre">Collections</span></code> colletion exporter. The terrain part is done!</p>
@@ -964,10 +973,10 @@ on its own (exporting the imported textures would take forever!).</p>
 <p>Select your terrain Suzanne and duplicate it (not linked). Move the duplicate over to the
 <code class="docutils literal notranslate"><span class="pre">w03a10_s15_place_near.pccol</span></code> collection.</p>
 <p>Rename the object to <code class="docutils literal notranslate"><span class="pre">Suzanne_col</span></code>, and rename its mesh data to <code class="docutils literal notranslate"><span class="pre">Suzanne_col</span></code> too:</p>
-<figure class="align-default" id="id34">
+<figure class="align-default" id="id35">
 <img alt="../_images/shadow_gens_stage_mod_suzanne_col_names.png" src="../_images/shadow_gens_stage_mod_suzanne_col_names.png" />
 <figcaption>
-<p><span class="caption-text">The suzanne collision model setup</span><a class="headerlink" href="#id34" title="Link to this image">¶</a></p>
+<p><span class="caption-text">The suzanne collision model setup</span><a class="headerlink" href="#id35" title="Link to this image">¶</a></p>
 </figcaption>
 </figure>
 <p>Next remove the subdivision surface modifier, as well as the material.</p>
@@ -975,10 +984,10 @@ on its own (exporting the imported textures would take forever!).</p>
 open the <code class="docutils literal notranslate"><span class="pre">HEIO</span> <span class="pre">Mesh</span> <span class="pre">properties</span></code> panel again, and in there open the <code class="docutils literal notranslate"><span class="pre">Groups</span></code> subpanel.</p>
 <p>Press the <code class="docutils literal notranslate"><span class="pre">Initialize</span> <span class="pre">mesh</span> <span class="pre">info</span></code> button and change the Collision layer of the freshly created
 group to <code class="docutils literal notranslate"><span class="pre">Solid</span></code> to make it a solid collision mesh:</p>
-<figure class="align-default" id="id35">
+<figure class="align-default" id="id36">
 <img alt="../_images/shadow_gens_stage_mod_suzanne_col_group.png" src="../_images/shadow_gens_stage_mod_suzanne_col_group.png" />
 <figcaption>
-<p><span class="caption-text">The group with its collision layer</span><a class="headerlink" href="#id35" title="Link to this image">¶</a></p>
+<p><span class="caption-text">The group with its collision layer</span><a class="headerlink" href="#id36" title="Link to this image">¶</a></p>
 </figcaption>
 </figure>
 <p>Next open the <code class="docutils literal notranslate"><span class="pre">Collision</span> <span class="pre">Types</span></code> subpanel and initialize the mesh info here too. Clck on the list
@@ -990,10 +999,10 @@ with the collision. There Unfortunately is no “plastic” type, which is why w
 <h3>The final test ingame<a class="headerlink" href="#the-final-test-ingame" title="Link to this heading">¶</a></h3>
 <p>As per usual, pack both directories in your mod again and boot up the stage ingame. Suzanne should
 be right there, and we can interact with her too:</p>
-<figure class="align-default" id="id36">
+<figure class="align-default" id="id37">
 <img alt="../_images/shadow_gens_stage_mod_suzanne_ingame.png" src="../_images/shadow_gens_stage_mod_suzanne_ingame.png" />
 <figcaption>
-<p><span class="caption-text">Suzanne ingame</span><a class="headerlink" href="#id36" title="Link to this image">¶</a></p>
+<p><span class="caption-text">Suzanne ingame</span><a class="headerlink" href="#id37" title="Link to this image">¶</a></p>
 </figcaption>
 </figure>
 </section>
