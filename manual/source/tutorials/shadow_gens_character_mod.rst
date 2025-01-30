@@ -255,6 +255,12 @@ Part 6: So longe' bowser!
 
 That's it, now your character mod should be done! Congrats!
 
+.. figure:: images/shadow_gens_chr_mod_result.png
+	:figwidth: 70%
+
+	The finished Mario model, posing on the results screen
+
+
 This knowledge does not just apply to character models, but to all kinds of models in every
 hedgehog engine game!
 
