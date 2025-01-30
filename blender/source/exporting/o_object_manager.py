@@ -151,6 +151,13 @@ class ObjectManager:
         return new_objects
 
     def collect_objects_from_collection(self, collection: bpy.types.Collection):
-        new_objects = set(collection.all_objects)
+        col_objects = set(collection.all_objects)
+        new_objects = set()
+
+        for obj in col_objects:
+            if obj in new_objects:
+                continue
+            new_objects.update(obj.children_recursive)
+
         self._update_objects(new_objects)
         return new_objects
