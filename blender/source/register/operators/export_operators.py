@@ -21,7 +21,7 @@ class HEIO_OT_Export_Material(ExportMaterialOperator):
     def export(self, context):
         materials = set([
             slot.material
-            for obj in self.objects if obj.type in MESH_DATA_TYPES
+            for obj in self.object_manager.all_objects if obj.type in MESH_DATA_TYPES
             for slot in obj.material_slots if slot.material is not None
         ])
 
