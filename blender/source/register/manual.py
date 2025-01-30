@@ -29,7 +29,7 @@ TYPE_PAGE_MAP = {
     "HEIO_MaterialTextureList": "object/material_textures",
     "HEIO_Material": "object/material",
     # "HEIO_Image": "", # internal data only, nothing to document
-    # "HEIO_View3DOverlay_CollisionPrimitive": "" # i forgor
+    "HEIO_View3DOverlay_CollisionPrimitive": "tools/collision_primitive_overlay"
 }
 
 OPS_PAGE_MAP = {

@@ -9,3 +9,4 @@ Tools
 	importers
 	exporters
 	viewport_toolbar/index
+	collision_primitive_overlay
