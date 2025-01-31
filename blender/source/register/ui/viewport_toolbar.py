@@ -44,11 +44,6 @@ class HEIO_PT_VTP_GeneralTools(ViewportToolPanel):
         layout.separator(type='LINE', factor=1.5)
 
         layout.operator(
-            material_operators.HEIO_OT_Material_SetupNodes.bl_idname)
-
-        layout.separator(type='LINE', factor=1.5)
-
-        layout.operator(
             image_operators.HEIO_OT_ReimportImages.bl_idname)
 
 
@@ -250,6 +245,9 @@ class HEIO_PT_VTP_Material_MassEdit(ViewportToolPanel):
         op.mode = 'TEXTURES'
 
     def draw(self, context):
+        self.layout.operator(
+            material_operators.HEIO_OT_Material_SetupNodes.bl_idname)
+
         props = context.scene.heio_material_massedit
 
         self._draw_shader_panel(context, props)
