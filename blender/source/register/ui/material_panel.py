@@ -258,7 +258,8 @@ class HEIO_PT_Material(PropertiesPanel):
     def draw_header_properties(
             layout: bpy.types.UILayout,
             context: bpy.types.Context,
-            material_properties: HEIO_Material):
+            material_properties: HEIO_Material,
+            show_operator: bool = True):
 
         row = layout.row(align=True)
 
@@ -293,7 +294,8 @@ class HEIO_PT_Material(PropertiesPanel):
                         icon="ERROR" if material_properties.variant_definition == "ERROR_FALLBACK" else "NONE"
                     )
 
-        layout.operator(HEIO_OT_Material_SetupNodes_Active.bl_idname)
+        if show_operator:
+            layout.operator(HEIO_OT_Material_SetupNodes_Active.bl_idname)
 
     # === overriden methods === #
 

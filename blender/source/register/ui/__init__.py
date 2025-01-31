@@ -42,6 +42,7 @@ to_register = [
 
     viewport_toolbar.HEIO_PT_VTP_GeneralTools,
 	viewport_toolbar.HEIO_PT_VTP_SCAP_MassEdit,
+	viewport_toolbar.HEIO_PT_VTP_Material_MassEdit,
 	viewport_toolbar.HEIO_PT_VTP_SceneData,
     viewport_toolbar.HEIO_PT_VTP_ObjectData,
     viewport_toolbar.HEIO_PT_VTP_Info,

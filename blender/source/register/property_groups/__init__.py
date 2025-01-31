@@ -1,6 +1,7 @@
 from . import (
     addon_preferences,
     sca_parameter_properties,
+	scap_mass_edit_properties,
     lod_info_properties,
     scene_properties,
     armature_properties,
@@ -9,6 +10,7 @@ from . import (
     material_parameter_properties,
     material_texture_properties,
     material_properties,
+	material_mass_edit_properties,
     image_properties
 )
 
@@ -17,7 +19,8 @@ to_register = [
 
     sca_parameter_properties.HEIO_SCA_Parameter,
     sca_parameter_properties.HEIO_SCA_Parameters,
-	sca_parameter_properties.HEIO_SCAP_MassEdit,
+
+	scap_mass_edit_properties.HEIO_SCAP_MassEdit,
 
     lod_info_properties.HEIO_LODInfoLevel,
     lod_info_properties.HEIO_LODInfoLevelList,
@@ -49,6 +52,8 @@ to_register = [
     material_texture_properties.HEIO_MaterialTextureList,
 
     material_properties.HEIO_Material,
+
+    material_mass_edit_properties.HEIO_Material_MassEdit,
 
     image_properties.HEIO_Image
 ]

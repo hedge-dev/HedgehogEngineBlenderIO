@@ -7,6 +7,7 @@ from . import (
     lod_operators,
     material_operators,
     material_parameter_operators,
+	material_mass_edit_operators,
     mesh_geometry_operators,
     image_operators,
     scap_mass_edit_operators,
@@ -63,6 +64,9 @@ to_register = [
     material_parameter_operators.HEIO_OT_MaterialParameters_Add,
     material_parameter_operators.HEIO_OT_MaterialParameters_Remove,
     material_parameter_operators.HEIO_OT_MaterialParameters_Move,
+
+    material_mass_edit_operators.HEIO_OT_MaterialMassEdit_Update,
+    material_mass_edit_operators.HEIO_OT_MaterialMassEdit_Remove,
 
     mesh_geometry_operators.HEIO_OT_SplitMeshGroups,
     mesh_geometry_operators.HEIO_OT_MergeMeshGroups,

@@ -45,7 +45,9 @@ class BaseList(bpy.types.PropertyGroup):
         raise NotImplementedError()
 
     def _on_created(self, element, **args):
-        pass
+        for name, value in args.items():
+            if hasattr(element, name):
+                setattr(element, name, value)
 
     def _on_clear(self):
         pass

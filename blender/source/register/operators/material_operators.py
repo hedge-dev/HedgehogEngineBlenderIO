@@ -32,8 +32,7 @@ class MaterialOperator(HEIOBasePopupOperator):
 
         def add(obj: bpy.types.Object):
             if obj.type in MESH_DATA_TYPES:
-                for mat in obj.data.materials:
-                    results.add(mat)
+                results.update([slot.material for slot in obj.material_slots if slot.material is not None])
 
         if targetmode == 'ACTIVE':
             if (context.active_object.type in MESH_DATA_TYPES

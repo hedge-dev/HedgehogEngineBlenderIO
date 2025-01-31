@@ -5,7 +5,8 @@ from .. operators import (
     material_operators,
     image_operators,
     info_operators,
-    scap_mass_edit_operators
+    scap_mass_edit_operators,
+    material_mass_edit_operators
 )
 
 from . import (
@@ -109,6 +110,152 @@ class HEIO_PT_VTP_SCAP_MassEdit(ViewportToolPanel):
             scap_mass_edit_operators.HEIO_OT_SCAP_MassEdit_Set.bl_idname)
         row.operator(
             scap_mass_edit_operators.HEIO_OT_SCAP_MassEdit_Remove.bl_idname)
+
+
+class HEIO_PT_VTP_Material_MassEdit(ViewportToolPanel):
+    bl_label = "Material Mass-edit"
+
+    def _draw_shader_panel(self, context, properties):
+        header, body = self.layout.panel(
+            "heio_vtp_mme_shader", default_closed=True)
+        header.label(text="Shader")
+
+        if not body:
+            return
+
+        material_panel.HEIO_PT_Material.draw_header_properties(
+            body,
+            context,
+            properties.material_properties,
+            False
+        )
+
+        op = body.operator(material_mass_edit_operators.HEIO_OT_MaterialMassEdit_Update.bl_idname, text="Update")
+        op.mode = 'SHADER'
+
+    def _draw_general_panel(self, properties):
+        header, body = self.layout.panel(
+            "heio_vtp_mme_general", default_closed=True)
+        header.label(text="General")
+
+        if not body:
+            return
+
+        def draw_toggle_prop(prop_data, prop_name, toggle_prop_name):
+            row = body.row()
+            row.prop(properties, toggle_prop_name, text="")
+
+            row = row.row()
+            row.active = properties.get(toggle_prop_name, False)
+            row.use_property_split = True
+            row.use_property_decorate = False
+            row.prop(prop_data, prop_name)
+
+        material_properties = properties.material_properties
+
+        draw_toggle_prop(
+            material_properties,
+            "render_layer",
+            "update_render_layer")
+
+        if material_properties.render_layer == 'SPECIAL':
+            row = body.row()
+            row.active = properties.update_render_layer
+            row.use_property_split = True
+            row.use_property_decorate = False
+
+            row.prop(
+                material_properties,
+                "special_render_layer_name",
+                icon="ERROR"
+                if len(material_properties.special_render_layer_name) == 0
+                else "NONE"
+            )
+
+        draw_toggle_prop(
+            properties,
+            "alpha_threshold",
+            "update_alpha_threshold")
+
+        draw_toggle_prop(
+            properties,
+            "use_backface_culling",
+            "update_backface_culling")
+
+        draw_toggle_prop(
+            material_properties,
+            "blend_mode",
+            "update_blend_mode")
+
+        row = body.row(align=True)
+
+        op = row.operator(material_mass_edit_operators.HEIO_OT_MaterialMassEdit_Update.bl_idname, text="Update")
+        op.mode = 'GENERAL'
+
+
+    def _draw_parameter_panel(self, properties):
+        header, body = self.layout.panel(
+            "heio_vtp_mme_parameter", default_closed=True)
+        header.label(text="Parameter")
+
+        if not body:
+            return
+
+        body.use_property_split = True
+        body.use_property_decorate = False
+
+        body.prop(properties, "parameter_name")
+        body.prop(properties.parameter_properties, "value_type")
+
+        body.row(align=True).prop(
+            properties.parameter_properties,
+            properties.parameter_properties.value_type.lower() + "_value")
+
+        row = body.row(align=True)
+
+        op = row.operator(material_mass_edit_operators.HEIO_OT_MaterialMassEdit_Update.bl_idname)
+        op.mode = 'PARAMETERS'
+
+        op = row.operator(material_mass_edit_operators.HEIO_OT_MaterialMassEdit_Remove.bl_idname)
+        op.mode = 'PARAMETERS'
+
+    def _draw_texture_panel(self, properties):
+        header, body = self.layout.panel(
+            "heio_vtp_mme_texture", default_closed=True)
+        header.label(text="Texture")
+
+        if not body:
+            return
+
+        body.use_property_split = True
+        body.use_property_decorate = False
+
+        body.prop(properties, "texture_name")
+        body.prop(properties, "texture_index")
+
+        texture = properties.texture_properties
+
+        body.prop_search(texture, "image", bpy.data, "images")
+
+        body.prop(texture, "texcoord_index")
+        body.prop(texture, "wrapmode_u")
+        body.prop(texture, "wrapmode_v")
+
+        row = body.row(align=True)
+
+        op = row.operator(material_mass_edit_operators.HEIO_OT_MaterialMassEdit_Update.bl_idname)
+        op.mode = 'TEXTURES'
+
+        op = row.operator(material_mass_edit_operators.HEIO_OT_MaterialMassEdit_Remove.bl_idname)
+        op.mode = 'TEXTURES'
+
+    def draw(self, context):
+        props = context.scene.heio_material_massedit
+
+        self._draw_shader_panel(context, props)
+        self._draw_general_panel(props)
+        self._draw_parameter_panel(props)
+        self._draw_texture_panel(props)
 
 
 class HEIO_PT_VTP_Info(ViewportToolPanel):

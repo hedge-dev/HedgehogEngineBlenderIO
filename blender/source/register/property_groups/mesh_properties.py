@@ -98,11 +98,6 @@ class BaseMeshInfo(bpy.types.PropertyGroup):
 
 class BaseMeshInfoList(BaseList):
 
-    def _on_created(self, element, **args):
-        for name, value in args.items():
-            if hasattr(element, name):
-                setattr(element, name, value)
-
     def initialize(self):
         if len(self) == 0:
             self._on_init()

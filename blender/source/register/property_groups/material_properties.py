@@ -25,6 +25,9 @@ VARIANT_ERROR_FALLBACK_EMPTY = [("ERROR_FALLBACK", "", ""), ("/", "", "")]
 
 
 def _update_blending(heio_material, context):
+    if not isinstance(heio_material.id_data, bpy.types.Material):
+        return
+
     target_definition = definitions.get_target_definition(context)
     heio_material.update_material_properties(target_definition)
 
@@ -198,7 +201,7 @@ class HEIO_Material(bpy.types.PropertyGroup):
     custom_shader: BoolProperty(
         name="Custom Shader",
         description="Whether to create a custom shader setup, instead of using a preset.",
-        default=True
+        default=False
     )
 
     shader_name: StringProperty(
