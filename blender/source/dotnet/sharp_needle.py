@@ -16,6 +16,9 @@ class SharpNeedle:
     MATERIAL: any = None
     '''class SharpNeedle.Framework.HedgehogEngine.Mirage.Material'''
 
+    MATERIAL_BLEND_MODE: any = None
+    '''class SharpNeedle.Framework.HedgehogEngine.Mirage.MaterialBlendMode'''
+
     TEXTURE: any = None
     '''class SharpNeedle.Framework.HedgehogEngine.Mirage.Texture'''
 
@@ -55,6 +58,7 @@ class SharpNeedle:
         from SharpNeedle.Framework.HedgehogEngine.Mirage import ( # type: ignore
             SampleChunkNode,
             Material,
+            MaterialBlendMode,
             Texture,
             WrapMode,
             TerrainModel,
@@ -80,6 +84,7 @@ class SharpNeedle:
         cls.RESOURCE_REFERENCE = ResourceReference
         cls.SAMPLE_CHUNK_NODE = SampleChunkNode
         cls.MATERIAL = Material
+        cls.MATERIAL_BLEND_MODE = MaterialBlendMode
         cls.TEXTURE = Texture
         cls.WRAP_MODE = WrapMode
         cls.TERRAIN_MODEL = TerrainModel

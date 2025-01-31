@@ -252,7 +252,7 @@ class HEIO_PT_Material(PropertiesPanel):
 
         body.prop(material, "alpha_threshold", slider=True)
         body.prop(material, "use_backface_culling")
-        body.prop(material_properties, "use_additive_blending")
+        body.prop(material_properties, "blend_mode")
 
     @staticmethod
     def draw_header_properties(

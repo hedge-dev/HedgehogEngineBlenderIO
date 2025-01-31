@@ -133,7 +133,7 @@ class MaterialConverter:
             else:
                 material_properties.shader_name = sn_material.ShaderName
 
-            material_properties.use_additive_blending = sn_material.UseAdditiveBlending
+            material_properties.blend_mode = i_enum.from_material_blend_mode(sn_material.BlendMode)
             material.alpha_threshold = sn_material.AlphaThreshold / 255.0
             material.use_backface_culling = not sn_material.NoBackFaceCulling
 

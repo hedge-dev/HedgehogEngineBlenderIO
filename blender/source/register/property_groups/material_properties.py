@@ -248,10 +248,16 @@ class HEIO_Material(bpy.types.PropertyGroup):
         description="Layer name for when the layer type \"special\" is used"
     )
 
-    use_additive_blending: BoolProperty(
-        name="Use Additive Blending",
-        description="Transparency gets applied with additive mixing, instead of \"normal\" mixing.",
-        default=False
+    blend_mode: EnumProperty(
+        name="Blend mode",
+        description="Blend mode to use for transparent layer(s)",
+        items=(
+            ('NORMAL', "Normal", "Normal alpha blending"),
+            ('ADD', "Additive", "Additive blending"),
+            ('UNK1', "Unknown 1", ""),
+            ('UNK2', "Unknown 2", "")
+        ),
+        default='NORMAL'
     )
 
     parameters: PointerProperty(

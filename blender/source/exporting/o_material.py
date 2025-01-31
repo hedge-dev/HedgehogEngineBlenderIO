@@ -85,7 +85,7 @@ class MaterialProcessor:
 
             sn_material.AlphaThreshold = int(material.alpha_threshold * 255)
             sn_material.NoBackFaceCulling = not material.use_backface_culling
-            sn_material.UseAdditiveBlending = material_properties.use_additive_blending
+            sn_material.BlendMode = o_enum.to_material_blend_mode(material_properties.blend_mode)
 
             for parameter in material_properties.parameters:
 

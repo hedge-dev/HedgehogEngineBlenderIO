@@ -51,3 +51,17 @@ TOPOLOGY = {
     'TriangleList' : 'TRIANGLE_LIST',
     'TRIANGLE_LIST' : 'TriangleList',
 }
+
+MATERIAL_BLEND_MODE = {
+	"Normal" : "NORMAL",
+    "NORMAL": "Normal",
+
+    "Additive" : "ADD",
+    "ADD": "Additive",
+
+    "Unknown1" : "UNK1",
+    "UNK1": "Unknown1",
+
+    "Unknown2" : "UNK2",
+    "UNK2": "Unknown2",
+}
