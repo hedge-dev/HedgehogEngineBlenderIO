@@ -59,9 +59,9 @@ MATERIAL_BLEND_MODE = {
     "Additive" : "ADD",
     "ADD": "Additive",
 
-    "Unknown1" : "UNK1",
-    "UNK1": "Unknown1",
+    "Multiply" : "MULTIPLY",
+    "MULTIPLY": "Multiply",
 
-    "Unknown2" : "UNK2",
-    "UNK2": "Unknown2",
+    "Subtract" : "SUBTRACT",
+    "SUBTRACT": "Subtract",
 }

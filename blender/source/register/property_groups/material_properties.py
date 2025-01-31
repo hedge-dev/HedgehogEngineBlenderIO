@@ -257,8 +257,8 @@ class HEIO_Material(bpy.types.PropertyGroup):
         items=(
             ('NORMAL', "Normal", "Normal alpha blending"),
             ('ADD', "Additive", "Additive blending"),
-            ('UNK1', "Unknown 1", ""),
-            ('UNK2', "Unknown 2", "")
+            ('MULTIPLY', "Multiply", "Multiplicative blending"),
+            ('SUBTRACT', "Subtract", "Subtractive (source - destination)")
         ),
         default='NORMAL'
     )
