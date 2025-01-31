@@ -66,26 +66,31 @@ class ModelSet:
         self._triangulate_modifier.min_vertices = 4
         self._triangulate_modifier.keep_custom_normals = True
 
+    def _evaluate_shapekeys(self, depsgraph: bpy.types.Depsgraph, eval_shapekeys: bool):
+
+        if not hasattr(self.evaluated_object.data, "shape_keys") or self.evaluated_object.data.shape_keys is None:
+            return
+
+        self.evaluated_object.show_only_shape_key = True
+
+        if eval_shapekeys:
+            self.evaluated_shape_positions = []
+            for i in range(1, len(self.evaluated_object.data.shape_keys.key_blocks)):
+                self.evaluated_object.active_shape_key_index = i
+
+                self.evaluated_shape_positions.append(
+                    [v.co.copy() for v in self.evaluated_object.to_mesh(
+                        preserve_all_data_layers=True,
+                        depsgraph=depsgraph).vertices]
+                )
+                self.evaluated_object.to_mesh_clear()
+
+        self.evaluated_object.active_shape_key_index = 0
+
     def evaluate(self, depsgraph: bpy.types.Depsgraph, eval_shapekeys: bool):
         self.evaluated_object = self.obj.evaluated_get(depsgraph)
 
-        shape_keys: bpy.types.Key = self.evaluated_object.data.get("shape_keys", None)
-        if shape_keys is not None:
-            self.evaluated_object.show_only_shape_key = True
-
-            if eval_shapekeys:
-                self.evaluated_shape_positions = []
-                for i in range(1, len(shape_keys.key_blocks)):
-                    self.evaluated_object.active_shape_key_index = i
-
-                    self.evaluated_shape_positions.append(
-                        [v.co.copy() for v in self.evaluated_object.to_mesh(
-                            preserve_all_data_layers=True,
-                            depsgraph=depsgraph).vertices]
-                    )
-                    self.evaluated_object.to_mesh_clear()
-
-            self.evaluated_object.active_shape_key_index = 0
+        self._evaluate_shapekeys(depsgraph, eval_shapekeys)
 
         self.evaluated_mesh = self.evaluated_object.to_mesh(
             preserve_all_data_layers=True,
@@ -193,7 +198,6 @@ class ModelSetManager:
 
         for mesh in model_meshes:
             mesh.evaluate(self.depsgraph, eval_shapekeys)
-
 
     def evaluate_end(self):
         for mesh in self.model_set_lut.values():
