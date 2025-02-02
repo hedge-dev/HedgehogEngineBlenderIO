@@ -60,6 +60,8 @@ to_register = [
 
     material_operators.HEIO_OT_Material_SetupNodes,
     material_operators.HEIO_OT_Material_SetupNodes_Active,
+	material_operators.HEIO_OT_Material_ToPrincipled,
+	material_operators.HEIO_OT_Material_FromPrincipled,
 
     material_parameter_operators.HEIO_OT_MaterialParameters_Add,
     material_parameter_operators.HEIO_OT_MaterialParameters_Remove,

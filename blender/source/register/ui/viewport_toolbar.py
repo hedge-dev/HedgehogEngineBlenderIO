@@ -246,7 +246,16 @@ class HEIO_PT_VTP_Material_MassEdit(ViewportToolPanel):
 
     def draw(self, context):
         self.layout.operator(
-            material_operators.HEIO_OT_Material_SetupNodes.bl_idname)
+            material_operators.HEIO_OT_Material_SetupNodes.bl_idname
+        )
+
+        self.layout.operator(
+            material_operators.HEIO_OT_Material_ToPrincipled.bl_idname
+        )
+
+        self.layout.operator(
+            material_operators.HEIO_OT_Material_FromPrincipled.bl_idname
+        )
 
         props = context.scene.heio_material_massedit
 
