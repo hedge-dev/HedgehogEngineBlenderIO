@@ -118,7 +118,7 @@ namespace HEIO.NET.Modeling
                 : Topology.TriangleStrips;
 
             ConvertFrom.GPUMeshConverter converter = new(
-                morph.Name,
+                "Morph",
                 topology,
                 vertexMergeMode != VertexMergeMode.None,
                 mergeDistance,
