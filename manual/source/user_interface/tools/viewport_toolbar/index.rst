@@ -10,5 +10,6 @@ Also contains quick-access to HEIO specific properties on the scene and objects.
 	:maxdepth: 1
 
 	general
+	material_editor
 	sca_editor
 	info
