@@ -521,6 +521,7 @@ class ImportPointCloudOperator(ImportCollisionMeshOperator, ImportModelBaseOpera
         super()._setup(context)
 
         instances_collection = None
+        created = False
 
         if self.models_as_instance_collections:
             collection_name = "HEIO Instance collections"
@@ -535,11 +536,9 @@ class ImportPointCloudOperator(ImportCollisionMeshOperator, ImportModelBaseOpera
                 created = True
 
         self.point_cloud_converter = i_pointcloud.PointCloudConverter(
-            instances_collection
+            instances_collection,
+            created
         )
-
-        if instances_collection is not None and created and len(instances_collection.objects) == 0:
-            bpy.data.collections.remove(instances_collection)
 
     def import_point_cloud_models(self, context: bpy.types.Context, point_cloud_collection):
         progress_console.update("Importing Models")
