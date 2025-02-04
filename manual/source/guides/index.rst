@@ -41,6 +41,14 @@ Guides
 
       .. container:: card
 
+         .. figure:: images/index_material_mass_editing.png
+            :target: material_mass_editing.html
+
+         :doc:`material_mass_editing`
+            Editing (and porting) multiple materials at the same time
+
+      .. container:: card
+
          .. figure:: images/index_object_trees.png
             :target: object_trees.html
 
@@ -106,6 +114,7 @@ Guides
       project_setup
       asset_importing
       material_editing
+      material_mass_editing
       object_trees
       mesh_groups
       render_layers
