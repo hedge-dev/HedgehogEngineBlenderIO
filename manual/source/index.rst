@@ -1,4 +1,7 @@
 
+.. image:: ../build_files/theme/heio-logo.svg
+    :width: 100%
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Hedgehog Engine I/O |HEIO_VERSION| Reference Manual
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

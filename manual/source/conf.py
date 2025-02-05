@@ -20,7 +20,7 @@ sys.setrecursionlimit(2000)
 
 # -- Local Vars --------------------------------------------------------------
 
-heio_version = "0.0.1"
+heio_version = "1.0.0 RC1"
 
 
 # -- Project information -----------------------------------------------------
@@ -110,17 +110,15 @@ html_title = f"HEIO {heio_version} Manual"
 # The Canonical Link Relation.
 html_baseurl = "https://hedge-dev.github.io/HedgehogEngineBlenderIO/"
 
-# TODO
 # If given, this must be the name of an image file
 # (path relative to the configuration directory) that is the logo of the docs,
 # or URL that points an image file for the logo.
-# html_logo = "../build_files/theme/heio-logo.svg"
+html_logo = "../build_files/theme/heio-logo.svg"
 
-# TODO
 # If given, this must be the name of an image file
 # (path relative to the configuration directory) that is the favicon of
 # the docs, or URL that points an image file for the favicon.
-# html_favicon = "../build_files/theme/favicon.png"
+html_favicon = "../build_files/theme/favicon.png"
 
 html_css_files = [
     "css/theme_overrides.css",
