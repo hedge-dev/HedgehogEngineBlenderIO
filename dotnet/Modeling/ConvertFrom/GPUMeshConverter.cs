@@ -91,11 +91,7 @@ namespace HEIO.NET.Modeling.ConvertFrom
 
             void AddBase<T, W>(IList<W> output, int fallbackLength, T fallback) where W : IList<T>
             {
-                IEnumerable<T> baseEnum = output.Count == 0 
-                    ? Enumerable.Range(0, fallbackLength).Select(x => fallback) 
-                    : output[0];
-
-                if(new List<T>(baseEnum) is W w)
+                if(new List<T>(Enumerable.Range(0, fallbackLength).Select(x => fallback)) is W w)
                 {
                     output.Add(w);
                 }
@@ -119,13 +115,13 @@ namespace HEIO.NET.Modeling.ConvertFrom
 
             _tempTriangles.AddRange(gpuMesh.Triangles.Select(x => x + _tempVertices.Count));
 
-            void AddNew<T>(List<List<T>> output, int inputSets, int outputSets, Func<GPUVertex, T[]> getValueArray, T fallback)
+            void AddNew<T>(List<List<T>> output, int inputSets, int outputSets, Func<GPUVertex, int, T> getValue, T fallback)
             {
                 for(int i = 0; i < outputSets; i++)
                 {
                     if(i < inputSets)
                     {
-                        output[i].AddRange(gpuMesh.Triangles.Select(x => getValueArray(gpuMesh.Vertices[x])[i]));
+                        output[i].AddRange(gpuMesh.Triangles.Select(x => getValue(gpuMesh.Vertices[x], i)));
                     }
                     else
                     {
@@ -134,8 +130,8 @@ namespace HEIO.NET.Modeling.ConvertFrom
                 }
             }
 
-            AddNew(_tempTexcoords, gpuMesh.TexcoordSets, ResultData.TextureCoordinates.Count, (v) => v.TextureCoordinates, default);
-            AddNew(_tempColors, gpuMesh.ColorSets, ResultData.Colors.Count, (v) => v.Colors, Vector4.One);
+            AddNew(_tempTexcoords, gpuMesh.TexcoordSets, ResultData.TextureCoordinates.Count, (v, i) => new Vector2(v.TextureCoordinates[i].X, 1- v.TextureCoordinates[i].Y), default);
+            AddNew(_tempColors, gpuMesh.ColorSets, ResultData.Colors.Count, (v, i) => v.Colors[i], Vector4.One);
 
             if(addVertices)
             {
@@ -217,8 +213,7 @@ namespace HEIO.NET.Modeling.ConvertFrom
 
                     for(int k = 0; k < ResultData.TextureCoordinates.Count; k++)
                     {
-                        Vector2 texcoord = _tempTexcoords[k][i];
-                        ResultData.TextureCoordinates[k].Add(new(texcoord.X, 1 - texcoord.Y));
+                        ResultData.TextureCoordinates[k].Add(_tempTexcoords[k][i]);
                     }
 
                     for(int k = 0; k < ResultData.Colors.Count; k++)

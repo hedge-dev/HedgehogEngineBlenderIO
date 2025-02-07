@@ -13,5 +13,10 @@ namespace HEIO.NET.Modeling
             Tangent = tangent;
             Binormal = binormal;
         }
+
+        public static bool AreNormalsEqual(Vector3 a, Vector3 b)
+        {
+            return Vector3.Dot(a, b) >= 0.999f;
+        }
     }
 }

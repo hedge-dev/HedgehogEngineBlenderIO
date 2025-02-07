@@ -188,12 +188,26 @@ namespace HEIO.NET.Modeling.ConvertTo
 
                         callback = (BinaryObjectWriter writer, GPUVertex vtx) =>
                         {
-                            Vector4Int indices = new(
-                                vtx.Weights[weightIndexOffset + 3].Index,
-                                vtx.Weights[weightIndexOffset + 2].Index,
-                                vtx.Weights[weightIndexOffset + 1].Index,
-                                vtx.Weights[weightIndexOffset].Index
-                            );
+                            Vector4Int indices;
+
+                            if(element.Format == VertexFormat.Ushort4)
+                            {
+                                indices = new(
+                                    vtx.Weights[weightIndexOffset].Index,
+                                    vtx.Weights[weightIndexOffset + 1].Index,
+                                    vtx.Weights[weightIndexOffset + 2].Index,
+                                    vtx.Weights[weightIndexOffset + 3].Index
+                                );
+                            }
+                            else
+                            {
+                                indices = new(
+                                    vtx.Weights[weightIndexOffset + 3].Index,
+                                    vtx.Weights[weightIndexOffset + 2].Index,
+                                    vtx.Weights[weightIndexOffset + 1].Index,
+                                    vtx.Weights[weightIndexOffset].Index
+                                );
+                            }
 
                             vec4intWriter(writer, indices);
                         };

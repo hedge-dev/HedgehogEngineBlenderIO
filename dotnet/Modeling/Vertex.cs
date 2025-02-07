@@ -63,7 +63,7 @@ namespace HEIO.NET.Modeling
                         Vector3.DistanceSquared(v1.Position, v2.Position) < mergeDistanceSquared
                         && CompareMorphs(v1.MorphPositions!, v2.MorphPositions!, mergeDistanceSquared)
                         && VertexWeight.CompareEquality(v1.Weights, v2.Weights)
-                        && Vector3.Dot(v1.Normal, v2.Normal) > 0.995f);
+                        && UVDirection.AreNormalsEqual(v1.Normal, v2.Normal));
                 }
                 else
                 {
@@ -80,7 +80,7 @@ namespace HEIO.NET.Modeling
                     return EqualityComparer<Vertex>.Create((v1, v2) =>
                         Vector3.DistanceSquared(v1.Position, v2.Position) < mergeDistanceSquared
                         && VertexWeight.CompareEquality(v1.Weights, v2.Weights)
-                        && Vector3.Dot(v1.Normal, v2.Normal) > 0.995f);
+                        && UVDirection.AreNormalsEqual(v1.Normal, v2.Normal));
                 }
                 else
                 {

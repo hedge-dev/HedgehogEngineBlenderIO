@@ -38,7 +38,7 @@ namespace HEIO.NET.Modeling.ConvertFrom
 
             GPUVertex[] vertices = ReadVertexData(mesh, texcoordSets, colorSets, weightCount, useByteColors);
 
-            bool blendIndex16 = mesh.Elements.Any(x => x.Type == VertexType.BlendIndices && x.Format == VertexFormat.Ushort2);
+            bool blendIndex16 = mesh.Elements.Any(x => x.Type == VertexType.BlendIndices && x.Format == VertexFormat.Ushort4);
             bool multiTangent = mesh.Elements.Any(x => x.Type == VertexType.Tangent && x.UsageIndex == 1);
 
             return new(
@@ -218,6 +218,12 @@ namespace HEIO.NET.Modeling.ConvertFrom
                         callback = (BinaryObjectReader reader, ref GPUVertex vtx) =>
                         {
                             Vector4Int indices = vec4intReader(reader);
+
+                            if(element.Format == VertexFormat.Ushort4)
+                            {
+                                (indices.W, indices.X) = (indices.X, indices.W);
+                                (indices.Z, indices.Y) = (indices.Y, indices.Z);
+                            }
 
                             vtx.Weights[weightIndexOffset].Index = unchecked((short)indices.W);
                             vtx.Weights[weightIndexOffset + 1].Index = unchecked((short)indices.Z);

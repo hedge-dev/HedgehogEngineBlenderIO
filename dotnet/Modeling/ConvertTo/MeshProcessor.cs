@@ -1,11 +1,10 @@
 ﻿using HEIO.NET.Modeling.GPU;
 using SharpNeedle.Framework.HedgehogEngine.Mirage;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Numerics;
+using System.Runtime.ExceptionServices;
 
 namespace HEIO.NET.Modeling.ConvertTo
 {
@@ -17,38 +16,35 @@ namespace HEIO.NET.Modeling.ConvertTo
         public Vector3 AABBMax { get; private set; }
 
         private readonly TriangleData[] _triangleData;
-        private readonly int _weightSets;
+        private readonly MeshSlot _slot;
+        private readonly Material _material;
+
         private readonly Topology _topology;
+        private readonly int _texcoordSets;
+        private readonly bool[] _texcoordSetsUsed;
+        private readonly int _weightSets;
 
         private readonly List<Vertex> _vertices;
         private readonly List<ProcessTriangleCorner> _triangles;
-
-        private readonly GPUMesh _gpuMesh;
 
         public MeshProcessor(string groupName, MeshSlot slot, Material material, TriangleData[] triangleData, bool addWeights, Topology topology)
         {
             GroupName = groupName;
 
             _triangleData = triangleData;
-            _weightSets = addWeights ? (triangleData.Any(x => x.data.MeshSets[x.setIndex].Enable8Weights) ? 2 : 1) : 0;
+            _slot = slot;
+            _material = material;
+
             _topology = topology;
+            _weightSets = addWeights ? (triangleData.Any(x => x.data.MeshSets[x.setIndex].Enable8Weights) ? 2 : 1) : 0;
+            _texcoordSets = int.Clamp(_triangleData.Max(x => x.data.TextureCoordinates.Count), 1, 4);
+            _texcoordSetsUsed = new bool[_texcoordSets];
 
             _vertices = [];
             _triangles = [];
 
             AABBMin = new(float.PositiveInfinity);
             AABBMax = new(float.NegativeInfinity);
-
-            _gpuMesh = new(
-                int.Clamp(_triangleData.Max(x => x.data.TextureCoordinates.Count), 1, 4),
-                1,
-                _triangleData.All(x => x.data.MeshSets[x.setIndex].UseByteColors),
-                false,
-                triangleData.Any(x => x.data.MeshSets[x.setIndex].EnableMultiTangent),
-                Topology.TriangleList,
-                material,
-                slot
-            );
         }
 
         private void EvaluateTriangleData()
@@ -60,6 +56,7 @@ namespace HEIO.NET.Modeling.ConvertTo
 
                 int start = triangleData.data.MeshSets.Take(triangleData.setIndex).Sum(x => x.Size);
                 int end = start + triangleData.data.MeshSets[triangleData.setIndex].Size;
+                int texcoordCount = int.Min(_texcoordSets, triangleData.data.TextureCoordinates.Count);
 
                 for(int i = start; i < end; i++)
                 {
@@ -79,31 +76,39 @@ namespace HEIO.NET.Modeling.ConvertTo
                             vertexIndexMap[vertexIndex] = newVertexIndex;
                         }
 
-                        _triangles.Add(ProcessTriangleCorner.EvalProcessTriangles(
+                        ProcessTriangleCorner corner = ProcessTriangleCorner.EvalProcessTriangles(
                             newVertexIndex,
                             triangleData.data,
                             faceIndex,
-                            _gpuMesh.TexcoordSets,
-                            _gpuMesh.ColorSets
-                        ));
+                            _texcoordSets,
+                            1
+                        );
+
+                        for(int j = 1; j < texcoordCount; j++)
+                        {
+                            Vector2 uv = triangleData.data.TextureCoordinates[j][faceIndex];
+                            _texcoordSetsUsed[j] |= uv.X != 0f || uv.Y != 0f;
+                        }
+
+                        _triangles.Add(corner);
                     }
                 }
             }
         }
 
-        private GPUMesh[] BoneLimitSplit(int boneLimit)
+        private static GPUMesh[] BoneLimitSplit(GPUMesh gpuMesh, int boneLimit)
         {
-            short[][] vertexBoneIndices = _gpuMesh.Vertices.Select(x => x.Weights.Where(x => x.Weight > 0).Select(x => x.Index).ToArray()).ToArray();
+            short[][] vertexBoneIndices = gpuMesh.Vertices.Select(x => x.Weights.Where(x => x.Weight > 0).Select(x => x.Index).ToArray()).ToArray();
 
             List<(List<int> cornerIndices, HashSet<short> boneIndices)> boneSets = [];
             HashSet<short> tempBoneIndices = [];
             HashSet<short> tempBoneIndices2 = [];
 
-            for(int i = 0; i < _gpuMesh.Triangles.Count; i += 3)
+            for(int i = 0; i < gpuMesh.Triangles.Count; i += 3)
             {
-                int v1 = _gpuMesh.Triangles[i];
-                int v2 = _gpuMesh.Triangles[i + 1];
-                int v3 = _gpuMesh.Triangles[i + 2];
+                int v1 = gpuMesh.Triangles[i];
+                int v2 = gpuMesh.Triangles[i + 1];
+                int v3 = gpuMesh.Triangles[i + 2];
 
                 tempBoneIndices.Clear();
                 tempBoneIndices.UnionWith(vertexBoneIndices[v1]);
@@ -138,21 +143,21 @@ namespace HEIO.NET.Modeling.ConvertTo
             }
 
             GPUMesh[] result = new GPUMesh[boneSets.Count];
-            int[] indexMap = new int[_gpuMesh.Vertices.Count];
+            int[] indexMap = new int[gpuMesh.Vertices.Count];
 
             for(int i = 0; i < result.Length; i++)
             {
                 (List<int> vertexIndices, HashSet<short> boneIndices) = boneSets[i];
 
-                GPUMesh gpuMesh = new(
-                    _gpuMesh.TexcoordSets,
-                    _gpuMesh.ColorSets,
-                    _gpuMesh.UseByteColors,
-                    _gpuMesh.BlendIndex16,
-                    _gpuMesh.MultiTangent,
-                    _gpuMesh.Topology,
-                    _gpuMesh.Material,
-                    _gpuMesh.Slot
+                GPUMesh splitGpuMesh = new(
+                    gpuMesh.TexcoordSets,
+                    gpuMesh.ColorSets,
+                    gpuMesh.UseByteColors,
+                    gpuMesh.BlendIndex16,
+                    gpuMesh.MultiTangent,
+                    gpuMesh.Topology,
+                    gpuMesh.Material,
+                    gpuMesh.Slot
                 );
 
                 Array.Fill(indexMap, -1);
@@ -163,17 +168,17 @@ namespace HEIO.NET.Modeling.ConvertTo
 
                     if(newVertexIndex == -1)
                     {
-                        newVertexIndex = gpuMesh.Vertices.Count;
-                        gpuMesh.Vertices.Add(_gpuMesh.Vertices[vertexIndex].Copy());
+                        newVertexIndex = splitGpuMesh.Vertices.Count;
+                        splitGpuMesh.Vertices.Add(splitGpuMesh.Vertices[vertexIndex].Copy());
                         indexMap[vertexIndex] = newVertexIndex;
                     }
 
-                    gpuMesh.Triangles.Add(newVertexIndex);
+                    splitGpuMesh.Triangles.Add(newVertexIndex);
                 }
 
-                gpuMesh.EvaluateBoneIndices(boneIndices);
+                splitGpuMesh.EvaluateBoneIndices(boneIndices);
 
-                result[i] = gpuMesh;
+                result[i] = splitGpuMesh;
             }
 
             return result;
@@ -198,27 +203,48 @@ namespace HEIO.NET.Modeling.ConvertTo
                 out _
             );
 
-            ((List<GPUVertex>)_gpuMesh.Vertices).AddRange(gpuVertices);
-            ((List<int>)_gpuMesh.Triangles).AddRange(gpuTriangles);
+            int realTexcoordCount = _texcoordSets;
+
+            for(; realTexcoordCount > 1; realTexcoordCount--)
+            {
+                if(_texcoordSetsUsed[realTexcoordCount - 1])
+                {
+                    break;
+                }
+            }
+
+            GPUMesh gpuMesh = new(
+                realTexcoordCount,
+                1,
+                _triangleData.All(x => x.data.MeshSets[x.setIndex].UseByteColors),
+                false,
+                _triangleData.Any(x => x.data.MeshSets[x.setIndex].EnableMultiTangent),
+                Topology.TriangleList,
+                _material,
+                _slot
+            );
+
+            ((List<GPUVertex>)gpuMesh.Vertices).AddRange(gpuVertices);
+            ((List<int>)gpuMesh.Triangles).AddRange(gpuTriangles);
 
             GPUMesh[] gpuMeshes;
 
             if(usedBones.Count <= 25 || hedgehogEngine2)
             {
-                _gpuMesh.BlendIndex16 = usedBones.Count > 255;
-                _gpuMesh.EvaluateBoneIndices(usedBones);
-                gpuMeshes = [_gpuMesh];
+                gpuMesh.BlendIndex16 = usedBones.Count > 255;
+                gpuMesh.EvaluateBoneIndices(usedBones);
+                gpuMeshes = [gpuMesh];
             }
             else
             {
-                gpuMeshes = BoneLimitSplit(25);
+                gpuMeshes = BoneLimitSplit(gpuMesh, 25);
             }
 
             if(_topology == Topology.TriangleStrips)
             {
-                foreach(GPUMesh gpuMesh in gpuMeshes)
+                foreach(GPUMesh arrayGpuMesh in gpuMeshes)
                 {
-                    gpuMesh.ToStrips();
+                    arrayGpuMesh.ToStrips();
                 }
             }
 

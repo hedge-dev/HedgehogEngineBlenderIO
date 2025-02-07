@@ -31,10 +31,10 @@ namespace HEIO.NET.Modeling.ConvertTo
         public bool Equals(ProcessTriangleCorner other)
         {
             if(vertexIndex != other.vertexIndex 
-                || Vector3.Dot(uvDirection.Tangent, other.uvDirection.Tangent) < 0.995f
-                || Vector3.Dot(uvDirection.Binormal, other.uvDirection.Binormal) < 0.995f
-                || Vector3.Dot(uvDirection2.Tangent, other.uvDirection2.Tangent) < 0.995f
-                || Vector3.Dot(uvDirection2.Binormal, other.uvDirection2.Binormal) < 0.995f)
+                || !UVDirection.AreNormalsEqual(uvDirection.Tangent, other.uvDirection.Tangent)
+                || !UVDirection.AreNormalsEqual(uvDirection.Binormal, other.uvDirection.Binormal)
+                || !UVDirection.AreNormalsEqual(uvDirection2.Tangent, other.uvDirection2.Tangent)
+                || !UVDirection.AreNormalsEqual(uvDirection2.Binormal, other.uvDirection2.Binormal))
             {
                 return false;
             }
@@ -70,7 +70,7 @@ namespace HEIO.NET.Modeling.ConvertTo
             }
 
             Vector2 fallbackTextureCoordinate = data.TextureCoordinates.Count == 0
-                ? Vector2.Zero : data.TextureCoordinates[0][faceIndex];
+                ? Vector2.Zero : textureCoordinates[0];
 
             for(int j = data.TextureCoordinates.Count; j < texcoordSets; j++)
             {
@@ -85,7 +85,7 @@ namespace HEIO.NET.Modeling.ConvertTo
             }
 
             Vector4 fallbackColor = data.Colors.Count == 0
-                ? Vector4.One : data.Colors[0][faceIndex];
+                ? Vector4.One : colors[0];
 
             for(int j = data.Colors.Count; j < colorSets; j++)
             {

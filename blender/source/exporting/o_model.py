@@ -24,7 +24,7 @@ class RawVertex:
             weights: list[tuple[str, float]]):
 
         self.position = position
-        self.normal = normal
+        self.normal = normal.normalized()
         self.morph_positions = morph_positions
         self.weights = weights
 
@@ -36,7 +36,7 @@ class RawVertex:
 
         if matrix is not None:
             position = matrix[0] @ position
-            normal = matrix[1] @ normal
+            normal = (matrix[1] @ normal).normalized()
 
             if morph_positions is not None:
                 morph_positions = [matrix[0] @ mp for mp in morph_positions]
@@ -107,13 +107,15 @@ class RawMeshData:
         if matrix is not None:
             normal_matrix = matrix[1]
             polygon_tangents = [
-                (normal_matrix @ t, normal_matrix @ b)
+                ((normal_matrix @ t).normalized(),
+                 (normal_matrix @ b).normalized())
                 for t, b in polygon_tangents
             ]
 
             if polygon_tangents2 is not None:
                 polygon_tangents2 = [
-                    (normal_matrix @ t, normal_matrix @ b)
+                    ((normal_matrix @ t).normalized(),
+                     (normal_matrix @ b).normalized())
                     for t, b in polygon_tangents2
                 ]
 
@@ -448,13 +450,15 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
             return [uv_directions[l.vertex_index] for l in loop_order], None
 
         mesh.calc_tangents(uvmap=mesh.uv_layers[0].name)
-        uv_directions = [(l.tangent.copy(), l.bitangent.copy()) for l in loop_order]
+        uv_directions = [(l.tangent.normalized(), l.bitangent.normalized())
+                         for l in loop_order]
         mesh.free_tangents()
 
         uv_directions2 = None
         if len(mesh.uv_layers) > 2:
             mesh.calc_tangents(uvmap=mesh.uv_layers[2].name)
-            uv_directions2 = [(l.tangent.copy(), l.bitangent.copy()) for l in loop_order]
+            uv_directions2 = [(l.tangent.normalized(), l.bitangent.normalized())
+                              for l in loop_order]
             mesh.free_tangents()
 
         return uv_directions, uv_directions2
@@ -705,6 +709,8 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
 
     def _assemble_compile_data(self, root, children, name: str):
         compile_data = self._assemble_compile_data_set(root, children, name)
+
+        compile_data.SaveToJson("C:\\Users\\Justin113D\\Downloads")
 
         if compile_data is None:
             return None
