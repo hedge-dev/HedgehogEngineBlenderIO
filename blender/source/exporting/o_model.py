@@ -710,8 +710,6 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
     def _assemble_compile_data(self, root, children, name: str):
         compile_data = self._assemble_compile_data_set(root, children, name)
 
-        compile_data.SaveToJson("C:\\Users\\Justin113D\\Downloads")
-
         if compile_data is None:
             return None
 
