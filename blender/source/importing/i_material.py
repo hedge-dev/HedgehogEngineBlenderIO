@@ -12,7 +12,8 @@ from ..register.property_groups.material_properties import (
 
 from ..exceptions import HEIODevException
 from ..utility.material_setup import (
-    setup_and_update_materials
+    setup_and_update_materials,
+    setup_principled_bsdf_materials
 )
 from ..utility import progress_console
 
@@ -22,6 +23,7 @@ class MaterialConverter:
     _target_definition: TargetDefinition
     _image_loader: i_image.ImageLoader
 
+    _node_setup_mode: str
     _create_undefined_parameters: bool
     _import_images: bool
 
@@ -32,12 +34,14 @@ class MaterialConverter:
             self,
             target_definition: TargetDefinition,
             image_loader: i_image.ImageLoader,
+            node_setup_mode: str,
             create_undefined_parameters: bool,
             import_images: bool):
 
         self._target_definition = target_definition
         self._image_loader = image_loader
 
+        self._node_setup_mode = node_setup_mode
         self._create_undefined_parameters = create_undefined_parameters
         self._import_images = import_images
 
@@ -145,10 +149,14 @@ class MaterialConverter:
             else:
                 material_properties.custom_shader = True
 
-        progress_console.update(f"Setting up material node trees", len(sn_materials))
-        setup_and_update_materials(self._target_definition, new_converted_materials.values())
+        if self._node_setup_mode == 'SHADER':
+            progress_console.update(f"Setting up material node trees", len(sn_materials))
+            setup_and_update_materials(self._target_definition, new_converted_materials.values())
 
-        progress_console.end()
+            setup_principled_bsdf_materials(self._target_definition, new_converted_materials.values())
+
+            progress_console.end()
+
         progress_console.start("Converting Materials", len(new_converted_materials))
 
         for i, item in enumerate(new_converted_materials.items()):
@@ -196,7 +204,10 @@ class MaterialConverter:
                 if diffuse_tex_node is not None:
                     material.node_tree.nodes.active = diffuse_tex_node
 
-
+        if self._node_setup_mode == 'PBSDF':
+            progress_console.update(f"Setting up material node trees", len(sn_materials))
+            setup_principled_bsdf_materials(self._target_definition, new_converted_materials.values())
+            progress_console.end()
 
         progress_console.end()
 

@@ -199,3 +199,62 @@ def setup_and_update_materials(
     template_materials = set(templates.values())
     for template in template_materials:
         bpy.data.materials.remove(template)
+
+
+def setup_principled_bsdf_materials(target_definition: TargetDefinition | None, materials: Iterable[bpy.types.Material]):
+    for material in materials:
+        material.use_nodes = True
+        material.node_tree.links.clear()
+        material.node_tree.nodes.clear()
+
+        # output node
+        output_node = material.node_tree.nodes.new(
+            "ShaderNodeOutputMaterial")
+        output_node.location = (0, 0)
+
+        # principled node
+        principled_node = material.node_tree.nodes.new(
+            "ShaderNodeBsdfPrincipled")
+        principled_node.location = (-260, 0)
+        principled_node.inputs[2].default_value = 0.8
+        material.node_tree.links.new(
+            output_node.inputs[0], principled_node.outputs[0])
+
+        diffuse_tex = material.heio_material.textures.elements.get(
+            "diffuse", None)
+        if diffuse_tex is not None and diffuse_tex.image is not None:
+
+            # diffuse texture node
+            diffuse_texture_node = material.node_tree.nodes.new(
+                "ShaderNodeTexImage")
+            diffuse_texture_node.location = (-700, 60)
+            diffuse_texture_node.name = "Texture diffuse"
+            diffuse_texture_node.label = "Texture diffuse"
+            diffuse_texture_node.image = diffuse_tex.image
+            material.node_tree.links.new(
+                principled_node.inputs[0], diffuse_texture_node.outputs[0])
+            material.node_tree.links.new(
+                principled_node.inputs[4], diffuse_texture_node.outputs[1])
+
+        normal_tex = material.heio_material.textures.elements.get(
+            "normal", None)
+        if normal_tex is not None and normal_tex.image is not None:
+
+            # normal map node
+            normal_map_node = material.node_tree.nodes.new(
+                "ShaderNodeNormalMap")
+            normal_map_node.location = (-440, -240)
+            material.node_tree.links.new(
+                principled_node.inputs[5], normal_map_node.outputs[0])
+
+            # normal texture node
+            normal_texture_node = material.node_tree.nodes.new(
+                "ShaderNodeTexImage")
+            normal_texture_node.location = (-700, -240)
+            normal_texture_node.name = "Texture normal"
+            normal_texture_node.label = "Texture normal"
+            normal_texture_node.image = normal_tex.image
+            material.node_tree.links.new(
+                normal_map_node.inputs[1], normal_texture_node.outputs[0])
+
+        material.heio_material.update_material_all(target_definition)

@@ -112,6 +112,17 @@ class ImportMaterialOperator(ImportOperator):
         default=False
     )
 
+    node_setup_mode: EnumProperty(
+        name="Node setup mode",
+        description="How to set up node trees",
+        items=(
+            ('SHADER', "Shader", "Use material templates to replicate the game shader"),
+            ('PBSDF', "Principled BSDF", "Use principled BSDF node trees (uses diffuse and normal textures)"),
+            ('NONE', "None", "Don't setup nodes at all")
+        ),
+        default='SHADER'
+    )
+
     def draw_panel_material(self):
         header, body = self.layout.panel(
             "HEIO_import_material", default_closed=True)
@@ -120,8 +131,10 @@ class ImportMaterialOperator(ImportOperator):
         if not body:
             return
 
-        body.use_property_split = False
+        body.use_property_split = True
+        body.prop(self, "node_setup_mode")
 
+        body.use_property_split = False
         body.prop(self, "create_undefined_parameters")
         body.prop(self, "import_images")
 
@@ -165,6 +178,7 @@ class ImportMaterialOperator(ImportOperator):
         self.material_converter = i_material.MaterialConverter(
             self.target_definition,
             self.image_loader,
+            self.node_setup_mode,
             self.create_undefined_parameters,
             self.import_images
         )
