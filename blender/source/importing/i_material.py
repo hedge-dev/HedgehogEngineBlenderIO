@@ -152,9 +152,6 @@ class MaterialConverter:
         if self._node_setup_mode == 'SHADER':
             progress_console.update(f"Setting up material node trees", len(sn_materials))
             setup_and_update_materials(self._target_definition, new_converted_materials.values())
-
-            setup_principled_bsdf_materials(self._target_definition, new_converted_materials.values())
-
             progress_console.end()
 
         progress_console.start("Converting Materials", len(new_converted_materials))
