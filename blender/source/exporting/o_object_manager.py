@@ -76,7 +76,9 @@ class ObjectManager:
             if level.target is None:
                 continue
 
-            result[level.target] = list(level.target.children_recursive)
+            lod_objects = [level.target]
+            lod_objects.extend(level.target.children_recursive)
+            result[level.target] = lod_objects
 
         return result
 
@@ -157,6 +159,7 @@ class ObjectManager:
         for obj in col_objects:
             if obj in new_objects:
                 continue
+            new_objects.add(obj)
             new_objects.update(obj.children_recursive)
 
         self._update_objects(new_objects)
