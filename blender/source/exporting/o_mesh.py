@@ -1,7 +1,7 @@
 import os
 import bpy
 
-from . import o_modelset, o_object_manager
+from . import o_modelset, o_object_manager, o_util
 from ..register.definitions import TargetDefinition
 from ..register.property_groups.mesh_properties import MESH_DATA_TYPES
 from ..dotnet import SharpNeedle
@@ -81,11 +81,13 @@ class BaseMeshProcessor:
     @staticmethod
     def get_name(root: bpy.types.Object):
         if root.type == 'EMPTY' and root.instance_type == 'COLLECTION' and root.instance_collection is not None:
-            return root.instance_collection.name
+            result = root.instance_collection.name
         elif root.data is not None:
-            return root.data.name
+            result = root.data.name
         else:
-            return root.name
+            result = root.name
+
+        return o_util.correct_filename(result)
 
     def _assemble_compile_data(self, root: bpy.types.Object | None, children: list[bpy.types.Object] | None, name: str):
         raise NotImplementedError()

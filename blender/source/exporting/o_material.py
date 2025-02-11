@@ -2,7 +2,7 @@ import os
 from typing import Iterable
 import bpy
 
-from . import o_enum, o_sca_parameters, o_image
+from . import o_enum, o_sca_parameters, o_image, o_util
 
 from ..dotnet import SharpNeedle, System, HEIO_NET
 from ..register.property_groups.material_properties import HEIO_Material
@@ -70,7 +70,7 @@ class MaterialProcessor:
             material_properties: HEIO_Material = material.heio_material
 
             sn_material.DataVersion = self._target_definition.data_versions.material
-            sn_material.Name = material.name
+            sn_material.Name = o_util.correct_filename(material.name)
 
             if self._target_definition.data_versions.sample_chunk == 1:
                 sn_material.Root = None
@@ -109,7 +109,7 @@ class MaterialProcessor:
                         HEIO_NET.PYTHON_HELPERS.CreateFloatParameter(value)
                     )
 
-            sn_material.Texset.Name = material.name
+            sn_material.Texset.Name = sn_material.Name
 
             for j, texture in enumerate(material_properties.textures):
                 if texture.image is None:
@@ -117,7 +117,7 @@ class MaterialProcessor:
 
                 sn_texture = SharpNeedle.TEXTURE()
 
-                sn_texture.Name = f"{material.name}-{j:04}"
+                sn_texture.Name = f"{sn_material.Name}-{j:04}"
                 sn_texture.PictureName = texture.image.name
                 sn_texture.Type = texture.name
                 sn_texture.TexCoordIndex = texture.texcoord_index

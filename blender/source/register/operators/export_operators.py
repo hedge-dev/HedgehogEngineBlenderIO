@@ -1,6 +1,7 @@
 import os
 import bpy
 
+from ...exporting import o_util
 from ..property_groups.mesh_properties import MESH_DATA_TYPES
 
 from ...exceptions import HEIODevException
@@ -163,11 +164,13 @@ class HEIO_OT_Export_PointClouds(ExportPointCloudOperator):
         extension = ".pc" + self.cloud_type.lower()
 
         for pc in pointclouds:
-            if pc.Name.endswith(extension):
+            if pc.Name.lower().endswith(extension):
                 pc.Name = pc.Name[:-len(extension)]
 
+            filename = o_util.correct_filename(pc.Name)
+
             filepath = os.path.join(
-                directory, pc.Name + extension)
+                directory, filename + extension)
 
             SharpNeedle.RESOURCE_EXTENSIONS.Write(pc, filepath)
 
