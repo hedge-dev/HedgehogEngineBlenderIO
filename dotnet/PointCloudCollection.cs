@@ -80,9 +80,9 @@ namespace HEIO.NET
             foreach(string filepath in filepaths)
             {
                 IFile file = FileSystem.Instance.Open(filepath)!;
-                IResourceManager manager = dependencyManager.GetResourceManager(file.Parent);
+                IResourceManager resolver = dependencyManager.GetResourceManager(file.Parent);
 
-                pointClouds.Add(manager.Open<PointCloud>(file, false));
+                pointClouds.Add(resolver.Open<PointCloud>(file, false));
             }
 
             List<(PointCloud, Dictionary<string, IFile>)> modelClouds = [];

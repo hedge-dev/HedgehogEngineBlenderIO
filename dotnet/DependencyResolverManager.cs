@@ -1,8 +1,10 @@
-﻿using SharpNeedle.Framework.HedgehogEngine.Mirage;
+﻿using J113D.Common;
+using SharpNeedle.Framework.HedgehogEngine.Mirage;
 using SharpNeedle.IO;
 using SharpNeedle.Resource;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 
@@ -10,21 +12,23 @@ namespace HEIO.NET
 {
     public class DependencyResolverManager
     {
-        public readonly struct ResolverInfo
+        private class ResolverInfo
         {
-            public DependencyResourceResolver Resolver { get; }
-            public string[] MissingDependencies { get; }
-            public (string dependency, IFile file)[] PackedDependencies { get; }
+            public IDirectory Directory { get; }
+            public List<ResolverInfo> Dependencies { get; }
+            public HashSet<string> MissingDependencies { get; }
+            public Dictionary<string, IFile> PackedDependencies { get; }
 
-            public ResolverInfo(DependencyResourceResolver resolver, string[] missingDependencies, (string, IFile)[] packedDependencies)
+            public ResolverInfo(IDirectory directory)
             {
-                Resolver = resolver;
-                MissingDependencies = missingDependencies;
-                PackedDependencies = packedDependencies;
+                Directory = directory;
+                Dependencies = [];
+                MissingDependencies = [];
+                PackedDependencies = [];
             }
         }
 
-        private readonly Dictionary<IDirectory, DirectoryResourceResolver> _directoryResolvers = [];
+        private readonly Dictionary<IDirectory, ResourceManager> _resourceManagers = [];
         private readonly Dictionary<IDirectory, ResolverInfo> _resolvers = [];
 
         public int MaxDependencyDepth { get; set; } = 4;
@@ -70,31 +74,29 @@ namespace HEIO.NET
 
             foreach((IDirectory directory, List<(T, IFile)> directoryData) in directories.Values)
             {
-                ResolverInfo resolver = GetResolver(directory);
+                IResourceResolver resolver = GetResourceResolver(directory, out ResolveInfo resolveInfo);
 
-                missingDependencies.UnionWith(resolver.MissingDependencies);
-                dependencyPacFiles.UnionWith(resolver.PackedDependencies.Select(x => x.file.Path));
+                missingDependencies.UnionWith(resolveInfo.MissingDependencies);
+                dependencyPacFiles.UnionWith(resolveInfo.PackedDependencies);
 
                 foreach((T item, IFile file) in directoryData)
                 {
-                    resolveFunc(resolver.Resolver, item, file, unresolved);
+                    resolveFunc(resolver, item, file, unresolved);
                 }
             }
 
             return new([.. unresolved], [.. missingDependencies], [.. dependencyPacFiles], [], []);
         }
 
-        public ResolverInfo GetResolver(IDirectory directory)
+        private ResolverInfo GetResolverInfo(IDirectory directory)
         {
-            if(_resolvers.TryGetValue(directory, out ResolverInfo result))
+            if(_resolvers.TryGetValue(directory, out ResolverInfo? result))
             {
                 return result;
             }
 
-            List<DependencyResourceResolver> dependencyResolvers = [];
-            HashSet<string> missingDependencies = [];
-            Dictionary<string, IFile> packedDependencies = [];
-
+            result = new(directory);
+            _resolvers[directory] = result;
 
             if(directory.GetFile("!DEPENDENCIES.txt") is IFile dependenciesFile)
             {
@@ -107,60 +109,71 @@ namespace HEIO.NET
                     {
                         if(pacFile != null)
                         {
-                            packedDependencies[dependency] = pacFile;
+                            result.PackedDependencies[dependency] = pacFile;
                         }
                         else
                         {
-                            missingDependencies.Add(dependency);
+                            result.MissingDependencies.Add(dependency);
                         }
 
                         continue;
                     }
                     else
                     {
-                        ResolverInfo dependencyResolverInfo = GetResolver(dependencyDirectory);
-
-                        dependencyResolvers.Add(dependencyResolverInfo.Resolver);
-                        missingDependencies.UnionWith(dependencyResolverInfo.MissingDependencies);
-
-                        foreach((string, IFile) packedDependency in dependencyResolverInfo.PackedDependencies)
-                        {
-                            packedDependencies[packedDependency.Item1] = packedDependency.Item2;
-                        }
+                        result.Dependencies.Add(GetResolverInfo(dependencyDirectory));
                     }
                 }
             }
 
-            if(!_directoryResolvers.TryGetValue(directory, out DirectoryResourceResolver dirResolver))
+            return result;
+        }
+
+        public IResourceResolver GetResourceResolver(IDirectory directory, out ResolveInfo resolveInfo)
+        {
+            ResolverInfo rootResolver = GetResolverInfo(directory);
+
+            HashSet<ResolverInfo> alreadyIterated = [];
+            AggregateResourceResolver result = [];
+            Stack<ResolverInfo> stack = [];
+            stack.Push(rootResolver);
+
+            HashSet<string> missingDependencies = [];
+            HashSet<string> dependencyPacFiles = [];
+
+            while(stack.TryPop(out ResolverInfo? resolver))
             {
-                dirResolver = new(directory, new ResourceManager());
-                _directoryResolvers[directory] = dirResolver;
+                if(alreadyIterated.Contains(resolver))
+                {
+                    continue;
+                }
+
+                alreadyIterated.Add(resolver);
+                
+                result.Add(new DirectoryResourceResolver(resolver.Directory, GetResourceManager(resolver.Directory)));
+
+                foreach(ResolverInfo dependency in resolver.Dependencies.Reverse<ResolverInfo>())
+                {
+                    stack.Push(dependency);
+                }
+
+                missingDependencies.UnionWith(resolver.MissingDependencies);
+                dependencyPacFiles.UnionWith(resolver.PackedDependencies.Values.Select(x => x.Path));
             }
 
-            DependencyResourceResolver resolver = new(
-                dirResolver,
-                dependencyResolvers.Count == 0 ? null : [.. dependencyResolvers]
-            );
+            resolveInfo = new([], [.. missingDependencies], [.. dependencyPacFiles], [], []);
 
-            result = new(
-                resolver,
-                [.. missingDependencies],
-                [.. packedDependencies.Select(x => (x.Key, x.Value))]
-            );
-
-            _resolvers[directory] = result;
             return result;
         }
 
         public IResourceManager GetResourceManager(IDirectory directory)
         {
-            if(!_directoryResolvers.TryGetValue(directory, out DirectoryResourceResolver dirResolver))
+            if(!_resourceManagers.TryGetValue(directory, out ResourceManager? result))
             {
-                dirResolver = new(directory, new ResourceManager());
-                _directoryResolvers[directory] = dirResolver;
+                result = new();
+                _resourceManagers[directory] = result;
             }
 
-            return dirResolver.Manager!;
+            return result;
         }
 
         public void ResetResolvers()

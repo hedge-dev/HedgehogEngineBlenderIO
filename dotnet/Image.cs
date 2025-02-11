@@ -7,6 +7,7 @@ using SharpNeedle.Framework.HedgehogEngine.Mirage;
 using SharpNeedle.Framework.HedgehogEngine.Needle.TextureStreaming;
 using System.Linq;
 using static HEIO.NET.DependencyResolverManager;
+using SharpNeedle.Resource;
 
 namespace HEIO.NET
 {
@@ -89,13 +90,13 @@ namespace HEIO.NET
             HashSet<string> unresolvedNTSPFiles = new();
             HashSet<string> unresolvedFiles = new();
 
-            ResolverInfo resolver = dependencyManager.GetResolver(new HostDirectory(directory));
+            IResourceResolver resolver = dependencyManager.GetResourceResolver(new HostDirectory(directory), out ResolveInfo resolverResolveInfo);
 
             foreach(string imageName in images)
             {
                 string filename = imageName + ".dds";
 
-                if(resolver.Resolver.GetFile(filename) is IFile imageFile)
+                if(resolver.GetFile(filename) is IFile imageFile)
                 {
                     Image? image = LoadImage(imageFile, packages, streamingDirectory, out string? noNTSP, out bool noNTSI);
 
@@ -122,8 +123,8 @@ namespace HEIO.NET
 
             info = new(
                 [.. unresolvedFiles],
-                resolver.MissingDependencies,
-                [.. resolver.PackedDependencies.Select(x => x.file.Path)],
+                resolverResolveInfo.MissingDependencies,
+                resolverResolveInfo.PackedDependencies,
                 [.. unresolvedNTSPFiles],
                 [.. missingStreamedImages]
             );
