@@ -3,6 +3,7 @@ from bpy.props import EnumProperty
 
 from .base import HEIOBaseOperator
 from ..property_groups.mesh_properties import MESH_DATA_TYPES
+from .. import definitions
 from ...exceptions import HEIOUserException
 
 
@@ -43,9 +44,15 @@ class HEIO_OT_MaterialMassEdit_Update(MaterialMassEditBaseOperator):
 
     def _update_shader(self, mme_props, material: bpy.types.Material):
         mme_material = mme_props.material_properties
+
+        prev_shader = material.heio_material.shader_name
+
         material.heio_material.custom_shader = mme_material.custom_shader
         material.heio_material.shader_name = mme_material.shader_name
         material.heio_material.variant_name = mme_material.variant_name
+
+        if prev_shader != mme_material.shader_name and self.shader_definition is not None:
+            material.heio_material.setup_definition(self.shader_definition)
 
     def _update_general(self, mme_props, material: bpy.types.Material):
 
@@ -114,8 +121,14 @@ class HEIO_OT_MaterialMassEdit_Update(MaterialMassEditBaseOperator):
         materials = self.get_materials(context)
         mme_props = context.scene.heio_material_massedit
 
+
         if self.mode == 'SHADER':
             update_func = self._update_shader
+
+            self.shader_definition = None
+            target_def = definitions.get_target_definition(context)
+            if not mme_props.material_properties.custom_shader and target_def is not None:
+                self.shader_definition = target_def.shaders.definitions.get(mme_props.material_properties.shader_name, None)
 
         elif self.mode == 'GENERAL':
             update_func = self._update_general
