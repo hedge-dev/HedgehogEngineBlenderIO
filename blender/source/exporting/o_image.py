@@ -3,6 +3,7 @@ import os
 from typing import Iterable
 import numpy
 
+from . import o_util
 from ..dotnet import HEIO_NET, System
 from ..utility import progress_console
 
@@ -55,8 +56,9 @@ def export_material_images(
 	progress_console.start("Exporting Images", len(images))
 
 	for i, image in enumerate(images):
-		progress_console.update(f"Exporting image \"{image.name}\"", i, True)
-		filepath = os.path.join(output_directory, image.name + ".dds")
+		filename = o_util.correct_filename(image.name)
+		progress_console.update(f"Exporting image \"{filename}\"", i, True)
+		filepath = os.path.join(output_directory, filename + ".dds")
 
 		if export_mode != 'OVERWRITE' and os.path.isfile(filepath):
 			continue
