@@ -219,7 +219,7 @@ class HEIO_PT_Material(PropertiesPanel):
             split.alignment = "LEFT"
             split.label(text="  " + texture.name, icon=name_icon)
 
-        body.prop_search(texture, "image", bpy.data, "images")
+        body.prop_search(texture, "image_name", bpy.data, "images")
 
         body.prop(texture, "texcoord_index")
         body.prop(texture, "wrapmode_u")

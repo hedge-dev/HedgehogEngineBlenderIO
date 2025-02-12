@@ -26,6 +26,15 @@ TEXTURE_WRAP_MAPPING = {
 }
 """[Mode] = (Mirror, Clamp)"""
 
+def _get_image(properties):
+    return bpy.data.images.get(properties.image_name, None)
+
+def _set_image(properties, value):
+    if value is None:
+        properties.image_name = ""
+    else:
+        properties.image_name = value.name
+
 
 def _update_texture(texture, context):
     target_definition = definitions.get_target_definition(context)
@@ -43,12 +52,17 @@ class HEIO_MaterialTexture(bpy.types.PropertyGroup):
         update=_update_texture
     )
 
-    image: PointerProperty(
-        name="Image",
-        description="Image behind the texture",
-        type=bpy.types.Image,
+    image_name: StringProperty(
+        name="Image name",
         update=_update_texture
     )
+
+    # image: PointerProperty(
+    #     name="Image",
+    #     description="Image behind the texture",
+    #     type=bpy.types.Image,
+    #     update=_update_texture,
+    # )
 
     texcoord_index: IntProperty(
         name="Texture coordinate index",
@@ -84,6 +98,17 @@ class HEIO_MaterialTexture(bpy.types.PropertyGroup):
         default="REPEAT",
         update=_update_texture
     )
+
+    @property
+    def image(self):
+        return bpy.data.images.get(self.image_name, None)
+
+    @image.setter
+    def image(self, value):
+        if value is None:
+            self.image_name = ""
+        else:
+            self.image_name = value.name
 
     @property
     def type_index(self):
