@@ -53,7 +53,8 @@ class HEIO_MaterialTexture(bpy.types.PropertyGroup):
     )
 
     image_name: StringProperty(
-        name="Image name",
+        name="Image",
+        description="Image behind the texture",
         update=_update_texture
     )
 
