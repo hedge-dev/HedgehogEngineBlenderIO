@@ -245,6 +245,12 @@ class ExportBaseMeshDataOperator(ExportObjectSelectionOperator):
         default=False
     )
 
+    use_multicore_processing: BoolProperty(
+        name="Use multicore processing",
+        description="Uses all CPU cores (threads) to speed up exporting model data",
+        default=True
+    )
+
     def check(self, context):
         force = self._get_force_directory_mode()
         if force is not None:
@@ -305,7 +311,7 @@ class ExportBaseMeshDataOperator(ExportObjectSelectionOperator):
 
         directory = os.path.dirname(self.filepath)
 
-        processor.compile_output()
+        processor.compile_output(self.use_multicore_processing)
         processor.write_output_to_files(directory)
 
 
@@ -370,12 +376,6 @@ class ExportModelBaseOperator(ExportMaterialOperator, ExportBaseMeshDataOperator
         body.prop(self, "bone_orientation")
 
     def _draw_panel_model_advanced(self, layout, context, target_def: definitions.TargetDefinition):
-        show_triangle_strips = target_def is None or target_def.supports_topology
-        show_optimized_vertex_data = target_def is None or target_def.hedgehog_engine_version == 2 or context.scene.heio_scene.target_console
-
-        if not show_triangle_strips and not show_optimized_vertex_data:
-            return
-
         header, body = layout.panel(
             "HEIO_export_model_advanced", default_closed=True)
         header.label(text="Advanced")
@@ -383,11 +383,15 @@ class ExportModelBaseOperator(ExportMaterialOperator, ExportBaseMeshDataOperator
         if not body:
             return
 
-        if show_triangle_strips:
+        body.use_property_split = False
+        body.prop(self, "use_multicore_processing")
+
+        if target_def is None or target_def.supports_topology:
             body.prop(self, "use_triangle_strips")
 
-        if show_optimized_vertex_data:
+        if target_def is None or target_def.hedgehog_engine_version == 2 or context.scene.heio_scene.target_console:
             body.prop(self, "optimized_vertex_data")
+
 
     def draw_panel_model(self, context):
         if self._hide_model_panel():

@@ -26,9 +26,9 @@ namespace HEIO.NET.Modeling
             SCAParameters = scaParameters;
         }
 
-        public static ModelBase[] ToHEModels(MeshCompileData[] compileData, bool hedgehogEngine2, Topology topology, bool optimizedVertexData)
+        public static ModelBase[] ToHEModels(MeshCompileData[] compileData, bool hedgehogEngine2, Topology topology, bool optimizedVertexData, bool multithreading = true)
         {
-            return ModelConverter.CompileMeshData(compileData, hedgehogEngine2, topology, optimizedVertexData);
+            return ModelConverter.CompileMeshData(compileData, hedgehogEngine2, topology, optimizedVertexData, multithreading);
         }
 
         public void SaveToJson(string directory)

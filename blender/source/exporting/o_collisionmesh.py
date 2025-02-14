@@ -253,7 +253,7 @@ class CollisionMeshProcessor(o_mesh.BaseMeshProcessor):
 
         return (name, sn_meshdata, sn_primitives)
 
-    def compile_output(self):
+    def compile_output(self, use_multicore_processing: bool):
         # TODO: compile with multithreading in c#, maybe
         progress_console.start("Compiling collision meshes", len(self._output_queue))
 

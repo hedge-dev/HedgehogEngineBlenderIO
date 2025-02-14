@@ -749,7 +749,7 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
 
     ##################################################
 
-    def compile_output(self):
+    def compile_output(self, use_multicore_processing: bool):
         progress_console.start("Compiling models")
         progress_console.update("This may take a while")
 
@@ -757,7 +757,8 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
             [x[1] for x in self._output_queue],
             self._target_definition.hedgehog_engine_version == 2,
             self._topology,
-            self._optimized_vertex_data
+            self._optimized_vertex_data,
+            use_multicore_processing
         )
 
         for queued, model in zip(self._output_queue, models):

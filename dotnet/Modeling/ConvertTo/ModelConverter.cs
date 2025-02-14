@@ -59,29 +59,45 @@ namespace HEIO.NET.Modeling.ConvertTo
         }
 
 
-        public static ModelBase[] CompileMeshData(MeshCompileData[] compileData, bool hedgehogEngine2, Topology topology, bool optimizedVertexData)
+        public static ModelBase[] CompileMeshData(MeshCompileData[] compileData, bool hedgehogEngine2, Topology topology, bool optimizedVertexData, bool multithreading)
         {
             IProcessable[][] processors = new IProcessable[compileData.Length][];
-
-            ParallelLoopResult parallelLoopResult = Parallel.ForEach(compileData, (cData, _, i) =>
+            void processProcessor(MeshCompileData cData, ParallelLoopState? state, long i)
             {
                 IProcessable[] processor = ExtractProcessData(cData, topology);
                 lock(processors)
                 {
                     processors[i] = processor;
                 }
-            });
-
-            if(!parallelLoopResult.IsCompleted)
-            {
-                throw new InvalidOperationException("Collecting process data failed!");
             }
 
-            parallelLoopResult = Parallel.ForEach(processors.SelectMany(x => x), (processor) => processor.Process(hedgehogEngine2, optimizedVertexData));
-
-            if(!parallelLoopResult.IsCompleted)
+            if(multithreading)
             {
-                throw new InvalidOperationException("Converting meshdata failed!");
+                ParallelLoopResult parallelLoopResult = Parallel.ForEach(compileData, processProcessor);
+
+                if(!parallelLoopResult.IsCompleted)
+                {
+                    throw new InvalidOperationException("Collecting process data failed!");
+                }
+
+                parallelLoopResult = Parallel.ForEach(processors.SelectMany(x => x), (processor) => processor.Process(hedgehogEngine2, optimizedVertexData));
+
+                if(!parallelLoopResult.IsCompleted)
+                {
+                    throw new InvalidOperationException("Converting meshdata failed!");
+                }
+            }
+            else
+            {
+                for(int i = 0; i < compileData.Length; i++)
+                {
+                    processProcessor(compileData[i], null, i);
+                }
+
+                foreach(IProcessable processor in processors.SelectMany(x => x))
+                {
+                    processor.Process(hedgehogEngine2, optimizedVertexData);
+                }
             }
 
             ModelBase[] result = new ModelBase[compileData.Length];

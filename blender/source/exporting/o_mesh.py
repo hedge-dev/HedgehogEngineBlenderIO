@@ -123,7 +123,7 @@ class BaseMeshProcessor:
 
         return name
 
-    def compile_output(self):
+    def compile_output(self, use_multicore_processing: bool):
         raise NotImplementedError()
 
     def write_output_to_files(self, directory: str):
