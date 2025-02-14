@@ -169,7 +169,7 @@ namespace HEIO.NET.Modeling.ConvertTo
                     if(newVertexIndex == -1)
                     {
                         newVertexIndex = splitGpuMesh.Vertices.Count;
-                        splitGpuMesh.Vertices.Add(splitGpuMesh.Vertices[vertexIndex].Copy());
+                        splitGpuMesh.Vertices.Add(gpuMesh.Vertices[vertexIndex].Copy());
                         indexMap[vertexIndex] = newVertexIndex;
                     }
 
