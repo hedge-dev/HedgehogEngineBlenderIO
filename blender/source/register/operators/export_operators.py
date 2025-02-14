@@ -109,7 +109,7 @@ class HEIO_OT_Export_PointCloud(ExportPointCloudOperator):
         directory = os.path.dirname(self.filepath)
 
         if self.write_resources:
-            processor.compile_output()
+            processor.compile_output(self.use_multicore_processing)
             processor.write_output_to_files(directory)
 
         SharpNeedle.RESOURCE_EXTENSIONS.Write(pointcloud, self.filepath)
@@ -158,7 +158,7 @@ class HEIO_OT_Export_PointClouds(ExportPointCloudOperator):
         directory = os.path.dirname(self.filepath)
 
         if self.write_resources:
-            processor.compile_output()
+            processor.compile_output(self.use_multicore_processing)
             processor.write_output_to_files(directory)
 
         extension = ".pc" + self.cloud_type.lower()
