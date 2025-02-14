@@ -63,33 +63,25 @@ namespace HEIO.NET.Modeling.ConvertTo
         public static ProcessTriangleCorner EvalProcessTriangles(int vertexIndex, MeshData data, int faceIndex, int texcoordSets, int colorSets)
         {
             Vector2[] textureCoordinates = new Vector2[texcoordSets];
-            for(int j = 0; j < data.TextureCoordinates.Count; j++)
+
+            int texcoordSetsMin = int.Min(data.TextureCoordinates.Count, texcoordSets);
+            for(int j = 0; j < texcoordSetsMin; j++)
             {
                 Vector2 uv = data.TextureCoordinates[j][faceIndex];
                 textureCoordinates[j] = new(uv.X, 1 - uv.Y);
             }
 
-            Vector2 fallbackTextureCoordinate = data.TextureCoordinates.Count == 0
-                ? Vector2.Zero : textureCoordinates[0];
-
-            for(int j = data.TextureCoordinates.Count; j < texcoordSets; j++)
-            {
-                textureCoordinates[j] = fallbackTextureCoordinate;
-            }
-
             Vector4[] colors = new Vector4[colorSets];
 
-            for(int j = 0; j < data.Colors.Count; j++)
+            int colorSetsMin = int.Min(data.Colors.Count, colorSets);
+            for(int j = 0; j < colorSetsMin; j++)
             {
                 colors[j] = data.Colors[j][faceIndex];
             }
 
-            Vector4 fallbackColor = data.Colors.Count == 0
-                ? Vector4.One : colors[0];
-
             for(int j = data.Colors.Count; j < colorSets; j++)
             {
-                colors[j] = fallbackColor;
+                colors[j] = Vector4.One;
             }
 
             UVDirection uvDirection = data.PolygonUVDirections![faceIndex];
