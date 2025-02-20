@@ -29,7 +29,6 @@ def _setup_material(
 
     mapping = {}
     node_tree = material.node_tree
-    material.preview_render_type = 'FLAT'
 
     # resetting existing contents
     node_tree.links.clear()
