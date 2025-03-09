@@ -16,6 +16,7 @@ class MaterialProcessor:
 
     _context: bpy.types.Context
     _auto_sca_parameters: bool
+    _material_mode: str
     _image_mode: str
     _invert_normal_map_y_channel: bool
 
@@ -26,12 +27,14 @@ class MaterialProcessor:
             target_definition: TargetDefinition,
             auto_sca_parameters: bool,
             context: bpy.types.Context,
+            material_mode: str,
             image_mode: str,
             nrm_invert_y_channel: str):
 
         self._target_definition = target_definition
         self._auto_sca_parameters = auto_sca_parameters
         self._context = context
+        self._material_mode = material_mode
         self._image_mode = image_mode
 
         self._invert_normal_map_y_channel = (
@@ -134,13 +137,19 @@ class MaterialProcessor:
         return self._output[material]
 
     def write_output_to_files(self, directory: str):
+        if self._material_mode == 'NONE':
+            return
+
         progress_console.start("Writing Materials to files", len(self._output))
 
         for i, sn_material in enumerate(self._output.values()):
-            progress_console.update(f"Writing material \"{sn_material.Name}\"", i)
-
             filepath = os.path.join(
                 directory, sn_material.Name + ".material")
+
+            if self._material_mode != 'OVERWRITE' and os.path.isfile(filepath):
+                continue
+
+            progress_console.update(f"Writing material \"{sn_material.Name}\"", i)
 
             SharpNeedle.RESOURCE_EXTENSIONS.Write(sn_material, filepath)
 
@@ -149,7 +158,7 @@ class MaterialProcessor:
         self.write_output_images_to_files(directory)
 
     def write_output_images_to_files(self, directory):
-        if self._image_mode == 'NONE':
+        if self._image_mode == 'NONE' or self._material_mode == 'NONE':
             return
 
         o_image.export_material_images(

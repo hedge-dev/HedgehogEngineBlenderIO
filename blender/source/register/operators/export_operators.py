@@ -19,6 +19,11 @@ class HEIO_OT_Export_Material(ExportMaterialOperator):
     bl_idname = "heio.export_material"
     bl_label = "Export as HE Material (*.material)"
 
+    def draw(self, context):
+        super().draw(context)
+        self.layout.use_property_split = True
+        self.layout.prop(self, "material_mode")
+
     def export(self, context):
         materials = set([
             slot.material
@@ -42,6 +47,9 @@ class HEIO_OT_Export_Material_Active(ExportMaterialOperator):
             and context.active_object.type in MESH_DATA_TYPES
             and context.active_object.active_material is not None
         )
+
+    def _ignore_material_mode(self):
+        return True
 
     def export(self, context):
         self.material_processor.convert_materials(

@@ -3,7 +3,6 @@ import bpy
 
 from . import o_modelset, o_object_manager, o_util
 from ..register.definitions import TargetDefinition
-from ..register.property_groups.mesh_properties import MESH_DATA_TYPES
 from ..dotnet import SharpNeedle
 from ..exceptions import HEIODevException
 from ..utility import progress_console
@@ -14,8 +13,6 @@ class BaseMeshProcessor:
     _object_manager: o_object_manager.ObjectManager
     _modelset_manager: o_modelset.ModelSetManager
 
-    _write_dependencies: bool
-
     _meshdata_lut: dict[o_modelset.ModelSet, any]
     _output: dict[str, tuple[str, any]]
     _output_queue: list
@@ -24,14 +21,11 @@ class BaseMeshProcessor:
             self,
             target_definition: TargetDefinition,
             object_manager: o_object_manager.ObjectManager,
-            modelset_manager: o_modelset.ModelSetManager,
-            write_dependencies: bool):
+            modelset_manager: o_modelset.ModelSetManager):
 
         self._target_definition = target_definition
         self._object_manager = object_manager
         self._modelset_manager = modelset_manager
-
-        self._write_dependencies = write_dependencies
 
         self._meshdata_lut = {}
         self._output = {}
@@ -134,6 +128,6 @@ class BaseMeshProcessor:
             progress_console.update(f"Writing model \"{name}\"", i)
 
             filepath = os.path.join(directory, name + data[1])
-            SharpNeedle.RESOURCE_EXTENSIONS.Write(data[0], filepath, self._write_dependencies)
+            SharpNeedle.RESOURCE_EXTENSIONS.Write(data[0], filepath, False) # dependencies are managed by the python side of things
 
         progress_console.end()

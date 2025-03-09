@@ -166,7 +166,6 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
             target_definition: TargetDefinition,
             object_manager: o_object_manager.ObjectManager,
             model_set_manager: o_modelset.ModelSetManager,
-            write_dependencies: bool,
 
             material_processor: o_material.MaterialProcessor,
             auto_sca_parameters: bool,
@@ -176,7 +175,7 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
             optimized_vertex_data: bool):
 
         super().__init__(target_definition, object_manager,
-                         model_set_manager, write_dependencies)
+                         model_set_manager)
 
         self.mode = 'AUTO'
 
@@ -802,6 +801,4 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
 
     def write_output_to_files(self, directory):
         super().write_output_to_files(directory)
-
-        if self._write_dependencies:
-            self._material_processor.write_output_images_to_files(directory)
+        self._material_processor.write_output_images_to_files(directory)

@@ -23,6 +23,7 @@ from ...exporting import (
 
 from ...utility import progress_console
 
+
 class ExportOperator(HEIOBaseFileSaveOperator):
     bl_options = {'PRESET', 'UNDO'}
 
@@ -143,6 +144,7 @@ class ExportMaterialOperator(ExportObjectSelectionOperator):
 
     image_mode: EnumProperty(
         name="Image Export Mode",
+        description="Which images to export",
         items=(
              ('OVERWRITE', "Overwrite",
               "Export all images and overwrite existing ones."),
@@ -151,6 +153,19 @@ class ExportMaterialOperator(ExportObjectSelectionOperator):
              ('NONE', "None", "Export no images at all"),
         ),
         default='MISSING'
+    )
+
+    material_mode: EnumProperty(
+        name="Material Export Mode",
+        description="Which materials (including their images) to export",
+        items=(
+             ('OVERWRITE', "Overwrite",
+              "Export all materials and overwrite existing ones."),
+             ('MISSING', "Missing",
+              "Export only materials that dont already exist in the output folder."),
+             ('NONE', "None", "Export no materials at all"),
+        ),
+        default='OVERWRITE'
     )
 
     nrm_invert_y_channel: EnumProperty(
@@ -171,11 +186,11 @@ class ExportMaterialOperator(ExportObjectSelectionOperator):
         default=True
     )
 
-    def _hide_material_panel(self):
+    def _ignore_material_mode(self):
         return False
 
     def draw_panel_material(self, context):
-        if self._hide_material_panel():
+        if not self._ignore_material_mode() and self.material_mode == 'NONE':
             return
 
         header, body = self.layout.panel(
@@ -189,7 +204,6 @@ class ExportMaterialOperator(ExportObjectSelectionOperator):
         if target_def is None or target_def.data_versions.sample_chunk >= 2:
             body.use_property_split = False
             body.prop(self, "auto_sca_parameters_material")
-
 
         if "blender_dds_addon" in bpy.context.preferences.addons.keys():
             body.use_property_split = True
@@ -213,10 +227,15 @@ class ExportMaterialOperator(ExportObjectSelectionOperator):
     def setup(self, context):
         super().setup(context)
 
+        material_mode = self.material_mode
+        if self._ignore_material_mode():
+            material_mode = 'OVERWRITE'
+
         self.material_processor = o_material.MaterialProcessor(
             self.target_definition,
             self.auto_sca_parameters_material,
             context,
+            material_mode,
             self.image_mode,
             self.nrm_invert_y_channel)
 
@@ -317,12 +336,6 @@ class ExportBaseMeshDataOperator(ExportObjectSelectionOperator):
 
 class ExportModelBaseOperator(ExportMaterialOperator, ExportBaseMeshDataOperator):
 
-    export_materials: BoolProperty(
-        name="Export materials",
-        description="Disabling this will not export materials or their images",
-        default=True
-    )
-
     auto_sca_parameters_model: BoolProperty(
         name="Automatic SCA parameters",
         description="Add default SCA parameters to the model if missing (defined per target game)",
@@ -353,9 +366,6 @@ class ExportModelBaseOperator(ExportMaterialOperator, ExportBaseMeshDataOperator
         default=True
     )
 
-    def _hide_material_panel(self):
-        return not self.export_materials or self._hide_model_panel()
-
     def _hide_model_panel(self):
         return False
 
@@ -370,9 +380,9 @@ class ExportModelBaseOperator(ExportMaterialOperator, ExportBaseMeshDataOperator
         body.use_property_split = False
         if target_def is None or target_def.data_versions.sample_chunk >= 2:
             body.prop(self, "auto_sca_parameters_model")
-        body.prop(self, "export_materials")
 
         body.use_property_split = True
+        body.prop(self, "material_mode")
         body.prop(self, "bone_orientation")
 
     def _draw_panel_model_advanced(self, layout, context, target_def: definitions.TargetDefinition):
@@ -391,7 +401,6 @@ class ExportModelBaseOperator(ExportMaterialOperator, ExportBaseMeshDataOperator
 
         if target_def is None or target_def.hedgehog_engine_version == 2 or context.scene.heio_scene.target_console:
             body.prop(self, "optimized_vertex_data")
-
 
     def draw_panel_model(self, context):
         if self._hide_model_panel():
@@ -432,7 +441,6 @@ class ExportModelBaseOperator(ExportMaterialOperator, ExportBaseMeshDataOperator
             self.target_definition,
             self.object_manager,
             self.model_set_manager,
-            self.export_materials,
 
             self.material_processor,
             self.auto_sca_parameters_model,
@@ -486,8 +494,7 @@ class ExportCollisionModelOperator(ExportBaseMeshDataOperator):
         self.collision_mesh_processor = o_collisionmesh.CollisionMeshProcessor(
             self.target_definition,
             self.object_manager,
-            self.model_set_manager,
-            False  # bullet mesh has no dependencies
+            self.model_set_manager
         )
 
 
