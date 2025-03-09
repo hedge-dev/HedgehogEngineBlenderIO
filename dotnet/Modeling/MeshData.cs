@@ -126,11 +126,11 @@ namespace HEIO.NET.Modeling
                 morph.Targets.Count
             );
 
-            converter.AddGroupInfo(morph.Meshgroup!.Name ?? string.Empty, morph.Meshgroup!.Count);
+            converter.AddGroupInfo(morph.MeshGroup!.Name ?? string.Empty, morph.MeshGroup!.Count);
 
-            for(int i = 0; i < morph.Meshgroup.Count; i++)
+            for(int i = 0; i < morph.MeshGroup.Count; i++)
             {
-                converter.AddMesh(morph.Meshgroup[i], i == morph.Meshgroup.Count - 1);
+                converter.AddMesh(morph.MeshGroup[i], i == morph.MeshGroup.Count - 1);
             }
 
             for(int i = 0; i < morph.Targets.Count; i++)

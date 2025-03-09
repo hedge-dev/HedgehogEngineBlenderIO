@@ -103,7 +103,7 @@ namespace HEIO.NET.Modeling.ConvertTo
 
             Result = new()
             {
-                Meshgroup = new()
+                MeshGroup = new()
                 {
                     Name = _data.GroupNames[0]
                 }
@@ -142,7 +142,7 @@ namespace HEIO.NET.Modeling.ConvertTo
                     setMesh.Faces = [.. triangles];
                 }
 
-                Result.Meshgroup.Add(setMesh);
+                Result.MeshGroup.Add(setMesh);
                 faceOffset += setInfo.Size;
             }
 

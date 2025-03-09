@@ -19,7 +19,7 @@ namespace HEIO.NET
             {
                 NeedleArchive archive = new()
                 {
-                    OffsetMode = NeedleArchvieDataOffsetMode.SelfRelative
+                    OffsetMode = NeedleArchiveDataOffsetMode.SelfRelative
                 };
 
                 archive.Read(file);
@@ -95,7 +95,7 @@ namespace HEIO.NET
         {
             return models
                 .SelectMany(x => x.Models)
-                .SelectMany(x => x.Groups.Concat((x as Model)?.Morphs?.Select(x => x.Meshgroup!) ?? []))
+                .SelectMany(x => x.Groups.Concat((x as Model)?.Morphs?.Select(x => x.MeshGroup!) ?? []))
                 .SelectMany(x => x)
                 .Where(x => x.Material.IsValid())
                 .Select(x => x.Material.Resource!)
@@ -107,7 +107,7 @@ namespace HEIO.NET
         {
             NeedleArchive result = new()
             {
-                OffsetMode = NeedleArchvieDataOffsetMode.SelfRelative
+                OffsetMode = NeedleArchiveDataOffsetMode.SelfRelative
             };
 
             LODInfoBlock lodBlock = new()
