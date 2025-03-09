@@ -66,6 +66,9 @@ def export_material_images(
 		# creating a copy so the DDS addon doesnt overwrite any image data
 		export_image = image.copy()
 
+		if export_image.dds_props.dxgi_format == 'NONE':
+			export_image.dds_props.dxgi_format = 'BC1_UNORM'
+
 		if image in normal_images:
 			pixels = numpy.array(export_image.pixels, dtype=numpy.float32)
 			HEIO_NET.IMAGE.InvertGreenChannel(System.INT_PTR(pixels.ctypes.data), len(pixels))
