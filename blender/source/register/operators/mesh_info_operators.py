@@ -249,7 +249,7 @@ class HEIO_OT_MeshInfo_Remove(MeshListOperator, ListRemove):
                 raise HEIOUserException(
                     "Cannot remove mesh info while in edit mode!")
 
-            if self.type == 'MESH_LAYER' and target_list.active_index < 3:
+            if self.type == 'RENDER_LAYERS' and target_list.active_index < 3:
                 raise HEIOUserException(
                     f"The {target_list.active_element.name} layer is required!")
             elif len(target_list) <= 1:
