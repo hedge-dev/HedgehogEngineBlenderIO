@@ -71,7 +71,7 @@ namespace HEIO.NET.Modeling.ConvertTo
             }
         }
 
-        public void Process(bool hedgehogEngine2, bool optimizedVertexData)
+        public void Process(ModelVersionMode versionMode, bool optimizedVertexData)
         {
             if(Result != null)
             {
@@ -89,7 +89,7 @@ namespace HEIO.NET.Modeling.ConvertTo
                 out int[] resultVertexIndices
             );
 
-            if(usedBones.Count > 25 && !hedgehogEngine2)
+            if(usedBones.Count > 25 && versionMode != ModelVersionMode.HE2)
             {
                 throw new InvalidDataException("HE1 Morph models cannot have more than 25 bones!");
             }
@@ -99,7 +99,7 @@ namespace HEIO.NET.Modeling.ConvertTo
             _gpuMesh.BlendIndex16 = usedBones.Count > 255;
             _gpuMesh.EvaluateBoneIndices(usedBones);
 
-            Mesh baseMesh = MeshConverter.ConvertToMesh(_gpuMesh, false, false);
+            Mesh baseMesh = MeshConverter.ConvertToMesh(_gpuMesh, ModelVersionMode.HE1, false);
 
             Result = new()
             {

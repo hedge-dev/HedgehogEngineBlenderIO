@@ -13,12 +13,12 @@ namespace HEIO.NET.Modeling.ConvertTo
 {
     internal static class MeshConverter
     {
-        public static Mesh ConvertToMesh(GPUMesh gpuMesh, bool hedgehogEngine2, bool optimizedVertexData)
+        public static Mesh ConvertToMesh(GPUMesh gpuMesh, ModelVersionMode versionMode, bool optimizedVertexData)
         {
             List<VertexElement> elements = EvaluateVertexElements(
                 gpuMesh, 
                 gpuMesh.Vertices[0].Weights.Length / 4,
-                hedgehogEngine2,
+                versionMode,
                 optimizedVertexData, 
                 out ushort vertexSize);
 
@@ -35,11 +35,11 @@ namespace HEIO.NET.Modeling.ConvertTo
             };
         }
 
-        private static List<VertexElement> EvaluateVertexElements(GPUMesh gpuMesh, int weightSets, bool hedgehogEngine2, bool optimizedVertexData, out ushort vertexSize)
+        private static List<VertexElement> EvaluateVertexElements(GPUMesh gpuMesh, int weightSets, ModelVersionMode versionMode, bool optimizedVertexData, out ushort vertexSize)
         {
             VertexFormatSetup formatSetup = !optimizedVertexData
                 ? VertexFormatSetups._full
-                : hedgehogEngine2 
+                : versionMode == ModelVersionMode.HE2
                 ? VertexFormatSetups._he2Optimized 
                 : VertexFormatSetups._he1Optimized;
 

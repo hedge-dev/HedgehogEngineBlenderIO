@@ -185,7 +185,7 @@ namespace HEIO.NET.Modeling.ConvertTo
         }
 
 
-        public void Process(bool hedgehogEngine2, bool optimizedVertexData)
+        public void Process(ModelVersionMode versionMode, bool optimizedVertexData)
         {
             if(Result != null)
             {
@@ -229,7 +229,7 @@ namespace HEIO.NET.Modeling.ConvertTo
 
             GPUMesh[] gpuMeshes;
 
-            if(usedBones.Count <= 25 || hedgehogEngine2)
+            if(usedBones.Count <= 25 || versionMode == ModelVersionMode.HE2)
             {
                 gpuMesh.BlendIndex16 = usedBones.Count > 255;
                 gpuMesh.EvaluateBoneIndices(usedBones);
@@ -248,7 +248,7 @@ namespace HEIO.NET.Modeling.ConvertTo
                 }
             }
 
-            Result = gpuMeshes.Select(x => MeshConverter.ConvertToMesh(x, hedgehogEngine2, optimizedVertexData)).ToArray();
+            Result = gpuMeshes.Select(x => MeshConverter.ConvertToMesh(x, versionMode, optimizedVertexData)).ToArray();
         }
     }
 }

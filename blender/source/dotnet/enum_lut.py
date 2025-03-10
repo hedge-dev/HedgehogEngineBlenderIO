@@ -65,3 +65,9 @@ MATERIAL_BLEND_MODE = {
     "Subtract" : "SUBTRACT",
     "SUBTRACT": "Subtract",
 }
+
+MODEL_VERSION_MODE = {
+	"HE2" : "HE2",
+	"HE1" : "HE1",
+	"HE1_V4" : "HE1_V4"
+}

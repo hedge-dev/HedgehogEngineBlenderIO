@@ -11,7 +11,6 @@ from .base import HEIOBaseFileSaveOperator
 from .. import definitions
 from ...exceptions import HEIOUserException
 from ...exporting import (
-    o_enum,
     o_mesh,
     o_modelset,
     o_object_manager,
@@ -354,6 +353,11 @@ class ExportModelBaseOperator(ExportMaterialOperator, ExportBaseMeshDataOperator
         default='AUTO'
     )
 
+    use_model_version_4: BoolProperty(
+        name="Export Version 4",
+        description="HE1 models are usually version 5 (supports mesh groups), but some models like Werehog fur require the exported model to be version 4"
+    )
+
     use_triangle_strips: BoolProperty(
         name="Use triangle strips",
         description="Use triangle strips instead of triangle lists (smaller files and gpu load, but might decrease rendering performance)",
@@ -396,6 +400,9 @@ class ExportModelBaseOperator(ExportMaterialOperator, ExportBaseMeshDataOperator
         body.use_property_split = False
         body.prop(self, "use_multicore_processing")
 
+        if target_def is None or target_def.hedgehog_engine_version == 1:
+            body.prop(self, "use_model_version_4")
+
         if target_def is None or target_def.supports_topology:
             body.prop(self, "use_triangle_strips")
 
@@ -427,6 +434,13 @@ class ExportModelBaseOperator(ExportMaterialOperator, ExportBaseMeshDataOperator
     def setup(self, context):
         super().setup(context)
 
+        if self.target_definition.hedgehog_engine_version == 2:
+            model_version_mode = "HE2"
+        elif self.use_model_version_4:
+            model_version_mode = "HE1_V4"
+        else:
+            model_version_mode = "HE1"
+
         if not self.target_definition.supports_topology or self.use_triangle_strips:
             topology = 'TRIANGLE_STRIPS'
         else:
@@ -446,7 +460,8 @@ class ExportModelBaseOperator(ExportMaterialOperator, ExportBaseMeshDataOperator
             self.auto_sca_parameters_model,
             self.apply_poses,
             self.bone_orientation,
-            o_enum.to_topology(topology),
+            model_version_mode,
+            topology,
             optimize_vertex_data
         )
 

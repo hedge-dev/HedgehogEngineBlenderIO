@@ -3,7 +3,8 @@ from ..dotnet.enum_lut import (
     VERTEX_MERGE_MODE,
     BULLET_PRIMITIVE_SHAPE_TYPE,
     TOPOLOGY,
-    MATERIAL_BLEND_MODE
+    MATERIAL_BLEND_MODE,
+    MODEL_VERSION_MODE
 )
 
 from ..dotnet import SharpNeedle, HEIO_NET
@@ -34,4 +35,10 @@ def to_material_blend_mode(blend_mode: str):
     return getattr(
         SharpNeedle.MATERIAL_BLEND_MODE,
         MATERIAL_BLEND_MODE[blend_mode]
+    )
+
+def to_model_version_mode(model_version_mode: str):
+    return getattr(
+        HEIO_NET.MODEL_VERSION_MODE,
+        MODEL_VERSION_MODE[model_version_mode]
     )

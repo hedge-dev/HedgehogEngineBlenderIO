@@ -59,7 +59,7 @@ namespace HEIO.NET.Modeling.ConvertTo
         }
 
 
-        public static ModelBase[] CompileMeshData(MeshCompileData[] compileData, bool hedgehogEngine2, Topology topology, bool optimizedVertexData, bool multithreading)
+        public static ModelBase[] CompileMeshData(MeshCompileData[] compileData, ModelVersionMode versionMode, Topology topology, bool optimizedVertexData, bool multithreading)
         {
             IProcessable[][] processors = new IProcessable[compileData.Length][];
             void processProcessor(MeshCompileData cData, ParallelLoopState? state, long i)
@@ -80,7 +80,7 @@ namespace HEIO.NET.Modeling.ConvertTo
                     throw new InvalidOperationException("Collecting process data failed!");
                 }
 
-                parallelLoopResult = Parallel.ForEach(processors.SelectMany(x => x), (processor) => processor.Process(hedgehogEngine2, optimizedVertexData));
+                parallelLoopResult = Parallel.ForEach(processors.SelectMany(x => x), (processor) => processor.Process(versionMode, optimizedVertexData));
 
                 if(!parallelLoopResult.IsCompleted)
                 {
@@ -96,7 +96,7 @@ namespace HEIO.NET.Modeling.ConvertTo
 
                 foreach(IProcessable processor in processors.SelectMany(x => x))
                 {
-                    processor.Process(hedgehogEngine2, optimizedVertexData);
+                    processor.Process(versionMode, optimizedVertexData);
                 }
             }
 
@@ -114,7 +114,13 @@ namespace HEIO.NET.Modeling.ConvertTo
                     };
 
                 model.Name = data.Name;
-                model.DataVersion = hedgehogEngine2 && data.Nodes?.Length > 256 ? 6u : 5u;
+
+                model.DataVersion = versionMode switch
+                {
+                    ModelVersionMode.HE1 => 5,
+                    ModelVersionMode.HE1_V4 => 4,
+                    _ => data.Nodes?.Length > 256 ? 6u : 5u,
+                };
 
                 if(data.SCAParameters != null)
                 {

@@ -12,6 +12,6 @@ namespace HEIO.NET.Modeling.ConvertTo
         public Vector3 AABBMin { get; }
         public Vector3 AABBMax { get; }
 
-        public void Process(bool hedgehogEngine2, bool optimizedVertexData);
+        public void Process(ModelVersionMode versionMode, bool optimizedVertexData);
     }
 }

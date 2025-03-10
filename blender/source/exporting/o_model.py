@@ -1,7 +1,7 @@
 import bpy
 from mathutils import Vector, Matrix
 
-from . import o_mesh, o_modelset, o_transform, o_material, o_object_manager, o_sca_parameters
+from . import o_mesh, o_modelset, o_transform, o_material, o_object_manager, o_sca_parameters, o_enum
 from ..register.definitions import TargetDefinition
 from ..register.property_groups.mesh_properties import MESH_DATA_TYPES
 from ..dotnet import HEIO_NET, SharpNeedle, System
@@ -157,6 +157,7 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
     _use_pose_bone_matrices: bool
     _bone_orientation: str
     _topology: any
+    _model_version_mode: any
     _optimized_vertex_data: bool
 
     _lod_output: dict[bpy.types.Object, any]
@@ -171,7 +172,8 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
             auto_sca_parameters: bool,
             use_pose_bone_matrices: bool,
             bone_orientation: str,
-            topology: any,
+            model_version_mode,
+            topology: str,
             optimized_vertex_data: bool):
 
         super().__init__(target_definition, object_manager,
@@ -184,7 +186,10 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
         self._auto_sca_parameters = auto_sca_parameters
         self._use_pose_bone_matrices = use_pose_bone_matrices
         self._bone_orientation = bone_orientation
-        self._topology = topology
+
+        self._model_version_mode = o_enum.to_model_version_mode(model_version_mode)
+        self._topology = o_enum.to_topology(topology)
+
         self._optimized_vertex_data = optimized_vertex_data
 
         self._lod_output = {}
@@ -754,7 +759,7 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
 
         models = HEIO_NET.MESH_COMPILE_DATA.ToHEModels(
             [x[1] for x in self._output_queue],
-            self._target_definition.hedgehog_engine_version == 2,
+            self._model_version_mode,
             self._topology,
             self._optimized_vertex_data,
             use_multicore_processing

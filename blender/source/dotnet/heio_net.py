@@ -46,6 +46,9 @@ class HEIO_NET:
     TOPOLOGY: any = None
     '''enum HEIO.NET.Modeling.Topology'''
 
+    MODEL_VERSION_MODE: any = None
+    '''enum HEIO.NET.Modeling.ModelVersionMode'''
+
     @classmethod
     def load(cls):
 
@@ -67,7 +70,8 @@ class HEIO_NET:
             UVDirection,
             VertexWeight,
             VertexMergeMode,
-            Topology
+            Topology,
+            ModelVersionMode
         )
 
         cls.IMAGE = Image
@@ -86,3 +90,4 @@ class HEIO_NET:
         cls.VERTEX_WEIGHT = VertexWeight
         cls.VERTEX_MERGE_MODE = VertexMergeMode
         cls.TOPOLOGY = Topology
+        cls.MODEL_VERSION_MODE = ModelVersionMode
