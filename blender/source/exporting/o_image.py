@@ -69,6 +69,9 @@ def export_material_images(
 		if export_image.dds_props.dxgi_format == 'NONE':
 			export_image.dds_props.dxgi_format = 'BC1_UNORM'
 
+		if export_image.file_format == '':
+			export_image.file_format = 'TARGA'
+
 		if image in normal_images:
 			pixels = numpy.array(export_image.pixels, dtype=numpy.float32)
 			HEIO_NET.IMAGE.InvertGreenChannel(System.INT_PTR(pixels.ctypes.data), len(pixels))
