@@ -127,11 +127,13 @@ class HEIO_OT_UnleashedFur_AddEditor(BaseUnleashedFurOperator):
 
         if "FurParam" not in mesh.color_attributes:
             fur_param = mesh.color_attributes.new(
-                "FurParam", "BYTE_COLOR", "CORNER")
+                "FurParam", "BYTE_COLOR", "POINT")
 
             for color in fur_param.data:
                 # gamma adjusted values for 0.5 and 0.25, to accomodate for the blender vertex paint mode
                 color.color = (0.212, 0.051, 1, 1)
+
+        mesh.color_attributes.active_color_name = color_name
 
     def _execute(self, context):
         node_tree, editor_node_tree = _get_geometry_nodes(True)
