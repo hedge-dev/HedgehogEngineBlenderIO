@@ -56,7 +56,7 @@ def export_material_images(
 	progress_console.start("Exporting Images", len(images))
 
 	for i, image in enumerate(images):
-		filename = o_util.correct_filename(image.name)
+		filename = o_util.correct_image_filename(image.name)
 		progress_console.update(f"Exporting image \"{filename}\"", i, True)
 		filepath = os.path.join(output_directory, filename + ".dds")
 

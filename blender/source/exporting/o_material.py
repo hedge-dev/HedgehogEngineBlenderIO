@@ -121,7 +121,7 @@ class MaterialProcessor:
                 sn_texture = SharpNeedle.TEXTURE()
 
                 sn_texture.Name = f"{sn_material.Name}-{j:04}"
-                sn_texture.PictureName = o_util.correct_filename(texture.image.name)
+                sn_texture.PictureName = o_util.correct_image_filename(texture.image.name)
                 sn_texture.Type = texture.name
                 sn_texture.TexCoordIndex = texture.texcoord_index
                 sn_texture.WrapModeU = o_enum.to_wrap_mode(texture.wrapmode_u)
