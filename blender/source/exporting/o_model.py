@@ -806,4 +806,5 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
 
     def write_output_to_files(self, directory):
         super().write_output_to_files(directory)
+        self._material_processor.write_output_to_files(directory)
         self._material_processor.write_output_images_to_files(directory)
