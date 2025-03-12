@@ -47,7 +47,7 @@ class BaseUnleashedFurOperator(HEIOBaseOperator):
 
         modifiers = obj.modifiers
 
-        for i, modifier in obj.modifiers:
+        for i, modifier in enumerate(modifiers):
             if modifier is not bpy.types.NodesModifier:
                 continue
 
@@ -98,7 +98,7 @@ class HEIO_OT_UnleashedFur_AddEditor(BaseUnleashedFurOperator):
         has_modifier = False
         modifiers = obj.modifiers
 
-        for index, modifier in enumerate(obj.modifiers):
+        for index, modifier in enumerate(modifiers):
             if modifier is not bpy.types.NodesModifier:
                 continue
 
