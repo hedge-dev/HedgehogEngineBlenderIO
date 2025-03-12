@@ -49,6 +49,16 @@ class ModelSet:
             elif not apply_modifiers:
                 modifier.show_viewport = False
 
+            elif modifier.type == 'NODES' and modifier.node_group is not None:
+                for socket in modifier.node_group.interface.items_tree:
+                    if isinstance(socket, bpy.types.NodeTreeInterfaceSocketGeometry) and socket.in_out == 'OUTPUT' and socket.position == 0:
+                        if "HEIO_EXPORT_IGNORE" in socket.description.split(";"):
+                            modifier.show_viewport = False
+                        break
+
+
+
+
         # add edge split modifier
         self._edge_split_modifier = self.obj.modifiers.new(
             "ExportEdgeSplit",

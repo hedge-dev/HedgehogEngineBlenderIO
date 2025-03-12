@@ -6,7 +6,8 @@ from .. operators import (
     image_operators,
     info_operators,
     scap_mass_edit_operators,
-    material_mass_edit_operators
+    material_mass_edit_operators,
+    unleashed_fur_operators
 )
 
 from . import (
@@ -45,6 +46,14 @@ class HEIO_PT_VTP_GeneralTools(ViewportToolPanel):
 
         layout.operator(
             image_operators.HEIO_OT_ReimportImages.bl_idname)
+
+        layout.separator(type='LINE', factor=1.5)
+
+        layout.operator(
+            unleashed_fur_operators.HEIO_OT_UnleashedFur_AddShells.bl_idname)
+        layout.operator(
+            unleashed_fur_operators.HEIO_OT_UnleashedFur_AddEditor.bl_idname)
+
 
 
 class HEIO_PT_VTP_SCAP_MassEdit(ViewportToolPanel):

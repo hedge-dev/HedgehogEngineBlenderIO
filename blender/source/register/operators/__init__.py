@@ -11,6 +11,7 @@ from . import (
     mesh_geometry_operators,
     image_operators,
     scap_mass_edit_operators,
+	unleashed_fur_operators,
     info_operators
 )
 
@@ -79,6 +80,9 @@ to_register = [
     scap_mass_edit_operators.HEIO_OT_SCAP_MassEdit_Select,
     scap_mass_edit_operators.HEIO_OT_SCAP_MassEdit_Set,
     scap_mass_edit_operators.HEIO_OT_SCAP_MassEdit_Remove,
+
+    unleashed_fur_operators.HEIO_OT_UnleashedFur_AddShells,
+	unleashed_fur_operators.HEIO_OT_UnleashedFur_AddEditor,
 
     info_operators.HEIO_OT_Info_Manual,
     info_operators.HEIO_OT_Info_Discord,

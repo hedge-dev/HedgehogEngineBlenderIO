@@ -120,19 +120,6 @@ def reset_output_socket(socket: bpy.types.NodeSocket):
 ##################################################
 
 
-def _predict_material_name(name):
-    if name not in bpy.data.materials:
-        return name
-
-    number = 1
-    number_name = f"{name}.{number:03}"
-    while number_name in bpy.data.materials:
-        number += 1
-        number_name = f"{name}.{number:03}"
-
-    return number_name
-
-
 def _get_templates(target_definition: TargetDefinition | None, shader_names: set[str]):
     if target_definition is None:
         return None
@@ -141,27 +128,27 @@ def _get_templates(target_definition: TargetDefinition | None, shader_names: set
         target_definition.directory,
         "MaterialTemplates.blend")
 
-    shader_materials = {}
+    shaders = dict()
 
     with bpy.data.libraries.load(templates_path, link=True) as (data_from, data_to):
-        to_load = {}
+        to_load = []
 
         for shader_name in shader_names:
             material_name = "FALLBACK"
             if shader_name in data_from.materials:
                 material_name = shader_name
 
-            if material_name not in to_load:
-                imported_name = _predict_material_name(material_name)
-                to_load[material_name] = imported_name
-            else:
-                imported_name = to_load[material_name]
+            try:
+                shader_index = to_load.index(material_name)
+            except:
+                shader_index = len(to_load)
+                to_load.append(material_name)
 
-            shader_materials[shader_name] = imported_name
+            shaders[shader_name] = shader_index
 
-        data_to.materials.extend(to_load.keys())
+        data_to.materials = to_load
 
-    return {shader_name: bpy.data.materials[material_name] for shader_name, material_name in shader_materials.items()}
+    return {shader_name: data_to.materials[shaders[shader_name]] for shader_name in shaders}
 
 
 def setup_and_update_materials(

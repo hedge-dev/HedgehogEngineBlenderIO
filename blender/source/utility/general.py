@@ -16,6 +16,19 @@ def get_addon_preferences(context: bpy.types.Context | None):
     return context.preferences.addons[PACKAGE_NAME].preferences
 
 
+def predict_data_name(data, name):
+    if name not in data:
+        return name
+
+    number = 1
+    number_name = f"{name}.{number:03}"
+    while number_name in data:
+        number += 1
+        number_name = f"{name}.{number:03}"
+
+    return number_name
+
+
 def print_resolve_info(context: bpy.types.Context, resolve_infos: list):
     resolve_info = HEIO_NET.RESOLVE_INFO.Combine(resolve_infos)
 
