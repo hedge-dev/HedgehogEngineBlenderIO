@@ -104,6 +104,7 @@ class MaterialConverter:
                 value = conv(value)
 
             setattr(parameter, parameter.value_type.lower() + "_value", value)
+            parameter.override = True
 
         return created_missing
 
