@@ -45,24 +45,25 @@ class ShaderParameter:
 
     name: str
     type: ShaderParameterType
+    overridable: bool
     default: any
 
-    def __init__(self, name: str, type: ShaderParameterType, default: any):
+    def __init__(self, name: str, type: ShaderParameterType, overridable: bool, default: any):
         self.name = name
         self.type = type
+        self.overridable = overridable
         self.default = default
 
     @staticmethod
     def parse_json_data(data: JSONWrapper):
         type = data.parse_property("Type", ShaderParameterType)
+        overridable = data.get_property_fallback("Overridable", False)
 
         default = data["Default"]
         if type in [ShaderParameterType.FLOAT, ShaderParameterType.COLOR]:
             default = (default[0], default[1], default[2], default[3])
-        elif type == ShaderParameterType.BOOLEAN:
-            pass
 
-        return ShaderParameter(data.identifier, type, default)
+        return ShaderParameter(data.identifier, type, overridable, default)
 
 
 class ShaderDefinition:

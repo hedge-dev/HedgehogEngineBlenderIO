@@ -9,6 +9,7 @@ from bpy.props import (
 )
 
 from .base_list import BaseList
+from ..definitions import TargetDefinition
 
 from ...utility.material_setup import (
     get_node_of_type,
@@ -67,6 +68,26 @@ class HEIO_MaterialParameter(bpy.types.PropertyGroup):
         name="Value",
         update=_update_parameter
     )
+
+    override: BoolProperty(
+        name="Override",
+        description="This parameter is usually handled by the game itself, but can be overriden in the material"
+    )
+
+    def is_overridable(self, target_definition: TargetDefinition):
+        if target_definition is None or not isinstance(self.id_data, bpy.types.Material) or self.id_data.heio_material.custom_shader:
+            return False
+
+        shader_definition = target_definition.shaders.definitions.get(self.id_data.heio_material.shader_name, None)
+        if shader_definition is None:
+            return False
+
+        shader_parameter = shader_definition.parameters.get(self.name, None)
+        if shader_parameter is None:
+            return False
+
+        return shader_parameter.overridable
+
 
     def _get_float_nodes(self):
         if not isinstance(self.id_data, Material):

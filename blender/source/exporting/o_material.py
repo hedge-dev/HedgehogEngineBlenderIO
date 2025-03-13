@@ -92,6 +92,9 @@ class MaterialProcessor:
 
             for parameter in material_properties.parameters:
 
+                if parameter.is_overridable(self._target_definition) and not parameter.override:
+                    continue
+
                 if parameter.value_type == 'BOOLEAN':
                     sn_material.BoolParameters.Add(
                         parameter.name,

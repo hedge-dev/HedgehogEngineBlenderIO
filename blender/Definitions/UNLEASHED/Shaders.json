@@ -276,6 +276,7 @@
     "Parameters": {
       "g_FurCount_Tile_Amb_Diff": {
         "Type": "Float",
+        "Overridable": true,
         "Default": [
           0,
           0,
@@ -285,6 +286,7 @@
       },
       "g_FurSpecPowH_SpecPowW_ColorWeight_ShadowWeight": {
         "Type": "Color",
+        "Overridable": true,
         "Default": [
           0,
           0,
@@ -303,6 +305,7 @@
       },
       "g_FurFalloffParam": {
         "Type": "Float",
+        "Overridable": true,
         "Default": [
           0,
           0,
@@ -312,6 +315,7 @@
       },
       "g_FurLOD": {
         "Type": "Float",
+        "Overridable": true,
         "Default": [
           0,
           0,
@@ -321,6 +325,7 @@
       },
       "g_FurCount_Length_Bend_BendPow": {
         "Type": "Float",
+        "Overridable": true,
         "Default": [
           0,
           0,
@@ -330,6 +335,7 @@
       },
       "g_FurMovScale_Speed": {
         "Type": "Float",
+        "Overridable": true,
         "Default": [
           0,
           0,
@@ -739,6 +745,7 @@
     "Parameters": {
       "g_FurCount_Tile_Amb_Diff": {
         "Type": "Float",
+        "Overridable": true,
         "Default": [
           0,
           0,
@@ -748,6 +755,7 @@
       },
       "g_FurSpecPowH_SpecPowW_ColorWeight_ShadowWeight": {
         "Type": "Color",
+        "Overridable": true,
         "Default": [
           0,
           0,
@@ -766,6 +774,7 @@
       },
       "g_FurFalloffParam": {
         "Type": "Float",
+        "Overridable": true,
         "Default": [
           0,
           0,
@@ -775,24 +784,17 @@
       },
       "g_FurLOD": {
         "Type": "Float",
+        "Overridable": true,
         "Default": [
           0,
           0,
           0,
-          0
-        ]
-      },
-      "opacity_reflection_refraction_spectype": {
-        "Type": "Float",
-        "Default": [
-          1,
-          0,
-          1,
           0
         ]
       },
       "g_FurCount_Length_Bend_BendPow": {
         "Type": "Float",
+        "Overridable": true,
         "Default": [
           0,
           0,
@@ -802,6 +804,7 @@
       },
       "g_FurMovScale_Speed": {
         "Type": "Float",
+        "Overridable": true,
         "Default": [
           0,
           0,
@@ -1583,6 +1586,7 @@
     "Parameters": {
       "g_FurCount_Tile_Amb_Diff": {
         "Type": "Float",
+        "Overridable": true,
         "Default": [
           0,
           0,
@@ -1592,6 +1596,7 @@
       },
       "g_FurSpecPowH_SpecPowW_ColorWeight_ShadowWeight": {
         "Type": "Color",
+        "Overridable": true,
         "Default": [
           0,
           0,
@@ -1610,6 +1615,7 @@
       },
       "g_FurFalloffParam": {
         "Type": "Float",
+        "Overridable": true,
         "Default": [
           0,
           0,
@@ -1619,6 +1625,7 @@
       },
       "g_FurLOD": {
         "Type": "Float",
+        "Overridable": true,
         "Default": [
           0,
           0,
@@ -1628,6 +1635,7 @@
       },
       "g_FurCount_Length_Bend_BendPow": {
         "Type": "Float",
+        "Overridable": true,
         "Default": [
           0,
           0,
@@ -1637,6 +1645,7 @@
       },
       "g_FurMovScale_Speed": {
         "Type": "Float",
+        "Overridable": true,
         "Default": [
           0,
           0,

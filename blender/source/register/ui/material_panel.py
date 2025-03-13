@@ -65,10 +65,17 @@ class BaseParameterList:
         if len(item.name) == 0:
             icon = "ERROR"
 
-        split = layout.split(factor=0.4, align=True)
-        self.draw_item_name(split, item, icon)
-        split.row(align=True).prop(
-            item, item.value_type.lower() + "_value", text="")
+
+        target_definition = definitions.get_target_definition(context)
+        if item.is_overridable(target_definition) and not item.override:
+            layout.active = False
+            self.draw_item_name(layout, item, icon)
+
+        else:
+            split = layout.split(factor=0.4, align=True)
+            self.draw_item_name(split, item, icon)
+            split.row(align=True).prop(
+                item, item.value_type.lower() + "_value", text="")
 
 
 class HEIO_UL_ParameterList(bpy.types.UIList, BaseParameterList):
@@ -134,6 +141,7 @@ class HEIO_PT_Material(PropertiesPanel):
     @staticmethod
     def draw_parameter_editor(
             layout: bpy.types.UILayout,
+            context: bpy.types.Context,
             material_properties: HEIO_Material):
 
         header, body = layout.panel("heio_mat_param", default_closed=True)
@@ -159,8 +167,16 @@ class HEIO_PT_Material(PropertiesPanel):
         if parameter is None:
             return
 
-        body.use_property_split = True
         body.use_property_decorate = False
+        body.use_property_split = True
+
+        target_definition = definitions.get_target_definition(context)
+        if parameter.is_overridable(target_definition):
+            body.prop(parameter, "override")
+
+            if not parameter.override:
+                return
+
 
         name_icon = "ERROR" if len(parameter.name) == 0 else "NONE"
         if material_properties.custom_shader:
@@ -333,6 +349,7 @@ class HEIO_PT_Material(PropertiesPanel):
 
         HEIO_PT_Material.draw_parameter_editor(
             layout,
+            context,
             material_properties
         )
 
