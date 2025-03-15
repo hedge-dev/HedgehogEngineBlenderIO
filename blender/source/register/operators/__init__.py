@@ -83,6 +83,8 @@ to_register = [
 
     unleashed_fur_operators.HEIO_OT_UnleashedFur_AddShells,
 	unleashed_fur_operators.HEIO_OT_UnleashedFur_AddEditor,
+	unleashed_fur_operators.HEIO_OT_UnleashedFur_SwitchVertexColors,
+	unleashed_fur_operators.HEIO_OT_UnleashedFur_SetBrushDir,
 
     info_operators.HEIO_OT_Info_Manual,
     info_operators.HEIO_OT_Info_Discord,

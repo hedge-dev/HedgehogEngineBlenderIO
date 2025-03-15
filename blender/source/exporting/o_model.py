@@ -384,7 +384,7 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
         if len(mesh.color_attributes) == 0:
             return [System.VECTOR4(1, 1, 1, 1)] * len(loop_order), True
 
-        color_attribute = mesh.color_attributes.active_color
+        color_attribute = mesh.color_attributes[mesh.color_attributes.render_color_index]
         colors = []
 
         if color_attribute.domain == 'POINT':
