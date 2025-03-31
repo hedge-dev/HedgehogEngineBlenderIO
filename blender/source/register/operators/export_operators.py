@@ -16,6 +16,7 @@ from .base_export_operators import (
 
 
 class HEIO_OT_Export_Material(ExportMaterialOperator):
+    """Export a hedgehog engine material file"""
     bl_idname = "heio.export_material"
     bl_label = "Export as HE Material (*.material)"
 
@@ -37,6 +38,7 @@ class HEIO_OT_Export_Material(ExportMaterialOperator):
 
 
 class HEIO_OT_Export_Material_Active(ExportMaterialOperator):
+    """Export a hedgehog engine material file"""
     bl_idname = "heio.export_material_active"
     bl_label = "Export as HE Material (*.material)"
 
@@ -59,6 +61,7 @@ class HEIO_OT_Export_Material_Active(ExportMaterialOperator):
 
 
 class HEIO_OT_Export_Model(ExportModelBaseOperator):
+    """Export a hedgehog engine model file"""
     bl_idname = "heio.export_model"
     bl_label = "Export as HE Model (*.model)"
 
@@ -70,6 +73,7 @@ class HEIO_OT_Export_Model(ExportModelBaseOperator):
 
 
 class HEIO_OT_Export_TerrainModel(ExportModelBaseOperator):
+    """Export a hedgehog engine terrain model file"""
     bl_idname = "heio.export_terrainmodel"
     bl_label = "Export as HE Terrain-Model (*.terrain-model)"
 
@@ -82,6 +86,7 @@ class HEIO_OT_Export_TerrainModel(ExportModelBaseOperator):
 
 
 class HEIO_OT_Export_CollisionMesh(ExportCollisionModelOperator):
+    """Export a hedgehog engine collision mesh file"""
     bl_idname = "heio.export_collisionmesh"
     bl_label = "Export as HE Collision Mesh (*.btmesh)"
 
@@ -92,6 +97,7 @@ class HEIO_OT_Export_CollisionMesh(ExportCollisionModelOperator):
 
 
 class HEIO_OT_Export_PointCloud(ExportPointCloudOperator):
+    """Export a hedgehog engine pointcloud file"""
     bl_idname = "heio.export_pointcloud"
     bl_label = "Export as HE Pointcloud (*.pcmodel;*.pccol)"
 
@@ -125,6 +131,7 @@ class HEIO_OT_Export_PointCloud(ExportPointCloudOperator):
 
 
 class HEIO_OT_Export_PointClouds(ExportPointCloudOperator):
+    """Export multiple hedgehog engine pointcloud files"""
     bl_idname = "heio.export_pointclouds"
     bl_label = "Collections as HE Pointclouds (*.pcmodel;*.pccol)"
     bl_options = {'PRESET', 'UNDO', 'INTERNAL'}

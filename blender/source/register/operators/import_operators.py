@@ -16,6 +16,7 @@ from .base_import_operators import (
 
 
 class HEIO_OT_Import_Material(ImportMaterialOperator):
+    """Load a hedgehog engine material file"""
     bl_idname = "heio.import_material"
     bl_label = "Import HE Material (*.material)"
 
@@ -25,6 +26,7 @@ class HEIO_OT_Import_Material(ImportMaterialOperator):
 
 
 class HEIO_OT_Import_Material_Active(ImportMaterialOperator):
+    """Load a hedgehog engine material file"""
     bl_idname = "heio.import_material_active"
     bl_label = "Import HE Material (*.material)"
 
@@ -47,6 +49,7 @@ class HEIO_OT_Import_Material_Active(ImportMaterialOperator):
 
 
 class HEIO_OT_Import_Material_Active_if(ImportMaterialOperator):
+    """Load a hedgehog engine material file"""
     bl_idname = "heio.import_material_active_if"
     bl_label = "Import HE Material (*.material)"
 
@@ -62,6 +65,7 @@ class HEIO_OT_Import_Material_Active_if(ImportMaterialOperator):
 
 
 class HEIO_OT_Import_Model(ImportModelOperator):
+    """Load a hedgehog engine model file"""
     bl_idname = "heio.import_model"
     bl_label = "Import HE Model (*.model)"
 
@@ -71,6 +75,7 @@ class HEIO_OT_Import_Model(ImportModelOperator):
 
 
 class HEIO_OT_Import_TerrainModel(ImportTerrainModelOperator):
+    """Load a hedgehog engine terrain model file"""
     bl_idname = "heio.import_terrainmodel"
     bl_label = "Import HE Terrain-Model (*.terrain-model)"
 
@@ -80,6 +85,7 @@ class HEIO_OT_Import_TerrainModel(ImportTerrainModelOperator):
 
 
 class HEIO_OT_Import_CollisionMesh(ImportCollisionMeshOperator):
+    """Load a hedgehog engine collision mesh file"""
     bl_idname = "heio.import_collisionmesh"
     bl_label = "Import HE Collision Mesh (*.btmesh)"
 
@@ -103,6 +109,7 @@ class HEIO_OT_Import_CollisionMesh(ImportCollisionMeshOperator):
 
 
 class HEIO_OT_Import_PointCloud(ImportPointCloudOperator):
+    """Load a hedgehog engine pointcloud file"""
     bl_idname = "heio.import_pointcloud"
     bl_label = "Import HE Point Cloud (*.pcmodel;*.pccol)"
 
