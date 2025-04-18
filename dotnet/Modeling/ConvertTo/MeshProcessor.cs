@@ -1,10 +1,10 @@
 ﻿using HEIO.NET.Modeling.GPU;
-using SharpNeedle.Framework.HedgehogEngine.Mirage;
+using SharpNeedle.Framework.HedgehogEngine.Mirage.MaterialData;
+using SharpNeedle.Framework.HedgehogEngine.Mirage.ModelData;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using System.Runtime.ExceptionServices;
 
 namespace HEIO.NET.Modeling.ConvertTo
 {

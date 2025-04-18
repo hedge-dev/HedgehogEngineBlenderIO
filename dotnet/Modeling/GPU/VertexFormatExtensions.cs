@@ -1,4 +1,4 @@
-﻿using SharpNeedle.Framework.HedgehogEngine.Mirage;
+﻿using SharpNeedle.Framework.HedgehogEngine.Mirage.ModelData;
 using System;
 
 namespace HEIO.NET.Modeling.GPU

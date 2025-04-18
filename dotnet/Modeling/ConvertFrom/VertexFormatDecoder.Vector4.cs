@@ -15,7 +15,7 @@ namespace HEIO.NET.Modeling.ConvertFrom
                 reader.ReadSingle()
             );
         }
-        
+
         private static Vector4 DecodeInt4(BinaryObjectReader reader)
         {
             return new(
@@ -190,6 +190,6 @@ namespace HEIO.NET.Modeling.ConvertFrom
             );
         }
 
-        
+
     }
 }

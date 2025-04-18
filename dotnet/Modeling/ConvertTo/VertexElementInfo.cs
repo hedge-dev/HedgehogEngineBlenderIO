@@ -1,9 +1,4 @@
-﻿using SharpNeedle.Framework.HedgehogEngine.Mirage;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using SharpNeedle.Framework.HedgehogEngine.Mirage.ModelData;
 
 namespace HEIO.NET.Modeling.ConvertTo
 {
@@ -13,7 +8,7 @@ namespace HEIO.NET.Modeling.ConvertTo
         public readonly VertexFormat texcoord;
 
         public VertexFormatSetup(
-            VertexFormat normal, 
+            VertexFormat normal,
             VertexFormat texcoord)
         {
             this.normal = normal;

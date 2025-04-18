@@ -27,7 +27,7 @@ namespace HEIO.NET.Modeling.ConvertTo
             writer.WriteInt32((int)(float.Clamp(value.X, -1, 1) * int.MaxValue));
             writer.WriteInt32((int)(float.Clamp(value.Y, -1, 1) * int.MaxValue));
             writer.WriteInt32((int)(float.Clamp(value.Z, -1, 1) * int.MaxValue));
-            writer.WriteInt32((int)(float.Clamp(value.W , - 1, 1) * int.MaxValue));
+            writer.WriteInt32((int)(float.Clamp(value.W, -1, 1) * int.MaxValue));
         }
 
         private static void EncodeUint4(BinaryObjectWriter writer, Vector4 value)
@@ -80,7 +80,7 @@ namespace HEIO.NET.Modeling.ConvertTo
             sbyte x = (sbyte)(float.Clamp(value.X, -1, 1) * sbyte.MaxValue);
             sbyte y = (sbyte)(float.Clamp(value.Y, -1, 1) * sbyte.MaxValue);
             sbyte z = (sbyte)(float.Clamp(value.Z, -1, 1) * sbyte.MaxValue);
-            sbyte w = (sbyte)(float.Clamp(value.W , - 1, 1) * sbyte.MaxValue);
+            sbyte w = (sbyte)(float.Clamp(value.W, -1, 1) * sbyte.MaxValue);
 
             writer.WriteByte(unchecked((byte)x));
             writer.WriteByte(unchecked((byte)y));
@@ -101,7 +101,7 @@ namespace HEIO.NET.Modeling.ConvertTo
             writer.WriteInt16((short)(float.Clamp(value.X, -1, 1) * short.MaxValue));
             writer.WriteInt16((short)(float.Clamp(value.Y, -1, 1) * short.MaxValue));
             writer.WriteInt16((short)(float.Clamp(value.Z, -1, 1) * short.MaxValue));
-            writer.WriteInt16((short)(float.Clamp(value.W , - 1, 1) * short.MaxValue));
+            writer.WriteInt16((short)(float.Clamp(value.W, -1, 1) * short.MaxValue));
         }
 
         private static void EncodeUShort4(BinaryObjectWriter writer, Vector4 value)
@@ -156,7 +156,7 @@ namespace HEIO.NET.Modeling.ConvertTo
                 FromSigned10((int)(float.Clamp(value.X, -1, 1) * 0x1FF))
                 | (FromSigned10((int)(float.Clamp(value.Y, -1, 1) * 0x1FF)) << 10)
                 | (FromSigned10((int)(float.Clamp(value.Z, -1, 1) * 0x1FF)) << 20)
-                | (FromSigned2((int)float.Clamp(value.W , - 1, 1)) << 30)
+                | (FromSigned2((int)float.Clamp(value.W, -1, 1)) << 30)
             );
         }
 

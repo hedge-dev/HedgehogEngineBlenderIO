@@ -1,5 +1,5 @@
 ﻿using HEIO.NET.Modeling.GPU;
-using SharpNeedle.Framework.HedgehogEngine.Mirage;
+using SharpNeedle.Framework.HedgehogEngine.Mirage.ModelData;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;

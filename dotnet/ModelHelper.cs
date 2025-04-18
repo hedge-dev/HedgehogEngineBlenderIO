@@ -1,11 +1,11 @@
-﻿using SharpNeedle.Framework.HedgehogEngine.Mirage;
-using SharpNeedle.Framework.HedgehogEngine.Bullet;
+﻿using SharpNeedle.Framework.HedgehogEngine.Bullet;
+using SharpNeedle.Framework.HedgehogEngine.Mirage.MaterialData;
+using SharpNeedle.Framework.HedgehogEngine.Mirage.ModelData;
 using SharpNeedle.Framework.HedgehogEngine.Needle.Archive;
 using SharpNeedle.IO;
-using SharpNeedle.Resource;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System;
 
 namespace HEIO.NET
 {
@@ -102,7 +102,7 @@ namespace HEIO.NET
                 .Distinct()
                 .ToArray();
         }
-    
+
         public static NeedleArchive CreateLODArchive(ModelBase[] models, byte[] lodCascades, float[] lodUnknowns)
         {
             NeedleArchive result = new()

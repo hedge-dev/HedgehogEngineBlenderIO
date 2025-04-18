@@ -1,4 +1,4 @@
-﻿using SharpNeedle.Framework.HedgehogEngine.Mirage;
+﻿using SharpNeedle.Framework.HedgehogEngine.Mirage.MaterialData;
 using System;
 using System.Numerics;
 
@@ -6,7 +6,7 @@ namespace HEIO.NET
 {
     public static class PythonHelpers
     {
-        public static Material.Parameter<Vector4> CreateFloatParameter(Vector4 value)
+        public static MaterialParameter<Vector4> CreateFloatParameter(Vector4 value)
         {
             return new()
             {
@@ -14,7 +14,7 @@ namespace HEIO.NET
             };
         }
 
-        public static Material.Parameter<bool> CreateBoolParameter(bool value)
+        public static MaterialParameter<bool> CreateBoolParameter(bool value)
         {
             return new()
             {

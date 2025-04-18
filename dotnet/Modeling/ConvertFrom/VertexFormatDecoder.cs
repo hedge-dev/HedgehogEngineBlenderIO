@@ -1,5 +1,5 @@
 ﻿using Amicitia.IO.Binary;
-using SharpNeedle.Framework.HedgehogEngine.Mirage;
+using SharpNeedle.Framework.HedgehogEngine.Mirage.ModelData;
 using SharpNeedle.Structs;
 using System;
 using System.IO;

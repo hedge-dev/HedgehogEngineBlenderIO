@@ -1,7 +1,7 @@
 ﻿using Amicitia.IO.Binary;
 using Amicitia.IO.Streams;
 using HEIO.NET.Modeling.GPU;
-using SharpNeedle.Framework.HedgehogEngine.Mirage;
+using SharpNeedle.Framework.HedgehogEngine.Mirage.ModelData;
 using SharpNeedle.Structs;
 using System;
 using System.Collections.Generic;
@@ -16,10 +16,10 @@ namespace HEIO.NET.Modeling.ConvertTo
         public static Mesh ConvertToMesh(GPUMesh gpuMesh, ModelVersionMode versionMode, bool optimizedVertexData)
         {
             List<VertexElement> elements = EvaluateVertexElements(
-                gpuMesh, 
+                gpuMesh,
                 gpuMesh.Vertices[0].Weights.Length / 4,
                 versionMode,
-                optimizedVertexData, 
+                optimizedVertexData,
                 out ushort vertexSize);
 
             return new()
@@ -40,7 +40,7 @@ namespace HEIO.NET.Modeling.ConvertTo
             VertexFormatSetup formatSetup = !optimizedVertexData
                 ? VertexFormatSetups._full
                 : versionMode == ModelVersionMode.HE2
-                ? VertexFormatSetups._he2Optimized 
+                ? VertexFormatSetups._he2Optimized
                 : VertexFormatSetups._he1Optimized;
 
             List<(VertexType, VertexFormat, byte)> info = [

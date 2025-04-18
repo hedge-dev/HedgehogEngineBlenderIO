@@ -67,7 +67,7 @@ namespace HEIO.NET.Modeling
         {
             return ConvertFrom.BulletMeshConverter.ConvertToCollisionMeshData(mesh, mergeVertices, vertexMergeDistance, removeUnusedVertices);
         }
-    
+
         public static BulletMesh ToBulletMesh(CollisionMeshData[] meshData, BulletPrimitive[] primitives)
         {
             return ConvertTo.BulletMeshConverter.ConvertToBulletMesh(meshData, primitives);

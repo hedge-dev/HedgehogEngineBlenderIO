@@ -1,7 +1,4 @@
-﻿using System;
-using System.Numerics;
-
-namespace HEIO.NET.Modeling.ConvertTo
+﻿namespace HEIO.NET.Modeling.ConvertTo
 {
     internal readonly struct TriangleData
     {

@@ -1,10 +1,7 @@
-﻿using J113D.Common;
-using SharpNeedle.Framework.HedgehogEngine.Mirage;
-using SharpNeedle.IO;
+﻿using SharpNeedle.IO;
 using SharpNeedle.Resource;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 
@@ -43,7 +40,7 @@ namespace HEIO.NET
                 }
                 catch(ResourceResolveException exc)
                 {
-                    foreach(string missingResource in exc.Resources)
+                    foreach(string missingResource in exc.GetRecursiveResources())
                     {
                         unresolved.Add(missingResource);
                     }
@@ -148,7 +145,7 @@ namespace HEIO.NET
                 }
 
                 alreadyIterated.Add(resolver);
-                
+
                 result.Add(new DirectoryResourceResolver(resolver.Directory, GetResourceManager(resolver.Directory)));
 
                 foreach(ResolverInfo dependency in resolver.Dependencies.Reverse<ResolverInfo>())

@@ -1,5 +1,5 @@
-﻿using SharpNeedle.Framework.HedgehogEngine.Mirage;
-using SharpNeedle.Framework.HedgehogEngine.Bullet;
+﻿using SharpNeedle.Framework.HedgehogEngine.Bullet;
+using SharpNeedle.Framework.HedgehogEngine.Mirage.ModelData;
 using SharpNeedle.Framework.SonicTeam;
 using SharpNeedle.IO;
 using SharpNeedle.Resource;
@@ -112,7 +112,7 @@ namespace HEIO.NET
                         foreach(string fileExtension in fileExtensions)
                         {
                             string filename = resource + fileExtension;
-                            
+
                             if(resolver.GetFile(filename) is IFile resourceFile)
                             {
                                 resolvedFiles[resource] = resourceFile;

@@ -1,11 +1,8 @@
-﻿using BulletSharp;
-using HEIO.NET.Modeling.GPU;
+﻿using HEIO.NET.Modeling.GPU;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace HEIO.NET.Modeling.ConvertTo
 {
@@ -30,7 +27,7 @@ namespace HEIO.NET.Modeling.ConvertTo
 
         public bool Equals(ProcessTriangleCorner other)
         {
-            if(vertexIndex != other.vertexIndex 
+            if(vertexIndex != other.vertexIndex
                 || !UVDirection.AreNormalsEqual(uvDirection.Tangent, other.uvDirection.Tangent)
                 || !UVDirection.AreNormalsEqual(uvDirection.Binormal, other.uvDirection.Binormal)
                 || !UVDirection.AreNormalsEqual(uvDirection2.Tangent, other.uvDirection2.Tangent)

@@ -1,12 +1,11 @@
 ﻿using HEIO.NET.Modeling.GPU;
 using J113D.Common;
-using SharpNeedle.Framework.HedgehogEngine.Mirage;
+using SharpNeedle.Framework.HedgehogEngine.Mirage.ModelData;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
-using System.Runtime.Intrinsics.Arm;
 
 namespace HEIO.NET.Modeling.ConvertFrom
 {
@@ -130,7 +129,7 @@ namespace HEIO.NET.Modeling.ConvertFrom
                 }
             }
 
-            AddNew(_tempTexcoords, gpuMesh.TexcoordSets, ResultData.TextureCoordinates.Count, (v, i) => new Vector2(v.TextureCoordinates[i].X, 1- v.TextureCoordinates[i].Y), default);
+            AddNew(_tempTexcoords, gpuMesh.TexcoordSets, ResultData.TextureCoordinates.Count, (v, i) => new Vector2(v.TextureCoordinates[i].X, 1 - v.TextureCoordinates[i].Y), default);
             AddNew(_tempColors, gpuMesh.ColorSets, ResultData.Colors.Count, (v, i) => v.Colors[i], Vector4.One);
 
             if(addVertices)

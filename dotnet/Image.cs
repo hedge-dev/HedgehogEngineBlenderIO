@@ -1,13 +1,12 @@
-﻿using System.IO;
-using SharpNeedle.IO;
-using System.Collections.Generic;
-using System;
-using SharpNeedle.Utilities;
-using SharpNeedle.Framework.HedgehogEngine.Mirage;
+﻿using SharpNeedle.Framework.HedgehogEngine.Mirage.MaterialData;
 using SharpNeedle.Framework.HedgehogEngine.Needle.TextureStreaming;
-using System.Linq;
-using static HEIO.NET.DependencyResolverManager;
+using SharpNeedle.IO;
 using SharpNeedle.Resource;
+using SharpNeedle.Utilities;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 
 namespace HEIO.NET
 {

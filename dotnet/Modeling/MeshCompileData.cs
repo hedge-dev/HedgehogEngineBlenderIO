@@ -1,6 +1,7 @@
 ﻿using HEIO.NET.Json;
 using HEIO.NET.Modeling.ConvertTo;
 using SharpNeedle.Framework.HedgehogEngine.Mirage;
+using SharpNeedle.Framework.HedgehogEngine.Mirage.ModelData;
 using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
