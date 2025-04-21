@@ -1,7 +1,7 @@
 {
   "": {
     "Hide": true,
-    "Layer": "Opaque",
+    "Layer": "Transparent",
     "Parameters": {
       "diffuse": {
         "Type": "Color",
@@ -12,7 +12,7 @@
           0
         ]
       },
-      "specular": {
+      "ambient": {
         "Type": "Color",
         "Default": [
           1,
@@ -21,7 +21,7 @@
           0
         ]
       },
-      "ambient": {
+      "specular": {
         "Type": "Color",
         "Default": [
           1,
@@ -52,7 +52,7 @@
         "Type": "Float",
         "Default": [
           1,
-          0.5,
+          0,
           1,
           3
         ]
@@ -60,11 +60,67 @@
     }
   },
   "BillboardParticle_d": {
-    "Variants": [
+    "Variations": [
       "v"
     ],
+    "Textures": {
+      "diffuse": 1
+    }
+  },
+  "BlbBlend_dd": {
+    "UsedDefaultParameters": [
+      "diffuse",
+      "ambient"
+    ],
+    "Textures": {
+      "diffuse": 2
+    }
+  },
+  "BlbLuminescence_d": {
+    "UsedDefaultParameters": [
+      "diffuse",
+      "ambient",
+      "specular",
+      "emissive",
+      "power_gloss_level",
+      "opacity_reflection_refraction_spectype"
+    ],
+    "Textures": {
+      "diffuse": 1
+    }
+  },
+  "Blend_dndn": {
+    "UsedDefaultParameters": [
+      "diffuse",
+      "ambient"
+    ],
+    "Textures": {
+      "diffuse": 2,
+      "normal": 2
+    }
+  },
+  "Blend_dpdp": {
+    "Hide": false,
+    "UsedDefaultParameters": [
+      "diffuse",
+      "ambient",
+      "specular",
+      "power_gloss_level"
+    ],
+    "Textures": {
+      "diffuse": 2,
+      "gloss": 2
+    }
+  },
+  "Blend_dpdpe1": {
+    "UsedDefaultParameters": [
+      "diffuse",
+      "ambient",
+      "specular",
+      "power_gloss_level"
+    ],
     "Parameters": {
-      "g_ParticleParam": {
+      "mrgLuminanceRange": {
         "Type": "Float",
         "Default": [
           0,
@@ -74,132 +130,120 @@
         ]
       }
     },
-    "Textures": [
-      "diffuse",
-      "height"
-    ]
-  },
-  "BlbBlend_dd": {
-    "Textures": [
-      "diffuse",
-      "diffuse",
-      "gloss",
-      "gloss",
-      "normal",
-      "normal",
-      "opacity"
-    ]
-  },
-  "BlbLuminescence_d": {
-    "Textures": [
-      "diffuse",
-      "specular",
-      "gloss",
-      "normal",
-      "displacement",
-      "reflection"
-    ]
-  },
-  "Blend_dndn": {
-    "Textures": [
-      "diffuse",
-      "diffuse",
-      "gloss",
-      "gloss",
-      "normal",
-      "normal",
-      "opacity"
-    ]
-  },
-  "Blend_dpdp": {
-    "Hide": false,
-    "Textures": [
-      "diffuse",
-      "diffuse",
-      "gloss",
-      "gloss",
-      "normal",
-      "normal",
-      "opacity"
-    ]
-  },
-  "Blend_dpdpe1": {
-    "Textures": [
-      "diffuse",
-      "diffuse",
-      "gloss",
-      "gloss",
-      "opacity",
-      "reflection"
-    ]
+    "Textures": {
+      "diffuse": 2,
+      "gloss": 2,
+      "reflection": 1
+    }
   },
   "Blend_dpdpe2": {
-    "Textures": [
+    "UsedDefaultParameters": [
       "diffuse",
-      "diffuse",
-      "gloss",
-      "gloss",
-      "opacity",
-      "reflection"
-    ]
+      "ambient",
+      "specular",
+      "power_gloss_level"
+    ],
+    "Parameters": {
+      "mrgLuminanceRange": {
+        "Type": "Float",
+        "Default": [
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    "Textures": {
+      "diffuse": 2,
+      "gloss": 2
+    }
   },
   "Blend_dpdpn": {
-    "Textures": [
+    "UsedDefaultParameters": [
       "diffuse",
-      "diffuse",
-      "gloss",
-      "gloss",
-      "normal",
-      "normal",
-      "opacity"
-    ]
+      "ambient",
+      "specular",
+      "power_gloss_level"
+    ],
+    "Textures": {
+      "diffuse": 2,
+      "gloss": 2,
+      "normal": 1
+    }
   },
   "Blend_dpndn": {
-    "Textures": [
+    "UsedDefaultParameters": [
       "diffuse",
-      "diffuse",
-      "gloss",
-      "gloss",
-      "normal",
-      "normal",
-      "opacity"
-    ]
+      "ambient",
+      "specular",
+      "power_gloss_level"
+    ],
+    "Textures": {
+      "diffuse": 2,
+      "gloss": 1,
+      "normal": 2
+    }
   },
   "Blend_dpndp": {
-    "Textures": [
+    "UsedDefaultParameters": [
       "diffuse",
-      "diffuse",
-      "gloss",
-      "gloss",
-      "normal",
-      "normal",
-      "opacity"
-    ]
+      "ambient",
+      "specular",
+      "power_gloss_level"
+    ],
+    "Textures": {
+      "diffuse": 2,
+      "gloss": 2,
+      "normal": 1
+    }
   },
   "Blend_dpndpn": {
     "Hide": false,
-    "Textures": [
+    "UsedDefaultParameters": [
       "diffuse",
-      "diffuse",
-      "gloss",
-      "gloss",
-      "normal",
-      "normal",
-      "opacity"
-    ]
+      "ambient",
+      "specular",
+      "power_gloss_level"
+    ],
+    "Textures": {
+      "diffuse": 2,
+      "gloss": 2,
+      "normal": 2
+    }
   },
   "Blend_dsnbdse1": {
-    "Textures": [
+    "UsedDefaultParameters": [
       "diffuse",
-      "diffuse",
+      "ambient",
       "specular",
-      "specular",
-      "normal",
-      "opacity",
-      "reflection"
-    ]
+      "power_gloss_level"
+    ],
+    "Parameters": {
+      "mrgLuminanceRange": {
+        "Type": "Float",
+        "Default": [
+          1,
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    "Textures": {
+      "diffuse": 2,
+      "specular": 2,
+      "normal": 1,
+      "opacity": 1,
+      "reflection": 1
+    }
   },
   "Chaos_da": {
+    "UsedDefaultParameters": [
+      "diffuse",
+      "ambient",
+      "opacity_reflection_refraction_spectype"
+    ],
     "Parameters": {
       "g_ChaosWaveParamY": {
         "Type": "Float",
@@ -227,38 +271,31 @@
           0,
           0
         ]
-      },
-      "g_ChaosWaveParamXY": {
-        "Type": "Float",
-        "Default": [
-          0,
-          0,
-          0,
-          0
-        ]
-      },
-      "g_SonicSkinFalloffParam": {
-        "Type": "Float",
-        "Default": [
-          0,
-          0,
-          0,
-          0
-        ]
       }
     },
-    "Textures": [
-      "diffuse",
-      "specular",
-      "gloss",
-      "normal",
-      "normal",
-      "reflection",
-      "opacity"
-    ]
+    "Textures": {
+      "diffuse": 1,
+      "opacity": 1
+    }
   },
   "Chaos_dsae1": {
+    "UsedDefaultParameters": [
+      "diffuse",
+      "ambient",
+      "specular",
+      "power_gloss_level",
+      "opacity_reflection_refraction_spectype"
+    ],
     "Parameters": {
+      "mrgLuminanceRange": {
+        "Type": "Float",
+        "Default": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
       "g_ChaosWaveParamY": {
         "Type": "Float",
         "Default": [
@@ -285,38 +322,33 @@
           0,
           0
         ]
-      },
-      "g_ChaosWaveParamXY": {
-        "Type": "Float",
-        "Default": [
-          0,
-          0,
-          0,
-          0
-        ]
-      },
-      "g_SonicSkinFalloffParam": {
-        "Type": "Float",
-        "Default": [
-          0,
-          0,
-          0,
-          0
-        ]
       }
     },
-    "Textures": [
-      "diffuse",
-      "specular",
-      "gloss",
-      "normal",
-      "normal",
-      "reflection",
-      "opacity"
-    ]
+    "Textures": {
+      "diffuse": 1,
+      "specular": 1,
+      "reflection": 1,
+      "opacity": 1
+    }
   },
   "Chaos_dsbnne1": {
+    "UsedDefaultParameters": [
+      "diffuse",
+      "ambient",
+      "specular",
+      "power_gloss_level",
+      "opacity_reflection_refraction_spectype"
+    ],
     "Parameters": {
+      "mrgLuminanceRange": {
+        "Type": "Float",
+        "Default": [
+          0.3,
+          0,
+          0,
+          0
+        ]
+      },
       "g_SonicSkinFalloffParam": {
         "Type": "Float",
         "Default": [
@@ -352,45 +384,41 @@
           0.3,
           15
         ]
-      },
-      "g_ChaosWaveParamXY": {
+      }
+    },
+    "Textures": {
+      "diffuse": 1,
+      "specular": 1,
+      "normal": 2,
+      "reflection": 1,
+      "opacity": 1
+    }
+  },
+  "ChrEye_dpne1": {
+    "Hide": false,
+    "UsedDefaultParameters": [
+      "diffuse",
+      "ambient",
+      "specular",
+      "power_gloss_level",
+      "opacity_reflection_refraction_spectype"
+    ],
+    "Parameters": {
+      "mrgLuminanceRange": {
         "Type": "Float",
         "Default": [
-          0,
+          1,
           0,
           0,
           0
         ]
-      }
-    },
-    "Textures": [
-      "diffuse",
-      "specular",
-      "normal",
-      "normal",
-      "displacement",
-      "reflection",
-      "opacity"
-    ]
-  },
-  "ChrEye_dpne1": {
-    "Hide": false,
-    "Parameters": {
+      },
       "g_SonicEyeHighLightColor": {
         "Type": "Color",
         "Default": [
           0.5,
           0.5,
           0.5,
-          0
-        ]
-      },
-      "g_ChrPlayableMenuParam": {
-        "Type": "Float",
-        "Default": [
-          0,
-          0,
-          0,
           0
         ]
       },
@@ -404,15 +432,22 @@
         ]
       }
     },
-    "Textures": [
-      "diffuse",
-      "gloss",
-      "normal",
-      "reflection",
-      "PamNpcEye"
-    ]
+    "Textures": {
+      "diffuse": 1,
+      "gloss": 1,
+      "normal": 1,
+      "reflection": 1,
+      "PamNpcEye": 1
+    }
   },
   "ChrSkin_ds": {
+    "UsedDefaultParameters": [
+      "diffuse",
+      "ambient",
+      "specular",
+      "power_gloss_level",
+      "opacity_reflection_refraction_spectype"
+    ],
     "Parameters": {
       "g_SonicSkinFalloffParam": {
         "Type": "Float",
@@ -422,28 +457,23 @@
           0,
           0
         ]
-      },
-      "g_ChrPlayableMenuParam": {
-        "Type": "Float",
-        "Default": [
-          0,
-          0,
-          0,
-          0
-        ]
       }
     },
-    "Textures": [
-      "diffuse",
-      "specular",
-      "normal",
-      "displacement",
-      "reflection"
-    ]
+    "Textures": {
+      "diffuse": 1,
+      "specular": 1
+    }
   },
   "ChrSkin_dse1": {
+    "UsedDefaultParameters": [
+      "diffuse",
+      "ambient",
+      "specular",
+      "power_gloss_level",
+      "opacity_reflection_refraction_spectype"
+    ],
     "Parameters": {
-      "g_SonicSkinFalloffParam": {
+      "mrgLuminanceRange": {
         "Type": "Float",
         "Default": [
           0,
@@ -452,7 +482,7 @@
           0
         ]
       },
-      "g_ChrPlayableMenuParam": {
+      "g_SonicSkinFalloffParam": {
         "Type": "Float",
         "Default": [
           0,
@@ -462,16 +492,21 @@
         ]
       }
     },
-    "Textures": [
-      "diffuse",
-      "specular",
-      "normal",
-      "displacement",
-      "reflection"
-    ]
+    "Textures": {
+      "diffuse": 1,
+      "specular": 1,
+      "reflection": 1
+    }
   },
   "ChrSkin_dsf": {
     "Hide": false,
+    "UsedDefaultParameters": [
+      "diffuse",
+      "ambient",
+      "specular",
+      "power_gloss_level",
+      "opacity_reflection_refraction_spectype"
+    ],
     "Parameters": {
       "g_SonicSkinFalloffParam": {
         "Type": "Float",
@@ -481,8 +516,24 @@
           3,
           0
         ]
-      },
-      "g_ChrPlayableMenuParam": {
+      }
+    },
+    "Textures": {
+      "diffuse": 1,
+      "specular": 1,
+      "displacement": 1
+    }
+  },
+  "ChrSkin_dsfe1": {
+    "UsedDefaultParameters": [
+      "diffuse",
+      "ambient",
+      "specular",
+      "power_gloss_level",
+      "opacity_reflection_refraction_spectype"
+    ],
+    "Parameters": {
+      "mrgLuminanceRange": {
         "Type": "Float",
         "Default": [
           0,
@@ -490,18 +541,7 @@
           0,
           0
         ]
-      }
-    },
-    "Textures": [
-      "diffuse",
-      "specular",
-      "normal",
-      "displacement",
-      "reflection"
-    ]
-  },
-  "ChrSkin_dsfe1": {
-    "Parameters": {
+      },
       "g_SonicSkinFalloffParam": {
         "Type": "Float",
         "Default": [
@@ -510,27 +550,24 @@
           0,
           0
         ]
-      },
-      "g_ChrPlayableMenuParam": {
-        "Type": "Float",
-        "Default": [
-          0,
-          0,
-          0,
-          0
-        ]
       }
     },
-    "Textures": [
-      "diffuse",
-      "specular",
-      "normal",
-      "displacement",
-      "reflection"
-    ]
+    "Textures": {
+      "diffuse": 1,
+      "specular": 1,
+      "displacement": 1,
+      "reflection": 1
+    }
   },
   "ChrSkin_dsn": {
     "Hide": false,
+    "UsedDefaultParameters": [
+      "diffuse",
+      "ambient",
+      "specular",
+      "power_gloss_level",
+      "opacity_reflection_refraction_spectype"
+    ],
     "Parameters": {
       "g_SonicSkinFalloffParam": {
         "Type": "Float",
@@ -540,8 +577,24 @@
           3,
           0
         ]
-      },
-      "g_ChrPlayableMenuParam": {
+      }
+    },
+    "Textures": {
+      "diffuse": 1,
+      "specular": 1,
+      "normal": 1
+    }
+  },
+  "ChrSkin_dsne1": {
+    "UsedDefaultParameters": [
+      "diffuse",
+      "ambient",
+      "specular",
+      "power_gloss_level",
+      "opacity_reflection_refraction_spectype"
+    ],
+    "Parameters": {
+      "mrgLuminanceRange": {
         "Type": "Float",
         "Default": [
           0,
@@ -549,18 +602,7 @@
           0,
           0
         ]
-      }
-    },
-    "Textures": [
-      "diffuse",
-      "specular",
-      "normal",
-      "displacement",
-      "reflection"
-    ]
-  },
-  "ChrSkin_dsne1": {
-    "Parameters": {
+      },
       "g_SonicSkinFalloffParam": {
         "Type": "Float",
         "Default": [
@@ -569,27 +611,24 @@
           0,
           0
         ]
-      },
-      "g_ChrPlayableMenuParam": {
-        "Type": "Float",
-        "Default": [
-          0,
-          0,
-          0,
-          0
-        ]
       }
     },
-    "Textures": [
-      "diffuse",
-      "specular",
-      "normal",
-      "displacement",
-      "reflection"
-    ]
+    "Textures": {
+      "diffuse": 1,
+      "specular": 1,
+      "normal": 1,
+      "reflection": 1
+    }
   },
   "ChrSkin_dsnf": {
     "Hide": false,
+    "UsedDefaultParameters": [
+      "diffuse",
+      "ambient",
+      "specular",
+      "power_gloss_level",
+      "opacity_reflection_refraction_spectype"
+    ],
     "Parameters": {
       "g_SonicSkinFalloffParam": {
         "Type": "Float",
@@ -599,8 +638,25 @@
           1,
           0
         ]
-      },
-      "g_ChrPlayableMenuParam": {
+      }
+    },
+    "Textures": {
+      "diffuse": 1,
+      "specular": 1,
+      "normal": 1,
+      "displacement": 1
+    }
+  },
+  "ChrSkin_dsnfe1": {
+    "UsedDefaultParameters": [
+      "diffuse",
+      "ambient",
+      "specular",
+      "power_gloss_level",
+      "opacity_reflection_refraction_spectype"
+    ],
+    "Parameters": {
+      "mrgLuminanceRange": {
         "Type": "Float",
         "Default": [
           0,
@@ -608,18 +664,7 @@
           0,
           0
         ]
-      }
-    },
-    "Textures": [
-      "diffuse",
-      "specular",
-      "normal",
-      "displacement",
-      "reflection"
-    ]
-  },
-  "ChrSkin_dsnfe1": {
-    "Parameters": {
+      },
       "g_SonicSkinFalloffParam": {
         "Type": "Float",
         "Default": [
@@ -628,26 +673,24 @@
           3,
           0
         ]
-      },
-      "g_ChrPlayableMenuParam": {
-        "Type": "Float",
-        "Default": [
-          0,
-          0,
-          0,
-          0
-        ]
       }
     },
-    "Textures": [
-      "diffuse",
-      "specular",
-      "normal",
-      "displacement",
-      "reflection"
-    ]
+    "Textures": {
+      "diffuse": 1,
+      "specular": 1,
+      "normal": 1,
+      "displacement": 1,
+      "reflection": 1
+    }
   },
   "ChrSkinHalf_dse11": {
+    "UsedDefaultParameters": [
+      "diffuse",
+      "ambient",
+      "specular",
+      "power_gloss_level",
+      "opacity_reflection_refraction_spectype"
+    ],
     "Parameters": {
       "g_SonicSkinFalloffParam": {
         "Type": "Float",
@@ -657,26 +700,22 @@
           3,
           0.75
         ]
-      },
-      "g_ChrPlayableMenuParam": {
-        "Type": "Float",
-        "Default": [
-          0,
-          0,
-          0,
-          0
-        ]
       }
     },
-    "Textures": [
-      "diffuse",
-      "specular",
-      "normal",
-      "displacement",
-      "reflection"
-    ]
+    "Textures": {
+      "diffuse": 1,
+      "specular": 1,
+      "reflection": 1
+    }
   },
   "ChrSkinIgnore_dsle11": {
+    "UsedDefaultParameters": [
+      "diffuse",
+      "ambient",
+      "specular",
+      "power_gloss_level",
+      "opacity_reflection_refraction_spectype"
+    ],
     "Parameters": {
       "g_SonicSkinFalloffParam": {
         "Type": "Float",
@@ -695,25 +734,19 @@
           0,
           1
         ]
-      },
-      "g_ChrPlayableMenuParam": {
-        "Type": "Float",
-        "Default": [
-          0,
-          0,
-          0,
-          0
-        ]
       }
     },
-    "Textures": [
-      "diffuse",
-      "specular",
-      "displacement",
-      "reflection"
-    ]
+    "Textures": {
+      "diffuse": 1,
+      "specular": 1,
+      "displacement": 1,
+      "reflection": 1
+    }
   },
   "Cloak_doe1": {
+    "UsedDefaultParameters": [
+      "ambient"
+    ],
     "Parameters": {
       "g_CloakParam": {
         "Type": "Float",
@@ -725,13 +758,19 @@
         ]
       }
     },
-    "Textures": [
-      "diffuse",
-      "displacement",
-      "reflection"
-    ]
+    "Textures": {
+      "diffuse": 1,
+      "displacement": 1,
+      "reflection": 1
+    }
   },
   "Cloth_dsnt": {
+    "UsedDefaultParameters": [
+      "diffuse",
+      "ambient",
+      "specular",
+      "power_gloss_level"
+    ],
     "Parameters": {
       "g_TransColorMask": {
         "Type": "Color",
@@ -743,16 +782,30 @@
         ]
       }
     },
-    "Textures": [
-      "diffuse",
-      "specular",
-      "gloss",
-      "normal",
-      "diffuse"
-    ]
+    "Textures": {
+      "diffuse": 2,
+      "specular": 1,
+      "normal": 1
+    }
   },
   "Cloud_nfe1": {
+    "UsedDefaultParameters": [
+      "diffuse",
+      "ambient",
+      "specular",
+      "power_gloss_level",
+      "opacity_reflection_refraction_spectype"
+    ],
     "Parameters": {
+      "mrgLuminanceRange": {
+        "Type": "Float",
+        "Default": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
       "g_SonicSkinFalloffParam": {
         "Type": "Float",
         "Default": [
@@ -763,404 +816,720 @@
         ]
       }
     },
-    "Textures": [
-      "diffuse",
-      "specular",
-      "normal",
-      "displacement",
-      "reflection"
-    ]
+    "Textures": {
+      "specular": 1,
+      "normal": 1,
+      "displacement": 1,
+      "reflection": 1
+    }
   },
   "Common_d": {
     "Hide": false,
-    "Variants": [
+    "Variations": [
       "",
       "b",
       "v",
       "w"
     ],
-    "Textures": [
+    "UsedDefaultParameters": [
       "diffuse",
-      "specular",
-      "gloss",
-      "normal",
-      "normal",
-      "reflection",
-      "opacity"
-    ]
+      "ambient",
+      "opacity_reflection_refraction_spectype"
+    ],
+    "Textures": {
+      "diffuse": 1
+    }
   },
   "Common_da": {
     "Hide": false,
-    "Textures": [
+    "UsedDefaultParameters": [
       "diffuse",
-      "specular",
-      "gloss",
-      "normal",
-      "normal",
-      "reflection",
-      "opacity"
-    ]
+      "ambient",
+      "opacity_reflection_refraction_spectype"
+    ],
+    "Textures": {
+      "diffuse": 1,
+      "opacity": 1
+    }
   },
   "Common_de": {
     "Hide": false,
-    "Textures": [
+    "UsedDefaultParameters": [
       "diffuse",
-      "specular",
-      "gloss",
-      "normal",
-      "normal",
-      "reflection",
-      "opacity"
-    ]
+      "ambient",
+      "opacity_reflection_refraction_spectype"
+    ],
+    "Parameters": {
+      "mrgLuminanceRange": {
+        "Type": "Float",
+        "Default": [
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    "Textures": {
+      "diffuse": 1,
+      "reflection": 1
+    }
   },
   "Common_de1": {
-    "Textures": [
+    "UsedDefaultParameters": [
       "diffuse",
-      "specular",
-      "gloss",
-      "normal",
-      "normal",
-      "reflection",
-      "opacity"
-    ]
+      "ambient",
+      "opacity_reflection_refraction_spectype"
+    ],
+    "Parameters": {
+      "mrgLuminanceRange": {
+        "Type": "Float",
+        "Default": [
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    "Textures": {
+      "diffuse": 1,
+      "reflection": 1
+    }
   },
   "Common_de2": {
-    "Textures": [
+    "UsedDefaultParameters": [
       "diffuse",
-      "specular",
-      "gloss",
-      "normal",
-      "normal",
-      "reflection",
-      "opacity"
-    ]
+      "ambient",
+      "opacity_reflection_refraction_spectype"
+    ],
+    "Parameters": {
+      "mrgLuminanceRange": {
+        "Type": "Float",
+        "Default": [
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    "Textures": {
+      "diffuse": 1
+    }
   },
   "Common_dn": {
     "Hide": false,
-    "Textures": [
+    "UsedDefaultParameters": [
       "diffuse",
-      "specular",
-      "gloss",
-      "normal",
-      "normal",
-      "reflection",
-      "opacity"
-    ]
+      "ambient",
+      "opacity_reflection_refraction_spectype"
+    ],
+    "Textures": {
+      "diffuse": 1,
+      "normal": 1
+    }
   },
   "Common_dne": {
     "Hide": false,
-    "Textures": [
+    "UsedDefaultParameters": [
       "diffuse",
-      "specular",
-      "gloss",
-      "normal",
-      "normal",
-      "reflection",
-      "opacity"
-    ]
+      "ambient",
+      "opacity_reflection_refraction_spectype"
+    ],
+    "Parameters": {
+      "mrgLuminanceRange": {
+        "Type": "Float",
+        "Default": [
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    "Textures": {
+      "diffuse": 1,
+      "normal": 1,
+      "reflection": 1
+    }
   },
   "Common_dne1": {
-    "Textures": [
+    "UsedDefaultParameters": [
       "diffuse",
-      "specular",
-      "gloss",
-      "normal",
-      "normal",
-      "reflection",
-      "opacity"
-    ]
+      "ambient",
+      "opacity_reflection_refraction_spectype"
+    ],
+    "Parameters": {
+      "mrgLuminanceRange": {
+        "Type": "Float",
+        "Default": [
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    "Textures": {
+      "diffuse": 1,
+      "normal": 1,
+      "reflection": 1
+    }
   },
   "Common_dne2": {
-    "Textures": [
+    "UsedDefaultParameters": [
       "diffuse",
-      "specular",
-      "gloss",
-      "normal",
-      "normal",
-      "reflection",
-      "opacity"
-    ]
+      "ambient",
+      "opacity_reflection_refraction_spectype"
+    ],
+    "Parameters": {
+      "mrgLuminanceRange": {
+        "Type": "Float",
+        "Default": [
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    "Textures": {
+      "diffuse": 1,
+      "normal": 1
+    }
   },
   "Common_dp": {
     "Hide": false,
-    "Variants": [
+    "Variations": [
       "",
       "w"
     ],
-    "Textures": [
+    "UsedDefaultParameters": [
       "diffuse",
+      "ambient",
       "specular",
-      "gloss",
-      "normal",
-      "normal",
-      "reflection",
-      "opacity"
-    ]
+      "power_gloss_level",
+      "opacity_reflection_refraction_spectype"
+    ],
+    "Textures": {
+      "diffuse": 1,
+      "gloss": 1
+    }
   },
   "Common_dpe": {
     "Hide": false,
-    "Variants": [
+    "Variations": [
       "",
       "c"
     ],
-    "Textures": [
+    "UsedDefaultParameters": [
       "diffuse",
+      "ambient",
       "specular",
-      "gloss",
-      "normal",
-      "normal",
-      "reflection",
-      "opacity"
-    ]
+      "power_gloss_level",
+      "opacity_reflection_refraction_spectype"
+    ],
+    "Parameters": {
+      "mrgLuminanceRange": {
+        "Type": "Float",
+        "Default": [
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    "Textures": {
+      "diffuse": 1,
+      "gloss": 1,
+      "reflection": 1
+    }
   },
   "Common_dpe1": {
-    "Textures": [
+    "UsedDefaultParameters": [
       "diffuse",
+      "ambient",
       "specular",
-      "gloss",
-      "normal",
-      "normal",
-      "reflection",
-      "opacity"
-    ]
+      "power_gloss_level",
+      "opacity_reflection_refraction_spectype"
+    ],
+    "Parameters": {
+      "mrgLuminanceRange": {
+        "Type": "Float",
+        "Default": [
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    "Textures": {
+      "diffuse": 1,
+      "gloss": 1,
+      "reflection": 1
+    }
   },
   "Common_dpe2": {
-    "Textures": [
+    "UsedDefaultParameters": [
       "diffuse",
+      "ambient",
       "specular",
-      "gloss",
-      "normal",
-      "normal",
-      "reflection",
-      "opacity"
-    ]
+      "power_gloss_level",
+      "opacity_reflection_refraction_spectype"
+    ],
+    "Parameters": {
+      "mrgLuminanceRange": {
+        "Type": "Float",
+        "Default": [
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    "Textures": {
+      "diffuse": 1,
+      "gloss": 1
+    }
   },
   "Common_dpn": {
     "Hide": false,
-    "Variants": [
+    "Variations": [
       "",
       "E",
       "uv",
       "v"
     ],
-    "Textures": [
+    "UsedDefaultParameters": [
       "diffuse",
+      "ambient",
       "specular",
-      "gloss",
-      "normal",
-      "normal",
-      "reflection",
-      "opacity"
-    ]
+      "power_gloss_level",
+      "opacity_reflection_refraction_spectype"
+    ],
+    "Parameters": {
+      "mrgEdgeEmissionParam": {
+        "Type": "Float",
+        "Default": [
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    "Textures": {
+      "diffuse": 1,
+      "gloss": 1,
+      "normal": 1
+    }
   },
   "Common_dpne": {
     "Hide": false,
-    "Variants": [
+    "Variations": [
       "",
       "c"
     ],
-    "Textures": [
+    "UsedDefaultParameters": [
       "diffuse",
+      "ambient",
       "specular",
-      "gloss",
-      "normal",
-      "normal",
-      "reflection",
-      "opacity"
-    ]
+      "power_gloss_level",
+      "opacity_reflection_refraction_spectype"
+    ],
+    "Parameters": {
+      "mrgLuminanceRange": {
+        "Type": "Float",
+        "Default": [
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    "Textures": {
+      "diffuse": 1,
+      "gloss": 1,
+      "normal": 1,
+      "reflection": 1
+    }
   },
   "Common_dpne1": {
-    "Textures": [
+    "UsedDefaultParameters": [
       "diffuse",
+      "ambient",
       "specular",
-      "gloss",
-      "normal",
-      "normal",
-      "reflection",
-      "opacity"
-    ]
+      "power_gloss_level",
+      "opacity_reflection_refraction_spectype"
+    ],
+    "Parameters": {
+      "mrgLuminanceRange": {
+        "Type": "Float",
+        "Default": [
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    "Textures": {
+      "diffuse": 1,
+      "gloss": 1,
+      "normal": 1,
+      "reflection": 1
+    }
   },
   "Common_dpne2": {
-    "Textures": [
+    "UsedDefaultParameters": [
       "diffuse",
+      "ambient",
       "specular",
-      "gloss",
-      "normal",
-      "normal",
-      "reflection",
-      "opacity"
-    ]
+      "power_gloss_level",
+      "opacity_reflection_refraction_spectype"
+    ],
+    "Parameters": {
+      "mrgLuminanceRange": {
+        "Type": "Float",
+        "Default": [
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    "Textures": {
+      "diffuse": 1,
+      "gloss": 1,
+      "normal": 1
+    }
   },
   "Common_dpnne2": {
-    "Textures": [
+    "UsedDefaultParameters": [
       "diffuse",
+      "ambient",
       "specular",
-      "gloss",
-      "normal",
-      "normal",
-      "reflection"
-    ]
+      "power_gloss_level",
+      "opacity_reflection_refraction_spectype"
+    ],
+    "Parameters": {
+      "mrgLuminanceRange": {
+        "Type": "Float",
+        "Default": [
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    "Textures": {
+      "diffuse": 1,
+      "gloss": 1,
+      "normal": 2
+    }
   },
   "Common_dse": {
     "Hide": false,
-    "Textures": [
+    "UsedDefaultParameters": [
       "diffuse",
+      "ambient",
       "specular",
-      "gloss",
-      "normal",
-      "normal",
-      "reflection",
-      "opacity"
-    ]
+      "power_gloss_level",
+      "opacity_reflection_refraction_spectype"
+    ],
+    "Parameters": {
+      "mrgLuminanceRange": {
+        "Type": "Float",
+        "Default": [
+          2.4,
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    "Textures": {
+      "diffuse": 1,
+      "specular": 1,
+      "reflection": 1
+    }
   },
   "Common_dse1": {
-    "Textures": [
+    "UsedDefaultParameters": [
       "diffuse",
+      "ambient",
       "specular",
-      "gloss",
-      "normal",
-      "normal",
-      "reflection",
-      "opacity"
-    ]
+      "power_gloss_level",
+      "opacity_reflection_refraction_spectype"
+    ],
+    "Parameters": {
+      "mrgLuminanceRange": {
+        "Type": "Float",
+        "Default": [
+          1,
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    "Textures": {
+      "diffuse": 1,
+      "specular": 1,
+      "reflection": 1
+    }
   },
   "Common_dse2": {
-    "Textures": [
+    "UsedDefaultParameters": [
       "diffuse",
+      "ambient",
       "specular",
-      "gloss",
-      "normal",
-      "normal",
-      "reflection",
-      "opacity"
-    ]
+      "power_gloss_level",
+      "opacity_reflection_refraction_spectype"
+    ],
+    "Parameters": {
+      "mrgLuminanceRange": {
+        "Type": "Float",
+        "Default": [
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    "Textures": {
+      "diffuse": 1,
+      "specular": 1
+    }
   },
   "Common_dsn": {
     "Hide": false,
-    "Variants": [
+    "Variations": [
       "",
       "b"
     ],
-    "Textures": [
+    "UsedDefaultParameters": [
       "diffuse",
+      "ambient",
       "specular",
-      "gloss",
-      "normal",
-      "normal",
-      "reflection",
-      "opacity"
-    ]
+      "power_gloss_level",
+      "opacity_reflection_refraction_spectype"
+    ],
+    "Textures": {
+      "diffuse": 1,
+      "specular": 1,
+      "normal": 1
+    }
   },
   "Common_dsne": {
     "Hide": false,
-    "Textures": [
+    "UsedDefaultParameters": [
       "diffuse",
+      "ambient",
       "specular",
-      "gloss",
-      "normal",
-      "normal",
-      "reflection",
-      "opacity"
-    ]
+      "power_gloss_level",
+      "opacity_reflection_refraction_spectype"
+    ],
+    "Parameters": {
+      "mrgLuminanceRange": {
+        "Type": "Float",
+        "Default": [
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    "Textures": {
+      "diffuse": 1,
+      "specular": 1,
+      "normal": 1,
+      "reflection": 1
+    }
   },
   "Common_dsne1": {
-    "Textures": [
+    "UsedDefaultParameters": [
       "diffuse",
+      "ambient",
       "specular",
-      "gloss",
-      "normal",
-      "normal",
-      "reflection",
-      "opacity"
-    ]
+      "power_gloss_level",
+      "opacity_reflection_refraction_spectype"
+    ],
+    "Parameters": {
+      "mrgLuminanceRange": {
+        "Type": "Float",
+        "Default": [
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    "Textures": {
+      "diffuse": 1,
+      "specular": 1,
+      "normal": 1,
+      "reflection": 1
+    }
   },
   "Common_dsnne1": {
-    "Textures": [
+    "UsedDefaultParameters": [
       "diffuse",
+      "ambient",
       "specular",
-      "gloss",
-      "normal",
-      "normal",
-      "reflection",
-      "opacity"
-    ]
+      "power_gloss_level",
+      "opacity_reflection_refraction_spectype"
+    ],
+    "Parameters": {
+      "mrgLuminanceRange": {
+        "Type": "Float",
+        "Default": [
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    "Textures": {
+      "diffuse": 1,
+      "specular": 1,
+      "normal": 2,
+      "reflection": 1
+    }
   },
   "Common_dspn": {
     "Hide": false,
-    "Textures": [
+    "UsedDefaultParameters": [
       "diffuse",
+      "ambient",
       "specular",
-      "gloss",
-      "normal",
-      "normal",
-      "reflection",
-      "opacity"
-    ]
+      "power_gloss_level",
+      "opacity_reflection_refraction_spectype"
+    ],
+    "Textures": {
+      "diffuse": 1,
+      "specular": 1,
+      "gloss": 1,
+      "normal": 1
+    }
   },
   "Common_dspne": {
     "Hide": false,
-    "Textures": [
+    "UsedDefaultParameters": [
       "diffuse",
+      "ambient",
       "specular",
-      "gloss",
-      "normal",
-      "normal",
-      "reflection",
-      "opacity"
-    ]
+      "power_gloss_level",
+      "opacity_reflection_refraction_spectype"
+    ],
+    "Parameters": {
+      "mrgLuminanceRange": {
+        "Type": "Float",
+        "Default": [
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    "Textures": {
+      "diffuse": 1,
+      "specular": 1,
+      "gloss": 1,
+      "normal": 1,
+      "reflection": 1
+    }
   },
   "Common_dspne2": {
-    "Textures": [
+    "UsedDefaultParameters": [
       "diffuse",
+      "ambient",
       "specular",
-      "gloss",
-      "normal",
-      "normal",
-      "reflection",
-      "opacity"
-    ]
+      "power_gloss_level",
+      "opacity_reflection_refraction_spectype"
+    ],
+    "Parameters": {
+      "mrgLuminanceRange": {
+        "Type": "Float",
+        "Default": [
+          2.2,
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    "Textures": {
+      "diffuse": 1,
+      "specular": 1,
+      "gloss": 1,
+      "normal": 1
+    }
   },
   "Dim_dE": {
-    "Parameters": {
-      "g_EmissionParam": {
-        "Type": "Float",
-        "Default": [
-          0,
-          0,
-          0,
-          0
-        ]
-      }
-    },
-    "Textures": [
+    "UsedDefaultParameters": [
       "diffuse",
-      "gloss",
-      "normal",
-      "reflection"
-    ]
+      "ambient",
+      "specular",
+      "power_gloss_level",
+      "opacity_reflection_refraction_spectype"
+    ],
+    "Textures": {
+      "diffuse": 1,
+      "reflection": 1
+    }
   },
   "Dim_dpE": {
-    "Parameters": {
-      "g_EmissionParam": {
-        "Type": "Float",
-        "Default": [
-          0,
-          0,
-          0,
-          0
-        ]
-      }
-    },
-    "Textures": [
+    "UsedDefaultParameters": [
       "diffuse",
-      "gloss",
-      "normal",
-      "reflection"
-    ]
+      "ambient",
+      "specular",
+      "power_gloss_level",
+      "opacity_reflection_refraction_spectype"
+    ],
+    "Textures": {
+      "diffuse": 1,
+      "gloss": 1,
+      "reflection": 1
+    }
   },
   "Dim_dpnE": {
+    "UsedDefaultParameters": [
+      "diffuse",
+      "ambient",
+      "specular",
+      "power_gloss_level",
+      "opacity_reflection_refraction_spectype"
+    ],
+    "Textures": {
+      "diffuse": 1,
+      "gloss": 1,
+      "normal": 1,
+      "reflection": 1
+    }
+  },
+  "Distortion_dsne1": {
+    "UsedDefaultParameters": [
+      "diffuse",
+      "ambient",
+      "specular",
+      "power_gloss_level",
+      "opacity_reflection_refraction_spectype"
+    ],
     "Parameters": {
-      "g_EmissionParam": {
+      "mrgLuminanceRange": {
         "Type": "Float",
         "Default": [
           0,
@@ -1170,31 +1539,38 @@
         ]
       }
     },
-    "Textures": [
-      "diffuse",
-      "gloss",
-      "normal",
-      "reflection"
-    ]
-  },
-  "Distortion_dsne1": {
-    "Textures": [
-      "diffuse",
-      "specular",
-      "gloss",
-      "normal",
-      "reflection"
-    ]
+    "Textures": {
+      "diffuse": 1,
+      "specular": 1,
+      "normal": 1,
+      "reflection": 1
+    }
   },
   "Distortion_dsnne1": {
-    "Textures": [
+    "UsedDefaultParameters": [
       "diffuse",
+      "ambient",
       "specular",
-      "gloss",
-      "normal",
-      "normal",
-      "reflection"
-    ]
+      "power_gloss_level",
+      "opacity_reflection_refraction_spectype"
+    ],
+    "Parameters": {
+      "mrgLuminanceRange": {
+        "Type": "Float",
+        "Default": [
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    "Textures": {
+      "diffuse": 1,
+      "specular": 1,
+      "normal": 2,
+      "reflection": 1
+    }
   },
   "DistortionOverlay_dn": {
     "Parameters": {
@@ -1206,42 +1582,31 @@
           0.5,
           0.03
         ]
-      },
-      "g_ChaosWaveParamY": {
-        "Type": "Float",
-        "Default": [
-          0,
-          0.5,
-          0.2,
-          0
-        ]
-      },
-      "g_ChaosWaveParamZX": {
-        "Type": "Float",
-        "Default": [
-          1,
-          0.5,
-          0.2,
-          0
-        ]
-      },
-      "g_ChaosWaveParamEx": {
-        "Type": "Float",
-        "Default": [
-          5,
-          0.2,
-          0,
-          0
-        ]
       }
     },
-    "Textures": [
-      "diffuse",
-      "normal"
-    ]
+    "Textures": {
+      "diffuse": 1,
+      "normal": 1
+    }
   },
   "EnmCloud_nfe1": {
+    "UsedDefaultParameters": [
+      "diffuse",
+      "ambient",
+      "specular",
+      "power_gloss_level",
+      "opacity_reflection_refraction_spectype"
+    ],
     "Parameters": {
+      "mrgLuminanceRange": {
+        "Type": "Float",
+        "Default": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
       "g_SonicSkinFalloffParam": {
         "Type": "Float",
         "Default": [
@@ -1252,15 +1617,19 @@
         ]
       }
     },
-    "Textures": [
-      "diffuse",
-      "specular",
-      "normal",
-      "displacement",
-      "reflection"
-    ]
+    "Textures": {
+      "specular": 1,
+      "normal": 1,
+      "displacement": 1,
+      "reflection": 1
+    }
   },
   "EnmEmission_d": {
+    "UsedDefaultParameters": [
+      "diffuse",
+      "ambient",
+      "opacity_reflection_refraction_spectype"
+    ],
     "Parameters": {
       "mrgChrEmissionParam": {
         "Type": "Float",
@@ -1272,16 +1641,17 @@
         ]
       }
     },
-    "Textures": [
-      "diffuse",
-      "specular",
-      "normal",
-      "reflection",
-      "displacement"
-    ]
+    "Textures": {
+      "diffuse": 1
+    }
   },
   "EnmEmission_dl": {
     "Hide": false,
+    "UsedDefaultParameters": [
+      "diffuse",
+      "ambient",
+      "opacity_reflection_refraction_spectype"
+    ],
     "Parameters": {
       "mrgChrEmissionParam": {
         "Type": "Float",
@@ -1293,15 +1663,19 @@
         ]
       }
     },
-    "Textures": [
-      "diffuse",
-      "specular",
-      "normal",
-      "reflection",
-      "displacement"
-    ]
+    "Textures": {
+      "diffuse": 1,
+      "displacement": 1
+    }
   },
   "EnmEmission_dsl": {
+    "UsedDefaultParameters": [
+      "diffuse",
+      "ambient",
+      "specular",
+      "power_gloss_level",
+      "opacity_reflection_refraction_spectype"
+    ],
     "Parameters": {
       "mrgChrEmissionParam": {
         "Type": "Float",
@@ -1313,16 +1687,30 @@
         ]
       }
     },
-    "Textures": [
-      "diffuse",
-      "specular",
-      "normal",
-      "reflection",
-      "displacement"
-    ]
+    "Textures": {
+      "diffuse": 1,
+      "specular": 1,
+      "displacement": 1
+    }
   },
   "EnmEmission_dsle1": {
+    "UsedDefaultParameters": [
+      "diffuse",
+      "ambient",
+      "specular",
+      "power_gloss_level",
+      "opacity_reflection_refraction_spectype"
+    ],
     "Parameters": {
+      "mrgLuminanceRange": {
+        "Type": "Float",
+        "Default": [
+          1,
+          0,
+          0,
+          0
+        ]
+      },
       "mrgChrEmissionParam": {
         "Type": "Float",
         "Default": [
@@ -1333,15 +1721,21 @@
         ]
       }
     },
-    "Textures": [
-      "diffuse",
-      "specular",
-      "normal",
-      "reflection",
-      "displacement"
-    ]
+    "Textures": {
+      "diffuse": 1,
+      "specular": 1,
+      "reflection": 1,
+      "displacement": 1
+    }
   },
   "EnmEmission_dsnl": {
+    "UsedDefaultParameters": [
+      "diffuse",
+      "ambient",
+      "specular",
+      "power_gloss_level",
+      "opacity_reflection_refraction_spectype"
+    ],
     "Parameters": {
       "mrgChrEmissionParam": {
         "Type": "Float",
@@ -1353,56 +1747,31 @@
         ]
       }
     },
-    "Textures": [
-      "diffuse",
-      "specular",
-      "normal",
-      "reflection",
-      "displacement"
-    ]
+    "Textures": {
+      "diffuse": 1,
+      "specular": 1,
+      "normal": 1,
+      "displacement": 1
+    }
   },
   "EnmEmission_dsnle1": {
+    "UsedDefaultParameters": [
+      "diffuse",
+      "ambient",
+      "specular",
+      "power_gloss_level",
+      "opacity_reflection_refraction_spectype"
+    ],
     "Parameters": {
-      "mrgChrEmissionParam": {
+      "mrgLuminanceRange": {
         "Type": "Float",
         "Default": [
           0,
           0,
           0,
-          1
+          0
         ]
-      }
-    },
-    "Textures": [
-      "diffuse",
-      "specular",
-      "normal",
-      "reflection",
-      "displacement"
-    ]
-  },
-  "EnmGlass_dse1": {
-    "Parameters": {
-      "mrgChrEmissionParam": {
-        "Type": "Float",
-        "Default": [
-          0,
-          0,
-          0,
-          1
-        ]
-      }
-    },
-    "Textures": [
-      "diffuse",
-      "specular",
-      "normal",
-      "reflection",
-      "displacement"
-    ]
-  },
-  "EnmGlass_dsle1": {
-    "Parameters": {
+      },
       "mrgChrEmissionParam": {
         "Type": "Float",
         "Default": [
@@ -1413,16 +1782,32 @@
         ]
       }
     },
-    "Textures": [
-      "diffuse",
-      "specular",
-      "normal",
-      "reflection",
-      "displacement"
-    ]
+    "Textures": {
+      "diffuse": 1,
+      "specular": 1,
+      "normal": 1,
+      "reflection": 1,
+      "displacement": 1
+    }
   },
-  "EnmGlass_dsne1": {
+  "EnmGlass_dse1": {
+    "UsedDefaultParameters": [
+      "diffuse",
+      "ambient",
+      "specular",
+      "power_gloss_level",
+      "opacity_reflection_refraction_spectype"
+    ],
     "Parameters": {
+      "mrgLuminanceRange": {
+        "Type": "Float",
+        "Default": [
+          8,
+          0,
+          0,
+          0
+        ]
+      },
       "mrgChrEmissionParam": {
         "Type": "Float",
         "Default": [
@@ -1433,36 +1818,136 @@
         ]
       }
     },
-    "Textures": [
-      "diffuse",
-      "specular",
-      "normal",
-      "reflection",
-      "displacement"
-    ]
+    "Textures": {
+      "diffuse": 1,
+      "specular": 1,
+      "reflection": 1
+    }
   },
-  "EnmGlass_dsnle1": {
+  "EnmGlass_dsle1": {
+    "UsedDefaultParameters": [
+      "diffuse",
+      "ambient",
+      "specular",
+      "power_gloss_level",
+      "opacity_reflection_refraction_spectype"
+    ],
     "Parameters": {
+      "mrgLuminanceRange": {
+        "Type": "Float",
+        "Default": [
+          8,
+          0,
+          0,
+          0
+        ]
+      },
       "mrgChrEmissionParam": {
         "Type": "Float",
         "Default": [
           0,
           0,
           0,
-          5
+          2
         ]
       }
     },
-    "Textures": [
+    "Textures": {
+      "diffuse": 1,
+      "specular": 1,
+      "reflection": 1,
+      "displacement": 1
+    }
+  },
+  "EnmGlass_dsne1": {
+    "UsedDefaultParameters": [
       "diffuse",
+      "ambient",
       "specular",
-      "normal",
-      "reflection",
-      "displacement"
-    ]
+      "power_gloss_level",
+      "opacity_reflection_refraction_spectype"
+    ],
+    "Parameters": {
+      "mrgLuminanceRange": {
+        "Type": "Float",
+        "Default": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "mrgChrEmissionParam": {
+        "Type": "Float",
+        "Default": [
+          0,
+          0,
+          0,
+          1
+        ]
+      }
+    },
+    "Textures": {
+      "diffuse": 1,
+      "specular": 1,
+      "normal": 1,
+      "reflection": 1
+    }
+  },
+  "EnmGlass_dsnle1": {
+    "UsedDefaultParameters": [
+      "diffuse",
+      "ambient",
+      "specular",
+      "power_gloss_level",
+      "opacity_reflection_refraction_spectype"
+    ],
+    "Parameters": {
+      "mrgLuminanceRange": {
+        "Type": "Float",
+        "Default": [
+          1,
+          0,
+          0,
+          0
+        ]
+      },
+      "mrgChrEmissionParam": {
+        "Type": "Float",
+        "Default": [
+          0,
+          0,
+          0,
+          1.4
+        ]
+      }
+    },
+    "Textures": {
+      "diffuse": 1,
+      "specular": 1,
+      "normal": 1,
+      "reflection": 1,
+      "displacement": 1
+    }
   },
   "EnmGlass_e1": {
+    "UsedDefaultParameters": [
+      "diffuse",
+      "ambient",
+      "specular",
+      "power_gloss_level",
+      "opacity_reflection_refraction_spectype"
+    ],
     "Parameters": {
+      "mrgLuminanceRange": {
+        "Type": "Float",
+        "Default": [
+          1,
+          0,
+          0,
+          0
+        ]
+      },
       "mrgChrEmissionParam": {
         "Type": "Float",
         "Default": [
@@ -1473,15 +1958,18 @@
         ]
       }
     },
-    "Textures": [
-      "diffuse",
-      "specular",
-      "normal",
-      "reflection",
-      "displacement"
-    ]
+    "Textures": {
+      "reflection": 1
+    }
   },
   "EnmIgnore_dl": {
+    "UsedDefaultParameters": [
+      "diffuse",
+      "ambient",
+      "specular",
+      "power_gloss_level",
+      "opacity_reflection_refraction_spectype"
+    ],
     "Parameters": {
       "mrgChrEmissionParam": {
         "Type": "Float",
@@ -1493,16 +1981,29 @@
         ]
       }
     },
-    "Textures": [
-      "diffuse",
-      "specular",
-      "normal",
-      "reflection",
-      "displacement"
-    ]
+    "Textures": {
+      "diffuse": 1,
+      "displacement": 1
+    }
   },
   "EnmIgnore_dle1": {
+    "UsedDefaultParameters": [
+      "diffuse",
+      "ambient",
+      "specular",
+      "power_gloss_level",
+      "opacity_reflection_refraction_spectype"
+    ],
     "Parameters": {
+      "mrgLuminanceRange": {
+        "Type": "Float",
+        "Default": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
       "mrgChrEmissionParam": {
         "Type": "Float",
         "Default": [
@@ -1513,16 +2014,30 @@
         ]
       }
     },
-    "Textures": [
-      "diffuse",
-      "specular",
-      "normal",
-      "reflection",
-      "displacement"
-    ]
+    "Textures": {
+      "diffuse": 1,
+      "reflection": 1,
+      "displacement": 1
+    }
   },
   "EnmIgnore_dsle1": {
+    "UsedDefaultParameters": [
+      "diffuse",
+      "ambient",
+      "specular",
+      "power_gloss_level",
+      "opacity_reflection_refraction_spectype"
+    ],
     "Parameters": {
+      "mrgLuminanceRange": {
+        "Type": "Float",
+        "Default": [
+          2,
+          0,
+          0,
+          0
+        ]
+      },
       "mrgChrEmissionParam": {
         "Type": "Float",
         "Default": [
@@ -1533,16 +2048,31 @@
         ]
       }
     },
-    "Textures": [
-      "diffuse",
-      "specular",
-      "normal",
-      "reflection",
-      "displacement"
-    ]
+    "Textures": {
+      "diffuse": 1,
+      "specular": 1,
+      "reflection": 1,
+      "displacement": 1
+    }
   },
   "EnmMetal_dse": {
+    "UsedDefaultParameters": [
+      "diffuse",
+      "ambient",
+      "specular",
+      "power_gloss_level",
+      "opacity_reflection_refraction_spectype"
+    ],
     "Parameters": {
+      "mrgLuminanceRange": {
+        "Type": "Float",
+        "Default": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
       "g_SonicSkinFalloffParam": {
         "Type": "Float",
         "Default": [
@@ -1551,27 +2081,32 @@
           3,
           0.75
         ]
-      },
-      "g_ChrPlayableMenuParam": {
+      }
+    },
+    "Textures": {
+      "diffuse": 1,
+      "specular": 1,
+      "reflection": 1
+    }
+  },
+  "EnmMetal_dse1": {
+    "UsedDefaultParameters": [
+      "diffuse",
+      "ambient",
+      "specular",
+      "power_gloss_level",
+      "opacity_reflection_refraction_spectype"
+    ],
+    "Parameters": {
+      "mrgLuminanceRange": {
         "Type": "Float",
         "Default": [
-          0,
+          1,
           0,
           0,
           0
         ]
-      }
-    },
-    "Textures": [
-      "diffuse",
-      "specular",
-      "normal",
-      "displacement",
-      "reflection"
-    ]
-  },
-  "EnmMetal_dse1": {
-    "Parameters": {
+      },
       "g_SonicSkinFalloffParam": {
         "Type": "Float",
         "Default": [
@@ -1580,8 +2115,24 @@
           0,
           0
         ]
-      },
-      "g_ChrPlayableMenuParam": {
+      }
+    },
+    "Textures": {
+      "diffuse": 1,
+      "specular": 1,
+      "reflection": 1
+    }
+  },
+  "EnmMetal_dsfe1": {
+    "UsedDefaultParameters": [
+      "diffuse",
+      "ambient",
+      "specular",
+      "power_gloss_level",
+      "opacity_reflection_refraction_spectype"
+    ],
+    "Parameters": {
+      "mrgLuminanceRange": {
         "Type": "Float",
         "Default": [
           0,
@@ -1589,18 +2140,7 @@
           0,
           0
         ]
-      }
-    },
-    "Textures": [
-      "diffuse",
-      "specular",
-      "normal",
-      "displacement",
-      "reflection"
-    ]
-  },
-  "EnmMetal_dsfe1": {
-    "Parameters": {
+      },
       "g_SonicSkinFalloffParam": {
         "Type": "Float",
         "Default": [
@@ -1609,27 +2149,33 @@
           5,
           0.5
         ]
-      },
-      "g_ChrPlayableMenuParam": {
+      }
+    },
+    "Textures": {
+      "diffuse": 1,
+      "specular": 1,
+      "displacement": 1,
+      "reflection": 1
+    }
+  },
+  "EnmMetal_dsne": {
+    "UsedDefaultParameters": [
+      "diffuse",
+      "ambient",
+      "specular",
+      "power_gloss_level",
+      "opacity_reflection_refraction_spectype"
+    ],
+    "Parameters": {
+      "mrgLuminanceRange": {
         "Type": "Float",
         "Default": [
-          0,
+          0.3,
           0,
           0,
           0
         ]
-      }
-    },
-    "Textures": [
-      "diffuse",
-      "specular",
-      "normal",
-      "displacement",
-      "reflection"
-    ]
-  },
-  "EnmMetal_dsne": {
-    "Parameters": {
+      },
       "g_SonicSkinFalloffParam": {
         "Type": "Float",
         "Default": [
@@ -1638,8 +2184,25 @@
           5,
           0
         ]
-      },
-      "g_ChrPlayableMenuParam": {
+      }
+    },
+    "Textures": {
+      "diffuse": 1,
+      "specular": 1,
+      "normal": 1,
+      "reflection": 1
+    }
+  },
+  "EnmMetal_dsne1": {
+    "UsedDefaultParameters": [
+      "diffuse",
+      "ambient",
+      "specular",
+      "power_gloss_level",
+      "opacity_reflection_refraction_spectype"
+    ],
+    "Parameters": {
+      "mrgLuminanceRange": {
         "Type": "Float",
         "Default": [
           0,
@@ -1647,18 +2210,7 @@
           0,
           0
         ]
-      }
-    },
-    "Textures": [
-      "diffuse",
-      "specular",
-      "normal",
-      "displacement",
-      "reflection"
-    ]
-  },
-  "EnmMetal_dsne1": {
-    "Parameters": {
+      },
       "g_SonicSkinFalloffParam": {
         "Type": "Float",
         "Default": [
@@ -1667,28 +2219,34 @@
           3,
           0.75
         ]
-      },
-      "g_ChrPlayableMenuParam": {
+      }
+    },
+    "Textures": {
+      "diffuse": 1,
+      "specular": 1,
+      "normal": 1,
+      "reflection": 1
+    }
+  },
+  "EnmMetal_dsnfe": {
+    "Hide": false,
+    "UsedDefaultParameters": [
+      "diffuse",
+      "ambient",
+      "specular",
+      "power_gloss_level",
+      "opacity_reflection_refraction_spectype"
+    ],
+    "Parameters": {
+      "mrgLuminanceRange": {
         "Type": "Float",
         "Default": [
-          0,
+          0.3,
           0,
           0,
           0
         ]
-      }
-    },
-    "Textures": [
-      "diffuse",
-      "specular",
-      "normal",
-      "displacement",
-      "reflection"
-    ]
-  },
-  "EnmMetal_dsnfe": {
-    "Hide": false,
-    "Parameters": {
+      },
       "g_SonicSkinFalloffParam": {
         "Type": "Float",
         "Default": [
@@ -1697,8 +2255,26 @@
           5,
           0
         ]
-      },
-      "g_ChrPlayableMenuParam": {
+      }
+    },
+    "Textures": {
+      "diffuse": 1,
+      "specular": 1,
+      "normal": 1,
+      "displacement": 1,
+      "reflection": 1
+    }
+  },
+  "EnmMetal_dsnfe1": {
+    "UsedDefaultParameters": [
+      "diffuse",
+      "ambient",
+      "specular",
+      "power_gloss_level",
+      "opacity_reflection_refraction_spectype"
+    ],
+    "Parameters": {
+      "mrgLuminanceRange": {
         "Type": "Float",
         "Default": [
           0,
@@ -1706,18 +2282,7 @@
           0,
           0
         ]
-      }
-    },
-    "Textures": [
-      "diffuse",
-      "specular",
-      "normal",
-      "displacement",
-      "reflection"
-    ]
-  },
-  "EnmMetal_dsnfe1": {
-    "Parameters": {
+      },
       "g_SonicSkinFalloffParam": {
         "Type": "Float",
         "Default": [
@@ -1726,8 +2291,38 @@
           4,
           0.5
         ]
-      },
-      "g_ChrPlayableMenuParam": {
+      }
+    },
+    "Textures": {
+      "diffuse": 1,
+      "specular": 1,
+      "normal": 1,
+      "displacement": 1,
+      "reflection": 1
+    }
+  },
+  "FadeOutNormal_dn": {
+    "UsedDefaultParameters": [
+      "diffuse",
+      "ambient",
+      "specular",
+      "power_gloss_level"
+    ],
+    "Textures": {
+      "diffuse": 1,
+      "normal": 1
+    }
+  },
+  "FakeGlass_dse1": {
+    "UsedDefaultParameters": [
+      "diffuse",
+      "ambient",
+      "specular",
+      "power_gloss_level",
+      "opacity_reflection_refraction_spectype"
+    ],
+    "Parameters": {
+      "mrgLuminanceRange": {
         "Type": "Float",
         "Default": [
           0,
@@ -1735,26 +2330,7 @@
           0,
           0
         ]
-      }
-    },
-    "Textures": [
-      "diffuse",
-      "specular",
-      "normal",
-      "displacement",
-      "reflection"
-    ]
-  },
-  "FadeOutNormal_dn": {
-    "Textures": [
-      "diffuse",
-      "gloss",
-      "normal",
-      "reflection"
-    ]
-  },
-  "FakeGlass_dse1": {
-    "Parameters": {
+      },
       "mrgChrEmissionParam": {
         "Type": "Float",
         "Default": [
@@ -1765,16 +2341,30 @@
         ]
       }
     },
-    "Textures": [
-      "diffuse",
-      "specular",
-      "normal",
-      "reflection",
-      "displacement"
-    ]
+    "Textures": {
+      "diffuse": 1,
+      "specular": 1,
+      "reflection": 1
+    }
   },
   "FakeGlass_dsle1": {
+    "UsedDefaultParameters": [
+      "diffuse",
+      "ambient",
+      "specular",
+      "power_gloss_level",
+      "opacity_reflection_refraction_spectype"
+    ],
     "Parameters": {
+      "mrgLuminanceRange": {
+        "Type": "Float",
+        "Default": [
+          1,
+          0,
+          0,
+          0
+        ]
+      },
       "mrgChrEmissionParam": {
         "Type": "Float",
         "Default": [
@@ -1785,16 +2375,31 @@
         ]
       }
     },
-    "Textures": [
-      "diffuse",
-      "specular",
-      "normal",
-      "reflection",
-      "displacement"
-    ]
+    "Textures": {
+      "diffuse": 1,
+      "specular": 1,
+      "reflection": 1,
+      "displacement": 1
+    }
   },
   "FakeGlass_e1": {
+    "UsedDefaultParameters": [
+      "diffuse",
+      "ambient",
+      "specular",
+      "power_gloss_level",
+      "opacity_reflection_refraction_spectype"
+    ],
     "Parameters": {
+      "mrgLuminanceRange": {
+        "Type": "Float",
+        "Default": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
       "mrgChrEmissionParam": {
         "Type": "Float",
         "Default": [
@@ -1805,114 +2410,237 @@
         ]
       }
     },
-    "Textures": [
-      "diffuse",
-      "specular",
-      "normal",
-      "reflection",
-      "displacement"
-    ]
+    "Textures": {
+      "reflection": 1
+    }
   },
   "FallOff_df": {
-    "Textures": [
+    "UsedDefaultParameters": [
       "diffuse",
-      "specular",
-      "gloss",
-      "normal",
-      "normal",
-      "displacement"
-    ]
+      "ambient",
+      "opacity_reflection_refraction_spectype"
+    ],
+    "Textures": {
+      "diffuse": 1,
+      "displacement": 1
+    }
   },
   "FallOff_dpf": {
-    "Variants": [
+    "Variations": [
       "v"
     ],
-    "Textures": [
+    "UsedDefaultParameters": [
       "diffuse",
+      "ambient",
       "specular",
-      "gloss",
-      "normal",
-      "normal",
-      "displacement"
-    ]
+      "power_gloss_level",
+      "opacity_reflection_refraction_spectype"
+    ],
+    "Textures": {
+      "diffuse": 1,
+      "gloss": 1,
+      "displacement": 1
+    }
   },
   "FallOff_dpnf": {
     "Hide": false,
-    "Textures": [
+    "UsedDefaultParameters": [
       "diffuse",
+      "ambient",
       "specular",
-      "gloss",
-      "normal",
-      "normal",
-      "displacement"
-    ]
+      "power_gloss_level",
+      "opacity_reflection_refraction_spectype"
+    ],
+    "Textures": {
+      "diffuse": 1,
+      "gloss": 1,
+      "normal": 1,
+      "displacement": 1
+    }
   },
   "FallOffV_dn": {
-    "Textures": [
+    "UsedDefaultParameters": [
       "diffuse",
-      "specular",
-      "gloss",
-      "normal",
-      "normal",
-      "displacement"
-    ]
+      "ambient",
+      "opacity_reflection_refraction_spectype"
+    ],
+    "Textures": {
+      "diffuse": 1,
+      "normal": 1
+    }
   },
   "FallOffV_dp": {
-    "Textures": [
+    "UsedDefaultParameters": [
       "diffuse",
+      "ambient",
       "specular",
-      "gloss",
-      "normal",
-      "normal",
-      "displacement"
-    ]
+      "power_gloss_level",
+      "opacity_reflection_refraction_spectype"
+    ],
+    "Textures": {
+      "diffuse": 1,
+      "gloss": 1
+    }
   },
   "Glass_de2": {
-    "Textures": [
+    "UsedDefaultParameters": [
       "diffuse",
-      "specular",
-      "gloss",
-      "normal",
-      "normal",
-      "reflection",
-      "opacity"
-    ]
+      "ambient",
+      "opacity_reflection_refraction_spectype"
+    ],
+    "Parameters": {
+      "mrgFresnelParam": {
+        "Type": "Float",
+        "Default": [
+          0,
+          0.3,
+          1,
+          0
+        ]
+      },
+      "mrgLuminanceRange": {
+        "Type": "Float",
+        "Default": [
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    "Textures": {
+      "diffuse": 1
+    }
   },
   "Glass_dpe": {
-    "Textures": [
+    "UsedDefaultParameters": [
       "diffuse",
+      "ambient",
       "specular",
-      "gloss",
-      "normal",
-      "normal",
-      "reflection",
-      "opacity"
-    ]
+      "power_gloss_level",
+      "opacity_reflection_refraction_spectype"
+    ],
+    "Parameters": {
+      "mrgFresnelParam": {
+        "Type": "Float",
+        "Default": [
+          0,
+          0.3,
+          1,
+          0
+        ]
+      },
+      "mrgLuminanceRange": {
+        "Type": "Float",
+        "Default": [
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    "Textures": {
+      "diffuse": 1,
+      "gloss": 1,
+      "reflection": 1
+    }
   },
   "Glass_dpe2": {
-    "Textures": [
+    "UsedDefaultParameters": [
       "diffuse",
+      "ambient",
       "specular",
-      "gloss",
-      "normal",
-      "normal",
-      "reflection",
-      "opacity"
-    ]
+      "power_gloss_level",
+      "opacity_reflection_refraction_spectype"
+    ],
+    "Parameters": {
+      "mrgFresnelParam": {
+        "Type": "Float",
+        "Default": [
+          0,
+          0.3,
+          1,
+          0
+        ]
+      },
+      "mrgLuminanceRange": {
+        "Type": "Float",
+        "Default": [
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    "Textures": {
+      "diffuse": 1,
+      "gloss": 1
+    }
   },
   "Glass_dpne": {
-    "Textures": [
+    "UsedDefaultParameters": [
       "diffuse",
+      "ambient",
       "specular",
-      "gloss",
-      "normal",
-      "normal",
-      "reflection",
-      "opacity"
-    ]
+      "power_gloss_level",
+      "opacity_reflection_refraction_spectype"
+    ],
+    "Parameters": {
+      "mrgFresnelParam": {
+        "Type": "Float",
+        "Default": [
+          0,
+          0.3,
+          1,
+          0
+        ]
+      },
+      "mrgLuminanceRange": {
+        "Type": "Float",
+        "Default": [
+          3,
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    "Textures": {
+      "diffuse": 1,
+      "gloss": 1,
+      "normal": 1,
+      "reflection": 1
+    }
   },
   "GlassRefraction_de1": {
+    "UsedDefaultParameters": [
+      "diffuse",
+      "ambient",
+      "specular",
+      "power_gloss_level",
+      "opacity_reflection_refraction_spectype"
+    ],
     "Parameters": {
+      "mrgFresnelParam": {
+        "Type": "Float",
+        "Default": [
+          0,
+          0.3,
+          1,
+          0
+        ]
+      },
+      "mrgLuminanceRange": {
+        "Type": "Float",
+        "Default": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
       "mrgGlassRefractionParam": {
         "Type": "Float",
         "Default": [
@@ -1923,99 +2651,97 @@
         ]
       }
     },
-    "Textures": [
-      "diffuse",
-      "reflection"
-    ]
+    "Textures": {
+      "diffuse": 1,
+      "reflection": 1
+    }
   },
   "Ice_der": {
-    "Variants": [
+    "Variations": [
       "v"
     ],
+    "UsedDefaultParameters": [
+      "diffuse",
+      "ambient",
+      "specular",
+      "power_gloss_level"
+    ],
     "Parameters": {
-      "g_IceParam": {
+      "mrgLuminanceRange": {
         "Type": "Float",
         "Default": [
           1,
-          1,
-          1,
+          0,
+          0,
           0
         ]
       }
     },
-    "Textures": [
-      "diffuse",
-      "specular",
-      "gloss",
-      "normal",
-      "normal",
-      "reflection",
-      "displacement"
-    ]
+    "Textures": {
+      "diffuse": 1,
+      "reflection": 1,
+      "displacement": 1
+    }
   },
   "Ice_dner": {
-    "Variants": [
+    "Variations": [
       "v"
     ],
+    "UsedDefaultParameters": [
+      "diffuse",
+      "ambient",
+      "specular",
+      "power_gloss_level"
+    ],
     "Parameters": {
-      "g_IceParam": {
+      "mrgLuminanceRange": {
         "Type": "Float",
         "Default": [
           1,
-          1,
-          1,
+          0,
+          0,
           0
         ]
       }
     },
-    "Textures": [
-      "diffuse",
-      "specular",
-      "gloss",
-      "normal",
-      "normal",
-      "reflection",
-      "displacement"
-    ]
+    "Textures": {
+      "diffuse": 1,
+      "normal": 1,
+      "reflection": 1,
+      "displacement": 1
+    }
   },
   "IgnoreLight_d": {
     "Hide": false,
-    "Variants": [
+    "Variations": [
       "",
       "v"
     ],
-    "Textures": [
+    "UsedDefaultParameters": [
       "diffuse",
-      "specular",
-      "gloss",
-      "normal",
-      "normal",
-      "reflection",
-      "opacity"
-    ]
+      "opacity_reflection_refraction_spectype"
+    ],
+    "Textures": {
+      "diffuse": 1
+    }
   },
   "IgnoreLight_da": {
-    "Textures": [
+    "UsedDefaultParameters": [
       "diffuse",
-      "specular",
-      "gloss",
-      "normal",
-      "normal",
-      "reflection",
-      "opacity"
-    ]
+      "opacity_reflection_refraction_spectype"
+    ],
+    "Textures": {
+      "diffuse": 1,
+      "opacity": 1
+    }
   },
   "IgnoreLight_dE": {
+    "UsedDefaultParameters": [
+      "diffuse",
+      "ambient",
+      "opacity_reflection_refraction_spectype"
+    ],
     "Parameters": {
-      "g_IgnoreLightParam": {
-        "Type": "Float",
-        "Default": [
-          0,
-          0,
-          0,
-          0
-        ]
-      },
       "g_EmissionParam": {
         "Type": "Float",
         "Default": [
@@ -2026,23 +2752,28 @@
         ]
       }
     },
-    "Textures": [
-      "diffuse",
-      "displacement"
-    ]
+    "Textures": {
+      "diffuse": 1,
+      "displacement": 1
+    }
   },
   "IgnoreLightTwice_d": {
-    "Textures": [
+    "UsedDefaultParameters": [
       "diffuse",
-      "specular",
-      "gloss",
-      "normal",
-      "normal",
-      "reflection",
-      "opacity"
-    ]
+      "opacity_reflection_refraction_spectype"
+    ],
+    "Textures": {
+      "diffuse": 1
+    }
   },
   "Indirect_dop": {
+    "UsedDefaultParameters": [
+      "diffuse",
+      "ambient",
+      "specular",
+      "power_gloss_level",
+      "opacity_reflection_refraction_spectype"
+    ],
     "Parameters": {
       "g_OffsetParam": {
         "Type": "Float",
@@ -2054,17 +2785,20 @@
         ]
       }
     },
-    "Textures": [
-      "diffuse",
-      "gloss",
-      "normal",
-      "displacement",
-      "reflection",
-      "opacity",
-      "displacement"
-    ]
+    "Textures": {
+      "diffuse": 1,
+      "gloss": 1,
+      "displacement": 1
+    }
   },
   "Indirect_dopn": {
+    "UsedDefaultParameters": [
+      "diffuse",
+      "ambient",
+      "specular",
+      "power_gloss_level",
+      "opacity_reflection_refraction_spectype"
+    ],
     "Parameters": {
       "g_OffsetParam": {
         "Type": "Float",
@@ -2076,17 +2810,21 @@
         ]
       }
     },
-    "Textures": [
-      "diffuse",
-      "gloss",
-      "normal",
-      "displacement",
-      "reflection",
-      "opacity",
-      "displacement"
-    ]
+    "Textures": {
+      "diffuse": 1,
+      "gloss": 1,
+      "normal": 1,
+      "displacement": 1
+    }
   },
   "IndirectV_doapn": {
+    "UsedDefaultParameters": [
+      "diffuse",
+      "ambient",
+      "specular",
+      "power_gloss_level",
+      "opacity_reflection_refraction_spectype"
+    ],
     "Parameters": {
       "g_OffsetParam": {
         "Type": "Float",
@@ -2098,17 +2836,22 @@
         ]
       }
     },
-    "Textures": [
-      "diffuse",
-      "gloss",
-      "normal",
-      "displacement",
-      "reflection",
-      "opacity",
-      "displacement"
-    ]
+    "Textures": {
+      "diffuse": 1,
+      "gloss": 1,
+      "normal": 1,
+      "displacement": 1,
+      "opacity": 1
+    }
   },
   "IndirectVnoGIs_doapn": {
+    "UsedDefaultParameters": [
+      "diffuse",
+      "ambient",
+      "specular",
+      "power_gloss_level",
+      "opacity_reflection_refraction_spectype"
+    ],
     "Parameters": {
       "g_OffsetParam": {
         "Type": "Float",
@@ -2120,19 +2863,23 @@
         ]
       }
     },
-    "Textures": [
-      "diffuse",
-      "gloss",
-      "normal",
-      "displacement",
-      "reflection",
-      "opacity",
-      "displacement"
-    ]
+    "Textures": {
+      "diffuse": 1,
+      "gloss": 1,
+      "normal": 1,
+      "displacement": 1,
+      "opacity": 1
+    }
   },
   "Lava_dnE": {
-    "Variants": [
+    "Variations": [
       "u"
+    ],
+    "UsedDefaultParameters": [
+      "diffuse",
+      "specular",
+      "power_gloss_level",
+      "opacity_reflection_refraction_spectype"
     ],
     "Parameters": {
       "g_OffsetParam": {
@@ -2154,196 +2901,73 @@
         ]
       }
     },
-    "Textures": [
-      "diffuse",
-      "normal",
-      "displacement",
-      "displacement",
-      "displacement"
-    ]
+    "Textures": {
+      "diffuse": 1,
+      "normal": 1,
+      "displacement": 3
+    }
   },
-  "LightSpeedDashReady": {
-    "Textures": [
-      ""
-    ]
-  },
+  "LightSpeedDashReady": {},
   "Luminescence_d": {
-    "Variants": [
+    "Variations": [
       "",
       "v"
     ],
-    "Textures": [
+    "UsedDefaultParameters": [
       "diffuse",
+      "ambient",
       "specular",
-      "gloss",
-      "normal",
-      "displacement",
-      "reflection"
-    ]
+      "emissive",
+      "power_gloss_level",
+      "opacity_reflection_refraction_spectype"
+    ],
+    "Textures": {
+      "diffuse": 1
+    }
   },
   "Luminescence_dE": {
     "Hide": false,
-    "Variants": [
+    "Variations": [
       "",
       "b",
       "v"
     ],
-    "Textures": [
+    "UsedDefaultParameters": [
       "diffuse",
+      "ambient",
       "specular",
-      "gloss",
-      "normal",
-      "displacement",
-      "reflection"
-    ]
+      "power_gloss_level",
+      "opacity_reflection_refraction_spectype"
+    ],
+    "Textures": {
+      "diffuse": 1,
+      "displacement": 1
+    }
   },
   "Luminescence_dnE": {
-    "Textures": [
+    "UsedDefaultParameters": [
       "diffuse",
+      "ambient",
       "specular",
-      "gloss",
-      "normal",
-      "displacement",
-      "reflection"
-    ]
+      "power_gloss_level",
+      "opacity_reflection_refraction_spectype"
+    ],
+    "Textures": {
+      "diffuse": 1,
+      "normal": 1,
+      "displacement": 1
+    }
   },
   "Luminescence_dne1E": {
-    "Textures": [
+    "UsedDefaultParameters": [
       "diffuse",
+      "ambient",
       "specular",
-      "gloss",
-      "normal",
-      "displacement",
-      "reflection"
-    ]
-  },
-  "Luminescence_dpE": {
-    "Textures": [
-      "diffuse",
-      "specular",
-      "gloss",
-      "normal",
-      "displacement",
-      "reflection"
-    ]
-  },
-  "Luminescence_dpe1E": {
-    "Textures": [
-      "diffuse",
-      "specular",
-      "gloss",
-      "normal",
-      "displacement",
-      "reflection"
-    ]
-  },
-  "Luminescence_dpe2E": {
-    "Textures": [
-      "diffuse",
-      "specular",
-      "gloss",
-      "normal",
-      "displacement",
-      "reflection"
-    ]
-  },
-  "Luminescence_dpnE": {
-    "Hide": false,
-    "Variants": [
-      "",
-      "v"
-    ],
-    "Textures": [
-      "diffuse",
-      "specular",
-      "gloss",
-      "normal",
-      "displacement",
-      "reflection"
-    ]
-  },
-  "Luminescence_dpne1E": {
-    "Textures": [
-      "diffuse",
-      "specular",
-      "gloss",
-      "normal",
-      "displacement",
-      "reflection"
-    ]
-  },
-  "Luminescence_dpne2E": {
-    "Textures": [
-      "diffuse",
-      "specular",
-      "gloss",
-      "normal",
-      "displacement",
-      "reflection"
-    ]
-  },
-  "LuminescenceV_d": {
-    "Textures": [
-      "diffuse",
-      "diffuse",
-      "gloss",
-      "gloss",
-      "normal",
-      "reflection",
-      "displacement"
-    ]
-  },
-  "LuminescenceV_dn": {
-    "Textures": [
-      "diffuse",
-      "diffuse",
-      "gloss",
-      "gloss",
-      "normal",
-      "reflection",
-      "displacement"
-    ]
-  },
-  "LuminescenceV_dpdpv": {
-    "Textures": [
-      "diffuse",
-      "diffuse",
-      "gloss",
-      "gloss",
-      "normal",
-      "reflection",
-      "displacement"
-    ]
-  },
-  "LuminescenceV_dpn": {
-    "Textures": [
-      "diffuse",
-      "diffuse",
-      "gloss",
-      "gloss",
-      "normal",
-      "reflection",
-      "displacement"
-    ]
-  },
-  "LuminescenceV_dpnv": {
-    "Textures": [
-      "diffuse",
-      "diffuse",
-      "gloss",
-      "gloss",
-      "normal",
-      "reflection",
-      "displacement"
-    ]
-  },
-  "MeshParticle_d": {
-    "Variants": [
-      "",
-      "v"
+      "power_gloss_level",
+      "opacity_reflection_refraction_spectype"
     ],
     "Parameters": {
-      "g_ParticleParam": {
+      "mrgLuminanceRange": {
         "Type": "Float",
         "Default": [
           0,
@@ -2353,89 +2977,359 @@
         ]
       }
     },
-    "Textures": [
+    "Textures": {
+      "diffuse": 1,
+      "normal": 1,
+      "displacement": 1,
+      "reflection": 1
+    }
+  },
+  "Luminescence_dpE": {
+    "UsedDefaultParameters": [
       "diffuse",
-      "normal",
-      "displacement",
-      "reflection"
-    ]
+      "ambient",
+      "specular",
+      "power_gloss_level",
+      "opacity_reflection_refraction_spectype"
+    ],
+    "Textures": {
+      "diffuse": 1,
+      "gloss": 1,
+      "displacement": 1
+    }
+  },
+  "Luminescence_dpe1E": {
+    "UsedDefaultParameters": [
+      "diffuse",
+      "ambient",
+      "specular",
+      "power_gloss_level",
+      "opacity_reflection_refraction_spectype"
+    ],
+    "Parameters": {
+      "mrgLuminanceRange": {
+        "Type": "Float",
+        "Default": [
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    "Textures": {
+      "diffuse": 1,
+      "gloss": 1,
+      "displacement": 1,
+      "reflection": 1
+    }
+  },
+  "Luminescence_dpe2E": {
+    "UsedDefaultParameters": [
+      "diffuse",
+      "ambient",
+      "specular",
+      "power_gloss_level",
+      "opacity_reflection_refraction_spectype"
+    ],
+    "Parameters": {
+      "mrgLuminanceRange": {
+        "Type": "Float",
+        "Default": [
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    "Textures": {
+      "diffuse": 1,
+      "gloss": 1,
+      "displacement": 1
+    }
+  },
+  "Luminescence_dpnE": {
+    "Hide": false,
+    "Variations": [
+      "",
+      "v"
+    ],
+    "UsedDefaultParameters": [
+      "diffuse",
+      "ambient",
+      "specular",
+      "power_gloss_level",
+      "opacity_reflection_refraction_spectype"
+    ],
+    "Textures": {
+      "diffuse": 1,
+      "gloss": 1,
+      "normal": 1,
+      "displacement": 1
+    }
+  },
+  "Luminescence_dpne1E": {
+    "UsedDefaultParameters": [
+      "diffuse",
+      "ambient",
+      "specular",
+      "power_gloss_level",
+      "opacity_reflection_refraction_spectype"
+    ],
+    "Parameters": {
+      "mrgLuminanceRange": {
+        "Type": "Float",
+        "Default": [
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    "Textures": {
+      "diffuse": 1,
+      "gloss": 1,
+      "normal": 1,
+      "displacement": 1,
+      "reflection": 1
+    }
+  },
+  "Luminescence_dpne2E": {
+    "UsedDefaultParameters": [
+      "diffuse",
+      "ambient",
+      "specular",
+      "power_gloss_level",
+      "opacity_reflection_refraction_spectype"
+    ],
+    "Parameters": {
+      "mrgLuminanceRange": {
+        "Type": "Float",
+        "Default": [
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    "Textures": {
+      "diffuse": 1,
+      "gloss": 1,
+      "normal": 1,
+      "displacement": 1
+    }
+  },
+  "LuminescenceV_d": {
+    "UsedDefaultParameters": [
+      "diffuse",
+      "ambient",
+      "specular",
+      "power_gloss_level",
+      "opacity_reflection_refraction_spectype"
+    ],
+    "Textures": {
+      "diffuse": 1
+    }
+  },
+  "LuminescenceV_dn": {
+    "UsedDefaultParameters": [
+      "diffuse",
+      "ambient",
+      "specular",
+      "power_gloss_level",
+      "opacity_reflection_refraction_spectype"
+    ],
+    "Textures": {
+      "diffuse": 1,
+      "normal": 1
+    }
+  },
+  "LuminescenceV_dpdpv": {
+    "UsedDefaultParameters": [
+      "diffuse",
+      "ambient",
+      "specular",
+      "power_gloss_level",
+      "opacity_reflection_refraction_spectype"
+    ],
+    "Textures": {
+      "diffuse": 2,
+      "gloss": 2,
+      "displacement": 1
+    }
+  },
+  "LuminescenceV_dpn": {
+    "UsedDefaultParameters": [
+      "diffuse",
+      "ambient",
+      "specular",
+      "power_gloss_level",
+      "opacity_reflection_refraction_spectype"
+    ],
+    "Textures": {
+      "diffuse": 1,
+      "gloss": 1,
+      "normal": 1
+    }
+  },
+  "LuminescenceV_dpnv": {
+    "UsedDefaultParameters": [
+      "diffuse",
+      "ambient",
+      "specular",
+      "power_gloss_level",
+      "opacity_reflection_refraction_spectype"
+    ],
+    "Textures": {
+      "diffuse": 1,
+      "gloss": 1,
+      "normal": 1,
+      "displacement": 1
+    }
+  },
+  "MeshParticle_d": {
+    "Variations": [
+      "",
+      "v"
+    ],
+    "UsedDefaultParameters": [
+      "diffuse",
+      "opacity_reflection_refraction_spectype"
+    ],
+    "Textures": {
+      "diffuse": 1
+    }
   },
   "Mirror_d": {
-    "Textures": [
+    "UsedDefaultParameters": [
       "diffuse",
-      "specular",
-      "gloss",
-      "normal",
-      "normal",
-      "reflection",
-      "opacity"
-    ]
+      "ambient",
+      "opacity_reflection_refraction_spectype"
+    ],
+    "Parameters": {
+      "mrgFresnelParam": {
+        "Type": "Float",
+        "Default": [
+          0,
+          0.3,
+          1,
+          0
+        ]
+      }
+    },
+    "Textures": {
+      "diffuse": 1
+    }
   },
   "Mirror2_d": {
-    "Textures": [
+    "UsedDefaultParameters": [
       "diffuse",
-      "specular",
-      "gloss",
-      "normal",
-      "normal",
-      "reflection",
-      "opacity"
-    ]
+      "ambient",
+      "opacity_reflection_refraction_spectype"
+    ],
+    "Parameters": {
+      "mrgFresnelParam": {
+        "Type": "Float",
+        "Default": [
+          0,
+          0.3,
+          1,
+          0
+        ]
+      }
+    },
+    "Textures": {
+      "diffuse": 1
+    }
   },
   "Ring_dse": {
-    "Textures": [
+    "UsedDefaultParameters": [
       "diffuse",
+      "ambient",
       "specular",
-      "gloss",
-      "reflection"
-    ]
+      "power_gloss_level"
+    ],
+    "Parameters": {
+      "mrgLuminanceRange": {
+        "Type": "Float",
+        "Default": [
+          0.5,
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    "Textures": {
+      "diffuse": 1,
+      "specular": 1,
+      "reflection": 1
+    }
   },
   "Sky_d": {
     "Hide": false,
-    "Variants": [
+    "Variations": [
       "",
       "uv",
       "v"
     ],
-    "Textures": [
-      "diffuse",
-      "displacement",
-      "opacity"
-    ]
+    "Textures": {
+      "diffuse": 1
+    }
   },
   "Sky_da": {
-    "Variants": [
+    "Variations": [
       "uv"
     ],
-    "Textures": [
-      "diffuse",
-      "displacement",
-      "opacity"
-    ]
+    "Textures": {
+      "diffuse": 1,
+      "opacity": 1
+    }
   },
   "Sky_dE": {
-    "Variants": [
+    "Variations": [
       "uv"
     ],
-    "Textures": [
-      "diffuse",
-      "displacement",
-      "opacity"
-    ]
+    "UsedDefaultParameters": [
+      "ambient"
+    ],
+    "Textures": {
+      "diffuse": 1,
+      "displacement": 1
+    }
   },
   "test": {
-    "Textures": [
+    "UsedDefaultParameters": [
       "diffuse",
-      "specular",
-      "gloss",
-      "normal",
-      "normal",
-      "reflection",
-      "opacity"
-    ]
+      "ambient",
+      "opacity_reflection_refraction_spectype"
+    ],
+    "Textures": {
+      "diffuse": 1,
+      "normal": 1
+    }
   },
   "TimeEater_dsbnne1": {
+    "UsedDefaultParameters": [
+      "diffuse",
+      "ambient",
+      "specular",
+      "power_gloss_level",
+      "opacity_reflection_refraction_spectype"
+    ],
     "Parameters": {
+      "mrgLuminanceRange": {
+        "Type": "Float",
+        "Default": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
       "g_SonicSkinFalloffParam": {
         "Type": "Float",
         "Default": [
@@ -2482,18 +3376,32 @@
         ]
       }
     },
-    "Textures": [
-      "diffuse",
-      "specular",
-      "normal",
-      "normal",
-      "displacement",
-      "reflection",
-      "opacity"
-    ]
+    "Textures": {
+      "diffuse": 1,
+      "specular": 1,
+      "normal": 2,
+      "reflection": 1,
+      "opacity": 1
+    }
   },
   "TimeEaterDistortion_dsne1": {
+    "UsedDefaultParameters": [
+      "diffuse",
+      "ambient",
+      "specular",
+      "power_gloss_level",
+      "opacity_reflection_refraction_spectype"
+    ],
     "Parameters": {
+      "mrgLuminanceRange": {
+        "Type": "Float",
+        "Default": [
+          0.1,
+          0.1,
+          0,
+          0
+        ]
+      },
       "g_TimeEaterAlphaParam": {
         "Type": "Float",
         "Default": [
@@ -2504,15 +3412,19 @@
         ]
       }
     },
-    "Textures": [
-      "diffuse",
-      "specular",
-      "gloss",
-      "normal",
-      "reflection"
-    ]
+    "Textures": {
+      "diffuse": 1,
+      "specular": 1,
+      "normal": 1,
+      "reflection": 1
+    }
   },
   "TimeEaterEmission_dl": {
+    "UsedDefaultParameters": [
+      "diffuse",
+      "ambient",
+      "opacity_reflection_refraction_spectype"
+    ],
     "Parameters": {
       "mrgChrEmissionParam": {
         "Type": "Float",
@@ -2533,16 +3445,29 @@
         ]
       }
     },
-    "Textures": [
-      "diffuse",
-      "specular",
-      "normal",
-      "reflection",
-      "displacement"
-    ]
+    "Textures": {
+      "diffuse": 1,
+      "displacement": 1
+    }
   },
   "TimeEaterGlass_dsne1": {
+    "UsedDefaultParameters": [
+      "diffuse",
+      "ambient",
+      "specular",
+      "power_gloss_level",
+      "opacity_reflection_refraction_spectype"
+    ],
     "Parameters": {
+      "mrgLuminanceRange": {
+        "Type": "Float",
+        "Default": [
+          2,
+          0,
+          0,
+          0
+        ]
+      },
       "mrgChrEmissionParam": {
         "Type": "Float",
         "Default": [
@@ -2562,15 +3487,19 @@
         ]
       }
     },
-    "Textures": [
-      "diffuse",
-      "specular",
-      "normal",
-      "reflection",
-      "displacement"
-    ]
+    "Textures": {
+      "diffuse": 1,
+      "specular": 1,
+      "normal": 1,
+      "reflection": 1
+    }
   },
   "TimeEaterIndirect_dol": {
+    "UsedDefaultParameters": [
+      "diffuse",
+      "ambient",
+      "opacity_reflection_refraction_spectype"
+    ],
     "Parameters": {
       "g_OffsetParam": {
         "Type": "Float",
@@ -2591,18 +3520,29 @@
         ]
       }
     },
-    "Textures": [
-      "diffuse",
-      "gloss",
-      "normal",
-      "displacement",
-      "reflection",
-      "opacity",
-      "displacement"
-    ]
+    "Textures": {
+      "diffuse": 1,
+      "displacement": 2
+    }
   },
   "TimeEaterMetal_dsnfe1": {
+    "UsedDefaultParameters": [
+      "diffuse",
+      "ambient",
+      "specular",
+      "power_gloss_level",
+      "opacity_reflection_refraction_spectype"
+    ],
     "Parameters": {
+      "mrgLuminanceRange": {
+        "Type": "Float",
+        "Default": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
       "g_SonicSkinFalloffParam": {
         "Type": "Float",
         "Default": [
@@ -2612,15 +3552,6 @@
           0.5
         ]
       },
-      "g_ChrPlayableMenuParam": {
-        "Type": "Float",
-        "Default": [
-          0,
-          0,
-          0,
-          0
-        ]
-      },
       "g_TimeEaterAlphaParam": {
         "Type": "Float",
         "Default": [
@@ -2631,15 +3562,21 @@
         ]
       }
     },
-    "Textures": [
-      "diffuse",
-      "specular",
-      "normal",
-      "displacement",
-      "reflection"
-    ]
+    "Textures": {
+      "diffuse": 1,
+      "specular": 1,
+      "normal": 1,
+      "displacement": 1,
+      "reflection": 1
+    }
   },
   "TransThin_dpnt": {
+    "UsedDefaultParameters": [
+      "diffuse",
+      "ambient",
+      "specular",
+      "power_gloss_level"
+    ],
     "Parameters": {
       "g_TransColorMask": {
         "Type": "Color",
@@ -2651,13 +3588,19 @@
         ]
       }
     },
-    "Textures": [
-      "diffuse",
-      "gloss",
-      "normal"
-    ]
+    "Textures": {
+      "diffuse": 1,
+      "gloss": 1,
+      "normal": 1
+    }
   },
   "TransThin_dpt": {
+    "UsedDefaultParameters": [
+      "diffuse",
+      "ambient",
+      "specular",
+      "power_gloss_level"
+    ],
     "Parameters": {
       "g_TransColorMask": {
         "Type": "Color",
@@ -2669,13 +3612,18 @@
         ]
       }
     },
-    "Textures": [
-      "diffuse",
-      "gloss",
-      "normal"
-    ]
+    "Textures": {
+      "diffuse": 1,
+      "gloss": 1
+    }
   },
   "TransThin_dt": {
+    "UsedDefaultParameters": [
+      "diffuse",
+      "ambient",
+      "specular",
+      "power_gloss_level"
+    ],
     "Parameters": {
       "g_TransColorMask": {
         "Type": "Color",
@@ -2687,73 +3635,16 @@
         ]
       }
     },
-    "Textures": [
-      "diffuse",
-      "gloss",
-      "normal"
-    ]
+    "Textures": {
+      "diffuse": 1
+    }
   },
   "Water_Add": {
-    "Parameters": {
-      "g_WaterParam": {
-        "Type": "Float",
-        "Default": [
-          1,
-          0.5,
-          0,
-          0
-        ]
-      },
-      "g_OffsetParam": {
-        "Type": "Float",
-        "Default": [
-          0,
-          0,
-          0,
-          0
-        ]
-      }
-    },
-    "Textures": [
+    "UsedDefaultParameters": [
       "diffuse",
-      "normal",
-      "normal",
-      "reflection",
-      "displacement"
-    ]
-  },
-  "Water_Add_SoftEdge": {
-    "Parameters": {
-      "g_WaterParam": {
-        "Type": "Float",
-        "Default": [
-          1,
-          0.5,
-          0,
-          0
-        ]
-      },
-      "g_OffsetParam": {
-        "Type": "Float",
-        "Default": [
-          0,
-          0,
-          0,
-          0
-        ]
-      }
-    },
-    "Textures": [
-      "diffuse",
-      "normal",
-      "normal",
-      "reflection",
-      "displacement"
-    ]
-  },
-  "Water_Add_SoftEdge_Ref": {
-    "Variants": [
-      "u"
+      "ambient",
+      "specular",
+      "power_gloss_level"
     ],
     "Parameters": {
       "g_WaterParam": {
@@ -2764,26 +3655,48 @@
           0,
           0
         ]
-      },
-      "g_OffsetParam": {
+      }
+    },
+    "Textures": {
+      "diffuse": 1,
+      "normal": 2,
+      "reflection": 1
+    }
+  },
+  "Water_Add_SoftEdge": {
+    "UsedDefaultParameters": [
+      "diffuse",
+      "ambient",
+      "specular",
+      "power_gloss_level"
+    ],
+    "Parameters": {
+      "g_WaterParam": {
         "Type": "Float",
         "Default": [
-          0,
-          0,
-          0,
+          1,
+          0.5,
+          2,
           0
         ]
       }
     },
-    "Textures": [
-      "diffuse",
-      "normal",
-      "normal",
-      "reflection",
-      "displacement"
-    ]
+    "Textures": {
+      "diffuse": 1,
+      "normal": 2,
+      "reflection": 1
+    }
   },
-  "Water_Mul": {
+  "Water_Add_SoftEdge_Ref": {
+    "Variations": [
+      "u"
+    ],
+    "UsedDefaultParameters": [
+      "diffuse",
+      "ambient",
+      "specular",
+      "power_gloss_level"
+    ],
     "Parameters": {
       "g_WaterParam": {
         "Type": "Float",
@@ -2793,26 +3706,44 @@
           0,
           0
         ]
-      },
-      "g_OffsetParam": {
+      }
+    },
+    "Textures": {
+      "diffuse": 1,
+      "normal": 2
+    }
+  },
+  "Water_Mul": {
+    "UsedDefaultParameters": [
+      "diffuse",
+      "ambient",
+      "specular",
+      "power_gloss_level"
+    ],
+    "Parameters": {
+      "g_WaterParam": {
         "Type": "Float",
         "Default": [
-          0,
-          0,
+          1,
+          0.5,
           0,
           0
         ]
       }
     },
-    "Textures": [
-      "diffuse",
-      "normal",
-      "normal",
-      "reflection",
-      "displacement"
-    ]
+    "Textures": {
+      "diffuse": 1,
+      "normal": 2,
+      "reflection": 1
+    }
   },
   "Water_Mul_Cube": {
+    "UsedDefaultParameters": [
+      "diffuse",
+      "ambient",
+      "specular",
+      "power_gloss_level"
+    ],
     "Parameters": {
       "g_WaterParam": {
         "Type": "Float",
@@ -2822,57 +3753,19 @@
           0.1,
           0
         ]
-      },
-      "g_OffsetParam": {
-        "Type": "Float",
-        "Default": [
-          0,
-          0,
-          0,
-          0
-        ]
       }
     },
-    "Textures": [
-      "diffuse",
-      "normal",
-      "normal",
-      "reflection"
-    ]
+    "Textures": {
+      "diffuse": 1,
+      "normal": 2
+    }
   },
   "Water_Mul_SoftEdge": {
-    "Parameters": {
-      "g_WaterParam": {
-        "Type": "Float",
-        "Default": [
-          1,
-          0.5,
-          0,
-          0
-        ]
-      },
-      "g_OffsetParam": {
-        "Type": "Float",
-        "Default": [
-          0,
-          0,
-          0,
-          0
-        ]
-      }
-    },
-    "Textures": [
+    "UsedDefaultParameters": [
       "diffuse",
-      "normal",
-      "normal",
-      "reflection",
-      "displacement"
-    ]
-  },
-  "Water_Opacity": {
-    "Variants": [
-      "",
-      "u"
+      "ambient",
+      "specular",
+      "power_gloss_level"
     ],
     "Parameters": {
       "g_WaterParam": {
@@ -2883,26 +3776,49 @@
           0,
           0
         ]
-      },
-      "g_OffsetParam": {
+      }
+    },
+    "Textures": {
+      "diffuse": 1,
+      "normal": 2,
+      "reflection": 1
+    }
+  },
+  "Water_Opacity": {
+    "Variations": [
+      "",
+      "u"
+    ],
+    "UsedDefaultParameters": [
+      "diffuse",
+      "ambient",
+      "specular",
+      "power_gloss_level"
+    ],
+    "Parameters": {
+      "g_WaterParam": {
         "Type": "Float",
         "Default": [
-          0,
-          0,
+          1,
+          0.5,
           0,
           0
         ]
       }
     },
-    "Textures": [
-      "diffuse",
-      "normal",
-      "normal",
-      "reflection",
-      "displacement"
-    ]
+    "Textures": {
+      "diffuse": 1,
+      "normal": 2,
+      "reflection": 1
+    }
   },
   "Water_Opacity_Ref": {
+    "UsedDefaultParameters": [
+      "diffuse",
+      "ambient",
+      "specular",
+      "power_gloss_level"
+    ],
     "Parameters": {
       "g_WaterParam": {
         "Type": "Float",
@@ -2912,52 +3828,35 @@
           0,
           0
         ]
-      },
-      "g_OffsetParam": {
-        "Type": "Float",
-        "Default": [
-          0,
-          0,
-          0,
-          0
-        ]
       }
     },
-    "Textures": [
-      "diffuse",
-      "normal",
-      "normal",
-      "reflection",
-      "displacement"
-    ]
+    "Textures": {
+      "diffuse": 1,
+      "normal": 2
+    }
   },
   "Water_Opacity_SoftEdge": {
+    "UsedDefaultParameters": [
+      "diffuse",
+      "ambient",
+      "specular",
+      "power_gloss_level"
+    ],
     "Parameters": {
       "g_WaterParam": {
         "Type": "Float",
         "Default": [
           1,
           0.5,
-          2,
-          3
-        ]
-      },
-      "g_OffsetParam": {
-        "Type": "Float",
-        "Default": [
           0,
-          0,
-          0,
-          0
+          8
         ]
       }
     },
-    "Textures": [
-      "diffuse",
-      "normal",
-      "normal",
-      "reflection",
-      "displacement"
-    ]
+    "Textures": {
+      "diffuse": 1,
+      "normal": 2,
+      "reflection": 1
+    }
   }
 }

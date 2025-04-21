@@ -74,19 +74,32 @@ class HEIO_MaterialParameter(bpy.types.PropertyGroup):
         description="This parameter is usually handled by the game itself, but can be overriden in the material"
     )
 
-    def is_overridable(self, target_definition: TargetDefinition):
+    def _get_parameter_definition(self, target_definition: TargetDefinition):
         if target_definition is None or not isinstance(self.id_data, bpy.types.Material) or self.id_data.heio_material.custom_shader:
-            return False
+            return None
 
         shader_definition = target_definition.shaders.definitions.get(self.id_data.heio_material.shader_name, None)
         if shader_definition is None:
-            return False
+            return None
 
         shader_parameter = shader_definition.parameters.get(self.name, None)
-        if shader_parameter is None:
+        return shader_parameter
+
+    def is_hidden(self, target_definition: TargetDefinition):
+        parameter_def = self._get_parameter_definition(target_definition)
+
+        if parameter_def is None:
             return False
 
-        return shader_parameter.overridable
+        return not parameter_def.is_used
+
+    def is_overridable(self, target_definition: TargetDefinition):
+        parameter_def = self._get_parameter_definition(target_definition)
+
+        if parameter_def is None:
+            return False
+
+        return parameter_def.overridable
 
 
     def _get_float_nodes(self):

@@ -46,12 +46,14 @@ class ShaderParameter:
     name: str
     type: ShaderParameterType
     overridable: bool
+    is_used: bool
     default: any
 
     def __init__(self, name: str, type: ShaderParameterType, overridable: bool, default: any):
         self.name = name
         self.type = type
         self.overridable = overridable
+        self.is_used = True
         self.default = default
 
     @staticmethod
@@ -65,6 +67,9 @@ class ShaderParameter:
 
         return ShaderParameter(data.identifier, type, overridable, default)
 
+    def copy(self):
+        return ShaderParameter(self.name, self.type, self.overridable, self.default)
+
 
 class ShaderDefinition:
 
@@ -76,7 +81,7 @@ class ShaderDefinition:
     layer: ShaderLayer
     variants: list[str]
     parameters: dict[str, ShaderParameter]
-    textures: list[str]
+    textures: dict[str, int]
 
     variant_items: list[tuple[str, str, str]]
     variant_items_fallback: list[tuple[str, str, str]]
@@ -90,7 +95,7 @@ class ShaderDefinition:
         self.layer = ShaderLayer.OPAQUE
         self.variants = []
         self.parameters = {}
-        self.textures = []
+        self.textures = {}
 
         self.variant_items = None
         self.variant_items_fallback = None
@@ -109,18 +114,27 @@ class ShaderDefinition:
             result.layer = base.layer
             result.hide = base.hide
             result.variants.extend(base.variants)
-            result.parameters.update(base.parameters)
-            result.textures.extend(base.textures)
+            result.textures.update(base.textures)
+
+            for key, parameter in base.parameters.items():
+                parameter_copy = parameter.copy()
+                parameter_copy.is_used = False
+                result.parameters[key] = parameter_copy
+
 
         result.hide = data.get_property_fallback("Hide", result.hide)
         result.variants.extend(data.get_property_fallback("Variants", []))
-        result.textures.extend(data.get_property_fallback("Textures", []))
+        result.textures.update(data.get_property_fallback("Textures", {}))
 
         if result.hide:
             result.visible_items_index = -1
 
         if "Layer" in data:
             result.layer = data.parse_property("Layer", ShaderLayer)
+
+        if "UsedDefaultParameters" in data:
+            for key in data["UsedDefaultParameters"]:
+                result.parameters[key].is_used = True
 
         if "Parameters" in data:
             for key, value in data["Parameters"]:

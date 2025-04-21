@@ -318,20 +318,21 @@ class HEIO_Material(bpy.types.PropertyGroup):
         current_index = 0
         textures: HEIO_MaterialTextureList = self.textures
 
-        for texture_name in definition.textures:
-            index = textures.find_next_index(texture_name, current_index)
+        for texture_name, texture_count in definition.textures.items():
+            for _ in range(texture_count):
+                index = textures.find_next_index(texture_name, current_index)
 
-            if index >= 0:
-                item = textures[index]
-            else:
-                index = len(textures)
-                item = textures.new()
-                item.name = texture_name
+                if index >= 0:
+                    item = textures[index]
+                else:
+                    index = len(textures)
+                    item = textures.new()
+                    item.name = texture_name
 
-            if index != current_index:
-                textures.move(index, current_index)
+                if index != current_index:
+                    textures.move(index, current_index)
 
-            current_index += 1
+                current_index += 1
 
         remove_index = len(textures) - 1
         while remove_index >= current_index:

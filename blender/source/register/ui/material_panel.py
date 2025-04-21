@@ -61,10 +61,10 @@ class BaseParameterList:
             index,
             flt_flag):
 
+
         icon = "BLANK1"
         if len(item.name) == 0:
             icon = "ERROR"
-
 
         target_definition = definitions.get_target_definition(context)
         if item.is_overridable(target_definition) and not item.override:
@@ -79,6 +79,14 @@ class BaseParameterList:
 
 
 class HEIO_UL_ParameterList(bpy.types.UIList, BaseParameterList):
+
+    def filter_items(self, context, data, property):
+        if context.scene.heio_scene.show_unused_parameters:
+            return [], []
+
+        target_definition = definitions.get_target_definition(context)
+        flt_flags = [(0 if item.is_hidden(target_definition) else self.bitflag_filter_item) for item in data]
+        return flt_flags, []
 
     def draw_item_name(self, layout, item, icon):
         layout.label(text=item.name, icon=icon)
@@ -148,6 +156,8 @@ class HEIO_PT_Material(PropertiesPanel):
         header.label(text="Parameters")
         if not body:
             return
+
+        body.prop(context.scene.heio_scene, "show_unused_parameters")
 
         tools = MATERIAL_PARAMETER_TOOLS if material_properties.custom_shader else None
 

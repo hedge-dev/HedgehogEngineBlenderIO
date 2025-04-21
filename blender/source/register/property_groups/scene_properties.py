@@ -59,6 +59,11 @@ class HEIO_Scene(bpy.types.PropertyGroup):
         description="Show all shaders defined, instead of only the commonly used ones."
     )
 
+    show_unused_parameters: BoolProperty(
+        name="Show unused parameters",
+        description="Show unused shader parameters on materials"
+    )
+
     @classmethod
     def register(cls):
         bpy.types.Scene.heio_scene = bpy.props.PointerProperty(type=cls)
