@@ -1,6 +1,6 @@
 {
   "": {
-    "Hide": false,
+    "Hide": true,
     "Layer": "Opaque",
     "Parameters": {
       "diffuse": {
@@ -149,6 +149,10 @@
     }
   },
   "ChrSkinCDRF_dpcf": {
+    "UsedDefaultParameters": [
+      "ambient",
+      "emissive"
+    ],
     "Parameters": {
       "FalloffFactor": {
         "Type": "Float",
@@ -213,6 +217,10 @@
   },
   "EffAdhoc": {},
   "Emission_d": {
+    "UsedDefaultParameters": [
+      "ambient",
+      "emissive"
+    ],
     "Parameters": {
       "Luminance": {
         "Type": "Float",
@@ -238,6 +246,9 @@
     }
   },
   "Emission_dnE": {
+    "UsedDefaultParameters": [
+      "ambient"
+    ],
     "Parameters": {
       "Luminance": {
         "Type": "Float",
@@ -265,6 +276,9 @@
     }
   },
   "Emission_dpnE": {
+    "UsedDefaultParameters": [
+      "ambient"
+    ],
     "Parameters": {
       "Luminance": {
         "Type": "Float",
@@ -345,6 +359,9 @@
   },
   "GerstnerWave_ddna": {
     "Layer": "Transparent",
+    "UsedDefaultParameters": [
+      "emissive"
+    ],
     "Parameters": {
       "PBRFactor": {
         "Type": "Float",
@@ -408,6 +425,9 @@
     }
   },
   "GlassTone_dpnE": {
+    "UsedDefaultParameters": [
+      "ambient"
+    ],
     "Parameters": {
       "Refraction": {
         "Type": "Float",
@@ -445,11 +465,42 @@
     }
   },
   "IgnoreLight_d": {
+    "UsedDefaultParameters": [
+      "diffuse",
+      "ambient",
+      "emissive"
+    ],
+    "Parameters": {
+      "Luminance": {
+        "Type": "Float",
+        "Default": [
+          1,
+          0,
+          0,
+          0
+        ]
+      }
+    },
     "Textures": {
       "diffuse": 1
     }
   },
   "IgnoreLight_dE": {
+    "UsedDefaultParameters": [
+      "diffuse",
+      "ambient"
+    ],
+    "Parameters": {
+      "Luminance": {
+        "Type": "Float",
+        "Default": [
+          5,
+          0,
+          0,
+          0
+        ]
+      }
+    },
     "Textures": {
       "diffuse": 1,
       "emission": 1
@@ -500,6 +551,21 @@
     }
   },
   "Jewel": {
+    "UsedDefaultParameters": [
+      "ambient",
+      "emissive"
+    ],
+    "Parameters": {
+      "Luminance": {
+        "Type": "Float",
+        "Default": [
+          1,
+          0,
+          0,
+          0
+        ]
+      }
+    },
     "Textures": {
       "normal": 1,
       "diffuse": 1
@@ -507,6 +573,9 @@
   },
   "Sky_d": {
     "Layer": "Transparent",
+    "UsedDefaultParameters": [
+      "emissive"
+    ],
     "Textures": {
       "diffuse": 1,
       "transparency": 1

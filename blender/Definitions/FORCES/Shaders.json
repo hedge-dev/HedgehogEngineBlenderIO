@@ -96,6 +96,10 @@
     }
   },
   "BuddySkinCDRF_dpcfbd": {
+    "UsedDefaultParameters": [
+      "ambient",
+      "emissive"
+    ],
     "Parameters": {
       "enable_max_bone_influences_8": {
         "Type": "Boolean",
@@ -117,6 +121,10 @@
     }
   },
   "BuddySkinCDRF_dpncfbd": {
+    "UsedDefaultParameters": [
+      "ambient",
+      "emissive"
+    ],
     "Parameters": {
       "enable_max_bone_influences_8": {
         "Type": "Boolean",
@@ -139,6 +147,10 @@
     }
   },
   "Chaos_dpnn": {
+    "UsedDefaultParameters": [
+      "ambient",
+      "emissive"
+    ],
     "Parameters": {
       "enable_max_bone_influences_8": {
         "Type": "Boolean",
@@ -192,6 +204,10 @@
     }
   },
   "ChrCarPaint_dpnf": {
+    "UsedDefaultParameters": [
+      "ambient",
+      "emissive"
+    ],
     "Parameters": {
       "enable_max_bone_influences_8": {
         "Type": "Boolean",
@@ -351,6 +367,10 @@
   },
   "ChrEyeE": {
     "Hide": false,
+    "UsedDefaultParameters": [
+      "ambient",
+      "emissive"
+    ],
     "Parameters": {
       "enable_max_bone_influences_8": {
         "Type": "Boolean",
@@ -400,6 +420,10 @@
     }
   },
   "ChrGlass_d": {
+    "UsedDefaultParameters": [
+      "ambient",
+      "emissive"
+    ],
     "Parameters": {
       "enable_max_bone_influences_8": {
         "Type": "Boolean",
@@ -438,6 +462,10 @@
     }
   },
   "ChrGlass_dn": {
+    "UsedDefaultParameters": [
+      "ambient",
+      "emissive"
+    ],
     "Parameters": {
       "enable_max_bone_influences_8": {
         "Type": "Boolean",
@@ -477,6 +505,10 @@
     }
   },
   "ChrGlass_dpf": {
+    "UsedDefaultParameters": [
+      "ambient",
+      "emissive"
+    ],
     "Parameters": {
       "enable_max_bone_influences_8": {
         "Type": "Boolean",
@@ -508,6 +540,10 @@
   },
   "ChrSkinCDRF_dpcf": {
     "Hide": false,
+    "UsedDefaultParameters": [
+      "ambient",
+      "emissive"
+    ],
     "Parameters": {
       "enable_max_bone_influences_8": {
         "Type": "Boolean",
@@ -529,6 +565,10 @@
     }
   },
   "ChrSkinCDRF_dpcfbd": {
+    "UsedDefaultParameters": [
+      "ambient",
+      "emissive"
+    ],
     "Parameters": {
       "enable_max_bone_influences_8": {
         "Type": "Boolean",
@@ -550,6 +590,10 @@
     }
   },
   "ChrSkinCDRF_dpncf": {
+    "UsedDefaultParameters": [
+      "ambient",
+      "emissive"
+    ],
     "Parameters": {
       "enable_max_bone_influences_8": {
         "Type": "Boolean",
@@ -572,6 +616,10 @@
     }
   },
   "ChrSkinCDRF_dpncfbd": {
+    "UsedDefaultParameters": [
+      "ambient",
+      "emissive"
+    ],
     "Parameters": {
       "enable_max_bone_influences_8": {
         "Type": "Boolean",
@@ -615,9 +663,9 @@
       "CoatColor": {
         "Type": "Color",
         "Default": [
-          0,
-          0,
-          0,
+          0.028,
+          0.024,
+          0.03,
           0
         ]
       }
@@ -794,6 +842,10 @@
     }
   },
   "Emission_d": {
+    "UsedDefaultParameters": [
+      "ambient",
+      "emissive"
+    ],
     "Parameters": {
       "enable_max_bone_influences_8": {
         "Type": "Boolean",
@@ -823,6 +875,9 @@
     }
   },
   "Emission_dE": {
+    "UsedDefaultParameters": [
+      "ambient"
+    ],
     "Parameters": {
       "enable_max_bone_influences_8": {
         "Type": "Boolean",
@@ -853,6 +908,9 @@
     }
   },
   "Emission_dnE": {
+    "UsedDefaultParameters": [
+      "ambient"
+    ],
     "Parameters": {
       "enable_max_bone_influences_8": {
         "Type": "Boolean",
@@ -885,6 +943,9 @@
   },
   "Emission_dpE": {
     "Hide": false,
+    "UsedDefaultParameters": [
+      "ambient"
+    ],
     "Parameters": {
       "enable_max_bone_influences_8": {
         "Type": "Boolean",
@@ -908,6 +969,9 @@
   },
   "Emission_dpnE": {
     "Hide": false,
+    "UsedDefaultParameters": [
+      "ambient"
+    ],
     "Parameters": {
       "enable_max_bone_influences_8": {
         "Type": "Boolean",
@@ -933,6 +997,9 @@
   "Emission_dpnEa": {
     "Hide": false,
     "Layer": "Transparent",
+    "UsedDefaultParameters": [
+      "ambient"
+    ],
     "Parameters": {
       "enable_max_bone_influences_8": {
         "Type": "Boolean",
@@ -965,8 +1032,8 @@
       "PBRFactor": {
         "Type": "Float",
         "Default": [
-          0.8,
-          0.8,
+          1,
+          1,
           0,
           0
         ]
@@ -1059,6 +1126,9 @@
     }
   },
   "FakeGlass_dpnE": {
+    "UsedDefaultParameters": [
+      "ambient"
+    ],
     "Parameters": {
       "enable_max_bone_influences_8": {
         "Type": "Boolean",
@@ -1190,6 +1260,9 @@
     }
   },
   "Glass_dpnE": {
+    "UsedDefaultParameters": [
+      "ambient"
+    ],
     "Parameters": {
       "enable_max_bone_influences_8": {
         "Type": "Boolean",
@@ -1375,6 +1448,11 @@
   },
   "IgnoreLight_d": {
     "Hide": false,
+    "UsedDefaultParameters": [
+      "diffuse",
+      "ambient",
+      "emissive"
+    ],
     "Parameters": {
       "enable_max_bone_influences_8": {
         "Type": "Boolean",
@@ -1396,6 +1474,11 @@
   },
   "IgnoreLight_da": {
     "Layer": "Transparent",
+    "UsedDefaultParameters": [
+      "diffuse",
+      "ambient",
+      "emissive"
+    ],
     "Parameters": {
       "enable_max_bone_influences_8": {
         "Type": "Boolean",
@@ -1418,6 +1501,11 @@
   },
   "IgnoreLight_dao": {
     "Layer": "Transparent",
+    "UsedDefaultParameters": [
+      "diffuse",
+      "ambient",
+      "emissive"
+    ],
     "Parameters": {
       "enable_max_bone_influences_8": {
         "Type": "Boolean",
@@ -1450,6 +1538,10 @@
   },
   "IgnoreLight_dE": {
     "Hide": false,
+    "UsedDefaultParameters": [
+      "diffuse",
+      "ambient"
+    ],
     "Parameters": {
       "enable_max_bone_influences_8": {
         "Type": "Boolean",
@@ -1472,6 +1564,10 @@
   },
   "IgnoreLight_E": {
     "Hide": false,
+    "UsedDefaultParameters": [
+      "diffuse",
+      "ambient"
+    ],
     "Parameters": {
       "enable_max_bone_influences_8": {
         "Type": "Boolean",
@@ -1492,6 +1588,10 @@
     }
   },
   "IgnoreLight_E1": {
+    "UsedDefaultParameters": [
+      "diffuse",
+      "ambient"
+    ],
     "Parameters": {
       "enable_max_bone_influences_8": {
         "Type": "Boolean",
@@ -1514,6 +1614,10 @@
   "IgnoreLight_Eao": {
     "Hide": false,
     "Layer": "Transparent",
+    "UsedDefaultParameters": [
+      "diffuse",
+      "ambient"
+    ],
     "Parameters": {
       "enable_max_bone_influences_8": {
         "Type": "Boolean",
@@ -1644,6 +1748,11 @@
   },
   "Infinite": {
     "Hide": false,
+    "UsedDefaultParameters": [
+      "ambient",
+      "specular",
+      "emissive"
+    ],
     "Parameters": {
       "enable_max_bone_influences_8": {
         "Type": "Boolean",
@@ -1703,6 +1812,9 @@
     }
   },
   "InstancedWire_dpnE": {
+    "UsedDefaultParameters": [
+      "ambient"
+    ],
     "Parameters": {
       "Luminance": {
         "Type": "Float",
@@ -1774,6 +1886,9 @@
     }
   },
   "MEmission_dpE": {
+    "UsedDefaultParameters": [
+      "ambient"
+    ],
     "Parameters": {
       "enable_max_bone_influences_8": {
         "Type": "Boolean",
@@ -1797,6 +1912,9 @@
   },
   "MEmission_dpnE": {
     "Hide": false,
+    "UsedDefaultParameters": [
+      "ambient"
+    ],
     "Parameters": {
       "enable_max_bone_influences_8": {
         "Type": "Boolean",
@@ -1821,6 +1939,9 @@
   },
   "MEmission_dpnEa": {
     "Layer": "Transparent",
+    "UsedDefaultParameters": [
+      "ambient"
+    ],
     "Parameters": {
       "enable_max_bone_influences_8": {
         "Type": "Boolean",
@@ -1853,8 +1974,8 @@
       "MistThickness": {
         "Type": "Float",
         "Default": [
-          200,
-          450,
+          400,
+          800,
           0,
           0
         ]
@@ -2000,6 +2121,10 @@
     }
   },
   "Ruby01": {
+    "UsedDefaultParameters": [
+      "ambient",
+      "emissive"
+    ],
     "Parameters": {
       "enable_max_bone_influences_8": {
         "Type": "Boolean",
@@ -2021,6 +2146,9 @@
     }
   },
   "Ruby02": {
+    "UsedDefaultParameters": [
+      "emissive"
+    ],
     "Parameters": {
       "enable_max_bone_influences_8": {
         "Type": "Boolean",
@@ -2052,25 +2180,29 @@
     }
   },
   "SearchLight": {
+    "UsedDefaultParameters": [
+      "ambient",
+      "emissive"
+    ],
     "Parameters": {
       "enable_max_bone_influences_8": {
         "Type": "Boolean",
         "Default": false
-      },
-      "FalloffFactor": {
-        "Type": "Float",
-        "Default": [
-          1.8,
-          0.5,
-          0,
-          0
-        ]
       },
       "Luminance": {
         "Type": "Float",
         "Default": [
           150,
           0,
+          0,
+          0
+        ]
+      },
+      "FalloffFactor": {
+        "Type": "Float",
+        "Default": [
+          1.8,
+          0.5,
           0,
           0
         ]
