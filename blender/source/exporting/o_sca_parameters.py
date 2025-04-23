@@ -4,12 +4,13 @@ from ..dotnet import SharpNeedle
 def convert_parameters_to_nodes(sn_node, sca_parameter_list, defaults: dict[str, any]):
     added = set()
 
-    for sca_parameter in sca_parameter_list:
-        if len(sca_parameter.name) > 0:
-            sn_node.AddChild(SharpNeedle.SAMPLE_CHUNK_NODE(
-                sca_parameter.name, sca_parameter.value))
+    if sca_parameter_list is not None:
+        for sca_parameter in sca_parameter_list:
+            if len(sca_parameter.name) > 0:
+                sn_node.AddChild(SharpNeedle.SAMPLE_CHUNK_NODE(
+                    sca_parameter.name, sca_parameter.value))
 
-            added.add(sca_parameter.name)
+                added.add(sca_parameter.name)
 
     for name, value in defaults.items():
         if name in added:
