@@ -77,6 +77,11 @@ namespace HEIO.NET.Modeling.ConvertFrom
 
                 if(c == ushort.MaxValue)
                 {
+                    if(i + 3 >= indices.Length)
+                    {
+                        break;
+                    }
+
                     a = indices[++i];
                     b = indices[++i];
                     rev = false;
