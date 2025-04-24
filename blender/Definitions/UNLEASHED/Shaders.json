@@ -1,7 +1,7 @@
 {
   "": {
     "Hide": true,
-    "Layer": "Transparent",
+    "Layer": "Opaque",
     "Parameters": {
       "diffuse": {
         "Type": "Color",
