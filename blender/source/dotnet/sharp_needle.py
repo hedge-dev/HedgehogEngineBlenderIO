@@ -14,25 +14,25 @@ class SharpNeedle:
     '''class SharpNeedle.Framework.HedgehogEngine.Mirage.SampleChunkNode'''
 
     MATERIAL: any = None
-    '''class SharpNeedle.Framework.HedgehogEngine.Mirage.Material'''
+    '''class SharpNeedle.Framework.HedgehogEngine.Mirage.MaterialData.Material'''
 
     MATERIAL_BLEND_MODE: any = None
-    '''class SharpNeedle.Framework.HedgehogEngine.Mirage.MaterialBlendMode'''
+    '''class SharpNeedle.Framework.HedgehogEngine.Mirage.MaterialData.MaterialBlendMode'''
 
     TEXTURE: any = None
-    '''class SharpNeedle.Framework.HedgehogEngine.Mirage.Texture'''
+    '''class SharpNeedle.Framework.HedgehogEngine.Mirage.MaterialData.Texture'''
 
     WRAP_MODE: any = None
-    '''enum SharpNeedle.Framework.HedgehogEngine.Mirage.WrapMode'''
+    '''enum SharpNeedle.Framework.HedgehogEngine.Mirage.MaterialData.WrapMode'''
 
     TERRAIN_MODEL: any = None
-    '''enum SharpNeedle.Framework.HedgehogEngine.Mirage.TerrainModel'''
+    '''enum SharpNeedle.Framework.HedgehogEngine.Mirage.ModelData.TerrainModel'''
 
     MODEL: any = None
-    '''enum SharpNeedle.Framework.HedgehogEngine.Mirage.Model'''
+    '''enum SharpNeedle.Framework.HedgehogEngine.Mirage.ModelData.Model'''
 
     MESH_SLOT: any = None
-    '''enum SharpNeedle.Framework.HedgehogEngine.Mirage.MeshSlot'''
+    '''enum SharpNeedle.Framework.HedgehogEngine.Mirage.ModelData.MeshSlot'''
 
     BULLET_PRIMITIVE: any = None
     '''enum SharpNeedle.Framework.HedgehogEngine.Bullet.BulletPrimitive'''
@@ -56,11 +56,17 @@ class SharpNeedle:
         )
 
         from SharpNeedle.Framework.HedgehogEngine.Mirage import ( # type: ignore
-            SampleChunkNode,
+            SampleChunkNode
+        )
+
+        from SharpNeedle.Framework.HedgehogEngine.Mirage.MaterialData import ( # type: ignore
             Material,
             MaterialBlendMode,
             Texture,
             WrapMode,
+        )
+
+        from SharpNeedle.Framework.HedgehogEngine.Mirage.ModelData import ( # type: ignore
             TerrainModel,
             Model,
             MeshSlot
