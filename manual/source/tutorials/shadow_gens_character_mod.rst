@@ -128,9 +128,9 @@ You'll need to experiment a bit with the falloff parameters to get them how you 
 
 Some useful resources for learning how to work with materials:
 
-- :doc:`Physically based rendering in HE2 </game_documentation/shaders/common/pbr>`
-- :doc:`HE2 textures </game_documentation/textures/textures_he2>`
-- :doc:`Shadow Generations Shader documentation </game_documentation/shaders/shadow_generations/index>`
+- `Physically based rendering in HE2 <https://hedgedocs.com/index.php/Hedgehog_Engine_2_-_Physically_Based_Rendering_(PBR)>`_
+- `HE2 textures <https://hedgedocs.com/index.php/Hedgehog_Engine_2_-_Textures>`_
+- `Shadow Generations Shader documentation <https://hedgedocs.com/index.php/Shadow_Generations_Shaders>`_
 
 .. attention::
 
@@ -266,8 +266,9 @@ hedgehog engine game!
 
 Generally, when it comes to making model mods its important to know your way with materials. The
 better your material game, the better your mods! Go wild experimenting with different shaders and
-parameters! You can learn more about shaders, textures and related topics in
-:doc:`the game documentation </game_documentation/shaders/index>`
+parameters! You can learn more about shaders, textures and related topics over at hedgedocs
+(`HE2 Engine documentation <https://hedgedocs.com/index.php/Hedgehog_Engine_2_Rendering>`_,
+`Shader documentation <https://hedgedocs.com/index.php/Shadow_Generations_Shaders>`_)
 
 If you want to learn more about how HEIO works, check out the :doc:`Guides </guides/index>`
 section!

@@ -85,10 +85,10 @@ Sections
         .. container:: card
 
             .. figure:: /images/index_game_documentation.png
-                :target: game_documentation/index.html
+                :target: material_templates/index.html
 
-            :doc:`/game_documentation/index`
-                Information on asset types, shaders and more for each supported game
+            :doc:`/material_templates/index`
+                Status on material templates for all game shaders
 
         .. container:: card
 
@@ -108,5 +108,5 @@ Sections
         /user_interface/index
         /guides/index
         /tutorials/index
-        /game_documentation/index
+        /material_templates/index
         /target_configuration/index

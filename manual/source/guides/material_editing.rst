@@ -36,7 +36,7 @@ how a model gets rendered. Materials tell the game which shader to use as well a
 options like parameters and textures to be used by the shader.
 
 Every game has its own list of shaders. A full list of the usable shaders for each game can be
-found :doc:`here </game_documentation/shaders/index>`.
+found :doc:`here </material_templates/index>`.
 
 If you created a new material, it will be set up to use a
 :ref:`custom shader <bpy.types.HEIO_Material.custom_shader>` and have no shader set. Custom Shaders are only
@@ -72,7 +72,7 @@ If a shader has variants, you can select those via a second dropdown.
 
 	Available shader variants for the shader ``Common_de`` for Sonic Unleashed
 
-Each target games shader features and their purposes are documented :doc:`here </game_documentation/shader_features>`.
+Each target games shader features and their purposes are documented `here <https://hedgedocs.com/index.php/Shader_Features>`_.
 
 .. _guides_material_editing_node_setup:
 
@@ -132,7 +132,8 @@ various purposes.
 For more detailed information about textures, read
 
 - :doc:`HEIO Material Textures </user_interface/object/material_textures>`
-- :doc:`Texture systems in each engine </game_documentation/textures/index>`
+- `HE1 Texture documentation <https://hedgedocs.com/index.php/Hedgehog_Engine_-_Textures>`_
+- `HE2 Texture documentation <https://hedgedocs.com/index.php/Hedgehog_Engine_2_-_Textures>`_
 
 .. important::
 
@@ -153,7 +154,7 @@ released after.
 For more detailed information about SCA parameters, read
 
 - :doc:`HEIO SCA Parameters </user_interface/object/sca_parameters>`
-- :doc:`Material SCA parameters </game_documentation/sca_parameters>`
+- `Material SCA parameters <https://hedgedocs.com/index.php/SCA_Parameters#Material_Parameters>`_
 
 
 Blender material preview
