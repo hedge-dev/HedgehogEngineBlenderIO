@@ -84,7 +84,7 @@ Sections
 
         .. container:: card
 
-            .. figure:: /images/index_game_documentation.png
+            .. figure:: /images/index_material_templates.png
                 :target: material_templates/index.html
 
             :doc:`/material_templates/index`
