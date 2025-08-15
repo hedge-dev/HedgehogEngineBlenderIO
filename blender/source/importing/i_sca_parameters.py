@@ -10,7 +10,7 @@ def convert_from_node(
         return
 
     sca_parameter_definitions = None
-    if target_definition is not None:
+    if target_definition is not None and target_definition.sca_parameters is not None:
         sca_parameter_definitions = getattr(
             target_definition.sca_parameters, data_type)
 
