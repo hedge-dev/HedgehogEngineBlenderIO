@@ -108,7 +108,7 @@ class HEIO_MaterialParameter(bpy.types.PropertyGroup):
 
         from bpy.types import (
             ShaderNodeCombineXYZ as CombineXYZ,
-            ShaderNodeCombineRGB as CombineRGB,
+            ShaderNodeCombineColor as CombineRGB,
             ShaderNodeRGB as RGB,
             ShaderNodeValue as Value,
         )
@@ -136,7 +136,7 @@ class HEIO_MaterialParameter(bpy.types.PropertyGroup):
             elif isinstance(node, bpy.types.ShaderNodeValue):
                 node.outputs[0].default_value = self.float_value[0]
 
-            elif isinstance(node, bpy.types.ShaderNodeCombineRGB):
+            elif isinstance(node, bpy.types.ShaderNodeCombineColor):
                 node.inputs[0].default_value = self.color_value[0]
                 node.inputs[1].default_value = self.color_value[1]
                 node.inputs[2].default_value = self.color_value[2]
@@ -161,7 +161,7 @@ class HEIO_MaterialParameter(bpy.types.PropertyGroup):
             if isinstance(node, (bpy.types.ShaderNodeRGB, bpy.types.ShaderNodeValue)):
                 reset_output_socket(node.outputs[0])
 
-            else:  # bpy.types.ShaderNodeCombineRGB | bpy.types.ShaderNodeCombineXYZ
+            else:  # bpy.types.ShaderNodeCombineColor | bpy.types.ShaderNodeCombineXYZ
                 connected = get_first_connected_socket(node.outputs[0])
                 if connected is not None:
                     node.inputs[0].default_value = connected.default_value[0]
