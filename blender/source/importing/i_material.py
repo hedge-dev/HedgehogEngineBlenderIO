@@ -1,8 +1,11 @@
 import bpy
 from typing import Iterable
+from ctypes import cast, c_void_p, POINTER
 
-from . import i_enum, i_image, i_sca_parameters
+from . import i_image, i_sca_parameters
 
+from ..external import TPointer, CMaterial, CTexture
+from ..external.enums import WRAP_MODE, MATERIAL_BLEND_MODE
 from ..register.definitions import TargetDefinition
 from ..register.property_groups.material_properties import (
     HEIO_Material,
@@ -50,56 +53,59 @@ class MaterialConverter:
 
     def _convert_textures(
             self,
-            sn_texture_set: any,
+            c_textures: TPointer[CTexture],
+            c_textures_size: int,
             output: HEIO_MaterialTextureList,
             create_missing: bool):
 
         name_indices = {}
         created_missing = False
 
-        for sn_texture in sn_texture_set.Textures:
+        for i in range(c_textures_size):
+            c_texture: CTexture = c_textures[i]
 
             from_index = 0
-            if sn_texture.Type in name_indices:
-                from_index = name_indices[sn_texture.Type] + 1
+            if c_texture.type in name_indices:
+                from_index = name_indices[c_texture.type] + 1
 
-            index = output.find_next_index(sn_texture.Type, from_index)
+            index = output.find_next_index(c_texture.type, from_index)
 
             if index >= 0:
-                name_indices[sn_texture.Type] = index
+                name_indices[c_texture.type] = index
                 texture = output[index]
             elif create_missing:
-                name_indices[sn_texture.Type] = len(output)
+                name_indices[c_texture.type] = len(output)
                 texture = output.new()
-                texture.name = sn_texture.Type
+                texture.name = c_texture.type
                 created_missing = True
             else:
                 continue
 
-            texture.texcoord_index = sn_texture.TexCoordIndex
-            texture.wrapmode_u = i_enum.from_wrap_mode(sn_texture.WrapModeU)
-            texture.wrapmode_v = i_enum.from_wrap_mode(sn_texture.WrapModeV)
+            texture.texcoord_index = c_texture.texcoord_index
+            texture.wrapmode_u = WRAP_MODE[c_texture.wrap_mode_u]
+            texture.wrapmode_v = WRAP_MODE[c_texture.wrap_mode_v]
             texture.image = self._image_loader.get_setup_image(
-                texture, sn_texture.PictureName)
+                texture, c_texture.picture_name)
 
         return created_missing
 
-    def _convert_parameters(self, sn_parameters: any, output: HEIO_MaterialParameterList, types: list[str], create_missing: bool, conv):
+    def _convert_parameters(self, c_parameters: TPointer, c_parameters_size: int, output: HEIO_MaterialParameterList, types: list[str], create_missing: bool, conv):
         created_missing = False
 
-        for sn_key_parameter in sn_parameters:
-            parameter = output.find_next(sn_key_parameter.Key, 0, types)
-
+        for i in range(c_parameters_size):
+            c_parameter = c_parameters[i]
+            parameter = output.find_next(c_parameter.name, 0, types)
+            
             if parameter is None:
                 if create_missing:
                     parameter = output.new()
-                    parameter.name = sn_key_parameter.Key
+                    parameter.name = c_parameter.name
                     parameter.value_type = types[0]
                     created_missing = True
                 else:
                     continue
 
-            value = sn_key_parameter.Value.Value
+            value = c_parameter.value
             if conv is not None:
                 value = conv(value)
 
@@ -108,39 +114,41 @@ class MaterialConverter:
 
         return created_missing
 
-    def convert_materials(self, sn_materials: Iterable[any]):
+    def convert_materials(self, c_materials: Iterable[TPointer[CMaterial]]):
 
         if self._import_images:
-            self._image_loader.load_images_from_materials(sn_materials)
+            self._image_loader.load_images_from_materials(c_materials)
 
-        progress_console.start("Setting up Materials", len(sn_materials))
+        progress_console.start("Setting up Materials", len(c_materials))
 
-        new_converted_materials = dict()
+        new_converted_materials: list[tuple[CMaterial, bpy.types.Material]] = []
 
-        for i, sn_material in enumerate(sn_materials):
-            if sn_material in self.converted_materials:
+        for i, c_material in enumerate(c_materials):
+            c_material_address = cast(c_material, c_void_p).value
+            if c_material_address in self.converted_materials:
                 continue
 
-            progress_console.update(f"Creating material \"{sn_material.Name}\"", i)
+            c_material: CMaterial = c_material.contents
+            progress_console.update(f"Creating material \"{c_material.name}\"", i)
 
-            material = bpy.data.materials.new(sn_material.Name)
-            self.converted_materials[sn_material] = material
-            new_converted_materials[sn_material] = material
-            self._material_name_lookup[sn_material.Name] = material
+            material = bpy.data.materials.new(c_material.name)
+            self.converted_materials[c_material_address] = material
+            new_converted_materials.append((c_material, material))
+            self._material_name_lookup[c_material.name] = material
 
             material_properties: HEIO_Material = material.heio_material
 
-            if len(sn_material.ShaderName) > 0 and sn_material.ShaderName[-1] == ']':
-                index = sn_material.ShaderName.index('[')
-                material_properties.shader_name = sn_material.ShaderName[:index]
-                material_properties.variant_name = sn_material.ShaderName[(
+            if len(c_material.shader_name) > 0 and c_material.shader_name[-1] == ']':
+                index = c_material.shader_name.index('[')
+                material_properties.shader_name = c_material.shader_name[:index]
+                material_properties.variant_name = c_material.shader_name[(
                     index+1):-1]
             else:
-                material_properties.shader_name = sn_material.ShaderName
+                material_properties.shader_name = c_material.shader_name
 
-            material_properties.blend_mode = i_enum.from_material_blend_mode(sn_material.BlendMode)
-            material.alpha_threshold = sn_material.AlphaThreshold / 255.0
-            material.use_backface_culling = not sn_material.NoBackFaceCulling
+            material_properties.blend_mode = MATERIAL_BLEND_MODE[c_material.blend_mode]
+            material.alpha_threshold = c_material.alpha_threshold / 255.0
+            material.use_backface_culling = not c_material.no_back_face_culling
 
             if self._target_definition is not None and material_properties.shader_name in self._target_definition.shaders.definitions:
                 material_properties.custom_shader = False
@@ -151,31 +159,33 @@ class MaterialConverter:
                 material_properties.custom_shader = True
 
         if self._node_setup_mode == 'SHADER':
-            progress_console.update(f"Setting up material node trees", len(sn_materials))
-            setup_and_update_materials(self._target_definition, new_converted_materials.values())
+            progress_console.update(f"Setting up material node trees", len(c_materials))
+            setup_and_update_materials(self._target_definition, [ncm[1] for ncm in new_converted_materials])
             progress_console.end()
 
         progress_console.start("Converting Materials", len(new_converted_materials))
 
-        for i, item in enumerate(new_converted_materials.items()):
-            progress_console.update(f"Converting material \"{sn_material.Name}\"", i, True)
+        for i, item in enumerate(new_converted_materials):
+            c_material = item[0]
+            material = item[1]
 
-            sn_material = item[0]
-            material: bpy.types.Material = item[1]
+            progress_console.update(f"Converting material \"{c_material.name}\"", i, True)
 
             material_properties: HEIO_Material = material.heio_material
             create_missing = self._create_undefined_parameters or material_properties.custom_shader
 
             created_missing = self._convert_parameters(
-                sn_material.FloatParameters,
+                c_material.float_parameters,
+                c_material.float_parameters_size,
                 material_properties.parameters,
                 ['FLOAT', 'COLOR'],
                 create_missing,
-                lambda x: (x.X, x.Y, x.Z, x.W)
+                lambda x: (x.x, x.y, x.z, x.w)
             )
 
             created_missing |= self._convert_parameters(
-                sn_material.BoolParameters,
+                c_material.bool_parameters,
+                c_material.bool_parameters_size,
                 material_properties.parameters,
                 ['BOOLEAN'],
                 create_missing,
@@ -183,16 +193,17 @@ class MaterialConverter:
             )
 
             created_missing |= self._convert_textures(
-                sn_material.Texset,
+                c_material.textures,
+                c_material.textures_size,
                 material_properties.textures,
                 create_missing
             )
 
-            i_sca_parameters.convert_from_data(
-                sn_material,
-                material_properties.sca_parameters,
-                self._target_definition,
-                "material")
+            # i_sca_parameters.convert_from_data(
+            #     c_material,
+            #     material_properties.sca_parameters,
+            #     self._target_definition,
+            #     "material")
 
             if created_missing:
                 material_properties.custom_shader = True
@@ -203,19 +214,19 @@ class MaterialConverter:
                     material.node_tree.nodes.active = diffuse_tex_node
 
         if self._node_setup_mode == 'PBSDF':
-            progress_console.update(f"Setting up material node trees", len(sn_materials))
-            setup_principled_bsdf_materials(self._target_definition, new_converted_materials.values())
+            progress_console.update(f"Setting up material node trees", len(c_materials))
+            setup_principled_bsdf_materials(self._target_definition, [ncm[1] for ncm in new_converted_materials])
             progress_console.end()
 
         progress_console.end()
 
     def get_material(self, key: any):
 
-        if callable(getattr(key, "IsValid", None)):
-            if not key.IsValid():
-                key = key.Name
+        if hasattr(key, "is_valid"):
+            if key.is_valid:
+                key = key.name
             else:
-                key = key.Resource
+                key = key.resource
 
         if isinstance(key, str):
 
@@ -226,10 +237,12 @@ class MaterialConverter:
             self._material_name_lookup[key] = material
             return material
 
-        if key in self.converted_materials:
-            return self.converted_materials[key]
+        if isinstance(key, POINTER(CMaterial)):
+            c_address = cast(key, c_void_p).value
+            if c_address in self.converted_materials:
+                return self.converted_materials[c_address]
 
-        if key.Name in self._material_name_lookup:
-            return self._material_name_lookup[key.Name]
+        if hasattr(key, "name") and key.name in self._material_name_lookup:
+            return self._material_name_lookup[key.name]
 
         raise HEIODevException("Material lookup failed")

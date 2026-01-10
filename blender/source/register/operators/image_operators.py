@@ -3,9 +3,10 @@ from bpy.props import StringProperty, EnumProperty
 
 from .base import HEIOBaseFileLoadOperator
 from .. import definitions
-from ...utility.general import get_addon_preferences, print_resolve_info
+from ...utility.general import get_addon_preferences
+from ...utility.dotnet import print_resolve_info
 from ...utility import progress_console
-from ...dotnet import HEIO_NET, load_dotnet
+from ...dotnet import load_dotnet
 from ...importing import i_image
 from ...exceptions import HEIOUserException
 
@@ -59,11 +60,11 @@ class HEIO_OT_ReimportImages(HEIOBaseFileLoadOperator):
         progress_console.cleanup()
         progress_console.start("Loading Images")
 
-        load_dotnet()
-        image_loader.load_images_from_directory(
-            self.directory,
-            [image.heio_image.reimport_name for image in self.reimport_images]
-        )
+        with load_dotnet():
+            image_loader.load_images_from_directory(
+                self.directory,
+                [image.heio_image.reimport_name for image in self.reimport_images]
+            )
 
         for image in self.reimport_images:
             name = image.heio_image.reimport_name

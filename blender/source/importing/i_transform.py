@@ -1,60 +1,59 @@
 from mathutils import Matrix, Vector
-from ..dotnet import System, HEIO_NET
+from ..external import Library, CMatrix, CVector3, CQuaternion
 
-
-def net_to_bpy_matrix(matrix):
+def c_to_bpy_matrix(matrix: CMatrix):
     return Matrix((
-        (matrix.M11, -matrix.M31, matrix.M21, matrix.M41),
-        (-matrix.M13, matrix.M33, -matrix.M23, -matrix.M43),
-        (matrix.M12, -matrix.M32, matrix.M22, matrix.M42),
+        (matrix.m11, -matrix.m31, matrix.m21, matrix.m41),
+        (-matrix.m13, matrix.m33, -matrix.m23, -matrix.m43),
+        (matrix.m12, -matrix.m32, matrix.m22, matrix.m42),
         (0, 0, 0, 1),
     ))
 
 
-def net_to_bpy_bone_xz_matrix(matrix):
+def c_to_bpy_bone_xz_matrix(matrix: CMatrix):
     return Matrix((
-        (matrix.M31, matrix.M11, matrix.M21, matrix.M41),
-        (-matrix.M33, -matrix.M13, -matrix.M23, -matrix.M43),
-        (matrix.M32, matrix.M12, matrix.M22, matrix.M42),
+        (matrix.m31, matrix.m11, matrix.m21, matrix.m41),
+        (-matrix.m33, -matrix.m13, -matrix.m23, -matrix.m43),
+        (matrix.m32, matrix.m12, matrix.m22, matrix.m42),
         (0, 0, 0, 1),
     ))
 
 
-def net_to_bpy_bone_xy_matrix(matrix):
+def c_to_bpy_bone_xy_matrix(matrix: CMatrix):
     return Matrix((
-        (-matrix.M21, matrix.M11, matrix.M31, matrix.M41),
-        (matrix.M23, -matrix.M13, -matrix.M33, -matrix.M43),
-        (-matrix.M22, matrix.M12, matrix.M32, matrix.M42),
+        (-matrix.m21, matrix.m11, matrix.m31, matrix.m41),
+        (matrix.m23, -matrix.m13, -matrix.m33, -matrix.m43),
+        (-matrix.m22, matrix.m12, matrix.m32, matrix.m42),
         (0, 0, 0, 1),
     ))
 
 
-def net_to_bpy_bone_znx_matrix(matrix):
+def c_to_bpy_bone_znx_matrix(matrix: CMatrix):
     return Matrix((
-        (matrix.M11, matrix.M31, -matrix.M21, matrix.M41),
-        (-matrix.M13, -matrix.M33, matrix.M23, -matrix.M43),
-        (matrix.M12, matrix.M32, -matrix.M22, matrix.M42),
+        (matrix.m11, matrix.m31, -matrix.m21, matrix.m41),
+        (-matrix.m13, -matrix.m33, matrix.m23, -matrix.m43),
+        (matrix.m12, matrix.m32, -matrix.m22, matrix.m42),
         (0, 0, 0, 1),
     ))
 
 
-def net_transforms_to_bpy_matrix(position, euler_rotation, scale):
+def c_transforms_to_bpy_matrix(position: CVector3, euler_rotation: CVector3, scale: CVector3):
 
-    position_mtx = System.MATRIX4X4.CreateTranslation(position)
-    rotation_matrix = HEIO_NET.PYTHON_HELPERS.CreateRotationMatrix(euler_rotation)
-    scale_mtx = System.MATRIX4X4.CreateScale(scale)
+    position_mtx = Library.matrix_create_translation(position)
+    rotation_matrix = Library.matrix_create_rotation(euler_rotation)
+    scale_mtx = Library.matrix_create_scale(scale)
 
-    matrix = scale_mtx * rotation_matrix * position_mtx
-    return net_to_bpy_matrix(matrix)
+    matrix = Library.matrix_multiply(Library.matrix_multiply(scale_mtx, rotation_matrix), position_mtx)
+    return c_to_bpy_matrix(matrix)
 
 
-def net_to_bpy_position(position):
+def c_to_bpy_position(position):
     return Vector((position.X, -position.Z, position.Y))
 
 
-def net_to_bpy_scale(scale):
+def c_to_bpy_scale(scale):
     return Vector((scale.X, scale.Z, scale.Y))
 
 
-def net_to_bpy_quaternion(quat):
-    return net_to_bpy_matrix(System.MATRIX4X4.CreateFromQuaternion(quat)).to_quaternion()
+def c_to_bpy_quaternion(quat: CQuaternion):
+    return c_to_bpy_matrix(Library.quaternion_create_from_rotation_matrix(quat)).to_quaternion()

@@ -23,8 +23,9 @@ from ...importing import (
     i_pointcloud
 )
 
-from ...dotnet import load_dotnet, SharpNeedle, HEIO_NET
-from ...utility.general import get_addon_preferences, print_resolve_info
+from ...external import Library
+from ...utility.general import get_addon_preferences
+from ...utility.dotnet import print_resolve_info
 from ...utility import progress_console
 from ...exceptions import HEIOUserException
 
@@ -38,23 +39,23 @@ class ImportOperator(HEIOBaseFileLoadOperator):
     )
 
     def _execute(self, context: Context):
-        load_dotnet()
+        with Library.load():
 
-        self.target_definition = definitions.get_target_definition(context)
-        if self.target_definition is None:
-            raise HEIOUserException("Invalid target game!")
+            self.target_definition = definitions.get_target_definition(context)
+            if self.target_definition is None:
+                raise HEIOUserException("Invalid target game!")
 
-        self.addon_preference = get_addon_preferences(context)
-        self._setup(context)
+            self.addon_preference = get_addon_preferences(context)
+            self._setup(context)
 
-        progress_console.cleanup()
-        progress_console.start("Importing")
-        result = self.import_(context)
-        progress_console.end()
+            progress_console.cleanup()
+            progress_console.start("Importing")
+            result = self.import_(context)
+            progress_console.end()
 
-        self.print_resolve_info(context)
+            self.print_resolve_info(context)
 
-        return result
+            return result
 
     def _setup(self, context):
         self.resolve_infos = []
@@ -187,23 +188,21 @@ class ImportMaterialOperator(ImportOperator):
         progress_console.update("Resolving & reading files")
 
         directory = os.path.dirname(self.filepath)
-        sn_materials = []
-        resource_manager = SharpNeedle.RESOURCE_MANAGER()
+        c_materials = []
 
         for file in self.files:
             filepath = os.path.join(directory, file.name)
 
             try:
-                material = SharpNeedle.RESOURCE_EXTENSIONS.Open[SharpNeedle.MATERIAL](
-                    resource_manager, filepath, True)
+                material = Library.material_read_file(filepath)
             except Exception as error:
                 print(f"An error occured while importing {file.name}")
                 raise error
 
-            sn_materials.append(material)
+            c_materials.append(material)
 
         progress_console.update("Importing data")
-        return self.material_converter.convert_materials(sn_materials)
+        return self.material_converter.convert_materials(c_materials)
 
     def print_resolve_info(self, context):
         self.resolve_infos.extend(self.image_loader.resolve_infos)

@@ -20,6 +20,7 @@ from ...exporting import (
     o_model
 )
 
+from ...dotnet import load_dotnet
 from ...utility import progress_console
 
 
@@ -30,21 +31,20 @@ class ExportOperator(HEIOBaseFileSaveOperator):
         raise NotImplementedError()
 
     def _execute(self, context: Context):
-        from ...dotnet import load_dotnet
-        load_dotnet()
+        with load_dotnet():
 
-        self.target_definition = definitions.get_target_definition(context)
-        if self.target_definition is None:
-            raise HEIOUserException("Invalid target game!")
+            self.target_definition = definitions.get_target_definition(context)
+            if self.target_definition is None:
+                raise HEIOUserException("Invalid target game!")
 
-        self.setup(context)
+            self.setup(context)
 
-        progress_console.cleanup()
-        progress_console.start("Exporting")
-        result = self.export(context)
-        progress_console.end()
+            progress_console.cleanup()
+            progress_console.start("Exporting")
+            result = self.export(context)
+            progress_console.end()
 
-        return result
+            return result
 
     def _invoke(self, context, event):
         self.directory_mode = True
