@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace HEIO.NET.Modeling
+namespace HEIO.NET.Internal.Modeling
 {
     public struct VertexWeight
     {

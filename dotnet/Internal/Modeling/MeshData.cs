@@ -6,7 +6,7 @@ using System.Linq;
 using System.Numerics;
 using System.Text.Json.Serialization;
 
-namespace HEIO.NET.Modeling
+namespace HEIO.NET.Internal.Modeling
 {
     public class MeshDataSetInfo
     {

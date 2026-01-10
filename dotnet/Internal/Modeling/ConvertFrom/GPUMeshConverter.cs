@@ -1,5 +1,4 @@
-﻿using HEIO.NET.Modeling;
-using HEIO.NET.Modeling.GPU;
+﻿using HEIO.NET.Internal.Modeling.GPU;
 using J113D.Common;
 using SharpNeedle.Framework.HedgehogEngine.Mirage.ModelData;
 using System;
@@ -8,7 +7,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
 
-namespace HEIO.NET.Modeling.ConvertFrom
+namespace HEIO.NET.Internal.Modeling.ConvertFrom
 {
     internal class GPUMeshConverter
     {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace HEIO.NET.Modeling
+namespace HEIO.NET.Internal.Modeling
 {
     internal readonly struct CompTri : IComparable<CompTri>
     {

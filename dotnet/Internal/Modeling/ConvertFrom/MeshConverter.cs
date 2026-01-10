@@ -1,6 +1,8 @@
 ﻿using Amicitia.IO.Binary;
 using Amicitia.IO.Streams;
-using HEIO.NET.Modeling.GPU;
+using HEIO.NET.Internal.Modeling;
+using HEIO.NET.Internal.Modeling.GPU;
+using HEIO.NET.Modeling.ConvertFrom;
 using SharpNeedle.Framework.HedgehogEngine.Mirage.ModelData;
 using SharpNeedle.Structs;
 using System;
@@ -9,7 +11,7 @@ using System.IO;
 using System.Linq;
 using System.Numerics;
 
-namespace HEIO.NET.Modeling.ConvertFrom
+namespace HEIO.NET.Internal.Modeling.ConvertFrom
 {
     internal static class MeshConverter
     {

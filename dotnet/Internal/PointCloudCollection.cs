@@ -9,7 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Numerics;
 
-namespace HEIO.NET
+namespace HEIO.NET.Internal
 {
     public class PointCloudCollection
     {

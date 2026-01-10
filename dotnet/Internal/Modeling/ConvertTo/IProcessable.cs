@@ -1,7 +1,6 @@
-﻿using HEIO.NET.Modeling;
-using System.Numerics;
+﻿using System.Numerics;
 
-namespace HEIO.NET.Modeling.ConvertTo
+namespace HEIO.NET.Internal.Modeling.ConvertTo
 {
     internal interface IProcessable
     {

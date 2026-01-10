@@ -1,7 +1,7 @@
 ﻿using SharpNeedle.Framework.HedgehogEngine.Mirage.ModelData;
 using System;
 
-namespace HEIO.NET.Modeling.GPU
+namespace HEIO.NET.Internal.Modeling.GPU
 {
     internal static class VertexFormatExtensions
     {

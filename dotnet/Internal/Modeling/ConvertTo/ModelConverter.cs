@@ -1,4 +1,4 @@
-﻿using HEIO.NET.Modeling;
+﻿using HEIO.NET.Internal.Modeling;
 using SharpNeedle.Framework.HedgehogEngine.Mirage;
 using SharpNeedle.Framework.HedgehogEngine.Mirage.MaterialData;
 using SharpNeedle.Framework.HedgehogEngine.Mirage.ModelData;
@@ -8,7 +8,7 @@ using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
 
-namespace HEIO.NET.Modeling.ConvertTo
+namespace HEIO.NET.Internal.Modeling.ConvertTo
 {
     internal class ModelConverter
     {

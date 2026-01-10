@@ -1,8 +1,8 @@
-﻿using HEIO.NET.Internal.Json;
+﻿using HEIO.NET.Json;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace HEIO.NET.Json
+namespace HEIO.NET.Internal.Json
 {
     internal static class JsonConverters
     {

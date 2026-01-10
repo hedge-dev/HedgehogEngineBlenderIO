@@ -4,7 +4,7 @@ using SharpNeedle.Resource;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace HEIO.NET.Modeling.GPU
+namespace HEIO.NET.Internal.Modeling.GPU
 {
     internal class GPUMesh
     {

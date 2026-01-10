@@ -1,12 +1,12 @@
-﻿using HEIO.NET.Json;
-using HEIO.NET.Modeling.ConvertTo;
+﻿using HEIO.NET.Internal.Json;
+using HEIO.NET.Internal.Modeling.ConvertTo;
 using SharpNeedle.Framework.HedgehogEngine.Mirage;
 using SharpNeedle.Framework.HedgehogEngine.Mirage.ModelData;
 using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace HEIO.NET.Modeling
+namespace HEIO.NET.Internal.Modeling
 {
     public readonly struct MeshCompileData
     {

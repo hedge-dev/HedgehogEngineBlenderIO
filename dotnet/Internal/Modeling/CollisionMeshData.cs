@@ -1,10 +1,10 @@
-﻿using HEIO.NET.Modeling.ConvertFrom;
-using HEIO.NET.Modeling.ConvertTo;
+﻿using HEIO.NET.Internal.Modeling.ConvertFrom;
+using HEIO.NET.Internal.Modeling.ConvertTo;
 using SharpNeedle.Framework.HedgehogEngine.Bullet;
 using System.Collections.Generic;
 using System.Numerics;
 
-namespace HEIO.NET.Modeling
+namespace HEIO.NET.Internal.Modeling
 {
     public class CollisionMeshDataGroup
     {

@@ -7,7 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace HEIO.NET
+namespace HEIO.NET.Internal
 {
     public static class ModelHelper
     {

@@ -1,9 +1,10 @@
-﻿using SharpNeedle.Framework.HedgehogEngine.Bullet;
+﻿using HEIO.NET.Internal.Modeling;
+using SharpNeedle.Framework.HedgehogEngine.Bullet;
 using System;
 using System.Collections.Generic;
 using System.Numerics;
 
-namespace HEIO.NET.Modeling.ConvertTo
+namespace HEIO.NET.Internal.Modeling.ConvertTo
 {
     internal static class BulletMeshConverter
     {

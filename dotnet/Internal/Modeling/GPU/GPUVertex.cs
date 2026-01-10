@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Numerics;
 
-namespace HEIO.NET.Modeling.GPU
+namespace HEIO.NET.Internal.Modeling.GPU
 {
     internal struct GPUVertex
     {

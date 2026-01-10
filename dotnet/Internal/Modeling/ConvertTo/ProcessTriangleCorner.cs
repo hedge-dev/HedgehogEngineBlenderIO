@@ -1,10 +1,11 @@
-﻿using HEIO.NET.Modeling.GPU;
+﻿using HEIO.NET.Internal.Modeling;
+using HEIO.NET.Internal.Modeling.GPU;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 
-namespace HEIO.NET.Modeling.ConvertTo
+namespace HEIO.NET.Internal.Modeling.ConvertTo
 {
     internal readonly struct ProcessTriangleCorner : IEquatable<ProcessTriangleCorner>
     {

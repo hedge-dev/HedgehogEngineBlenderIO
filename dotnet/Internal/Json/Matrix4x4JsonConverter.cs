@@ -3,7 +3,7 @@ using System.Numerics;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace HEIO.NET.Json
+namespace HEIO.NET.Internal.Json
 {
     /// <summary>
     /// Json converter for <see cref="Matrix4x4"/>.

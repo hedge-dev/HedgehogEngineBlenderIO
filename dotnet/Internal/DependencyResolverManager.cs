@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace HEIO.NET
+namespace HEIO.NET.Internal
 {
     public class DependencyResolverManager
     {

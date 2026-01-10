@@ -1,4 +1,4 @@
-﻿namespace HEIO.NET.Modeling
+﻿namespace HEIO.NET.Internal.Modeling
 {
     public enum Topology
     {

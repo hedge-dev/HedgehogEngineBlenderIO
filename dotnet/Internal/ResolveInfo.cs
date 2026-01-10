@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace HEIO.NET
+namespace HEIO.NET.Internal
 {
     public readonly struct ResolveInfo
     {

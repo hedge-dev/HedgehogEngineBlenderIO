@@ -1,7 +1,7 @@
 ﻿using SharpNeedle.Framework.HedgehogEngine.Mirage.ModelData;
 using SharpNeedle.Framework.HedgehogEngine.Needle.Archive;
 
-namespace HEIO.NET
+namespace HEIO.NET.Internal
 {
     public readonly struct ModelSet
     {

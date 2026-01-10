@@ -2,7 +2,7 @@
 using System;
 using System.Numerics;
 
-namespace HEIO.NET
+namespace HEIO.NET.Internal
 {
     public static class PythonHelpers
     {

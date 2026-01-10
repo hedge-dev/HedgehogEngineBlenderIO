@@ -1,6 +1,6 @@
 ﻿using System.Numerics;
 
-namespace HEIO.NET.Modeling
+namespace HEIO.NET.Internal.Modeling
 {
     public struct UVDirection
     {

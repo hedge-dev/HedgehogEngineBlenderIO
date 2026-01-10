@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 
-namespace HEIO.NET.Modeling.ConvertFrom
+namespace HEIO.NET.Internal.Modeling.ConvertFrom
 {
     internal static class ConvexHullGenerator
     {

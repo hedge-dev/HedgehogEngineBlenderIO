@@ -1,12 +1,12 @@
-﻿using HEIO.NET.Modeling;
-using HEIO.NET.Modeling.GPU;
+﻿using HEIO.NET.Internal.Modeling;
+using HEIO.NET.Internal.Modeling.GPU;
 using SharpNeedle.Framework.HedgehogEngine.Mirage.ModelData;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Numerics;
 
-namespace HEIO.NET.Modeling.ConvertTo
+namespace HEIO.NET.Internal.Modeling.ConvertTo
 {
     internal class MorphProcessor : IProcessable
     {
