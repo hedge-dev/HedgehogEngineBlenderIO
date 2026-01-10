@@ -143,7 +143,7 @@ class NodeConverter:
 
         for child in node.Children:
             bone = model_info.armature.edit_bones[child.Value]
-            i_sca_parameters.convert_from_container(
+            i_sca_parameters.convert_from_root(
                 child, bone.heio_node.sca_parameters, self._target_definition, 'model')
 
     def _convert_model(self, model_info: i_model.ModelInfo):

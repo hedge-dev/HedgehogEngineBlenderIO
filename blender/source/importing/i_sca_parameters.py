@@ -1,12 +1,13 @@
 from ..register.definitions import TargetDefinition
+from ..external import Library, CSampleChunkNode, TPointer
 
 def convert_from_node(
-        sn_node: any,
+        c_scn_node: TPointer[CSampleChunkNode],
         sca_parameter_list,
         target_definition: TargetDefinition | None,
         data_type: str):
 
-    if sn_node is None:
+    if not c_scn_node:
         return
 
     sca_parameter_definitions = None
@@ -14,23 +15,26 @@ def convert_from_node(
         sca_parameter_definitions = getattr(
             target_definition.sca_parameters, data_type)
 
-    for parameter in sn_node:
+    current_child = c_scn_node.contents.child
+
+    while current_child:
         sca_parameter = sca_parameter_list.new()
-        sca_parameter.name = parameter.Name
-        sca_parameter.value = parameter.SignedValue
+
+        child: CSampleChunkNode = current_child.contents
+
+        sca_parameter.name = child.name
+        sca_parameter.value = child.value
 
         if sca_parameter_definitions is not None and sca_parameter.name in sca_parameter_definitions.infos:
             sca_parameter.value_type = sca_parameter_definitions.infos[
                 sca_parameter.name].parameter_type.name
+            
+        current_child = child.sibling
 
-
-def convert_from_container(sn_container: any, sca_parameter_list, target_definition: TargetDefinition | None, data_type: str):
-    if sn_container is None:
+def convert_from_root(c_scn_root: TPointer[CSampleChunkNode], sca_parameter_list, target_definition: TargetDefinition | None, data_type: str):
+    if not c_scn_root:
         return
 
-    node = sn_container.FindNode("SCAParam")
+    node = Library.sample_chunk_node_find(c_scn_root, "SCAParam")
     convert_from_node(node, sca_parameter_list, target_definition, data_type)
 
-
-def convert_from_data(sn_data: any, sca_parameter_list, target_definition: TargetDefinition | None, data_type: str):
-    convert_from_container(sn_data.Root, sca_parameter_list, target_definition, data_type)

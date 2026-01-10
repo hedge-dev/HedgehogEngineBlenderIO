@@ -4,6 +4,7 @@ using SharpNeedle.Resource;
 using SharpNeedle.Structs;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Numerics;
 using System.Runtime.InteropServices;
 
@@ -93,6 +94,7 @@ namespace HEIO.NET
         public char* name;
         public uint dataVersion;
         public char* filePath;
+        public CSampleChunkNode* rootNode;
 
         public char* shaderName;
         public byte alphaThreshold;
@@ -119,6 +121,7 @@ namespace HEIO.NET
             result->name = material.Name.ToPointer();
             result->dataVersion = material.DataVersion;
             result->filePath = (material.BaseFile?.Path).ToPointer();
+            result->rootNode = material.Root != null ? CSampleChunkNode.FromSampleChunkNodeTree(material.Root) : null;
 
             result->shaderName = material.ShaderName.ToPointer();
             result->alphaThreshold = material.AlphaThreshold;
@@ -183,6 +186,11 @@ namespace HEIO.NET
                 NoBackFaceCulling = noBackFaceCulling
             };
 
+            if(rootNode != null)
+            {
+                result.Root = rootNode->ToSampleChunkNodeTree(result);
+            }
+
             ToParameters(floatParameters, floatParametersSize, result.FloatParameters);
             ToParameters(integerParameters, integerParametersSize, result.IntParameters);
             ToParameters(boolParameters, boolParametersSize, result.BoolParameters);
@@ -244,6 +252,11 @@ namespace HEIO.NET
                 Util.Free(material->shaderName);
                 Util.Free(material->texturesName);
                 Util.Free(material->textures);
+
+                if(material->rootNode != null)
+                {
+                    CSampleChunkNode.FreeSampleChunkNodeTree(material->rootNode);
+                }
 
                 Util.Free(material);
             }

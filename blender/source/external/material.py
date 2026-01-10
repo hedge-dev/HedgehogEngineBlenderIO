@@ -1,6 +1,7 @@
 from ctypes import Structure, c_uint, c_bool, c_wchar_p, c_byte, c_size_t, POINTER
 from .util import FieldsFromTypeHints
 from .math import CVector4, CVector4Int
+from .sample_chunk_node import CSampleChunkNode
 
 class CFloatMaterialParameter(Structure, metaclass=FieldsFromTypeHints):
     name: c_wchar_p
@@ -26,6 +27,7 @@ class CMaterial(Structure, metaclass=FieldsFromTypeHints):
     name: c_wchar_p
     data_version: c_uint
     file_path: c_wchar_p
+    root_node: POINTER(CSampleChunkNode)
     
     shader_name: c_wchar_p
     alpha_threshold: c_byte

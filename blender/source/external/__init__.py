@@ -7,8 +7,9 @@ from .typing import TPointer
 from .math import CVector3, CQuaternion, CMatrix
 from .material import CFloatMaterialParameter, CIntegerMaterialParameter, CBoolMaterialParameter, CTexture, CMaterial
 from .image import CImage
-from .stringPointerPair import CStringPointerPair, CStringPointerPairs
-from .resolveInfo import CResolveInfo
+from .string_pointer_pair import CStringPointerPair, CStringPointerPairs
+from .resolve_info import CResolveInfo
+from .sample_chunk_node import CSampleChunkNode
 
 from .util import get_dll_close
 
@@ -29,8 +30,11 @@ elif general.is_linux():
 LIB_FILEPATH = os.path.join(LIB_DIRECTORY, LIB_NAME + LIB_EXT)
 
 class HEIOLibraryException(HEIOException):
-    def __init__(self, message: str, *args: object):
-        super().__init__("Library Exception:" + message, *args)
+    function_name: str
+
+    def __init__(self, message: str, function_name: str, *args: object):
+        super().__init__(f"Library Exception when calling \"{function_name}\": {message}", *args)
+        self.function_name = function_name
 
 class Library:
 
@@ -67,53 +71,74 @@ class Library:
         lib.error_get.restype = c_wchar_p
 
         lib.matrix_decompose.argtypes = (CMatrix, POINTER(CVector3), POINTER(CQuaternion), POINTER(CVector3))
+        lib.matrix_decompose.errcheck = cls._check_error
 
         lib.matrix_create_translation.argtypes = (CVector3,)
         lib.matrix_create_translation.restype = CMatrix
+        lib.matrix_create_translation.errcheck = cls._check_error
 
         lib.matrix_create_rotation.argtypes = (CVector3,)
         lib.matrix_create_rotation.restype = CMatrix
+        lib.matrix_create_rotation.errcheck = cls._check_error
 
         lib.matrix_create_scale.argtypes = (CVector3,)
         lib.matrix_create_scale.restype = CMatrix
+        lib.matrix_create_scale.errcheck = cls._check_error
 
         lib.matrix_multiply.argtypes = (CMatrix, CMatrix)
         lib.matrix_multiply.restype = CMatrix
+        lib.matrix_multiply.errcheck = cls._check_error
 
         lib.quaternion_create_from_rotation_matrix.argtypes = (CMatrix,)
         lib.quaternion_create_from_rotation_matrix.restype = CQuaternion
+        lib.quaternion_create_from_rotation_matrix.errcheck = cls._check_error
 
         lib.material_read_file.argtypes = (c_wchar_p,)
         lib.material_read_file.restype = POINTER(CMaterial)
+        lib.material_read_file.errcheck = cls._check_error
 
         lib.material_free.argtypes = (POINTER(CMaterial),)
+        lib.material_free.errcheck = cls._check_error
 
         lib.resolve_info_combine.argtypes = (POINTER(POINTER(CResolveInfo)), c_size_t)
         lib.resolve_info_combine.restype = POINTER(CResolveInfo)
+        lib.resolve_info_combine.errcheck = cls._check_error
 
         lib.resolve_info_free.argtypes = (POINTER(CResolveInfo),)
+        lib.resolve_info_free.errcheck = cls._check_error
 
         lib.image_free.argtypes = (POINTER(CImage),)
+        lib.image_free.errcheck = cls._check_error
 
         lib.image_load_directory_images.argtypes = (c_wchar_p, POINTER(c_wchar_p), c_size_t, c_wchar_p, POINTER(POINTER(CResolveInfo)))
         lib.image_load_directory_images.restype = POINTER(CStringPointerPairs)
+        lib.image_load_directory_images.errcheck = cls._check_error
 
         lib.image_load_material_images.argtypes = (POINTER(POINTER(CMaterial)), c_size_t, c_wchar_p, POINTER(POINTER(CResolveInfo)))
         lib.image_load_material_images.restype = POINTER(CStringPointerPairs)
+        lib.image_load_material_images.errcheck = cls._check_error
 
         lib.image_free_list.argtypes = (POINTER(CStringPointerPairs),)
+        lib.image_free_list.errcheck = cls._check_error
 
         lib.image_invert_green_channel.argtypes = (POINTER(c_float), c_size_t)
+        lib.image_invert_green_channel.errcheck = cls._check_error
+
+        lib.sample_chunk_node_find.argtypes = (POINTER(CSampleChunkNode), c_wchar_p)
+        lib.sample_chunk_node_find.restype = POINTER(CSampleChunkNode)
+        lib.sample_chunk_node_find.errcheck = cls._check_error
 
     @classmethod
     def _as_array(cls, iterable: Iterable, type):
         return cast((type * len(iterable))(*iterable), POINTER(type))
 
     @classmethod
-    def _check_error(cls):
+    def _check_error(cls, result, func, arguments):
         error = cls._LOADED_LIBRARY.error_get()
         if error:
-            raise HEIOLibraryException(error.value)
+            raise HEIOLibraryException(func.__name__, error.value)
+        
+        return result
 
     @classmethod
     def matrix_decompose(cls, matrix: CMatrix):
@@ -122,46 +147,34 @@ class Library:
         scale = CVector3(1, 1, 1)
 
         cls.lib().matrix_decompose(matrix, pointer(position), pointer(rotation), pointer(scale))
-        cls._check_error()
 
         return position, rotation, scale
     
     @classmethod
     def matrix_create_translation(cls, position: CVector3):
-        result = cls.lib().matrix_create_translation(position)
-        cls._check_error()
-        return result
+        return cls.lib().matrix_create_translation(position)
 
     @classmethod
     def matrix_create_rotation(cls, euler_rotation: CVector3):
-        result = cls.lib().matrix_create_rotation(euler_rotation)
-        cls._check_error()
-        return result
+        return cls.lib().matrix_create_rotation(euler_rotation)
 
     @classmethod
     def matrix_create_scale(cls, scale: CVector3):
-        result = cls.lib().matrix_create_scale(scale)
-        cls._check_error()
-        return result
+        return cls.lib().matrix_create_scale(scale)
 
     @classmethod
     def matrix_multiply(cls, a: CMatrix, b: CMatrix):
-        result = cls.lib().matrix_multiply(a, b)
-        cls._check_error()
-        return result
+        return cls.lib().matrix_multiply(a, b)
 
     @classmethod
     def quaternion_create_from_rotation_matrix(cls, matrix: CMatrix):
-        result = cls.lib().quaternion_create_from_rotation_matrix(matrix)
-        cls._check_error()
-        return result
+        return cls.lib().quaternion_create_from_rotation_matrix(matrix)
     
     @classmethod
     def material_read_file(cls, filepath: str) -> TPointer[CMaterial]:
         lib = cls.lib()
         c_filepath = c_wchar_p(filepath)
         result = lib.material_read_file(c_filepath)
-        cls._check_error()
         cls._to_free.append((lib.material_free, result))
         return result
     
@@ -176,7 +189,6 @@ class Library:
             c_resolve_infos,
             c_resolve_infos_size
         )
-        cls._check_error()
 
         cls._to_free.append((lib.resolve_info_free, result))
 
@@ -200,8 +212,6 @@ class Library:
             c_streaming_directory,
             c_resolve_info 
         )
-        cls._check_error()
-
         c_resolve_info = c_resolve_info.contents
 
         cls._to_free.append((lib.image_free_list, pairs))
@@ -230,7 +240,6 @@ class Library:
             c_streaming_directory,
             c_resolve_info 
         )
-        cls._check_error()
 
         c_resolve_info = c_resolve_info.contents
 
@@ -248,4 +257,8 @@ class Library:
     @classmethod
     def image_invert_green_channel(cls, pixels):
         cls.lib().image_invert_green_channel(pixels.ctypes.data, len(pixels))
-        cls._check_error()
+
+    @classmethod
+    def sample_chunk_node_find(cls, sample_chunk_node: TPointer[CSampleChunkNode], name: str) -> TPointer[CSampleChunkNode]:
+        c_name = c_wchar_p(name)
+        return cls.lib().sample_chunk_node_find(sample_chunk_node, c_name)

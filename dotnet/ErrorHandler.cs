@@ -11,7 +11,7 @@ namespace HEIO.NET
         {
             Console.WriteLine("A .NET error occured!");
             Console.WriteLine("Error message:");
-            Console.WriteLine(exception.Message);
+            Console.WriteLine("\t" + exception.Message);
             Console.WriteLine("Stack trace:");
             Console.WriteLine(exception.StackTrace);
             Console.WriteLine();

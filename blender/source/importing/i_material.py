@@ -199,11 +199,12 @@ class MaterialConverter:
                 create_missing
             )
 
-            # i_sca_parameters.convert_from_data(
-            #     c_material,
-            #     material_properties.sca_parameters,
-            #     self._target_definition,
-            #     "material")
+            i_sca_parameters.convert_from_root(
+                c_material.root_node,
+                material_properties.sca_parameters,
+                self._target_definition,
+                "material"
+            )
 
             if created_missing:
                 material_properties.custom_shader = True
