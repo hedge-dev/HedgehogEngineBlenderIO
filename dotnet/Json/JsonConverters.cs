@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using HEIO.NET.Internal.Json;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace HEIO.NET.Json

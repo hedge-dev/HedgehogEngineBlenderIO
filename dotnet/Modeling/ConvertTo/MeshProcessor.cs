@@ -1,4 +1,5 @@
-﻿using HEIO.NET.Modeling.GPU;
+﻿using HEIO.NET.Modeling;
+using HEIO.NET.Modeling.GPU;
 using SharpNeedle.Framework.HedgehogEngine.Mirage.MaterialData;
 using SharpNeedle.Framework.HedgehogEngine.Mirage.ModelData;
 using System;
@@ -36,7 +37,7 @@ namespace HEIO.NET.Modeling.ConvertTo
             _material = material;
 
             _topology = topology;
-            _weightSets = addWeights ? (triangleData.Any(x => x.data.MeshSets[x.setIndex].Enable8Weights) ? 2 : 1) : 0;
+            _weightSets = addWeights ? triangleData.Any(x => x.data.MeshSets[x.setIndex].Enable8Weights) ? 2 : 1 : 0;
             _texcoordSets = int.Clamp(_triangleData.Max(x => x.data.TextureCoordinates.Count), 1, 4);
             _texcoordSetsUsed = new bool[_texcoordSets];
 
@@ -62,7 +63,7 @@ namespace HEIO.NET.Modeling.ConvertTo
                 {
                     for(int t = 2; t >= 0; t--)
                     {
-                        int faceIndex = (i * 3) + t;
+                        int faceIndex = i * 3 + t;
 
                         int vertexIndex = triangleData.data.TriangleIndices[faceIndex];
                         int newVertexIndex = vertexIndexMap[vertexIndex];

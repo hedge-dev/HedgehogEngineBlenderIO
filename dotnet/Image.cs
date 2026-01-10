@@ -131,7 +131,7 @@ namespace HEIO.NET
             return result;
         }
 
-        public static Dictionary<string, Image> LoadMaterialImages(Material[] materials, string streamingDirectory, out ResolveInfo info)
+        public static Dictionary<string, Image> LoadMaterialImages(Material[] materials, IFile[] materialFiles, string streamingDirectory, out ResolveInfo info)
         {
             DependencyResolverManager dependencyManager = new();
             Dictionary<string, Image> result = [];
@@ -140,7 +140,7 @@ namespace HEIO.NET
             HashSet<string> missingStreamedImages = new();
             HashSet<string> unresolvedNTSPFiles = new();
 
-            info = dependencyManager.ResolveDependencies(materials.Select(x => (x, x.BaseFile!)), (resolver, material, file, unresolved) =>
+            info = dependencyManager.ResolveDependencies(materials.Select((x, i) => (x, materialFiles[i])), (resolver, material, file, unresolved) =>
             {
                 foreach(Texture texture in material.Texset.Textures)
                 {
@@ -184,11 +184,9 @@ namespace HEIO.NET
         }
 
 
-        public static unsafe void InvertGreenChannel(nint pixelPointer, int length)
+        public static unsafe void InvertGreenChannel(float* pixels, nint pixelsSize)
         {
-            float* pixels = (float*)pixelPointer;
-
-            for(int i = 1; i < length; i += 4)
+            for(int i = 1; i < pixelsSize; i += 4)
             {
                 pixels[i] = 1 - pixels[i];
             }

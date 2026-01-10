@@ -176,11 +176,11 @@ namespace HEIO.NET.Modeling.ConvertFrom
 
                         if(element.Type == VertexType.Position)
                         {
-                            callback = (BinaryObjectReader reader, ref GPUVertex vtx) => vtx.Position = vec3Reader(reader);
+                            callback = (reader, ref vtx) => vtx.Position = vec3Reader(reader);
                         }
                         else if(element.Type == VertexType.Normal)
                         {
-                            callback = (BinaryObjectReader reader, ref GPUVertex vtx) => vtx.Normal = Vector3.Normalize(vec3Reader(reader));
+                            callback = (reader, ref vtx) => vtx.Normal = Vector3.Normalize(vec3Reader(reader));
                         }
 
                         break;
@@ -197,22 +197,22 @@ namespace HEIO.NET.Modeling.ConvertFrom
                         {
                             if(element.Type == VertexType.Tangent)
                             {
-                                callback = (BinaryObjectReader reader, ref GPUVertex vtx) => vtx.UVDirection = new(Vector3.Normalize(vec3Reader2(reader)), vtx.UVDirection.Binormal);
+                                callback = (reader, ref vtx) => vtx.UVDirection = new(Vector3.Normalize(vec3Reader2(reader)), vtx.UVDirection.Binormal);
                             }
                             else
                             {
-                                callback = (BinaryObjectReader reader, ref GPUVertex vtx) => vtx.UVDirection = new(vtx.UVDirection.Tangent, Vector3.Normalize(vec3Reader2(reader)));
+                                callback = (reader, ref vtx) => vtx.UVDirection = new(vtx.UVDirection.Tangent, Vector3.Normalize(vec3Reader2(reader)));
                             }
                         }
                         else
                         {
                             if(element.Type == VertexType.Tangent)
                             {
-                                callback = (BinaryObjectReader reader, ref GPUVertex vtx) => vtx.UVDirection2 = new(Vector3.Normalize(vec3Reader2(reader)), vtx.UVDirection2.Binormal);
+                                callback = (reader, ref vtx) => vtx.UVDirection2 = new(Vector3.Normalize(vec3Reader2(reader)), vtx.UVDirection2.Binormal);
                             }
                             else
                             {
-                                callback = (BinaryObjectReader reader, ref GPUVertex vtx) => vtx.UVDirection2 = new(vtx.UVDirection2.Tangent, Vector3.Normalize(vec3Reader2(reader)));
+                                callback = (reader, ref vtx) => vtx.UVDirection2 = new(vtx.UVDirection2.Tangent, Vector3.Normalize(vec3Reader2(reader)));
                             }
                         }
 
@@ -220,7 +220,7 @@ namespace HEIO.NET.Modeling.ConvertFrom
                     case VertexType.BlendIndices:
                         Func<BinaryObjectReader, Vector4Int> vec4intReader = VertexFormatDecoder.GetVector4IntDecoder(element.Format);
 
-                        callback = (BinaryObjectReader reader, ref GPUVertex vtx) =>
+                        callback = (reader, ref vtx) =>
                         {
                             Vector4Int indices = vec4intReader(reader);
 
@@ -240,7 +240,7 @@ namespace HEIO.NET.Modeling.ConvertFrom
                     case VertexType.BlendWeight:
                         Func<BinaryObjectReader, Vector4> weightReader = VertexFormatDecoder.GetVector4Decoder(element.Format);
 
-                        callback = (BinaryObjectReader reader, ref GPUVertex vtx) =>
+                        callback = (reader, ref vtx) =>
                         {
                             Vector4 weights = weightReader(reader);
 
@@ -253,12 +253,12 @@ namespace HEIO.NET.Modeling.ConvertFrom
 
                     case VertexType.TexCoord:
                         Func<BinaryObjectReader, Vector2> vec2Reader = VertexFormatDecoder.GetVector2Decoder(element.Format);
-                        callback = (BinaryObjectReader reader, ref GPUVertex vtx) => vtx.TextureCoordinates[usageIndex] = vec2Reader(reader);
+                        callback = (reader, ref vtx) => vtx.TextureCoordinates[usageIndex] = vec2Reader(reader);
                         break;
 
                     case VertexType.Color:
                         Func<BinaryObjectReader, Vector4> vec4Reader = VertexFormatDecoder.GetVector4Decoder(element.Format);
-                        callback = (BinaryObjectReader reader, ref GPUVertex vtx) => vtx.Colors![usageIndex] = vec4Reader(reader);
+                        callback = (reader, ref vtx) => vtx.Colors![usageIndex] = vec4Reader(reader);
                         break;
                 }
 

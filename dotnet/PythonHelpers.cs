@@ -40,12 +40,12 @@ namespace HEIO.NET
                 M12 = sZ * cY,
                 M13 = -sY,
 
-                M21 = (cZ * sY * sX) - (sZ * cX),
-                M22 = (sZ * sY * sX) + (cZ * cX),
+                M21 = cZ * sY * sX - sZ * cX,
+                M22 = sZ * sY * sX + cZ * cX,
                 M23 = cY * sX,
 
-                M31 = (cZ * sY * cX) + (sZ * sX),
-                M32 = (sZ * sY * cX) - (cZ * sX),
+                M31 = cZ * sY * cX + sZ * sX,
+                M32 = sZ * sY * cX - cZ * sX,
                 M33 = cY * cX,
 
                 M44 = 1

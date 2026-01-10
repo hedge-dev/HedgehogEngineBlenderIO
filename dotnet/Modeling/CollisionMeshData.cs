@@ -1,4 +1,6 @@
-﻿using SharpNeedle.Framework.HedgehogEngine.Bullet;
+﻿using HEIO.NET.Modeling.ConvertFrom;
+using HEIO.NET.Modeling.ConvertTo;
+using SharpNeedle.Framework.HedgehogEngine.Bullet;
 using System.Collections.Generic;
 using System.Numerics;
 
@@ -65,7 +67,7 @@ namespace HEIO.NET.Modeling
 
         public static CollisionMeshData FromBulletMesh(BulletMesh mesh, bool mergeVertices, float vertexMergeDistance, bool removeUnusedVertices)
         {
-            return ConvertFrom.BulletMeshConverter.ConvertToCollisionMeshData(mesh, mergeVertices, vertexMergeDistance, removeUnusedVertices);
+            return BulletMeshConverter.ConvertToCollisionMeshData(mesh, mergeVertices, vertexMergeDistance, removeUnusedVertices);
         }
 
         public static BulletMesh ToBulletMesh(CollisionMeshData[] meshData, BulletPrimitive[] primitives)

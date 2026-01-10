@@ -149,7 +149,7 @@ namespace HEIO.NET.Modeling.ConvertFrom
                 if(diff > 1)
                 {
                     uint retainMask = ~invRetainMask;
-                    uint shiftMask = invRetainMask << (diff - 1);
+                    uint shiftMask = invRetainMask << diff - 1;
                     shifts.Add((retainMask, shiftMask, diff - 1));
                 }
 
@@ -163,7 +163,7 @@ namespace HEIO.NET.Modeling.ConvertFrom
 
                 foreach((uint retainMask, uint shiftMask, int shiftCount) in shifts)
                 {
-                    flag = (flag & retainMask) | ((flag & shiftMask) >> shiftCount);
+                    flag = flag & retainMask | (flag & shiftMask) >> shiftCount;
                 }
 
                 flags[i] = flag;

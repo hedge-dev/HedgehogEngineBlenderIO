@@ -38,7 +38,7 @@ namespace HEIO.NET.Modeling.ConvertTo
                     {
                         for(int j = 0; j < 3; j++)
                         {
-                            uint vertexIndex = mesh.TriangleIndices[j + ((i + polygonOffset) * 3)];
+                            uint vertexIndex = mesh.TriangleIndices[j + (i + polygonOffset) * 3];
                             int newVertexIndex = vertexIndexMap[vertexIndex];
 
                             if(newVertexIndex == -1)
@@ -48,7 +48,7 @@ namespace HEIO.NET.Modeling.ConvertTo
                                 vertexIndexMap[vertexIndex] = newVertexIndex;
                             }
 
-                            triangleIndices[j + (i * 3)] = newVertexIndex;
+                            triangleIndices[j + i * 3] = newVertexIndex;
                         }
                     }
 
@@ -72,7 +72,7 @@ namespace HEIO.NET.Modeling.ConvertTo
                             }
                         }
 
-                        shape.Types = [(flags & 0xFFFFFF) | (layer.ConvexType << 24)];
+                        shape.Types = [flags & 0xFFFFFF | layer.ConvexType << 24];
                     }
                     else
                     {

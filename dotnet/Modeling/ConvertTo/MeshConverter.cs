@@ -1,5 +1,6 @@
 ﻿using Amicitia.IO.Binary;
 using Amicitia.IO.Streams;
+using HEIO.NET.Modeling;
 using HEIO.NET.Modeling.GPU;
 using SharpNeedle.Framework.HedgehogEngine.Mirage.ModelData;
 using SharpNeedle.Structs;
@@ -140,11 +141,11 @@ namespace HEIO.NET.Modeling.ConvertTo
 
                         if(element.Type == VertexType.Position)
                         {
-                            callback = (BinaryObjectWriter writer, GPUVertex vtx) => vec3Writer(writer, vtx.Position);
+                            callback = (writer, vtx) => vec3Writer(writer, vtx.Position);
                         }
                         else // normal
                         {
-                            callback = (BinaryObjectWriter writer, GPUVertex vtx) => vec3Writer(writer, vtx.Normal);
+                            callback = (writer, vtx) => vec3Writer(writer, vtx.Normal);
                         }
 
                         break;
@@ -162,22 +163,22 @@ namespace HEIO.NET.Modeling.ConvertTo
                         {
                             if(element.Type == VertexType.Tangent)
                             {
-                                callback = (BinaryObjectWriter writer, GPUVertex vtx) => vec3Writer2(writer, vtx.UVDirection.Tangent);
+                                callback = (writer, vtx) => vec3Writer2(writer, vtx.UVDirection.Tangent);
                             }
                             else // bitangent
                             {
-                                callback = (BinaryObjectWriter writer, GPUVertex vtx) => vec3Writer2(writer, vtx.UVDirection.Binormal);
+                                callback = (writer, vtx) => vec3Writer2(writer, vtx.UVDirection.Binormal);
                             }
                         }
                         else
                         {
                             if(element.Type == VertexType.Tangent)
                             {
-                                callback = (BinaryObjectWriter writer, GPUVertex vtx) => vec3Writer2(writer, vtx.UVDirection2.Tangent);
+                                callback = (writer, vtx) => vec3Writer2(writer, vtx.UVDirection2.Tangent);
                             }
                             else // bitangent
                             {
-                                callback = (BinaryObjectWriter writer, GPUVertex vtx) => vec3Writer2(writer, vtx.UVDirection2.Binormal);
+                                callback = (writer, vtx) => vec3Writer2(writer, vtx.UVDirection2.Binormal);
                             }
                         }
 
@@ -186,7 +187,7 @@ namespace HEIO.NET.Modeling.ConvertTo
                     case VertexType.BlendIndices:
                         Action<BinaryObjectWriter, Vector4Int> vec4intWriter = VertexFormatEncoder.GetVector4IntEncoder(element.Format);
 
-                        callback = (BinaryObjectWriter writer, GPUVertex vtx) =>
+                        callback = (writer, vtx) =>
                         {
                             Vector4Int indices;
 
@@ -216,7 +217,7 @@ namespace HEIO.NET.Modeling.ConvertTo
                     case VertexType.BlendWeight:
                         Action<BinaryObjectWriter, Vector4> weightWriter = VertexFormatEncoder.GetVector4Encoder(element.Format);
 
-                        callback = (BinaryObjectWriter writer, GPUVertex vtx) =>
+                        callback = (writer, vtx) =>
                         {
                             Vector4 weights = new(
                                 vtx.Weights[weightIndexOffset + 3].Weight,
@@ -231,12 +232,12 @@ namespace HEIO.NET.Modeling.ConvertTo
 
                     case VertexType.TexCoord:
                         Action<BinaryObjectWriter, Vector2> vec2Writer = VertexFormatEncoder.GetVector2Encoder(element.Format);
-                        callback = (BinaryObjectWriter writer, GPUVertex vtx) => vec2Writer(writer, vtx.TextureCoordinates[usageIndex]);
+                        callback = (writer, vtx) => vec2Writer(writer, vtx.TextureCoordinates[usageIndex]);
                         break;
 
                     case VertexType.Color:
                         Action<BinaryObjectWriter, Vector4> vec4Writer = VertexFormatEncoder.GetVector4Encoder(element.Format);
-                        callback = (BinaryObjectWriter writer, GPUVertex vtx) => vec4Writer(writer, vtx.Colors![usageIndex]);
+                        callback = (writer, vtx) => vec4Writer(writer, vtx.Colors![usageIndex]);
                         break;
                     default:
                         throw new InvalidOperationException($"Writing \"{element.Type}\" is not supported!");

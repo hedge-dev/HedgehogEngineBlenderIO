@@ -1,4 +1,6 @@
-﻿namespace HEIO.NET.Modeling.ConvertTo
+﻿using HEIO.NET.Modeling;
+
+namespace HEIO.NET.Modeling.ConvertTo
 {
     internal readonly struct TriangleData
     {
