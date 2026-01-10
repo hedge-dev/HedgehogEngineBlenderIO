@@ -2,6 +2,7 @@
 using SharpNeedle.IO;
 using SharpNeedle.Resource;
 using SharpNeedle.Structs;
+using System;
 using System.Collections.Generic;
 using System.Numerics;
 using System.Runtime.InteropServices;
@@ -20,7 +21,7 @@ namespace HEIO.NET
     public unsafe interface IMaterialParameter<V>
     {
         public char* Name { get; set; }
-        public V Value { get; set;  }
+        public V Value { get; set; }
     }
 
     public unsafe struct CFloatMaterialParameter : IMaterialParameter<Vector4>
@@ -28,14 +29,16 @@ namespace HEIO.NET
         public char* name;
         public Vector4 value;
 
-        public unsafe char* Name { 
-            readonly get => name; 
-            set => name = value; 
+        public unsafe char* Name
+        {
+            readonly get => name;
+            set => name = value;
         }
 
-        public Vector4 Value { 
+        public Vector4 Value
+        {
             readonly get => value;
-            set => this.value = value; 
+            set => this.value = value;
         }
     }
 
@@ -62,14 +65,16 @@ namespace HEIO.NET
         public char* name;
         public bool value;
 
-        public unsafe char* Name { 
-            readonly get => name; 
-            set => name = value; 
+        public unsafe char* Name
+        {
+            readonly get => name;
+            set => name = value;
         }
 
-        public bool Value { 
+        public bool Value
+        {
             readonly get => value;
-            set => this.value = value; 
+            set => this.value = value;
         }
     }
 
@@ -133,7 +138,7 @@ namespace HEIO.NET
             result->texturesSize = material.Texset.Textures.Count;
             result->textures = Util.Alloc<CTexture>(result->texturesSize);
 
-            for(int i = 0; i < result->texturesSize; i++)
+            for (int i = 0; i < result->texturesSize; i++)
             {
                 Texture texture = material.Texset.Textures[i];
                 CTexture* resultTexture = &result->textures[i];
@@ -165,7 +170,7 @@ namespace HEIO.NET
             return result;
         }
 
-        public Material ToMaterial()
+        public readonly Material ToMaterial()
         {
             InternalMaterial result = new()
             {
@@ -187,7 +192,7 @@ namespace HEIO.NET
                 Name = Util.FromPointer(texturesName)!
             };
 
-            for(int i = 0; i < texturesSize; i++)
+            for (int i = 0; i < texturesSize; i++)
             {
                 CTexture* texture = &textures[i];
 
@@ -221,24 +226,32 @@ namespace HEIO.NET
         [UnmanagedCallersOnly(EntryPoint = "material_free")]
         public static void Free(CMaterial* material)
         {
-            FreeParameters<CFloatMaterialParameter, Vector4>(material->floatParameters, material->floatParametersSize);
-            FreeParameters<CIntegerMaterialParameter, Vector4Int>(material->integerParameters, material->integerParametersSize);
-            FreeParameters<CBoolMaterialParameter, bool>(material->boolParameters, material->boolParametersSize);
-
-            for (int i = 0; i < material->texturesSize; i++)
+            try
             {
-                CTexture* parameter = &material->textures[i];
-                Util.Free(parameter->name);
-                Util.Free(parameter->pictureName);
-                Util.Free(parameter->type);
+                FreeParameters<CFloatMaterialParameter, Vector4>(material->floatParameters, material->floatParametersSize);
+                FreeParameters<CIntegerMaterialParameter, Vector4Int>(material->integerParameters, material->integerParametersSize);
+                FreeParameters<CBoolMaterialParameter, bool>(material->boolParameters, material->boolParametersSize);
+
+                for (int i = 0; i < material->texturesSize; i++)
+                {
+                    CTexture* parameter = &material->textures[i];
+                    Util.Free(parameter->name);
+                    Util.Free(parameter->pictureName);
+                    Util.Free(parameter->type);
+                }
+
+                Util.Free(material->name);
+                Util.Free(material->shaderName);
+                Util.Free(material->texturesName);
+                Util.Free(material->textures);
+
+                Util.Free(material);
             }
-
-            Util.Free(material->name);
-            Util.Free(material->shaderName);
-            Util.Free(material->texturesName);
-            Util.Free(material->textures);
-
-            Util.Free(material);
+            catch (Exception exception)
+            {
+                ErrorHandler.HandleError(exception);
+                return;
+            }
         }
 
         private static void FreeParameters<T, V>(T* parameters, nint parametersSize) where T : unmanaged, IMaterialParameter<V> where V : unmanaged
@@ -254,10 +267,18 @@ namespace HEIO.NET
 
         [UnmanagedCallersOnly(EntryPoint = "material_read_file")]
         public static CMaterial* ReadFiles(char* filePath)
-        {            
-            string filePathString = Util.FromPointer(filePath)!;
-            Material material = new ResourceManager().Open<Material>(filePathString);
-            return FromMaterial(material);
+        {
+            try
+            {
+                string filePathString = Util.FromPointer(filePath)!;
+                Material material = new ResourceManager().Open<Material>(filePathString);
+                return FromMaterial(material);
+            }
+            catch (Exception exception)
+            {
+                ErrorHandler.HandleError(exception);
+                return null;
+            }
         }
     }
 }

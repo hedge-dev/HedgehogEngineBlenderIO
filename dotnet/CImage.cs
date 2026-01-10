@@ -3,10 +3,7 @@ using SharpNeedle.Framework.HedgehogEngine.Mirage.MaterialData;
 using SharpNeedle.IO;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Runtime.Serialization.Formatters;
 
 namespace HEIO.NET
 {
@@ -35,7 +32,7 @@ namespace HEIO.NET
                 result->streamedDataSize = 0;
             }
 
-                return result;
+            return result;
         }
 
         private static void InternalFree(CImage* image)
@@ -48,21 +45,37 @@ namespace HEIO.NET
         [UnmanagedCallersOnly(EntryPoint = "image_free")]
         public static void Free(CImage* image)
         {
-            InternalFree(image);
+            try
+            {
+                InternalFree(image);
+            }
+            catch (Exception exception)
+            {
+                ErrorHandler.HandleError(exception);
+                return;
+            }
         }
 
         [UnmanagedCallersOnly(EntryPoint = "image_load_directory_images")]
         public static CStringPointerPairs* LoadDirectoryImages(char* directory, char** images, nint imagesSize, char* streamingDirectory, CResolveInfo** resolveInfo)
         {
-            string directoryString = Util.FromPointer(directory)!;
-            string[] imagesStrings = Util.ToStringArray(images, imagesSize);
-            string streamingDirectoryString = Util.FromPointer(streamingDirectory)!;
+            try
+            {
+                string directoryString = Util.FromPointer(directory)!;
+                string[] imagesStrings = Util.ToStringArray(images, imagesSize);
+                string streamingDirectoryString = Util.FromPointer(streamingDirectory)!;
 
-            Dictionary<string, Image> output = Image.LoadDirectoryImages(directoryString, imagesStrings, streamingDirectoryString, out ResolveInfo outInfo);
+                Dictionary<string, Image> output = Image.LoadDirectoryImages(directoryString, imagesStrings, streamingDirectoryString, out ResolveInfo outInfo);
 
-            *resolveInfo = CResolveInfo.FromResolveInfo(outInfo);
+                *resolveInfo = CResolveInfo.FromResolveInfo(outInfo);
 
-            return FromImageList(output);
+                return FromImageList(output);
+            }
+            catch (Exception exception)
+            {
+                ErrorHandler.HandleError(exception);
+                return null;
+            }
         }
 
         [UnmanagedCallersOnly(EntryPoint = "image_load_material_images")]
@@ -88,8 +101,7 @@ namespace HEIO.NET
             }
             catch (Exception exception)
             {
-                Console.WriteLine(exception.Message);
-                Console.WriteLine(exception.StackTrace);
+                ErrorHandler.HandleError(exception);
                 return null;
             }
 
@@ -119,21 +131,37 @@ namespace HEIO.NET
         [UnmanagedCallersOnly(EntryPoint = "image_free_list")]
         public static void FreeImageList(CStringPointerPairs* images)
         {
-            for (int i = 0; i < images->size; i++)
+            try
             {
-                CStringPointerPair* image = &images->pairs[i];
-                Util.Free(image->name);
-                InternalFree((CImage*)image->pointer);
-            }
+                for (int i = 0; i < images->size; i++)
+                {
+                    CStringPointerPair* image = &images->pairs[i];
+                    Util.Free(image->name);
+                    InternalFree((CImage*)image->pointer);
+                }
 
-            Util.Free(images->pairs);
-            Util.Free(images);
+                Util.Free(images->pairs);
+                Util.Free(images);
+            }
+            catch (Exception exception)
+            {
+                ErrorHandler.HandleError(exception);
+                return;
+            }
         }
 
         [UnmanagedCallersOnly(EntryPoint = "image_invert_green_channel")]
         public static void InvertGreenChannel(float* pixels, int pixelsSize)
         {
-            Image.InvertGreenChannel(pixels, pixelsSize);
+            try
+            {
+                Image.InvertGreenChannel(pixels, pixelsSize);
+            }
+            catch (Exception exception)
+            {
+                ErrorHandler.HandleError(exception);
+                return;
+            }
         }
     }
 }

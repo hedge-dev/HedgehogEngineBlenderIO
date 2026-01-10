@@ -1,6 +1,4 @@
-﻿using HEIO.NET.Internal.Modeling.ConvertFrom;
-using HEIO.NET.Internal.Modeling.ConvertTo;
-using SharpNeedle.Framework.HedgehogEngine.Bullet;
+﻿using SharpNeedle.Framework.HedgehogEngine.Bullet;
 using System.Collections.Generic;
 using System.Numerics;
 

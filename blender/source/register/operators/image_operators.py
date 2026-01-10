@@ -4,7 +4,7 @@ from bpy.props import StringProperty, EnumProperty
 from .base import HEIOBaseFileLoadOperator
 from .. import definitions
 from ...utility.general import get_addon_preferences
-from ...utility.dotnet import print_resolve_info
+from ...utility.resolve_info import print_resolve_info
 from ...utility import progress_console
 from ...dotnet import load_dotnet
 from ...importing import i_image

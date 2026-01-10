@@ -1,5 +1,4 @@
-﻿using HEIO.NET.Internal.Modeling;
-using SharpNeedle.Framework.HedgehogEngine.Bullet;
+﻿using SharpNeedle.Framework.HedgehogEngine.Bullet;
 using System;
 using System.Collections.Generic;
 using System.Numerics;

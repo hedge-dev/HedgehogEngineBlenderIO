@@ -1,5 +1,4 @@
-﻿using HEIO.NET.Internal.Modeling;
-using HEIO.NET.Internal.Modeling.GPU;
+﻿using HEIO.NET.Internal.Modeling.GPU;
 using System;
 using System.Collections.Generic;
 using System.Linq;

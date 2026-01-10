@@ -23,9 +23,9 @@ from ...importing import (
     i_pointcloud
 )
 
-from ...external import Library
+from ...external import Library, CResolveInfo, TPointer
 from ...utility.general import get_addon_preferences
-from ...utility.dotnet import print_resolve_info
+from ...utility.resolve_info import print_resolve_info
 from ...utility import progress_console
 from ...exceptions import HEIOUserException
 

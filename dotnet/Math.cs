@@ -9,62 +9,110 @@ namespace HEIO.NET
         [UnmanagedCallersOnly(EntryPoint = "matrix_decompose")]
         public static unsafe void MatrixDecompose(Matrix4x4 matrix, Vector3* position, Quaternion* rotation, Vector3* scale)
         {
-            Matrix4x4.Decompose(matrix, out *scale, out *rotation, out *position);
+            try
+            {
+                Matrix4x4.Decompose(matrix, out *scale, out *rotation, out *position);
+            }
+            catch (Exception exception)
+            {
+                ErrorHandler.HandleError(exception);
+                return;
+            }
         }
 
         [UnmanagedCallersOnly(EntryPoint = "matrix_create_translation")]
         public static Matrix4x4 CreateTranslationMatrix(Vector3 position)
         {
-            return Matrix4x4.CreateTranslation(position);
+            try
+            {
+                return Matrix4x4.CreateTranslation(position);
+            }
+            catch (Exception exception)
+            {
+                ErrorHandler.HandleError(exception);
+                return default;
+            }
         }
 
         [UnmanagedCallersOnly(EntryPoint = "matrix_create_rotation")]
         public static Matrix4x4 CreateRotationMatrix(Vector3 eulerRotation)
         {
-            float sX = MathF.Sin(eulerRotation.X);
-            float cX = MathF.Cos(eulerRotation.X);
-
-            float sY = MathF.Sin(eulerRotation.Y);
-            float cY = MathF.Cos(eulerRotation.Y);
-
-            float sZ = MathF.Sin(eulerRotation.Z);
-            float cZ = MathF.Cos(eulerRotation.Z);
-
-            // equal to matX * matY * matZ
-            return new()
+            try
             {
-                M11 = cZ * cY,
-                M12 = sZ * cY,
-                M13 = -sY,
+                float sX = MathF.Sin(eulerRotation.X);
+                float cX = MathF.Cos(eulerRotation.X);
 
-                M21 = (cZ * sY * sX) - (sZ * cX),
-                M22 = (sZ * sY * sX) + (cZ * cX),
-                M23 = cY * sX,
+                float sY = MathF.Sin(eulerRotation.Y);
+                float cY = MathF.Cos(eulerRotation.Y);
 
-                M31 = (cZ * sY * cX) + (sZ * sX),
-                M32 = (sZ * sY * cX) - (cZ * sX),
-                M33 = cY * cX,
+                float sZ = MathF.Sin(eulerRotation.Z);
+                float cZ = MathF.Cos(eulerRotation.Z);
 
-                M44 = 1
-            };
+                // equal to matX * matY * matZ
+                return new()
+                {
+                    M11 = cZ * cY,
+                    M12 = sZ * cY,
+                    M13 = -sY,
+
+                    M21 = (cZ * sY * sX) - (sZ * cX),
+                    M22 = (sZ * sY * sX) + (cZ * cX),
+                    M23 = cY * sX,
+
+                    M31 = (cZ * sY * cX) + (sZ * sX),
+                    M32 = (sZ * sY * cX) - (cZ * sX),
+                    M33 = cY * cX,
+
+                    M44 = 1
+                };
+            }
+            catch (Exception exception)
+            {
+                ErrorHandler.HandleError(exception);
+                return default;
+            }
         }
 
         [UnmanagedCallersOnly(EntryPoint = "matrix_create_scale")]
         public static Matrix4x4 CreateScaleMatrix(Vector3 scale)
         {
-            return Matrix4x4.CreateScale(scale);
+            try
+            {
+                return Matrix4x4.CreateScale(scale);
+            }
+            catch (Exception exception)
+            {
+                ErrorHandler.HandleError(exception);
+                return default;
+            }
         }
 
         [UnmanagedCallersOnly(EntryPoint = "matrix_multiply")]
         public static Matrix4x4 MultiplyMatrix(Matrix4x4 a, Matrix4x4 b)
         {
-            return a * b;
+            try
+            {
+                return a * b;
+            }
+            catch (Exception exception)
+            {
+                ErrorHandler.HandleError(exception);
+                return default;
+            }
         }
 
         [UnmanagedCallersOnly(EntryPoint = "quaternion_create_from_rotation_matrix")]
         public static Quaternion CreateFromRotationMatrix(Matrix4x4 matrix)
         {
-            return Quaternion.CreateFromRotationMatrix(matrix);
+            try
+            {
+                return Quaternion.CreateFromRotationMatrix(matrix);
+            }
+            catch (Exception exception)
+            {
+                ErrorHandler.HandleError(exception);
+                return default;
+            }
         }
 
 

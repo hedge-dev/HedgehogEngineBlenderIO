@@ -1,4 +1,5 @@
 ﻿using HEIO.NET.Internal;
+using System;
 using System.Runtime.InteropServices;
 
 namespace HEIO.NET
@@ -43,16 +44,55 @@ namespace HEIO.NET
             return result;
         }
 
+        public readonly ResolveInfo ToResolveInfo()
+        {
+            return new(
+                Util.ToStringArray(unresolvedFiles, unresolvedFilesSize),
+                Util.ToStringArray(missingDependencies, missingDependenciesSize),
+                Util.ToStringArray(packedDependencies, packedDependenciesSize),
+                Util.ToStringArray(unresolvedNTSPFiles, unresolvedNTSPFilesSize),
+                Util.ToStringArray(missingStreamedImages, missingStreamedImagesSize)
+            );
+        }
+
         [UnmanagedCallersOnly(EntryPoint = "resolve_info_free")]
         public static void Free(CResolveInfo* resolveInfo)
         {
-            Util.FreeStringArray(resolveInfo->unresolvedFiles, resolveInfo->unresolvedFilesSize);
-            Util.FreeStringArray(resolveInfo->missingDependencies, resolveInfo->missingDependenciesSize);
-            Util.FreeStringArray(resolveInfo->packedDependencies, resolveInfo->packedDependenciesSize);
-            Util.FreeStringArray(resolveInfo->unresolvedNTSPFiles, resolveInfo->unresolvedNTSPFilesSize);
-            Util.FreeStringArray(resolveInfo->missingStreamedImages, resolveInfo->missingStreamedImagesSize);
+            try
+            {
+                Util.FreeStringArray(resolveInfo->unresolvedFiles, resolveInfo->unresolvedFilesSize);
+                Util.FreeStringArray(resolveInfo->missingDependencies, resolveInfo->missingDependenciesSize);
+                Util.FreeStringArray(resolveInfo->packedDependencies, resolveInfo->packedDependenciesSize);
+                Util.FreeStringArray(resolveInfo->unresolvedNTSPFiles, resolveInfo->unresolvedNTSPFilesSize);
+                Util.FreeStringArray(resolveInfo->missingStreamedImages, resolveInfo->missingStreamedImagesSize);
 
-            Util.Free(resolveInfo);
+                Util.Free(resolveInfo);
+            }
+            catch (Exception exception)
+            {
+                ErrorHandler.HandleError(exception);
+                return;
+            }
+        }
+
+        [UnmanagedCallersOnly(EntryPoint = "resolve_info_combine")]
+        public static CResolveInfo* Combine(CResolveInfo** resolveInfos, nint resolveInfosSize)
+        {
+            try
+            {
+                ResolveInfo[] resolveInfoArray = new ResolveInfo[resolveInfosSize];
+                for (int i = 0; i < resolveInfosSize; i++)
+                {
+                    resolveInfoArray[i] = resolveInfos[i]->ToResolveInfo();
+                }
+
+                return FromResolveInfo(ResolveInfo.Combine(resolveInfoArray));
+            }
+            catch (Exception exception)
+            {
+                ErrorHandler.HandleError(exception);
+                return null;
+            }
         }
     }
 }

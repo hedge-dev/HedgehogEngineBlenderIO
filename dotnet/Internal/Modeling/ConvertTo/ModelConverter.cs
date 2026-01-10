@@ -1,5 +1,4 @@
-﻿using HEIO.NET.Internal.Modeling;
-using SharpNeedle.Framework.HedgehogEngine.Mirage;
+﻿using SharpNeedle.Framework.HedgehogEngine.Mirage;
 using SharpNeedle.Framework.HedgehogEngine.Mirage.MaterialData;
 using SharpNeedle.Framework.HedgehogEngine.Mirage.ModelData;
 using System;
