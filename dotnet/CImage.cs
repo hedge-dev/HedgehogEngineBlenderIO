@@ -15,16 +15,14 @@ namespace HEIO.NET
 
         public static CImage* FromImage(Image image)
         {
-            CImage* result = Util.Alloc<CImage>();
+            CImage* result = Allocate.Alloc<CImage>();
 
             result->filePath = image.Filepath.ToPointer();
 
             if (image.StreamedData != null)
             {
-                result->streamedData = Util.Alloc<byte>(image.StreamedData.Length);
+                result->streamedData = Allocate.AllocFromArray(image.StreamedData);
                 result->streamedDataSize = image.StreamedData.Length;
-
-                Marshal.Copy(image.StreamedData, 0, (nint)result->streamedData, image.StreamedData.Length);
             }
             else
             {
@@ -33,27 +31,6 @@ namespace HEIO.NET
             }
 
             return result;
-        }
-
-        private static void InternalFree(CImage* image)
-        {
-            Util.Free(image->filePath);
-            Util.Free(image->streamedData);
-            Util.Free(image);
-        }
-
-        [UnmanagedCallersOnly(EntryPoint = "image_free")]
-        public static void Free(CImage* image)
-        {
-            try
-            {
-                InternalFree(image);
-            }
-            catch (Exception exception)
-            {
-                ErrorHandler.HandleError(exception);
-                return;
-            }
         }
 
         [UnmanagedCallersOnly(EntryPoint = "image_load_directory_images")]
@@ -109,7 +86,7 @@ namespace HEIO.NET
 
         private static CStringPointerPairs* FromImageList(Dictionary<string, Image> images)
         {
-            CStringPointerPair* pairs = Util.Alloc<CStringPointerPair>(images.Count);
+            CStringPointerPair* pairs = Allocate.Alloc<CStringPointerPair>(images.Count);
             int index = 0;
             foreach (KeyValuePair<string, Image> image in images)
             {
@@ -121,33 +98,11 @@ namespace HEIO.NET
                 index++;
             }
 
-            CStringPointerPairs* result = Util.Alloc<CStringPointerPairs>();
+            CStringPointerPairs* result = Allocate.Alloc<CStringPointerPairs>();
             result->pairs = pairs;
             result->size = images.Count;
 
             return result;
-        }
-
-        [UnmanagedCallersOnly(EntryPoint = "image_free_list")]
-        public static void FreeImageList(CStringPointerPairs* images)
-        {
-            try
-            {
-                for (int i = 0; i < images->size; i++)
-                {
-                    CStringPointerPair* image = &images->pairs[i];
-                    Util.Free(image->name);
-                    InternalFree((CImage*)image->pointer);
-                }
-
-                Util.Free(images->pairs);
-                Util.Free(images);
-            }
-            catch (Exception exception)
-            {
-                ErrorHandler.HandleError(exception);
-                return;
-            }
         }
 
         [UnmanagedCallersOnly(EntryPoint = "image_invert_green_channel")]

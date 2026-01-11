@@ -4,7 +4,6 @@ using SharpNeedle.Resource;
 using SharpNeedle.Structs;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Numerics;
 using System.Runtime.InteropServices;
 
@@ -116,7 +115,7 @@ namespace HEIO.NET
 
         public static CMaterial* FromMaterial(Material material)
         {
-            CMaterial* result = Util.Alloc<CMaterial>();
+            CMaterial* result = Allocate.Alloc<CMaterial>();
 
             result->name = material.Name.ToPointer();
             result->dataVersion = material.DataVersion;
@@ -139,7 +138,7 @@ namespace HEIO.NET
 
             result->texturesName = material.Texset.Name.ToPointer();
             result->texturesSize = material.Texset.Textures.Count;
-            result->textures = Util.Alloc<CTexture>(result->texturesSize);
+            result->textures = Allocate.Alloc<CTexture>(result->texturesSize);
 
             for (int i = 0; i < result->texturesSize; i++)
             {
@@ -159,7 +158,7 @@ namespace HEIO.NET
 
         private static T* FromParameters<T, V>(Dictionary<string, MaterialParameter<V>> parameters) where T : unmanaged, IMaterialParameter<V> where V : unmanaged
         {
-            T* result = Util.Alloc<T>(parameters.Count);
+            T* result = Allocate.Alloc<T>(parameters.Count);
 
             int index = 0;
             foreach (KeyValuePair<string, MaterialParameter<V>> parameter in parameters)
@@ -229,53 +228,6 @@ namespace HEIO.NET
                     new() { Value = parameter->Value }
                 );
             }
-        }
-
-        [UnmanagedCallersOnly(EntryPoint = "material_free")]
-        public static void Free(CMaterial* material)
-        {
-            try
-            {
-                FreeParameters<CFloatMaterialParameter, Vector4>(material->floatParameters, material->floatParametersSize);
-                FreeParameters<CIntegerMaterialParameter, Vector4Int>(material->integerParameters, material->integerParametersSize);
-                FreeParameters<CBoolMaterialParameter, bool>(material->boolParameters, material->boolParametersSize);
-
-                for (int i = 0; i < material->texturesSize; i++)
-                {
-                    CTexture* parameter = &material->textures[i];
-                    Util.Free(parameter->name);
-                    Util.Free(parameter->pictureName);
-                    Util.Free(parameter->type);
-                }
-
-                Util.Free(material->name);
-                Util.Free(material->shaderName);
-                Util.Free(material->texturesName);
-                Util.Free(material->textures);
-
-                if(material->rootNode != null)
-                {
-                    CSampleChunkNode.FreeSampleChunkNodeTree(material->rootNode);
-                }
-
-                Util.Free(material);
-            }
-            catch (Exception exception)
-            {
-                ErrorHandler.HandleError(exception);
-                return;
-            }
-        }
-
-        private static void FreeParameters<T, V>(T* parameters, nint parametersSize) where T : unmanaged, IMaterialParameter<V> where V : unmanaged
-        {
-            for (int i = 0; i < parametersSize; i++)
-            {
-                T* parameter = &parameters[i];
-                Util.Free(parameter->Name);
-            }
-
-            Util.Free(parameters);
         }
 
         [UnmanagedCallersOnly(EntryPoint = "material_read_file")]

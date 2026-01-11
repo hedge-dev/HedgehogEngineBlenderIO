@@ -16,11 +16,6 @@ namespace HEIO.NET
             Console.WriteLine(exception.StackTrace);
             Console.WriteLine();
 
-            if(_errorMessage != null)
-            {
-                Util.Free(_errorMessage);
-            }
-
             _errorMessage = exception.Message.ToPointer();
         }
 
@@ -28,16 +23,6 @@ namespace HEIO.NET
         public static char* GetError()
         {
             return _errorMessage;
-        }
-
-        [UnmanagedCallersOnly(EntryPoint = "error_free")]
-        public static void FreeError()
-        {
-            if (_errorMessage != null)
-            {
-                Util.Free(_errorMessage);
-                _errorMessage = null;
-            }
         }
     }
 }

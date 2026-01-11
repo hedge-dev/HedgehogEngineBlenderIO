@@ -39,7 +39,6 @@ class HEIOLibraryException(HEIOException):
 class Library:
 
     _LOADED_LIBRARY = None  
-    _to_free: list[tuple[any, any]] = []
 
     @classmethod
     def lib(cls):
@@ -56,12 +55,7 @@ class Library:
             cls._setup(cls._LOADED_LIBRARY)
             yield cls
         finally:
-            for func, pointer in cls._to_free:
-                func(pointer)
-            cls._to_free.clear()
-
-            cls._LOADED_LIBRARY.error_free()
-
+            cls._LOADED_LIBRARY.free_all()
             get_dll_close()(cls._LOADED_LIBRARY._handle)
             cls._LOADED_LIBRARY = None
 
@@ -97,18 +91,9 @@ class Library:
         lib.material_read_file.restype = POINTER(CMaterial)
         lib.material_read_file.errcheck = cls._check_error
 
-        lib.material_free.argtypes = (POINTER(CMaterial),)
-        lib.material_free.errcheck = cls._check_error
-
         lib.resolve_info_combine.argtypes = (POINTER(POINTER(CResolveInfo)), c_size_t)
         lib.resolve_info_combine.restype = POINTER(CResolveInfo)
         lib.resolve_info_combine.errcheck = cls._check_error
-
-        lib.resolve_info_free.argtypes = (POINTER(CResolveInfo),)
-        lib.resolve_info_free.errcheck = cls._check_error
-
-        lib.image_free.argtypes = (POINTER(CImage),)
-        lib.image_free.errcheck = cls._check_error
 
         lib.image_load_directory_images.argtypes = (c_wchar_p, POINTER(c_wchar_p), c_size_t, c_wchar_p, POINTER(POINTER(CResolveInfo)))
         lib.image_load_directory_images.restype = POINTER(CStringPointerPairs)
@@ -117,9 +102,6 @@ class Library:
         lib.image_load_material_images.argtypes = (POINTER(POINTER(CMaterial)), c_size_t, c_wchar_p, POINTER(POINTER(CResolveInfo)))
         lib.image_load_material_images.restype = POINTER(CStringPointerPairs)
         lib.image_load_material_images.errcheck = cls._check_error
-
-        lib.image_free_list.argtypes = (POINTER(CStringPointerPairs),)
-        lib.image_free_list.errcheck = cls._check_error
 
         lib.image_invert_green_channel.argtypes = (POINTER(c_float), c_size_t)
         lib.image_invert_green_channel.errcheck = cls._check_error
@@ -172,32 +154,23 @@ class Library:
     
     @classmethod
     def material_read_file(cls, filepath: str) -> TPointer[CMaterial]:
-        lib = cls.lib()
         c_filepath = c_wchar_p(filepath)
-        result = lib.material_read_file(c_filepath)
-        cls._to_free.append((lib.material_free, result))
-        return result
+        return cls.lib().material_read_file(c_filepath)
     
     @classmethod
     def resolve_info_combine(cls, resolve_infos: list[TPointer[CResolveInfo]]) -> TPointer[CResolveInfo]:
-        lib = cls.lib()
 
         c_resolve_infos = cls._as_array(resolve_infos, POINTER(CResolveInfo))
         c_resolve_infos_size = c_size_t(len(resolve_infos))
 
-        result = lib.resolve_info_combine(
+        return cls.lib().resolve_info_combine(
             c_resolve_infos,
             c_resolve_infos_size
         )
 
-        cls._to_free.append((lib.resolve_info_free, result))
-
-        return result
-
 
     @classmethod
     def image_load_directory_images(cls, directory: str, images: Iterable[str], streaming_directory: str) -> tuple[dict[str, TPointer[CImage]], TPointer[CResolveInfo]]:
-        lib = cls.lib()
 
         c_directory = c_wchar_p(directory)
         c_images = cls._as_array([c_wchar_p(image) for image in images], c_wchar_p)
@@ -205,7 +178,7 @@ class Library:
         c_streaming_directory = c_wchar_p(streaming_directory)
         c_resolve_info = pointer(POINTER(CResolveInfo)())
 
-        pairs = lib.image_load_directory_images(
+        pairs = cls.lib().image_load_directory_images(
             c_directory,
             c_images,
             c_images_size,
@@ -213,9 +186,6 @@ class Library:
             c_resolve_info 
         )
         c_resolve_info = c_resolve_info.contents
-
-        cls._to_free.append((lib.image_free_list, pairs))
-        cls._to_free.append((lib.resolve_info_free, c_resolve_info))
 
         result = {}
         pair_data: CStringPointerPairs = pairs.contents
@@ -227,14 +197,12 @@ class Library:
 
     @classmethod
     def image_load_material_images(cls, materials: Iterable[TPointer[CMaterial]], streaming_directory: str) -> tuple[dict[str, TPointer[CImage]], TPointer[CResolveInfo]]:
-        lib = cls.lib()
-
         c_materials = cls._as_array(materials, POINTER(CMaterial))
         c_materials_size = c_size_t(len(materials))
         c_streaming_directory = c_wchar_p(streaming_directory)
         c_resolve_info = pointer(POINTER(CResolveInfo)())
 
-        pairs = lib.image_load_material_images(
+        pairs = cls.lib().image_load_material_images(
             c_materials,
             c_materials_size,
             c_streaming_directory,
@@ -242,9 +210,6 @@ class Library:
         )
 
         c_resolve_info = c_resolve_info.contents
-
-        cls._to_free.append((lib.image_free_list, pairs))
-        cls._to_free.append((lib.resolve_info_free, c_resolve_info))
 
         result = {}
         pair_data: CStringPointerPairs = pairs.contents

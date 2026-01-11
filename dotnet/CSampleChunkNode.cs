@@ -17,7 +17,7 @@ namespace HEIO.NET
             List<SampleChunkNode> flatNodes = [];
             AddNodes(flatNodes, root);
 
-            CSampleChunkNode* result = Util.Alloc<CSampleChunkNode>(flatNodes.Count);
+            CSampleChunkNode* result = Allocate.Alloc<CSampleChunkNode>(flatNodes.Count);
 
             for(int i = 0; i < flatNodes.Count; i++)
             {
@@ -74,27 +74,6 @@ namespace HEIO.NET
             }
 
             return result;
-        }
-
-        public static void FreeSampleChunkNodeTree(CSampleChunkNode* root)
-        {
-            FreeSampleChunkNodeTreeInternal(root);
-            Util.Free(root);
-        }
-
-        private static void FreeSampleChunkNodeTreeInternal(CSampleChunkNode* node)
-        {
-            Util.Free(node->name);
-
-            if(node->child != null)
-            {
-                FreeSampleChunkNodeTreeInternal(node->child);
-            }
-
-            if (node->sibling != null)
-            {
-                FreeSampleChunkNodeTreeInternal(node->sibling);
-            }
         }
 
         [UnmanagedCallersOnly(EntryPoint = "sample_chunk_node_find")]

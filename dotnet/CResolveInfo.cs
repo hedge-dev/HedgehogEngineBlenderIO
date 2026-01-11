@@ -24,21 +24,21 @@ namespace HEIO.NET
 
         public static CResolveInfo* FromResolveInfo(ResolveInfo resolveInfo)
         {
-            CResolveInfo* result = Util.Alloc<CResolveInfo>();
+            CResolveInfo* result = Allocate.Alloc<CResolveInfo>();
 
-            result->unresolvedFiles = Util.FromStringArray(resolveInfo.UnresolvedFiles);
+            result->unresolvedFiles = Allocate.FromStringArray(resolveInfo.UnresolvedFiles);
             result->unresolvedFilesSize = resolveInfo.UnresolvedFiles.Length;
 
-            result->missingDependencies = Util.FromStringArray(resolveInfo.MissingDependencies);
+            result->missingDependencies = Allocate.FromStringArray(resolveInfo.MissingDependencies);
             result->missingDependenciesSize = resolveInfo.MissingDependencies.Length;
 
-            result->packedDependencies = Util.FromStringArray(resolveInfo.PackedDependencies);
+            result->packedDependencies = Allocate.FromStringArray(resolveInfo.PackedDependencies);
             result->packedDependenciesSize = resolveInfo.PackedDependencies.Length;
 
-            result->unresolvedNTSPFiles = Util.FromStringArray(resolveInfo.UnresolvedNTSPFiles);
+            result->unresolvedNTSPFiles = Allocate.FromStringArray(resolveInfo.UnresolvedNTSPFiles);
             result->unresolvedNTSPFilesSize = resolveInfo.UnresolvedNTSPFiles.Length;
 
-            result->missingStreamedImages = Util.FromStringArray(resolveInfo.MissingStreamedImages);
+            result->missingStreamedImages = Allocate.FromStringArray(resolveInfo.MissingStreamedImages);
             result->missingStreamedImagesSize = resolveInfo.MissingStreamedImages.Length;
 
             return result;
@@ -55,25 +55,6 @@ namespace HEIO.NET
             );
         }
 
-        [UnmanagedCallersOnly(EntryPoint = "resolve_info_free")]
-        public static void Free(CResolveInfo* resolveInfo)
-        {
-            try
-            {
-                Util.FreeStringArray(resolveInfo->unresolvedFiles, resolveInfo->unresolvedFilesSize);
-                Util.FreeStringArray(resolveInfo->missingDependencies, resolveInfo->missingDependenciesSize);
-                Util.FreeStringArray(resolveInfo->packedDependencies, resolveInfo->packedDependenciesSize);
-                Util.FreeStringArray(resolveInfo->unresolvedNTSPFiles, resolveInfo->unresolvedNTSPFilesSize);
-                Util.FreeStringArray(resolveInfo->missingStreamedImages, resolveInfo->missingStreamedImagesSize);
-
-                Util.Free(resolveInfo);
-            }
-            catch (Exception exception)
-            {
-                ErrorHandler.HandleError(exception);
-                return;
-            }
-        }
 
         [UnmanagedCallersOnly(EntryPoint = "resolve_info_combine")]
         public static CResolveInfo* Combine(CResolveInfo** resolveInfos, nint resolveInfosSize)
