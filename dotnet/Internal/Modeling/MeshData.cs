@@ -16,7 +16,7 @@ namespace HEIO.NET.Internal.Modeling
 
         public bool EnableMultiTangent { get; }
 
-        public ResourceReference<Material> Material { get; }
+        public ResourceReference<Material> Material { get; internal set; }
 
         public MeshSlot Slot { get; }
 
@@ -29,6 +29,30 @@ namespace HEIO.NET.Internal.Modeling
             EnableMultiTangent = enableMultiTangent;
             Material = material;
             Slot = slot;
+            Size = size;
+        }
+
+        public void ResolveDependencies(IResourceResolver resolver)
+        {
+            if (Material.IsValid())
+            {
+                return;
+            }
+
+            string resource = $"{Material.Name}.material";
+            Material = resolver.Open<Material>(resource)
+                ?? throw new ResourceResolveException("Failed to resolve Material", [resource]);
+        }
+    }
+
+    public class MeshDataGroupInfo
+    {
+        public string Name { get; }
+        public int Size { get; internal set; }
+
+        public MeshDataGroupInfo(string name, int size)
+        {
+            Name = name;
             Size = size;
         }
     }
@@ -54,12 +78,7 @@ namespace HEIO.NET.Internal.Modeling
 
         public IList<MeshDataSetInfo> MeshSets { get; set; }
 
-        public IList<string> GroupNames { get; set; }
-
-        /// <summary>
-        /// Number of sets in each group
-        /// </summary>
-        public IList<int> GroupSetCounts { get; set; }
+        public IList<MeshDataGroupInfo> Groups { get; set; }
 
         public IList<string>? MorphNames { get; set; }
 
@@ -79,8 +98,7 @@ namespace HEIO.NET.Internal.Modeling
             TextureCoordinates = [];
             Colors = [];
             MeshSets = [];
-            GroupNames = [];
-            GroupSetCounts = [];
+            Groups = [];
             MorphNames = null;
         }
 
@@ -94,8 +112,7 @@ namespace HEIO.NET.Internal.Modeling
             Vector2[][] textureCoordinates,
             Vector4[][] colors,
             MeshDataSetInfo[] meshSets,
-            string[] groupNames,
-            int[] groupSizes,
+            MeshDataGroupInfo[] groups,
             string[]? morphNames)
         {
             Name = name;
@@ -107,12 +124,11 @@ namespace HEIO.NET.Internal.Modeling
             TextureCoordinates = textureCoordinates;
             Colors = colors;
             MeshSets = meshSets;
-            GroupNames = groupNames;
-            GroupSetCounts = groupSizes;
+            Groups = groups;
             MorphNames = morphNames;
         }
 
-        public static MeshData FromHEMorph(ModelBase model, MorphModel morph, VertexMergeMode vertexMergeMode, float mergeDistance, bool mergeSplitEdges)
+        public static MeshData FromHEMorph(ModelBase model, MorphModel morph, MeshImportSettings settings)
         {
             Topology topology = model.Root?.FindNode("Topology")?.Value == 3
                 ? Topology.TriangleList
@@ -121,13 +137,14 @@ namespace HEIO.NET.Internal.Modeling
             ConvertFrom.GPUMeshConverter converter = new(
                 "Morph",
                 topology,
-                vertexMergeMode != VertexMergeMode.None,
-                mergeDistance,
-                mergeSplitEdges,
+                settings,
                 morph.Targets.Count
             );
 
-            converter.AddGroupInfo(morph.MeshGroup!.Name ?? string.Empty, morph.MeshGroup!.Count);
+            converter.ResultData.Groups.Add(new(
+                morph.MeshGroup!.Name ?? string.Empty, 
+                morph.MeshGroup!.Count
+            ));
 
             for(int i = 0; i < morph.MeshGroup.Count; i++)
             {
@@ -155,7 +172,7 @@ namespace HEIO.NET.Internal.Modeling
             return converter.ResultData;
         }
 
-        public static MeshData[] FromHEMeshGroups(ModelBase model, VertexMergeMode vertexMergeMode, float mergeDistance, bool mergeSplitEdges)
+        public static MeshData[] FromHEMeshGroups(ModelBase model, MeshImportSettings settings)
         {
             Topology topology = model.Root?.FindNode("Topology")?.Value == 3
                 ? Topology.TriangleList
@@ -174,19 +191,17 @@ namespace HEIO.NET.Internal.Modeling
                 ConvertFrom.GPUMeshConverter converter = new(
                     meshname,
                     topology,
-                    vertexMergeMode != VertexMergeMode.None,
-                    mergeDistance,
-                    mergeSplitEdges,
+                    settings,
                     0
                 );
 
-                converter.AddGroupInfo(group.Name ?? string.Empty, group.Count);
+                converter.ResultData.Groups.Add(new(group.Name ?? string.Empty, group.Count));
 
                 foreach(Mesh mesh in group)
                 {
                     converter.AddMesh(mesh);
 
-                    if(vertexMergeMode == VertexMergeMode.SubMesh)
+                    if(settings.VertexMergeMode == VertexMergeMode.SubMesh)
                     {
                         converter.ProcessData();
                     }
@@ -205,7 +220,7 @@ namespace HEIO.NET.Internal.Modeling
             return [.. results];
         }
 
-        public static MeshData FromHEModel(ModelBase model, VertexMergeMode vertexMergeMode, float mergeDistance, bool mergeSplitEdges)
+        public static MeshData FromHEModel(ModelBase model, MeshImportSettings settings)
         {
             Topology topology = model.Root?.FindNode("Topology")?.Value == 3
                 ? Topology.TriangleList
@@ -214,27 +229,25 @@ namespace HEIO.NET.Internal.Modeling
             ConvertFrom.GPUMeshConverter converter = new(
                 model.Name,
                 topology,
-                vertexMergeMode != VertexMergeMode.None,
-                mergeDistance,
-                mergeSplitEdges,
+                settings,
                 0
             );
 
             foreach(MeshGroup group in model.Groups)
             {
-                converter.AddGroupInfo(group.Name ?? string.Empty, group.Count);
+                converter.ResultData.Groups.Add(new(group.Name ?? string.Empty, group.Count));
 
                 foreach(Mesh mesh in group)
                 {
                     converter.AddMesh(mesh);
 
-                    if(vertexMergeMode == VertexMergeMode.SubMesh)
+                    if(settings.VertexMergeMode == VertexMergeMode.SubMesh)
                     {
                         converter.ProcessData();
                     }
                 }
 
-                if(vertexMergeMode == VertexMergeMode.SubMeshGroup)
+                if(settings.VertexMergeMode == VertexMergeMode.SubMeshGroup)
                 {
                     converter.ProcessData();
                 }
@@ -250,5 +263,54 @@ namespace HEIO.NET.Internal.Modeling
             return converter.ResultData;
         }
 
+        public void ResolveDependencies(IResourceResolver resolver)
+        {
+            List<ResourceResolveException> exceptions = [];
+
+            foreach (MeshDataSetInfo meshSet in MeshSets)
+            {
+                try
+                {
+                    meshSet.ResolveDependencies(resolver);
+                }
+                catch (ResourceResolveException exc)
+                {
+                    exceptions.Add(exc);
+                }
+            }
+
+            if (exceptions.Count > 0)
+            {
+                throw new ResourceResolveException(
+                    $"Failed to resolve dependencies of {exceptions.Count} mesh sets",
+                    [.. exceptions.SelectMany(x => x.GetRecursiveResources())]
+                );
+            }
+        }
+
+        public static void ResolveManyDependencies(MeshData[] data, IResourceResolver resolver)
+        {
+            List<ResourceResolveException> exceptions = [];
+
+            foreach (MeshData meshData in data)
+            {
+                try
+                {
+                    meshData.ResolveDependencies(resolver);
+                }
+                catch (ResourceResolveException exc)
+                {
+                    exceptions.Add(exc);
+                }
+            }
+
+            if (exceptions.Count > 0)
+            {
+                throw new ResourceResolveException(
+                    $"Failed to resolve dependencies of {exceptions.Count} meshes",
+                    [.. exceptions.SelectMany(x => x.GetRecursiveResources())]
+                );
+            }
+        }
     }
 }

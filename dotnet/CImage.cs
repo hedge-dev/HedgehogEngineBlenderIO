@@ -34,7 +34,7 @@ namespace HEIO.NET
         }
 
         [UnmanagedCallersOnly(EntryPoint = "image_load_directory_images")]
-        public static CStringPointerPairs* LoadDirectoryImages(char* directory, char** images, nint imagesSize, char* streamingDirectory, CResolveInfo** resolveInfo)
+        public static CArray LoadDirectoryImages(char* directory, char** images, nint imagesSize, char* streamingDirectory, CResolveInfo** resolveInfo)
         {
             try
             {
@@ -51,12 +51,12 @@ namespace HEIO.NET
             catch (Exception exception)
             {
                 ErrorHandler.HandleError(exception);
-                return null;
+                return default;
             }
         }
 
         [UnmanagedCallersOnly(EntryPoint = "image_load_material_images")]
-        public static CStringPointerPairs* LoadMaterialImages(CMaterial** materials, nint materialsSize, char* streamingDirectory, CResolveInfo** resolveInfo)
+        public static CArray LoadMaterialImages(CMaterial** materials, nint materialsSize, char* streamingDirectory, CResolveInfo** resolveInfo)
         {
             try
             {
@@ -79,12 +79,12 @@ namespace HEIO.NET
             catch (Exception exception)
             {
                 ErrorHandler.HandleError(exception);
-                return null;
+                return default;
             }
 
         }
 
-        private static CStringPointerPairs* FromImageList(Dictionary<string, Image> images)
+        private static CArray FromImageList(Dictionary<string, Image> images)
         {
             CStringPointerPair* pairs = Allocate.Alloc<CStringPointerPair>(images.Count);
             int index = 0;
@@ -98,11 +98,10 @@ namespace HEIO.NET
                 index++;
             }
 
-            CStringPointerPairs* result = Allocate.Alloc<CStringPointerPairs>();
-            result->pairs = pairs;
-            result->size = images.Count;
-
-            return result;
+            return new(
+                pairs,
+                images.Count
+            );
         }
 
         [UnmanagedCallersOnly(EntryPoint = "image_invert_green_channel")]

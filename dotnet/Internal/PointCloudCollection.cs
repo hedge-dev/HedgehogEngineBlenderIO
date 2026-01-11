@@ -1,4 +1,5 @@
-﻿using SharpNeedle.Framework.HedgehogEngine.Bullet;
+﻿using HEIO.NET.Internal.Modeling;
+using SharpNeedle.Framework.HedgehogEngine.Bullet;
 using SharpNeedle.Framework.HedgehogEngine.Mirage.ModelData;
 using SharpNeedle.Framework.SonicTeam;
 using SharpNeedle.IO;
@@ -72,7 +73,7 @@ namespace HEIO.NET.Internal
         }
 
 
-        public static PointCloudCollection LoadPointClouds(string[] filepaths, bool includeLoD, out ResolveInfo resolveInfo)
+        public static PointCloudCollection LoadPointClouds(string[] filepaths, bool includeLoD, MeshImportSettings settings, out ResolveInfo resolveInfo)
         {
             DependencyResolverManager dependencyManager = new();
             List<PointCloud> pointClouds = [];
@@ -144,7 +145,7 @@ namespace HEIO.NET.Internal
 
             (Collection[] modelCollections, IFile[] modelSetFiles) = ToCollections(modelClouds);
             ModelSet[] modelSets = new ModelSet[modelSetFiles.Length];
-            List<(ModelBase, IFile)> modelFiles = [];
+            List<(MeshData[], IFile)> modelFiles = [];
 
             for(int i = 0; i < modelSets.Length; i++)
             {
@@ -153,26 +154,26 @@ namespace HEIO.NET.Internal
 
                 if(Path.GetExtension(file.Name) == ".model")
                 {
-                    modelSet = ModelHelper.LoadModelFile<Model>(file);
+                    modelSet = ModelSet.ReadModelFile<Model>(file, settings);
                 }
                 else
                 {
-                    modelSet = ModelHelper.LoadModelFile<TerrainModel>(file);
+                    modelSet = ModelSet.ReadModelFile<TerrainModel>(file, settings);
                 }
 
                 if(includeLoD || modelSet.LODInfo == null)
                 {
                     modelSets[i] = modelSet;
-                    modelFiles.AddRange(modelSet.Models.Select(x => ((ModelBase)x, file)));
+                    modelFiles.AddRange(modelSet.MeshDataSets.Select(x => (x, file)));
                 }
                 else
                 {
-                    modelSets[i] = new([modelSet.Models[0]], null);
-                    modelFiles.Add((modelSet.Models[0], file));
+                    modelSets[i] = new([modelSet.MeshDataSets[0]], null);
+                    modelFiles.Add((modelSet.MeshDataSets[0], file));
                 }
             }
 
-            ResolveInfo terrainResolveInfo = dependencyManager.ResolveDependencies(modelFiles);
+            ResolveInfo terrainResolveInfo = dependencyManager.ResolveDependencies(modelFiles, MeshData.ResolveManyDependencies);
             resolveInfo = ResolveInfo.Combine(pointCloudInfo, terrainResolveInfo);
 
 

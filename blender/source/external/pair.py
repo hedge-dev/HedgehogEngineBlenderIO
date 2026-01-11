@@ -6,7 +6,7 @@ class CStringPointerPair(Structure, metaclass=FieldsFromTypeHints):
     name: c_wchar_p
     pointer: c_void_p
 
-class CStringPointerPairs(Structure, metaclass=FieldsFromTypeHints):
+class CArray(Structure, metaclass=FieldsFromTypeHints):
 
-    pairs: POINTER(CStringPointerPair)
+    array: c_void_p
     size: c_size_t

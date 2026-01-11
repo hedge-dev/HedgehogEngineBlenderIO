@@ -26,19 +26,18 @@ namespace HEIO.NET.Internal.Modeling.ConvertTo
 
                 int setIndex = 0;
 
-                for(int i = 0; i < mesh.GroupNames.Count; i++)
+                foreach(MeshDataGroupInfo group in mesh.Groups)
                 {
-                    string groupName = mesh.GroupNames[i];
+                    int setEnd = setIndex + group.Size;
 
-                    int setEnd = setIndex + mesh.GroupSetCounts[i];
                     for(; setIndex < setEnd; setIndex++)
                     {
                         MeshDataSetInfo set = mesh.MeshSets[setIndex];
 
-                        if(!triangleData.TryGetValue((groupName, set.Slot, set.Material.Resource!), out List<TriangleData>? triangleDataList))
+                        if(!triangleData.TryGetValue((group.Name, set.Slot, set.Material.Resource!), out List<TriangleData>? triangleDataList))
                         {
                             triangleDataList = [];
-                            triangleData[(groupName, set.Slot, set.Material.Resource!)] = triangleDataList;
+                            triangleData[(group.Name, set.Slot, set.Material.Resource!)] = triangleDataList;
                         }
 
                         triangleDataList.Add(new(mesh, setIndex));

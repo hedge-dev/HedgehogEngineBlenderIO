@@ -12,14 +12,14 @@
         }
     }
 
-    public unsafe struct CStringPointerPairs
+    public unsafe struct CArray
     {
-        public CStringPointerPair* pairs;
+        public void* array;
         public nint size;
 
-        public CStringPointerPairs(CStringPointerPair* pairs, nint size)
+        public CArray(void* array, nint size)
         {
-            this.pairs = pairs;
+            this.array = array;
             this.size = size;
         }
     }

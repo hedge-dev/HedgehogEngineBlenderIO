@@ -30,13 +30,13 @@ namespace HEIO.NET.Internal
 
         public int MaxDependencyDepth { get; set; } = 4;
 
-        public ResolveInfo ResolveDependencies<T>(IEnumerable<(T, IFile)> data) where T : ResourceBase
+        public ResolveInfo ResolveDependencies<T>(IEnumerable<(T, IFile)> data, Action<T, IResourceResolver> resolveDependencies)
         {
             return ResolveDependencies(data, (resolver, resource, file, unresolved) =>
             {
                 try
                 {
-                    resource.ResolveDependencies(resolver);
+                    resolveDependencies(resource, resolver);
                 }
                 catch(ResourceResolveException exc)
                 {
@@ -46,6 +46,11 @@ namespace HEIO.NET.Internal
                     }
                 }
             });
+        }
+
+        public ResolveInfo ResolveDependencies<T>(IEnumerable<(T, IFile)> data) where T : ResourceBase
+        {
+            return ResolveDependencies(data, (x, r) => x.ResolveDependencies(r));
         }
 
         public ResolveInfo ResolveDependencies<T>(IEnumerable<(T, IFile)> data, Action<IResourceResolver, T, IFile, HashSet<string>> resolveFunc)

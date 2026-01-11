@@ -105,7 +105,7 @@ namespace HEIO.NET.Internal.Modeling.ConvertTo
             {
                 MeshGroup = new()
                 {
-                    Name = _data.GroupNames[0]
+                    Name = _data.Groups[0].Name
                 }
             };
 

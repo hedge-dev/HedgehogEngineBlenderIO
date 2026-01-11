@@ -25,15 +25,15 @@ namespace HEIO.NET.Internal.Modeling.ConvertFrom
         public MeshData ResultData { get; }
 
 
-        public GPUMeshConverter(string name, Topology topology, bool merge, float mergeDistance, bool mergeSplitEdges, int morphCount)
+        public GPUMeshConverter(string name, Topology topology, MeshImportSettings settings, int morphCount)
         {
             _topology = topology;
             _morphCount = morphCount;
 
-            if(merge)
+            if(settings.MergeVertices)
             {
-                _mergeSplitEdges = mergeSplitEdges;
-                _mergeComparer = Vertex.GetMergeComparer(mergeDistance, !mergeSplitEdges, morphCount > 0);
+                _mergeSplitEdges = settings.MergeSplitEdges;
+                _mergeComparer = Vertex.GetMergeComparer(settings.MergeDistance, !settings.MergeSplitEdges, morphCount > 0);
             }
 
             ResultData = new(name, _mergeSplitEdges);
@@ -62,12 +62,6 @@ namespace HEIO.NET.Internal.Modeling.ConvertFrom
             }
 
             return vertices;
-        }
-
-        public void AddGroupInfo(string groupname, int groupSize)
-        {
-            ResultData.GroupNames.Add(groupname);
-            ResultData.GroupSetCounts.Add(groupSize);
         }
 
         public void AddMesh(Mesh mesh, bool addVertices = true)

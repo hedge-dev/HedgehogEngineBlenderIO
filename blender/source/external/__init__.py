@@ -7,7 +7,7 @@ from .typing import TPointer
 from .math import CVector3, CQuaternion, CMatrix
 from .material import CFloatMaterialParameter, CIntegerMaterialParameter, CBoolMaterialParameter, CTexture, CMaterial
 from .image import CImage
-from .string_pointer_pair import CStringPointerPair, CStringPointerPairs
+from .pair import CStringPointerPair, CArray
 from .resolve_info import CResolveInfo
 from .sample_chunk_node import CSampleChunkNode
 
@@ -96,11 +96,11 @@ class Library:
         lib.resolve_info_combine.errcheck = cls._check_error
 
         lib.image_load_directory_images.argtypes = (c_wchar_p, POINTER(c_wchar_p), c_size_t, c_wchar_p, POINTER(POINTER(CResolveInfo)))
-        lib.image_load_directory_images.restype = POINTER(CStringPointerPairs)
+        lib.image_load_directory_images.restype = CArray
         lib.image_load_directory_images.errcheck = cls._check_error
 
         lib.image_load_material_images.argtypes = (POINTER(POINTER(CMaterial)), c_size_t, c_wchar_p, POINTER(POINTER(CResolveInfo)))
-        lib.image_load_material_images.restype = POINTER(CStringPointerPairs)
+        lib.image_load_material_images.restype = CArray
         lib.image_load_material_images.errcheck = cls._check_error
 
         lib.image_invert_green_channel.argtypes = (POINTER(c_float), c_size_t)
@@ -120,6 +120,17 @@ class Library:
         if error:
             raise HEIOLibraryException(func.__name__, error.value)
         
+        return result
+
+    @classmethod
+    def _string_pointer_pairs_to_dict(cls, array: CArray, target_type):
+        result = {}
+        
+        item_pointer = cast(array.array, POINTER(CStringPointerPair))
+        for i in range(array.size):
+            pair: CStringPointerPair = item_pointer[i]
+            result[pair.name] = cast(pair.pointer, POINTER(target_type))
+
         return result
 
     @classmethod
@@ -185,15 +196,10 @@ class Library:
             c_streaming_directory,
             c_resolve_info 
         )
-        c_resolve_info = c_resolve_info.contents
+        
+        result = cls._string_pointer_pairs_to_dict(pairs, CImage)
 
-        result = {}
-        pair_data: CStringPointerPairs = pairs.contents
-        for i in range(pair_data.size):
-            pair: CStringPointerPair = pair_data.pairs[i]
-            result[pair.name] = cast(pair.pointer, POINTER(CImage))
-
-        return result, c_resolve_info
+        return result, c_resolve_info.contents
 
     @classmethod
     def image_load_material_images(cls, materials: Iterable[TPointer[CMaterial]], streaming_directory: str) -> tuple[dict[str, TPointer[CImage]], TPointer[CResolveInfo]]:
@@ -209,15 +215,9 @@ class Library:
             c_resolve_info 
         )
 
-        c_resolve_info = c_resolve_info.contents
+        result = cls._string_pointer_pairs_to_dict(pairs, CImage)
 
-        result = {}
-        pair_data: CStringPointerPairs = pairs.contents
-        for i in range(pair_data.size):
-            pair: CStringPointerPair = pair_data.pairs[i]
-            result[pair.name] = cast(pair.pointer, POINTER(CImage))
-
-        return result, c_resolve_info
+        return result, c_resolve_info.contents
     
     @classmethod
     def image_invert_green_channel(cls, pixels):
