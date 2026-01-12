@@ -18,10 +18,10 @@ def convert_from_node(
     current_child = c_scn_node.contents.child
 
     while current_child:
-        sca_parameter = sca_parameter_list.new()
-
         child: CSampleChunkNode = current_child.contents
+        current_child = child.sibling
 
+        sca_parameter = sca_parameter_list.new()
         sca_parameter.name = child.name
         sca_parameter.value = child.value
 
@@ -29,7 +29,6 @@ def convert_from_node(
             sca_parameter.value_type = sca_parameter_definitions.infos[
                 sca_parameter.name].parameter_type.name
             
-        current_child = child.sibling
 
 def convert_from_root(c_scn_root: TPointer[CSampleChunkNode], sca_parameter_list, target_definition: TargetDefinition | None, data_type: str):
     if not c_scn_root:

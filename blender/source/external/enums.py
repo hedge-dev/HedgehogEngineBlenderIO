@@ -12,3 +12,10 @@ MATERIAL_BLEND_MODE = [
     "MULTIPLY",
     "SUBTRACT"
 ]
+
+VERTEX_MERGE_MODE = [
+    "NONE",
+    "SUBMESH",
+    "SUBMESHGROUP",
+    "ALL"
+]

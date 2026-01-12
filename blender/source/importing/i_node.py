@@ -2,7 +2,7 @@ import bpy
 
 from . import i_transform, i_mesh, i_model, i_sca_parameters
 from ..register.definitions import TargetDefinition
-from ..dotnet import SharpNeedle, System
+from ..external import Library, TPointer, CModelSet, CModelNode, CSampleChunkNode
 from ..utility import progress_console
 from ..exceptions import HEIODevException
 
@@ -49,24 +49,25 @@ class NodeConverter:
             bone_orientation = self._target_definition.bone_orientation
 
         if bone_orientation == 'XY':
-            matrix_remap = i_transform.net_to_bpy_bone_xy_matrix
+            matrix_remap = i_transform.c_to_bpy_bone_xy_matrix
         elif bone_orientation == 'XZ':
-            matrix_remap = i_transform.net_to_bpy_bone_xz_matrix
+            matrix_remap = i_transform.c_to_bpy_bone_xz_matrix
         else:  # ZNX
-            matrix_remap = i_transform.net_to_bpy_bone_znx_matrix
+            matrix_remap = i_transform.c_to_bpy_bone_znx_matrix
 
-        for node in model_info.sn_model.Nodes:
-            bone = model_info.armature.edit_bones.new(node.Name)
+        for i in range(model_info.c_mesh_data_set.nodes_size):
+            node: CModelNode = model_info.c_mesh_data_set.nodes[i]
+
+            bone = model_info.armature.edit_bones.new(node.name)
             bone.head = (0, 0, 0)
             bone.tail = (0, 1, 0)
             bone.inherit_scale = 'ALIGNED'
 
-            if node.ParentIndex >= 0:
-                parent = model_info.armature.edit_bones[node.ParentIndex]
+            if node.parent_index >= 0:
+                parent = model_info.armature.edit_bones[node.parent_index]
                 bone.parent = parent
 
-            _, node_matrix = System.MATRIX4X4.Invert(
-                node.Transform, System.MATRIX4X4.Identity)
+            node_matrix = Library.matrix_invert(node.transform)
             world_space = matrix_remap(node_matrix)
             model_info.bone_matrices.append(world_space)
             bone.matrix = world_space.normalized()
@@ -134,20 +135,26 @@ class NodeConverter:
             bone.length = distance
 
     def _convert_sca_parameters(self, model_info: i_model.ModelInfo):
-        if model_info.sn_model.Root is None:
+        if not model_info.c_mesh_data_set.sample_chunk_node_root:
             return
 
-        node = model_info.sn_model.Root.FindNode("NodesExt")
-        if node is None:
+        c_node = Library.sample_chunk_node_find(model_info.c_mesh_data_set.sample_chunk_node_root, "NodesExt")
+        if c_node is None:
             return
+        
+        current_child = c_node.contents.child
 
-        for child in node.Children:
-            bone = model_info.armature.edit_bones[child.Value]
+        while current_child:
+            child: CSampleChunkNode = current_child.contents
+
+            bone = model_info.armature.edit_bones[child.value]
             i_sca_parameters.convert_from_root(
-                child, bone.heio_node.sca_parameters, self._target_definition, 'model')
+                current_child, bone.heio_node.sca_parameters, self._target_definition, 'model')
+            
+            current_child = child.sibling
 
     def _convert_model(self, model_info: i_model.ModelInfo):
-        if model_info.sn_model.Nodes.Count == 0:
+        if model_info.c_mesh_data_set.nodes_size == 0:
             return None
 
         armature = bpy.data.armatures.new(model_info.name)
@@ -181,27 +188,24 @@ class NodeConverter:
 
         progress_console.end()
 
-    def convert_model_sets(self, model_sets):
+    def convert_model_sets(self, model_sets: list[TPointer[CModelSet]]):
 
         result = self._mesh_converter.convert_model_sets(model_sets)
 
         progress_console.start("Converting Armatures", len(model_sets))
 
         for i, model_info in enumerate(result):
-            progress_console.update(
-                f"Converting armature \"{model_info.sn_model.Name}\"", i)
-
-            if model_info.armature is not None or not isinstance(model_info.sn_model, SharpNeedle.MODEL):
+            if model_info.armature is not None or model_info.c_mesh_data_set.is_terrain:
                 continue
+
+            progress_console.update(
+                f"Converting armature \"{model_info.name}\"", i)
 
             self._convert_model(model_info)
 
-            if model_info.sn_lod_info is not None:
+            if model_info.c_lod_items is not None:
                 self._convert_lod_models(model_info)
 
         progress_console.end()
 
         return result
-
-    def get_model_info(self, key: any):
-        return self._mesh_converter.get_model_info(key)

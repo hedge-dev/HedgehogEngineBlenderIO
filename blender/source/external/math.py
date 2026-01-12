@@ -1,6 +1,10 @@
 from ctypes import Structure, c_float, c_int
 from .util import FieldsFromTypeHints
 
+class CVector2(Structure, metaclass=FieldsFromTypeHints):
+    x: c_float
+    y: c_float
+
 class CVector3(Structure, metaclass=FieldsFromTypeHints):
     x: c_float
     y: c_float

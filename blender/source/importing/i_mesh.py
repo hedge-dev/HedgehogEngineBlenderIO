@@ -3,11 +3,9 @@ from mathutils import Vector
 
 from . import i_material, i_model, i_sca_parameters, i_transform
 
-from ..dotnet import HEIO_NET, SharpNeedle
+from ..external import Library, pointer_to_address, TPointer, CModelSet, CMeshDataSet, CMeshData, CVertex, CVertexWeight, CMeshDataMeshSetInfo, CMeshDataGroupInfo
 from ..register.definitions import TargetDefinition
 from ..utility import progress_console
-from ..exceptions import HEIODevException
-from ..exporting import o_enum
 
 LAYER_LUT = {
     "AUTO": -1,
@@ -29,54 +27,45 @@ class MeshConverter:
     _target_definition: TargetDefinition
     _material_converter: i_material.MaterialConverter
 
-    _vertex_merge_mode: any
-    _vertex_merge_distance: float
-    _merge_split_edges: bool
     _create_mesh_layer_attributes: bool
 
-    converted_models: dict[any, i_model.ModelInfo]
+    _converted_models: dict[int, i_model.ModelInfo]
     _mesh_name_lookup: dict[str, i_model.ModelInfo]
 
     def __init__(
             self,
             target_definition: TargetDefinition,
             material_converter: TargetDefinition,
-            vertex_merge_mode: str,
-            vertex_merge_distance: float,
-            merge_split_edges: bool,
             create_mesh_layer_attributes: bool):
 
         self._target_definition = target_definition
         self._material_converter = material_converter
 
-        self._vertex_merge_mode = o_enum.to_vertex_merge_mode(
-            vertex_merge_mode)
-
-        self._vertex_merge_distance = vertex_merge_distance
-        self._merge_split_edges = merge_split_edges
         self._create_mesh_layer_attributes = create_mesh_layer_attributes
 
-        self.converted_models = dict()
+        self._converted_models = dict()
         self._mesh_name_lookup = dict()
 
-    def _convert_weights(self, mesh: bpy.types.Mesh, mesh_data, model):
+    def _convert_weights(self, mesh: bpy.types.Mesh, mesh_data_set: CMeshDataSet, vertex_data: list[CVertex]):
 
-        if not isinstance(model, SharpNeedle.MODEL) or model.Nodes.Count == 0:
+        if not mesh_data_set.nodes:
             return
 
         weight_dummy_obj = bpy.data.objects.new("DUMMY", mesh)
 
         groups: list[bpy.types.VertexGroup] = []
 
-        for node in model.Nodes:
-            groups.append(weight_dummy_obj.vertex_groups.new(name=node.Name))
+        for i in range(mesh_data_set.nodes_size):
+            node = mesh_data_set.nodes[i]
+            groups.append(weight_dummy_obj.vertex_groups.new(name=node.name))
 
         used_groups = [False] * len(groups)
 
-        for i, vertex in enumerate(mesh_data.Vertices):
-            for weight in vertex.Weights:
-                groups[weight.Index].add([i], weight.Weight, 'REPLACE')
-                used_groups[weight.Index] = True
+        for vertex in vertex_data:
+            for i in range(vertex.weights_size):
+                weight: CVertexWeight = vertex.weights[i]
+                groups[weight.index].add([i], weight.weight, 'REPLACE')
+                used_groups[weight.index] = True
 
         to_remove = []
         for i, used in enumerate(used_groups):
@@ -88,34 +77,38 @@ class MeshConverter:
 
         bpy.data.objects.remove(weight_dummy_obj)
 
-    def _convert_morphs(self, mesh: bpy.types.Mesh, mesh_data):
-        if mesh_data.MorphNames is None or mesh_data.MorphNames.Count == 0:
+    def _convert_morphs(self, mesh: bpy.types.Mesh, mesh_data: CMeshData, vertex_data: list[CVertex]):
+        if not mesh_data.morph_names:
             return
 
         shapekey_positions = [
-            [None] * len(mesh_data.Vertices) for _ in mesh_data.MorphNames]
+            [None] * mesh_data.vertices_size for _ in range(mesh_data.morph_names_size)]
 
-        for i, vertex in enumerate(mesh_data.Vertices):
-            for s, position in enumerate(vertex.MorphPositions):
+        for i, vertex in enumerate(vertex_data):
+            for s in range(vertex.morph_positions_size):
+                position = vertex.morph_positions[s]
                 shapekey_positions[s][i] = Vector(
                     (position.X, -position.Z, position.Y))
 
         shapekey_dummy_obj = bpy.data.objects.new("DUMMY", mesh)
 
         shapekey_dummy_obj.shape_key_add(name="basis")
-        for s, morph_name in enumerate(mesh_data.MorphNames):
+        for s in range(mesh_data.morph_names_size):
+            morph_name = mesh_data.morph_names[s]
             shapekey = shapekey_dummy_obj.shape_key_add(name=morph_name)
             for i, pos in enumerate(shapekey_positions[s]):
                 shapekey.data[i].co += pos
 
         bpy.data.objects.remove(shapekey_dummy_obj)
 
-    def _assign_materials(self, mesh: bpy.types.Mesh, mesh_data):
+    def _assign_materials(self, mesh: bpy.types.Mesh, mesh_data: CMeshData):
         material_indices = []
         material_index_mapping = {}
 
-        for meshSet in mesh_data.MeshSets:
-            material = self._material_converter.get_material(meshSet.Material)
+        for i in range(mesh_data.mesh_sets_size):
+            mesh_set: CMeshDataMeshSetInfo = mesh_data.mesh_sets[i]
+            material = self._material_converter.get_material(mesh_set.material_reference)
+
             if material in material_index_mapping:
                 material_indices.append(material_index_mapping[material])
                 continue
@@ -126,48 +119,47 @@ class MeshConverter:
 
             mesh.materials.append(material)
 
-            slot = meshSet.Slot
-            if LAYER_LUT[material.heio_material.render_layer] < slot.Type.value__:
-                material.heio_material.render_layer = LAYER_LUT[slot.Type.value__]
+            if LAYER_LUT[material.heio_material.render_layer] < mesh_set.mesh_slot_type:
+                material.heio_material.render_layer = LAYER_LUT[mesh_set.mesh_slot_type]
                 if material.heio_material.render_layer == 'SPECIAL':
-                    material.heio_material.special_render_layer_name = slot.Name
+                    material.heio_material.special_render_layer_name = mesh_set.mesh_slot_name
 
         face_index = 0
-        for material_index, meshSet in zip(material_indices, mesh_data.MeshSets):
-            for f in range(face_index, face_index + meshSet.Size):
+        for i, material_index in enumerate(material_indices):
+            mesh_set = mesh_data.mesh_sets[i]
+            for f in range(face_index, face_index + mesh_set.size):
                 mesh.polygons[f].material_index = material_index
-            face_index += meshSet.Size
+            face_index += mesh_set.size
 
     @staticmethod
-    def _create_polygon_layer_attributes(mesh: bpy.types.Mesh, mesh_data):
+    def _create_polygon_layer_attributes(mesh: bpy.types.Mesh, mesh_data: CMeshData):
         layers = mesh.heio_mesh.render_layers
         layers.initialize()
         set_slot_indices = []
         special_layer_map = {}
 
-        for meshSet in mesh_data.MeshSets:
-            slot = meshSet.Slot
-            layer_index = slot.Type.value__
+        for i in range(mesh_data.mesh_sets_size):
+            mesh_set: CMeshDataMeshSetInfo = mesh_data.mesh_sets[i]
 
-            if layer_index == 3:
-                if slot.Name not in special_layer_map:
+            if mesh_set.mesh_slot_type == 3:
+                if mesh_set.mesh_slot_name not in special_layer_map:
                     layer_index = 3 + len(special_layer_map)
 
-                    special_layer_map[slot.Name] = layer_index
+                    special_layer_map[mesh_set.mesh_slot_name] = layer_index
 
                     special_layer_name = layers.new()
-                    special_layer_name.name = slot.Name
+                    special_layer_name.name = mesh_set.mesh_slot_name
 
                 else:
-                    layer_index = special_layer_map[slot.Name]
+                    layer_index = special_layer_map[mesh_set.mesh_slot_name]
 
-            set_slot_indices.extend([layer_index] * meshSet.Size)
+            set_slot_indices.extend([layer_index] * mesh_set.size)
 
         layers.attribute.data.foreach_set("value", set_slot_indices)
 
     @staticmethod
-    def _create_polygon_meshgroup_attributes(mesh: bpy.types.Mesh, mesh_data):
-        if len(mesh_data.GroupNames) == 1 and len(mesh_data.GroupNames[0]) == 0:
+    def _create_polygon_meshgroup_attributes(mesh: bpy.types.Mesh, mesh_data: CMeshData):
+        if mesh_data.groups_size == 1 and len(mesh_data.groups[0].name) == 0:
             return
 
         groups = mesh.heio_mesh.groups
@@ -175,36 +167,46 @@ class MeshConverter:
         group_indices = []
         set_offset = 0
 
-        for group_index, group in enumerate(zip(mesh_data.GroupNames, mesh_data.GroupSetCounts)):
+        for i in range(mesh_data.groups_size):
+            group: CMeshDataGroupInfo = mesh_data.groups[i]
 
-            if group_index == 0:
+            if i == 0:
                 meshgroup = groups[0]
             else:
                 meshgroup = groups.new()
 
-            meshgroup.name = group[0]
+            meshgroup.name = group.name
 
-            for i in range(group[1]):
-                group_indices.extend(
-                    [group_index] * mesh_data.MeshSets[set_offset + i].Size)
-            set_offset += group[1]
+            for i in range(group.size):
+                group_indices.extend([i] * mesh_data.mesh_sets[set_offset + i].size)
+            set_offset += group.size
 
         groups.attribute.data.foreach_set("value", group_indices)
 
     @staticmethod
-    def _convert_texcords(mesh: bpy.types.Mesh, mesh_data):
-        for i, uvmap in enumerate(mesh_data.TextureCoordinates):
+    def _convert_texcords(mesh: bpy.types.Mesh, mesh_data: CMeshData):
+        for i in range(mesh_data.texture_coordinates_size):
+            texture_coordinates = mesh_data.texture_coordinates[i]
+
             uv_layer = mesh.uv_layers.new(
                 name="UVMap" + (str(i) if i > 0 else ""), do_init=False)
 
-            for l, uv in enumerate(uvmap):
-                uv_layer.uv[l].vector = (uv.X, uv.Y)
+            for l, output in enumerate(uv_layer.uv):
+                uv = texture_coordinates[l]
+                output.vector = (uv.x, uv.y)
 
     @staticmethod
-    def _convert_colors(mesh: bpy.types.Mesh, mesh_data):
-        color_type = 'BYTE_COLOR' if mesh_data.UseByteColors else 'FLOAT_COLOR'
+    def _convert_colors(mesh: bpy.types.Mesh, mesh_data: CMeshData):
+        color_type = 'BYTE_COLOR'
 
-        for i, color_set in enumerate(mesh_data.Colors):
+        for i in range(mesh_data.mesh_sets_size):
+            if not mesh_data.mesh_sets[i].use_byte_colors:
+                color_type = 'FLOAT_COLOR'
+                break
+
+        for i in range(mesh_data.colors_size):
+            colors = mesh_data.colors[i]
+
             color_set_name = "Colors"
             if i > 0:
                 color_set_name += str(i + 1)
@@ -214,22 +216,28 @@ class MeshConverter:
                 color_type,
                 'CORNER')
 
-            for output, color in zip(color_attribute.data, color_set):
-                output.color = (color.X, color.Y, color.Z, color.W)
+            for l, output in enumerate(color_attribute.data):
+                color = colors[l]
+                output.color = (color.x, color.y, color.z, color.w)
 
     @staticmethod
-    def _convert_normals(mesh: bpy.types.Mesh, mesh_data):
-        if mesh_data.PolygonNormals is None:
+    def _convert_normals(mesh: bpy.types.Mesh, mesh_data: CMeshData, vertices: list[CVertex]):
+        if not mesh_data.polygon_normals:
+
+
             mesh.normals_split_custom_set_from_vertices(
-                [(v.Normal.X, -v.Normal.Z, v.Normal.Y)
-                 for v in mesh_data.Vertices]
+                [(v.normal.x, -v.normal.z, v.normal.y)
+                 for v in vertices]
             )
             mesh.validate()
 
         else:
+            normals = []
+            for i in range(mesh_data.triangle_index_count):
+                normals.append(mesh_data.polygon_normals[i])
 
             mesh.normals_split_custom_set(
-                [(n.X, -n.Z, n.Y) for n in mesh_data.PolygonNormals]
+                [i_transform.c_to_bpy_position(n) for n in normals]
             )
 
             mesh.validate()
@@ -269,27 +277,32 @@ class MeshConverter:
             if nrm0.dot(nrm1) > 0.995 and nrm2.dot(nrm3) > 0.995:
                 edge.use_edge_sharp = False
 
-    def _convert_mesh_data(self, mesh_data: any, model: any, name_suffix: str,):
+    def _convert_mesh_data(self, mesh_data: CMeshData, mesh_data_set: CMeshDataSet, name_suffix: str,):
 
-        mesh = bpy.data.meshes.new(mesh_data.Name + name_suffix)
+        mesh = bpy.data.meshes.new(mesh_data.name + name_suffix)
 
-        if mesh_data.Vertices.Count == 0:
+        if mesh_data.vertices_size == 0:
             return mesh
+        
+        # caching the actual vertex data since we use it several times
+        vertex_data: list[CVertex] = []
+        for i in range(mesh_data.vertices_size):
+            vertex_data.append(mesh_data.vertices[i])
 
-        vertices = [i_transform.net_to_bpy_position(x.Position) for x in mesh_data.Vertices]
+        vertices = [i_transform.c_to_bpy_position(x.position) for x in vertex_data]
 
         faces = []
-        for i in range(0, len(mesh_data.TriangleIndices), 3):
+        for i in range(0, mesh_data.triangle_index_count, 3):
             faces.append((
-                mesh_data.TriangleIndices[i],
-                mesh_data.TriangleIndices[i + 1],
-                mesh_data.TriangleIndices[i + 2])
-            )
+                mesh_data.triangle_indices[i],
+                mesh_data.triangle_indices[i + 1],
+                mesh_data.triangle_indices[i + 2]
+            ))
 
         mesh.from_pydata(vertices, [], faces, shade_flat=False)
 
-        self._convert_weights(mesh, mesh_data, model)
-        self._convert_morphs(mesh, mesh_data)
+        self._convert_weights(mesh, mesh_data_set, vertex_data)
+        self._convert_morphs(mesh, mesh_data, vertex_data)
         self._assign_materials(mesh, mesh_data)
 
         self._create_polygon_meshgroup_attributes(mesh, mesh_data)
@@ -300,95 +313,75 @@ class MeshConverter:
         self._convert_texcords(mesh, mesh_data)
         self._convert_colors(mesh, mesh_data)
 
-        self._convert_normals(mesh, mesh_data)
+        self._convert_normals(mesh, mesh_data, vertex_data)
 
         return mesh
 
-    def _convert_model(self, model, name_suffix: str):
-        model_info = i_model.ModelInfo(model.Name + name_suffix, model)
+    def _convert_model(self, mesh_data_set: CMeshDataSet, name_suffix: str):
+        
+        model_info = i_model.ModelInfo(mesh_data_set.name + name_suffix, mesh_data_set)
 
-        if isinstance(model, SharpNeedle.TERRAIN_MODEL):
-            mesh_data = HEIO_NET.MESH_DATA.FromHEModel(
-                model,
-                self._vertex_merge_mode,
-                self._vertex_merge_distance,
-                self._merge_split_edges
-            )
-
-            mesh = self._convert_mesh_data(mesh_data, model, name_suffix)
+        for i in range(mesh_data_set.mesh_data_size):
+            mesh_data: CMeshData = mesh_data_set.mesh_data[i].contents
+            mesh = self._convert_mesh_data(mesh_data, mesh_data_set, name_suffix)
             model_info.meshes.append(mesh)
 
-            i_sca_parameters.convert_from_data(
-                model, mesh.heio_mesh.sca_parameters, self._target_definition, 'model')
-
-        else:  # Model
-            mesh_datas = HEIO_NET.MESH_DATA.FromHEMeshGroups(
-                model,
-                self._vertex_merge_mode,
-                self._vertex_merge_distance,
-                self._merge_split_edges
-            )
-
-            for mesh_data in mesh_datas:
-                model_info.meshes.append(
-                    self._convert_mesh_data(mesh_data, model, name_suffix))
-
-            if model.Morphs != None:
-                for morph in model.Morphs:
-                    morph_data = HEIO_NET.MESH_DATA.FromHEMorph(
-                        model,
-                        morph,
-                        self._vertex_merge_mode,
-                        self._vertex_merge_distance,
-                        self._merge_split_edges
-                    )
-
-                    morph_mesh = self._convert_mesh_data(
-                        morph_data, model, name_suffix)
-                    model_info.meshes.append(morph_mesh)
+            if mesh_data_set.is_terrain:
+                i_sca_parameters.convert_from_root(
+                    mesh_data_set.sample_chunk_node_root, 
+                    mesh.heio_mesh.sca_parameters, 
+                    self._target_definition, 
+                    'model'
+                )
 
         return model_info
 
-    def _convert_lod_models(self, model_info: i_model.ModelInfo, model_set):
+    def _convert_lod_models(self, model_info: i_model.ModelInfo, model_set: CModelSet):
         progress_console.start(
             "Converting LOD Models",
-            len(model_set.Models) - 1)
+            len(model_set.mesh_data_sets_size) - 1)
 
-        model_info.sn_lod_info = model_set.LODInfo
+        model_info.c_lod_items = []
+        model_info.c_lod_unknown1 = model_set.lod_unknown1
 
-        for i, lod_model in enumerate(model_set.Models):
-            if i == 0:
-                continue
+        for i in range(model_set.lod_items_size):
+            model_info.c_lod_items.append(model_set.lod_items[i])
 
+        for i in range(1, model_set.mesh_data_sets_size):
             progress_console.update(f"Converting LOD level {i}", i - 1)
 
-            lod_model_info = self._convert_model(lod_model, f"_lv{i}")
+            lod_model_info = self._convert_model(model_set.mesh_data_sets[i], f"_lv{i}")
 
             model_info.lod_models.append(lod_model_info)
 
         progress_console.end()
 
-    def convert_model_sets(self, model_sets) -> list[i_model.ModelInfo]:
-        sn_materials = HEIO_NET.MODEL_HELPER.GetMaterials(model_sets)
-        self._material_converter.convert_materials(sn_materials)
+    def convert_model_sets(self, model_sets: list[TPointer[CModelSet]]) -> list[i_model.ModelInfo]:
+        c_materials = Library.model_get_materials(model_sets)
+        self._material_converter.convert_materials(c_materials)
 
         result = []
 
         progress_console.start("Converting Models", len(model_sets))
 
         for i, model_set in enumerate(model_sets):
-            model = model_set.Models[0]
-            progress_console.update(f"Converting model \"{model.Name}\"", i)
+            model_set_address = pointer_to_address(model_set)
+            model_set: CModelSet = model_set.contents
+        
+            main_mesh_set: CMeshDataSet =  model_set.mesh_data_sets[0]
+            model_name = main_mesh_set.name
 
-            if model in self.converted_models:
-                model_info = self.converted_models[model]
+            progress_console.update(f"Converting model \"{model_name}\"", i)
+
+            if model_set_address in self._converted_models:
+                model_info = self._converted_models[model_set_address]
 
             else:
-                model_info = self._convert_model(model, "")
-                self.converted_models[model] = model_info
-                self._mesh_name_lookup[model.Name] = model_info
+                model_info = self._convert_model(main_mesh_set, "")
+                self._converted_models[model_set_address] = model_info
+                self._mesh_name_lookup[model_name] = model_info
 
-                if model_set.LODInfo is not None:
+                if model_set.lod_items:
                     self._convert_lod_models(model_info, model_set)
 
             result.append(model_info)
@@ -396,22 +389,3 @@ class MeshConverter:
         progress_console.end()
 
         return result
-
-    def get_model_info(self, key: any):
-
-        if isinstance(key, str):
-            if key in self._mesh_name_lookup:
-                return self._mesh_name_lookup[key]
-
-            mesh = bpy.data.meshes.new(key)
-            model_info = i_model.ModelInfo(key, None, mesh)
-            self._mesh_name_lookup[key] = model_info
-            return model_info
-
-        if key in self.converted_models:
-            return self.converted_models[key]
-
-        if hasattr(key, "Name") and key.Name in self._mesh_name_lookup:
-            return self._mesh_name_lookup[key.Name]
-
-        raise HEIODevException("Model lookup failed")

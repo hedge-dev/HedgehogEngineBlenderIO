@@ -42,7 +42,7 @@ class HEIO_OT_Import_Material_Active(ImportMaterialOperator):
         self.import_material_files()
 
         object = context.active_object
-        for material in self.material_converter.converted_materials.values():
+        for material in self.material_converter.get_converted_materials():
             object.data.materials.append(material)
 
         return {'FINISHED'}
@@ -58,7 +58,7 @@ class HEIO_OT_Import_Material_Active_if(ImportMaterialOperator):
 
         object = context.active_object
         if object is not None and object.select_get():
-            for material in self.material_converter.converted_materials.values():
+            for material in self.material_converter.get_converted_materials():
                 object.data.materials.append(material)
 
         return {'FINISHED'}

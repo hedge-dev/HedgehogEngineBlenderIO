@@ -145,7 +145,7 @@ namespace HEIO.NET.Internal
 
             (Collection[] modelCollections, IFile[] modelSetFiles) = ToCollections(modelClouds);
             ModelSet[] modelSets = new ModelSet[modelSetFiles.Length];
-            List<(MeshData[], IFile)> modelFiles = [];
+            List<(MeshDataSet, IFile)> modelFiles = [];
 
             for(int i = 0; i < modelSets.Length; i++)
             {
@@ -173,7 +173,7 @@ namespace HEIO.NET.Internal
                 }
             }
 
-            ResolveInfo terrainResolveInfo = dependencyManager.ResolveDependencies(modelFiles, MeshData.ResolveManyDependencies);
+            ResolveInfo terrainResolveInfo = dependencyManager.ResolveDependencies(modelFiles, (x, r) => x.ResolveDependencies(r));
             resolveInfo = ResolveInfo.Combine(pointCloudInfo, terrainResolveInfo);
 
 

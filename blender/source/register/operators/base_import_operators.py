@@ -23,7 +23,7 @@ from ...importing import (
     i_pointcloud
 )
 
-from ...external import Library, CResolveInfo, TPointer
+from ...external import Library, CMeshImportSettings, enums
 from ...utility.general import get_addon_preferences
 from ...utility.resolve_info import print_resolve_info
 from ...utility import progress_console
@@ -357,9 +357,6 @@ class ImportModelBaseOperator(ImportMaterialOperator):
         self.mesh_converter = i_mesh.MeshConverter(
             self.target_definition,
             self.material_converter,
-            self.vertex_merge_mode,
-            self.vertex_merge_distance,
-            self.merge_split_edges,
             self.create_render_layer_attributes
         )
 
@@ -396,15 +393,24 @@ class ImportModelBaseOperator(ImportMaterialOperator):
         if created and len(lod_collection.objects) == 0:
             bpy.data.collections.remove(lod_collection)
 
-    def _import_model_files(self, context: bpy.types.Context, type):
-        progress_console.update("Resolving & reading files")
+    def _import_model_files(self, context: bpy.types.Context, terrain_models: bool):
+        progress_console.update("Resolving, reading & converting model files")
 
         directory = os.path.dirname(self.filepath)
         filepaths = [os.path.join(directory, file.name) for file in self.files]
 
-        models, resolve_info = HEIO_NET.MODEL_HELPER.LoadModelFiles[type](
-            filepaths, self.import_lod_models, HEIO_NET.RESOLVE_INFO())
+        mesh_import_settings = CMeshImportSettings()
+        mesh_import_settings.merge_distance = self.vertex_merge_distance
+        mesh_import_settings.merge_split_edges = self.merge_split_edges
+        mesh_import_settings.vertex_merge_mode = enums.VERTEX_MERGE_MODE.index(self.vertex_merge_mode)
 
+        models, resolve_info = Library.model_read_files(
+            filepaths,
+            terrain_models,
+            self.import_lod_models,
+            mesh_import_settings
+        )
+        
         self.resolve_infos.append(resolve_info)
 
         progress_console.update("Importing data")

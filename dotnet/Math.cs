@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.Numerics;
 using System.Runtime.InteropServices;
 
@@ -115,6 +116,25 @@ namespace HEIO.NET
             }
         }
 
-
+        [UnmanagedCallersOnly(EntryPoint = "matrix_invert")]
+        public static Matrix4x4 InvertMatrix(Matrix4x4 matrix)
+        {
+            try
+            {
+                if (Matrix4x4.Invert(matrix, out Matrix4x4 result))
+                {
+                    return result;
+                }
+                else
+                {
+                    return Matrix4x4.Identity;
+                }
+            }
+            catch (Exception exception)
+            {
+                ErrorHandler.HandleError(exception);
+                return default;
+            }
+        }
     }
 }

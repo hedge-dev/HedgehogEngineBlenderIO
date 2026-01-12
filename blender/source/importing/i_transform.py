@@ -48,11 +48,11 @@ def c_transforms_to_bpy_matrix(position: CVector3, euler_rotation: CVector3, sca
 
 
 def c_to_bpy_position(position):
-    return Vector((position.X, -position.Z, position.Y))
+    return Vector((position.x, -position.z, position.y))
 
 
 def c_to_bpy_scale(scale):
-    return Vector((scale.X, scale.Z, scale.Y))
+    return Vector((scale.x, scale.z, scale.y))
 
 
 def c_to_bpy_quaternion(quat: CQuaternion):

@@ -1,6 +1,7 @@
 ﻿using SharpNeedle.Framework.HedgehogEngine.Mirage.MaterialData;
 using SharpNeedle.Framework.HedgehogEngine.Mirage.ModelData;
 using SharpNeedle.Resource;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
@@ -283,31 +284,6 @@ namespace HEIO.NET.Internal.Modeling
             {
                 throw new ResourceResolveException(
                     $"Failed to resolve dependencies of {exceptions.Count} mesh sets",
-                    [.. exceptions.SelectMany(x => x.GetRecursiveResources())]
-                );
-            }
-        }
-
-        public static void ResolveManyDependencies(MeshData[] data, IResourceResolver resolver)
-        {
-            List<ResourceResolveException> exceptions = [];
-
-            foreach (MeshData meshData in data)
-            {
-                try
-                {
-                    meshData.ResolveDependencies(resolver);
-                }
-                catch (ResourceResolveException exc)
-                {
-                    exceptions.Add(exc);
-                }
-            }
-
-            if (exceptions.Count > 0)
-            {
-                throw new ResourceResolveException(
-                    $"Failed to resolve dependencies of {exceptions.Count} meshes",
                     [.. exceptions.SelectMany(x => x.GetRecursiveResources())]
                 );
             }

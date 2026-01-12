@@ -1,17 +1,18 @@
 import os
 from typing import Iterable
-from ctypes import cdll, CDLL, POINTER, pointer, c_wchar_p, c_size_t, cast, c_float, c_void_p
+from ctypes import cdll, CDLL, POINTER, pointer, cast, c_wchar_p, c_size_t, c_float, c_bool
 from contextlib import contextmanager
 
+# importing everything so we can import from external directly
 from .typing import TPointer
 from .math import CVector3, CQuaternion, CMatrix
 from .material import CFloatMaterialParameter, CIntegerMaterialParameter, CBoolMaterialParameter, CTexture, CMaterial
+from .mesh_data import CUVDirection, CVertexWeight, CVertex, CMeshDataMeshSetInfo, CMeshDataGroupInfo, CMeshData, CModelNode, CMeshDataSet, CLODItem, CMeshImportSettings, CModelSet
 from .image import CImage
 from .pair import CStringPointerPair, CArray
 from .resolve_info import CResolveInfo
 from .sample_chunk_node import CSampleChunkNode
-
-from .util import get_dll_close
+from .util import get_dll_close, pointer_to_address
 
 from ..utility import general
 from ..exceptions import HEIOException
@@ -49,7 +50,6 @@ class Library:
     @classmethod
     @contextmanager
     def load(cls):
-
         try:
             cls._LOADED_LIBRARY = cdll.LoadLibrary(LIB_FILEPATH)
             cls._setup(cls._LOADED_LIBRARY)
@@ -110,6 +110,18 @@ class Library:
         lib.sample_chunk_node_find.restype = POINTER(CSampleChunkNode)
         lib.sample_chunk_node_find.errcheck = cls._check_error
 
+        lib.model_read_files.argtypes = (POINTER(c_wchar_p), c_size_t, c_bool, c_bool, POINTER(CMeshImportSettings), POINTER(POINTER(CResolveInfo)))
+        lib.model_read_files.restype = CArray
+        lib.model_read_files.errcheck = cls._check_error
+
+        lib.model_get_materials.argtypes = (POINTER(POINTER(CModelSet)), c_size_t)
+        lib.model_get_materials.restype = CArray
+        lib.model_get_materials.errcheck = cls._check_error
+
+        lib.matrix_invert.argtypes = (CMatrix,)
+        lib.matrix_invert.restype = CMatrix
+        lib.matrix_invert.errcheck = cls._check_error
+
     @classmethod
     def _as_array(cls, iterable: Iterable, type):
         return cast((type * len(iterable))(*iterable), POINTER(type))
@@ -118,7 +130,7 @@ class Library:
     def _check_error(cls, result, func, arguments):
         error = cls._LOADED_LIBRARY.error_get()
         if error:
-            raise HEIOLibraryException(func.__name__, error.value)
+            raise HEIOLibraryException(error, func.__name__)
         
         return result
 
@@ -130,6 +142,16 @@ class Library:
         for i in range(array.size):
             pair: CStringPointerPair = item_pointer[i]
             result[pair.name] = cast(pair.pointer, POINTER(target_type))
+
+        return result
+    
+    @classmethod
+    def _array_to_list(cls, array: CArray, target_type):
+        result = []
+
+        item_pointer = cast(array.array, POINTER(target_type))
+        for i in range(array.size):
+            result.append(item_pointer[i])
 
         return result
 
@@ -227,3 +249,45 @@ class Library:
     def sample_chunk_node_find(cls, sample_chunk_node: TPointer[CSampleChunkNode], name: str) -> TPointer[CSampleChunkNode]:
         c_name = c_wchar_p(name)
         return cls.lib().sample_chunk_node_find(sample_chunk_node, c_name)
+    
+    @classmethod
+    def model_read_files(cls, filepaths: list[str], as_terrain_models: bool, include_lod: bool, settings: CMeshImportSettings) -> tuple[list[TPointer[CModelSet]], TPointer[CResolveInfo]]:
+        c_filepaths = cls._as_array([c_wchar_p(filepath) for filepath in filepaths], c_wchar_p)
+        c_filepaths_size = c_size_t(len(filepaths))
+        c_as_terrain_models = c_bool(as_terrain_models)
+        c_include_lod = c_bool(include_lod)
+        c_settings = pointer(settings)
+        c_resolve_info = pointer(POINTER(CResolveInfo)())
+
+        array = cls.lib().model_read_files(
+            c_filepaths, 
+            c_filepaths_size,
+            c_as_terrain_models,
+            c_include_lod,
+            c_settings,
+            c_resolve_info
+        )
+
+        result = cls._array_to_list(array, POINTER(CModelSet))
+
+        return result, c_resolve_info.contents
+    
+    @classmethod
+    def model_get_materials(cls, model_sets: list[TPointer[CModelSet]]) -> list[TPointer[CMaterial]]:
+        c_model_sets = cls._as_array(model_sets, POINTER(CModelSet))
+        c_model_sets_size = c_size_t(len(model_sets))
+
+        array = cls.lib().model_get_materials(
+            c_model_sets, 
+            c_model_sets_size
+        )
+
+        return cls._array_to_list(array, POINTER(CMaterial))
+    
+    @classmethod
+    def matrix_invert(cls, matrix: CMatrix):
+        return cls.lib().matrix_invert(matrix)
+
+
+
+

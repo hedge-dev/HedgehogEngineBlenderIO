@@ -9,15 +9,6 @@ using System.Runtime.InteropServices;
 
 namespace HEIO.NET
 {
-    internal class InternalMaterial : Material
-    {
-        public void SetBaseFile(IFile? file)
-        {
-            BaseFile = file;
-        }
-    }
-
-
     public unsafe interface IMaterialParameter<V>
     {
         public char* Name { get; set; }
@@ -120,7 +111,7 @@ namespace HEIO.NET
             result->name = material.Name.ToPointer();
             result->dataVersion = material.DataVersion;
             result->filePath = (material.BaseFile?.Path).ToPointer();
-            result->rootNode = material.Root != null ? CSampleChunkNode.FromSampleChunkNodeTree(material.Root) : null;
+            result->rootNode = CSampleChunkNode.FromSampleChunkNodeTree(material.Root);
 
             result->shaderName = material.ShaderName.ToPointer();
             result->alphaThreshold = material.AlphaThreshold;
@@ -174,7 +165,7 @@ namespace HEIO.NET
 
         public readonly Material ToMaterial()
         {
-            InternalMaterial result = new()
+            Material result = new()
             {
                 Name = Util.FromPointer(name)!,
                 DataVersion = dataVersion,

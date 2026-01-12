@@ -1,8 +1,7 @@
 import bpy
 from mathutils import Matrix
 
-from ..dotnet import SharpNeedle
-
+from ..external import TPointer, CMeshDataSet, CLODItem
 from ..exceptions import HEIODevException
 
 
@@ -10,7 +9,7 @@ class ModelInfo:
 
     name: str
 
-    sn_model: any
+    c_mesh_data_set: CMeshDataSet
     meshes: list[bpy.types.Mesh]
 
     armature: bpy.types.Armature | None
@@ -19,13 +18,14 @@ class ModelInfo:
     mesh_objects: list[bpy.types.Object]
     armatures_objects: list[bpy.types.Object]
 
-    sn_lod_info: any
+    c_lod_items: list[CLODItem]
+    c_lod_unknown1: int
     lod_models: list['ModelInfo']
     lod_info_set_up: bool
 
-    def __init__(self, name: str, sn_model):
+    def __init__(self, name: str, c_model: CMeshDataSet):
         self.name = name
-        self.sn_model = sn_model
+        self.c_mesh_data_set = c_model
         self.meshes = []
 
         self.armature = None
@@ -34,7 +34,8 @@ class ModelInfo:
         self.mesh_objects = []
         self.armatures_objects = []
 
-        self.sn_lod_info = None
+        self.c_lod_items = None
+        self.c_lod_unknown1 = 0
         self.lod_models = []
         self.lod_info_set_up = False
 
@@ -90,10 +91,10 @@ class ModelInfo:
         return mesh_objs, armature_obj
 
     def setup_lod_info(self, lod_collection: bpy.types.Collection, context: bpy.types.Context):
-        if self.sn_lod_info is None or self.lod_info_set_up:
+        if self.c_lod_items is None or self.lod_info_set_up:
             return
 
-        if isinstance(self.sn_model, SharpNeedle.TERRAIN_MODEL):
+        if self.c_mesh_data_set.is_terrain:
             lod_info = self.meshes[0].heio_mesh.lod_info
         elif self.armature is not None:
             lod_info = self.armature.heio_armature.lod_info
@@ -103,16 +104,16 @@ class ModelInfo:
         self.lod_info_set_up = True
         lod_info.initialize()
 
-        for i, sn_lod_info_item in enumerate(self.sn_lod_info.Items):
+        for i, c_lod_info_item in enumerate(self.c_lod_items):
             if i == 0:
                 lod_info_level = lod_info.levels[0]
-                lod_info_level.cascade = sn_lod_info_item.CascadeLevel
-                lod_info_level.unknown = sn_lod_info_item.Unknown2
+                lod_info_level.cascade = c_lod_info_item.cascade_level
+                lod_info_level.unknown = c_lod_info_item.unknown2
                 continue
 
             lod_info_level = lod_info.levels.new()
-            lod_info_level.cascade = sn_lod_info_item.CascadeLevel
-            lod_info_level.unknown = sn_lod_info_item.Unknown2
+            lod_info_level.cascade = c_lod_info_item.cascade_level
+            lod_info_level.unknown = c_lod_info_item.unknown2
 
             lod_model = self.lod_models[i - 1]
             mesh_objs, armature_obj = lod_model.create_object(lod_model.name, lod_collection, context)

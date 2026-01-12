@@ -1,10 +1,10 @@
 import bpy
 from typing import Iterable
-from ctypes import cast, c_void_p, POINTER
+from ctypes import cast, POINTER
 
 from . import i_image, i_sca_parameters
 
-from ..external import TPointer, CMaterial, CTexture
+from ..external import pointer_to_address, TPointer, CMaterial, CTexture, CStringPointerPair
 from ..external.enums import WRAP_MODE, MATERIAL_BLEND_MODE
 from ..register.definitions import TargetDefinition
 from ..register.property_groups.material_properties import (
@@ -30,7 +30,7 @@ class MaterialConverter:
     _create_undefined_parameters: bool
     _import_images: bool
 
-    converted_materials: dict[any, bpy.types.Material]
+    _converted_materials: dict[any, bpy.types.Material]
     _material_name_lookup: dict[str, bpy.types.Material]
 
     def __init__(
@@ -48,7 +48,7 @@ class MaterialConverter:
         self._create_undefined_parameters = create_undefined_parameters
         self._import_images = import_images
 
-        self.converted_materials = dict()
+        self._converted_materials = dict()
         self._material_name_lookup = dict()
 
     def _convert_textures(
@@ -124,15 +124,15 @@ class MaterialConverter:
         new_converted_materials: list[tuple[CMaterial, bpy.types.Material]] = []
 
         for i, c_material in enumerate(c_materials):
-            c_material_address = cast(c_material, c_void_p).value
-            if c_material_address in self.converted_materials:
+            c_material_address = pointer_to_address(c_material)
+            if c_material_address in self._converted_materials:
                 continue
 
             c_material: CMaterial = c_material.contents
             progress_console.update(f"Creating material \"{c_material.name}\"", i)
 
             material = bpy.data.materials.new(c_material.name)
-            self.converted_materials[c_material_address] = material
+            self._converted_materials[c_material_address] = material
             new_converted_materials.append((c_material, material))
             self._material_name_lookup[c_material.name] = material
 
@@ -221,13 +221,24 @@ class MaterialConverter:
 
         progress_console.end()
 
+    def get_converted_materials(self):
+        return list(self._converted_materials.values())
+
     def get_material(self, key: any):
 
-        if hasattr(key, "is_valid"):
-            if key.is_valid:
-                key = key.name
-            else:
-                key = key.resource
+        if isinstance(key, POINTER(CStringPointerPair)):
+            key = key.contents
+
+        if isinstance(key, CStringPointerPair) and key.pointer:
+            key = cast(key.pointer, POINTER(CMaterial))
+
+        if isinstance(key, POINTER(CMaterial)):
+            c_address = pointer_to_address(key)
+            if c_address in self._converted_materials:
+                return self._converted_materials[c_address]
+            
+        if hasattr(key, "name"):
+            key = key.name
 
         if isinstance(key, str):
 
@@ -236,14 +247,6 @@ class MaterialConverter:
 
             material = bpy.data.materials.new(key)
             self._material_name_lookup[key] = material
-            return material
-
-        if isinstance(key, POINTER(CMaterial)):
-            c_address = cast(key, c_void_p).value
-            if c_address in self.converted_materials:
-                return self.converted_materials[c_address]
-
-        if hasattr(key, "name") and key.name in self._material_name_lookup:
-            return self._material_name_lookup[key.name]
+            return material            
 
         raise HEIODevException("Material lookup failed")

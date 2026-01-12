@@ -1,4 +1,5 @@
 ﻿using SharpNeedle.Framework.HedgehogEngine.Mirage;
+using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
@@ -12,8 +13,13 @@ namespace HEIO.NET
         public CSampleChunkNode* child;
         public CSampleChunkNode* sibling;
 
-        public static CSampleChunkNode* FromSampleChunkNodeTree(SampleChunkNode root)
+        public static CSampleChunkNode* FromSampleChunkNodeTree(SampleChunkNode? root)
         {
+            if(root == null)
+            {
+                return null;
+            }
+
             List<SampleChunkNode> flatNodes = [];
             AddNodes(flatNodes, root);
 
@@ -79,32 +85,40 @@ namespace HEIO.NET
         [UnmanagedCallersOnly(EntryPoint = "sample_chunk_node_find")]
         public static CSampleChunkNode* FindNode(CSampleChunkNode* node, char* name)
         {
-            Stack<nint> searchStack = [];
-            searchStack.Push((nint)node);
-            string nameString = Util.FromPointer(name)!;
-
-            while(searchStack.TryPop(out nint currentNodeAddr))
+            try
             {
-                CSampleChunkNode* currentNode = (CSampleChunkNode *)currentNodeAddr;
+                Stack<nint> searchStack = [];
+                searchStack.Push((nint)node);
+                string nameString = Util.FromPointer(name)!;
 
-                string nodeName = Util.FromPointer(currentNode->name)!;
-                if(nodeName == nameString)
+                while (searchStack.TryPop(out nint currentNodeAddr))
                 {
-                    return currentNode;
-                }
-                
-                if(currentNode->sibling != null)
-                {
-                    searchStack.Push((nint)currentNode->sibling);
+                    CSampleChunkNode* currentNode = (CSampleChunkNode*)currentNodeAddr;
+
+                    string nodeName = Util.FromPointer(currentNode->name)!;
+                    if (nodeName == nameString)
+                    {
+                        return currentNode;
+                    }
+
+                    if (currentNode->sibling != null)
+                    {
+                        searchStack.Push((nint)currentNode->sibling);
+                    }
+
+                    if (currentNode->child != null)
+                    {
+                        searchStack.Push((nint)currentNode->child);
+                    }
                 }
 
-                if (currentNode->child != null)
-                {
-                    searchStack.Push((nint)currentNode->child);
-                }
+                return null;
             }
-            
-            return null;
-        }
+            catch (Exception exception)
+            {
+                ErrorHandler.HandleError(exception);
+                return null;
+            }
+}
     }
 }

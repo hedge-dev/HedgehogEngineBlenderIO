@@ -122,3 +122,6 @@ class FieldsFromTypeHints(type(ctypes.Structure)):
         annotations = get_type_hints(AnnotationDummy)
         namespace['_fields_'] = list(annotations.items())
         return type(ctypes.Structure).__new__(cls, name, bases, namespace)
+    
+def pointer_to_address(pointer):
+    return ctypes.cast(pointer, ctypes.c_void_p).value

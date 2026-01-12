@@ -2,9 +2,13 @@
 using HEIO.NET.Internal.Modeling;
 using SharpNeedle.Framework.HedgehogEngine.Mirage.ModelData;
 using SharpNeedle.Framework.HedgehogEngine.Needle.Archive;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using System.Runtime;
 using System.Runtime.InteropServices;
+using System.Xml.Linq;
 
 namespace HEIO.NET
 {
@@ -46,7 +50,7 @@ namespace HEIO.NET
         public nint morphPositionsSize;
     }
 
-    public unsafe struct CMeshDataSetInfo
+    public unsafe struct CMeshDataMeshSetInfo
     {
         public bool useByteColors;
         public bool enable8Weights;
@@ -83,7 +87,7 @@ namespace HEIO.NET
         public Vector4** colors;
         public nint colorsSize;
 
-        public CMeshDataSetInfo* meshSets;
+        public CMeshDataMeshSetInfo* meshSets;
         public nint meshSetsSize;
 
         public CMeshDataGroupInfo* groups;
@@ -132,12 +136,12 @@ namespace HEIO.NET
             Allocate.AllocFrom2DArray(meshData.Colors, out result->colors);
 
             result->meshSetsSize = meshData.MeshSets.Count;
-            result->meshSets = Allocate.Alloc<CMeshDataSetInfo>(result->meshSetsSize);
+            result->meshSets = Allocate.Alloc<CMeshDataMeshSetInfo>(result->meshSetsSize);
 
             for (int i = 0; i < result->meshSetsSize; i++)
             {
                 MeshDataSetInfo meshSet = meshData.MeshSets[i];
-                CMeshDataSetInfo* resultMeshSet = &result->meshSets[i];
+                CMeshDataMeshSetInfo* resultMeshSet = &result->meshSets[i];
 
                 CMaterial* material = meshSet.Material.IsValid() ? CMaterial.FromMaterial(meshSet.Material.Resource!) : null;
 
@@ -170,6 +174,27 @@ namespace HEIO.NET
 
     }
 
+    public unsafe struct CModelNode
+    {
+        public char* name;
+        public int parentIndex;
+        public Matrix4x4 transform;
+    }
+
+    public unsafe struct CMeshDataSet
+    {
+        public char* name;
+        public bool isTerrain;
+
+        public CMeshData** meshData;
+        public nint meshDataSize;
+
+        public CModelNode* nodes;
+        public nint nodesSize;
+
+        public CSampleChunkNode* sampleChunkNodeRoot;
+    }
+
     public unsafe struct CLODItem
     {
         public int cascadeFlag;
@@ -193,10 +218,8 @@ namespace HEIO.NET
 
     public unsafe struct CModelSet
     {
-        // [LOD index][Mesh data set index]->mesh data
-        public CMeshData*** meshData;
-        public nint* meshDataSizes;
-        public nint meshDataSize;
+        public CMeshDataSet* meshDataSets;
+        public nint meshDataSetsSize;
 
         public CLODItem* lodItems;
         public nint lodItemsSize;
@@ -207,13 +230,33 @@ namespace HEIO.NET
         {
             CModelSet* result = Allocate.Alloc<CModelSet>();
 
-            nint[][] resultMeshData = modelSet.MeshDataSets.Select(x =>
-                x.Select(x => (nint)CMeshData.FromMeshData(x)).ToArray()
-            ).ToArray();
+            result->meshDataSetsSize = modelSet.MeshDataSets.Length;
+            result->meshDataSets = Allocate.Alloc<CMeshDataSet>(result->meshDataSetsSize);
 
-            Allocate.AllocFrom2DArray(resultMeshData, out nint** resultMeshDataPtr, out result->meshDataSizes);
-            result->meshData = (CMeshData***)resultMeshDataPtr;
-            result->meshDataSize = resultMeshData.Length;
+            for (int i = 0; i < result->meshDataSetsSize; i++)
+            {
+                MeshDataSet set = modelSet.MeshDataSets[i];
+                CMeshDataSet* resultSet = &result->meshDataSets[i];
+
+                resultSet->name = set.Name.ToPointer();
+                resultSet->isTerrain = typeof(TerrainModel).IsAssignableFrom(set.OriginalType);
+                resultSet->meshData = (CMeshData**)Allocate.AllocFromArray(set.MeshData.Select(x => (nint)CMeshData.FromMeshData(x)).ToArray());
+                resultSet->meshDataSize = set.MeshData.Length;
+
+                CModelNode[]? modelNodes = set.Nodes?.Select(
+                    x => new CModelNode()
+                    {
+                        name = x.Name.ToPointer(),
+                        parentIndex = x.ParentIndex,
+                        transform = x.Transform
+                    }
+                ).ToArray();
+
+                resultSet->nodesSize = modelNodes?.Length ?? 0;
+                resultSet->nodes = Allocate.AllocFromArray(modelNodes);
+
+                resultSet->sampleChunkNodeRoot = CSampleChunkNode.FromSampleChunkNodeTree(set.SampleChunkNodeRoot);
+            }
 
             CLODItem[]? resultLODItems = modelSet.LODInfo?.Items.Select(x => new CLODItem(x)).ToArray();
             result->lodItems = Allocate.AllocFromArray(resultLODItems);
@@ -226,32 +269,82 @@ namespace HEIO.NET
         [UnmanagedCallersOnly(EntryPoint = "model_read_files")]
         public static CArray ReadModelFiles(char** filepaths, nint filepathsSize, bool asTerrainModels, bool includeLoD, CMeshImportSettings* settings, CResolveInfo** resolveInfo)
         {
-            string[] filepathsArray = Util.ToStringArray(filepaths, filepathsSize);
-            MeshImportSettings internalSettings = new(
-                (VertexMergeMode)settings->vertexMergeMode,
-                settings->mergeDistance,
-                settings->mergeSplitEdges
-            );
-
-            ModelSet[] modelSets;
-            ResolveInfo resultResolveInfo;
-
-            if(asTerrainModels)
+            try
             {
-                modelSets = ModelSet.ReadModelFiles<TerrainModel>(filepathsArray, includeLoD, internalSettings, out resultResolveInfo);
+                string[] filepathsArray = Util.ToStringArray(filepaths, filepathsSize);
+                MeshImportSettings internalSettings = new(
+                    (VertexMergeMode)settings->vertexMergeMode,
+                    settings->mergeDistance,
+                    settings->mergeSplitEdges
+                );
+
+                ModelSet[] modelSets;
+                ResolveInfo resultResolveInfo;
+
+                if (asTerrainModels)
+                {
+                    modelSets = ModelSet.ReadModelFiles<TerrainModel>(filepathsArray, includeLoD, internalSettings, out resultResolveInfo);
+                }
+                else
+                {
+                    modelSets = ModelSet.ReadModelFiles<Model>(filepathsArray, includeLoD, internalSettings, out resultResolveInfo);
+                }
+
+                *resolveInfo = CResolveInfo.FromResolveInfo(resultResolveInfo);
+
+                nint[] results = [.. modelSets.Select(x => (nint)FromModelSet(x))];
+                CModelSet** result = (CModelSet**)Allocate.AllocFromArray(results);
+
+                return new(
+                    result,
+                    results.Length
+                );
             }
-            else
+            catch (Exception exception)
             {
-                modelSets = ModelSet.ReadModelFiles<Model>(filepathsArray, includeLoD, internalSettings, out resultResolveInfo);
+                ErrorHandler.HandleError(exception);
+                return default;
             }
+        }
 
-            nint[] results = [.. modelSets.Select(x => (nint)FromModelSet(x))];
-            CModelSet** result = (CModelSet**)Allocate.AllocFromArray(results);
+        [UnmanagedCallersOnly(EntryPoint = "model_get_materials")]
+        public static CArray GetMaterials(CModelSet** model_sets, nint model_sets_size)
+        {
+            try
+            {
+                List<nint> materials = [];
 
-            return new(
-                result,
-                results.Length
-            );
+                for (int i = 0; i < model_sets_size; i++)
+                {
+                    CModelSet* model_set = model_sets[i];
+
+                    for (int j = 0; j < model_set->meshDataSetsSize; j++)
+                    {
+                        CMeshDataSet* mesh_data_set = &model_set->meshDataSets[j];
+
+                        for (int k = 0; k < mesh_data_set->meshDataSize; k++)
+                        {
+                            CMeshData* mesh_data = mesh_data_set->meshData[k];
+
+                            for (int l = 0; l < mesh_data->meshSetsSize; l++)
+                            {
+                                CStringPointerPair materialReference = mesh_data->meshSets[l].materialReference;
+                                if (materialReference.pointer != null)
+                                {
+                                    materials.Add((nint)materialReference.pointer);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                return new(Allocate.AllocFromArray(materials), materials.Count);
+            }
+            catch (Exception exception)
+            {
+                ErrorHandler.HandleError(exception);
+                return default;
+            }
         }
     }
 }
