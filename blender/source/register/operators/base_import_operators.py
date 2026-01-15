@@ -209,7 +209,12 @@ class ImportMaterialOperator(ImportOperator):
         return super().print_resolve_info(context)
 
 
-class ImportModelBaseOperator(ImportMaterialOperator):
+class ImportModelOperator(ImportMaterialOperator):
+
+    filter_glob: StringProperty(
+        default="*.model;*.terrain-model",
+        options={'HIDDEN'},
+    )
 
     vertex_merge_mode: EnumProperty(
         name="Vertex merge mode",
@@ -393,52 +398,6 @@ class ImportModelBaseOperator(ImportMaterialOperator):
         if created and len(lod_collection.objects) == 0:
             bpy.data.collections.remove(lod_collection)
 
-    def _import_model_files(self, context: bpy.types.Context, terrain_models: bool):
-        progress_console.update("Resolving, reading & converting model files")
-
-        directory = os.path.dirname(self.filepath)
-        filepaths = [os.path.join(directory, file.name) for file in self.files]
-
-        mesh_import_settings = CMeshImportSettings()
-        mesh_import_settings.merge_distance = self.vertex_merge_distance
-        mesh_import_settings.merge_split_edges = self.merge_split_edges
-        mesh_import_settings.vertex_merge_mode = enums.VERTEX_MERGE_MODE.index(self.vertex_merge_mode)
-
-        models, resolve_info = Library.model_read_files(
-            filepaths,
-            terrain_models,
-            self.import_lod_models,
-            mesh_import_settings
-        )
-        
-        self.resolve_infos.append(resolve_info)
-
-        progress_console.update("Importing data")
-
-        model_infos = self.node_converter.convert_model_sets(models)
-
-        for model_info in model_infos:
-            model_info.create_object(
-                model_info.name, context.scene.collection, context)
-
-        self._setup_lod_models(context, model_infos)
-
-
-class ImportModelOperator(ImportModelBaseOperator):
-
-    filter_glob: StringProperty(
-        default="*.model",
-        options={'HIDDEN'},
-    )
-
-
-class ImportTerrainModelOperator(ImportModelBaseOperator):
-
-    filter_glob: StringProperty(
-        default="*.terrain-model",
-        options={'HIDDEN'},
-    )
-
 
 class ImportCollisionMeshOperator(ImportOperator):
 
@@ -507,7 +466,7 @@ class ImportCollisionMeshOperator(ImportOperator):
         self.draw_panel_collision_mesh()
 
 
-class ImportPointCloudOperator(ImportCollisionMeshOperator, ImportModelBaseOperator):
+class ImportPointCloudOperator(ImportCollisionMeshOperator, ImportModelOperator):
 
     models_as_instance_collections: BoolProperty(
         name="Models as instance collections",

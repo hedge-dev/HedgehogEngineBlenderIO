@@ -9,7 +9,7 @@ namespace HEIO.NET.Internal.Modeling.ConvertFrom
 {
     internal static class BulletMeshConverter
     {
-        public static CollisionMeshData ConvertToCollisionMeshData(BulletMesh mesh, bool mergeVertices, float vertexMergeDistance, bool removeUnusedVertices)
+        public static CollisionMeshData ConvertToCollisionMeshData(BulletMesh mesh, MeshImportSettings settings)
         {
             CollisionMeshData result = new(mesh.Name)
             {
@@ -41,12 +41,12 @@ namespace HEIO.NET.Internal.Modeling.ConvertFrom
                 result.FlagValues = EvaluateFlags(mergedFlags, result.Flags);
             }
 
-            if(mergeVertices)
+            if(settings.MergeCollisionVertices)
             {
-                MergeVertices(result, vertexMergeDistance);
+                MergeVertices(result, settings.CollisionVertexMergeDistance);
             }
 
-            if(removeUnusedVertices)
+            if(settings.RemoveUnusedCollisionVertices)
             {
                 RemoveUnusedVertices(result);
             }

@@ -31,7 +31,7 @@ class HEIO_FH_Model(bpy.types.FileHandler):
 class HEIO_FH_TerrainModel(bpy.types.FileHandler):
     bl_idname = "HEIO_FH_terrainmodel"
     bl_label = "HE Terrain-Model (*.terrain-model)"
-    bl_import_operator = import_operators.HEIO_OT_Import_TerrainModel.bl_idname
+    bl_import_operator = import_operators.HEIO_OT_Import_Model.bl_idname
     bl_export_operator = export_operators.HEIO_OT_Export_TerrainModel.bl_idname
     bl_file_extensions = ".terrain-model"
 

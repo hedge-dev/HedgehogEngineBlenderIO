@@ -85,11 +85,6 @@ class CLODItem(Structure, metaclass=FieldsFromTypeHints):
     unknown2: c_float
     cascade_level: c_byte
 
-class CMeshImportSettings(Structure, metaclass=FieldsFromTypeHints):
-    vertex_merge_mode: c_uint
-    merge_distance: c_float
-    merge_split_edges: c_bool
-
 class CModelSet(Structure, metaclass=FieldsFromTypeHints):
     mesh_data_sets: POINTER(CMeshDataSet)
     mesh_data_sets_size: c_size_t

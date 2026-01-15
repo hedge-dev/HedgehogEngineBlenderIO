@@ -7,7 +7,8 @@ from contextlib import contextmanager
 from .typing import TPointer
 from .math import CVector3, CQuaternion, CMatrix
 from .material import CFloatMaterialParameter, CIntegerMaterialParameter, CBoolMaterialParameter, CTexture, CMaterial
-from .mesh_data import CUVDirection, CVertexWeight, CVertex, CMeshDataMeshSetInfo, CMeshDataGroupInfo, CMeshData, CModelNode, CMeshDataSet, CLODItem, CMeshImportSettings, CModelSet
+from .mesh_data import CUVDirection, CVertexWeight, CVertex, CMeshDataMeshSetInfo, CMeshDataGroupInfo, CMeshData, CModelNode, CMeshDataSet, CLODItem, CModelSet
+from .mesh_import_settings import CMeshImportSettings
 from .image import CImage
 from .pair import CStringPointerPair, CArray
 from .resolve_info import CResolveInfo
@@ -111,7 +112,7 @@ class Library:
         lib.sample_chunk_node_find.restype = POINTER(CSampleChunkNode)
         lib.sample_chunk_node_find.errcheck = cls._check_error
 
-        lib.model_read_files.argtypes = (POINTER(c_wchar_p), c_size_t, c_bool, c_bool, POINTER(CMeshImportSettings), POINTER(POINTER(CResolveInfo)))
+        lib.model_read_files.argtypes = (POINTER(c_wchar_p), c_size_t, c_bool, POINTER(CMeshImportSettings), POINTER(POINTER(CResolveInfo)))
         lib.model_read_files.restype = CArray
         lib.model_read_files.errcheck = cls._check_error
 
@@ -123,7 +124,7 @@ class Library:
         lib.matrix_invert.restype = CMatrix
         lib.matrix_invert.errcheck = cls._check_error
 
-        lib.collision_mesh_read_files.argtypes = (POINTER(c_wchar_p), c_size_t, c_bool, c_float, c_bool)
+        lib.collision_mesh_read_files.argtypes = (POINTER(c_wchar_p), c_size_t, POINTER(CMeshImportSettings))
         lib.collision_mesh_read_files.restype = CArray
         lib.collision_mesh_read_files.errcheck = cls._check_error
 
@@ -260,10 +261,9 @@ class Library:
         return cls.lib().sample_chunk_node_find(sample_chunk_node, c_name)
     
     @classmethod
-    def model_read_files(cls, filepaths: list[str], as_terrain_models: bool, include_lod: bool, settings: CMeshImportSettings) -> tuple[list[TPointer[CModelSet]], TPointer[CResolveInfo]]:
+    def model_read_files(cls, filepaths: list[str], include_lod: bool, settings: CMeshImportSettings) -> tuple[list[TPointer[CModelSet]], TPointer[CResolveInfo]]:
         c_filepaths = cls._as_array([c_wchar_p(filepath) for filepath in filepaths], c_wchar_p)
         c_filepaths_size = c_size_t(len(filepaths))
-        c_as_terrain_models = c_bool(as_terrain_models)
         c_include_lod = c_bool(include_lod)
         c_settings = pointer(settings)
         c_resolve_info = pointer(POINTER(CResolveInfo)())
@@ -271,7 +271,6 @@ class Library:
         array = cls.lib().model_read_files(
             c_filepaths, 
             c_filepaths_size,
-            c_as_terrain_models,
             c_include_lod,
             c_settings,
             c_resolve_info
@@ -302,19 +301,15 @@ class Library:
         return cls.lib().matrix_create_from_quaternion(quaternion)
 
     @classmethod
-    def collision_mesh_read_files(cls, filepaths: list[str], merge_vertices: bool, vertex_merge_distance: float, remove_unused_vertices: bool) -> list[TPointer[CCollisionMeshData]]:
+    def collision_mesh_read_files(cls, filepaths: list[str], settings: CMeshImportSettings) -> list[TPointer[CCollisionMeshData]]:
         c_filepaths = cls._as_array([c_wchar_p(filepath) for filepath in filepaths], c_wchar_p)
         c_filepaths_size = c_size_t(len(filepaths))
-        c_merge_vertices = c_bool(merge_vertices)
-        c_vertex_merge_distance = c_float(vertex_merge_distance)
-        c_remove_unused_vertices = c_bool(remove_unused_vertices)
+        c_settings = pointer(settings)
 
         array = cls.lib().collision_mesh_read_files(
             c_filepaths, 
             c_filepaths_size,
-            c_merge_vertices,
-            c_vertex_merge_distance,
-            c_remove_unused_vertices
+            c_settings
         )
 
         return cls._array_to_list(array, POINTER(CCollisionMeshData))

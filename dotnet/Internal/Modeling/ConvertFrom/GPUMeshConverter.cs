@@ -33,7 +33,7 @@ namespace HEIO.NET.Internal.Modeling.ConvertFrom
             if(settings.MergeVertices)
             {
                 _mergeSplitEdges = settings.MergeSplitEdges;
-                _mergeComparer = Vertex.GetMergeComparer(settings.MergeDistance, !settings.MergeSplitEdges, morphCount > 0);
+                _mergeComparer = Vertex.GetMergeComparer(settings.VertexMergeDistance, !settings.MergeSplitEdges, morphCount > 0);
             }
 
             ResultData = new(name, _mergeSplitEdges);

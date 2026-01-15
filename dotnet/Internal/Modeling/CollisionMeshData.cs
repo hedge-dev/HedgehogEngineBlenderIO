@@ -1,6 +1,7 @@
 ﻿using SharpNeedle.Framework.HedgehogEngine.Bullet;
 using SharpNeedle.IO;
 using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
 
 namespace HEIO.NET.Internal.Modeling
@@ -72,25 +73,32 @@ namespace HEIO.NET.Internal.Modeling
             Primitives = primitives;
         }
 
-        public static CollisionMeshData[] ReadFiles(string[] filepaths, bool mergeVertices, float vertexMergeDistance, bool removeUnusedVertices)
+        public static CollisionMeshData[] ReadFiles(IFile[] files, MeshImportSettings settings)
         {
-            CollisionMeshData[] result = new CollisionMeshData[filepaths.Length];
+            CollisionMeshData[] result = new CollisionMeshData[files.Length];
 
-            for (int i = 0; i < filepaths.Length; i++)
+            for (int i = 0; i < files.Length; i++)
             {
                 BulletMesh mesh = new();
-                IFile file = FileSystem.Instance.Open(filepaths[i])!;
-                mesh.Read(file);
+                mesh.Read(files[i]);
 
-                result[i] = FromBulletMesh(mesh, mergeVertices, vertexMergeDistance, removeUnusedVertices);
+                result[i] = FromBulletMesh(mesh, settings);
             }
 
             return result;
         }
 
-        public static CollisionMeshData FromBulletMesh(BulletMesh mesh, bool mergeVertices, float vertexMergeDistance, bool removeUnusedVertices)
+        public static CollisionMeshData[] ReadFiles(string[] filepaths, MeshImportSettings settings)
         {
-            return ConvertFrom.BulletMeshConverter.ConvertToCollisionMeshData(mesh, mergeVertices, vertexMergeDistance, removeUnusedVertices);
+            return ReadFiles(
+                filepaths.Select(x => FileSystem.Instance.Open(x)!).ToArray(),
+                settings
+            );
+        }
+
+        public static CollisionMeshData FromBulletMesh(BulletMesh mesh, MeshImportSettings settings)
+        {
+            return ConvertFrom.BulletMeshConverter.ConvertToCollisionMeshData(mesh, settings);
         }
 
         public static BulletMesh ToBulletMesh(CollisionMeshData[] meshData, BulletPrimitive[] primitives)

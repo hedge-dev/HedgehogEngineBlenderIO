@@ -6,9 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using System.Runtime;
 using System.Runtime.InteropServices;
-using System.Xml.Linq;
 
 namespace HEIO.NET
 {
@@ -209,13 +207,6 @@ namespace HEIO.NET
         }
     }
 
-    public struct CMeshImportSettings
-    {
-        public uint vertexMergeMode;
-        public float mergeDistance;
-        public bool mergeSplitEdges;
-    }
-
     public unsafe struct CModelSet
     {
         public CMeshDataSet* meshDataSets;
@@ -267,28 +258,14 @@ namespace HEIO.NET
         }
 
         [UnmanagedCallersOnly(EntryPoint = "model_read_files")]
-        public static CArray ReadModelFiles(char** filepaths, nint filepathsSize, bool asTerrainModels, bool includeLoD, CMeshImportSettings* settings, CResolveInfo** resolveInfo)
+        public static CArray ReadModelFiles(char** filepaths, nint filepathsSize, bool includeLoD, CMeshImportSettings* settings, CResolveInfo** resolveInfo)
         {
             try
             {
                 string[] filepathsArray = Util.ToStringArray(filepaths, filepathsSize);
-                MeshImportSettings internalSettings = new(
-                    (VertexMergeMode)settings->vertexMergeMode,
-                    settings->mergeDistance,
-                    settings->mergeSplitEdges
-                );
+                MeshImportSettings internalSettings = settings->ToMeshImportSettings();
 
-                ModelSet[] modelSets;
-                ResolveInfo resultResolveInfo;
-
-                if (asTerrainModels)
-                {
-                    modelSets = ModelSet.ReadModelFiles<TerrainModel>(filepathsArray, includeLoD, internalSettings, out resultResolveInfo);
-                }
-                else
-                {
-                    modelSets = ModelSet.ReadModelFiles<Model>(filepathsArray, includeLoD, internalSettings, out resultResolveInfo);
-                }
+                ModelSet[] modelSets = ModelSet.ReadModelFiles(filepathsArray, includeLoD, internalSettings, out ResolveInfo resultResolveInfo);
 
                 *resolveInfo = CResolveInfo.FromResolveInfo(resultResolveInfo);
 

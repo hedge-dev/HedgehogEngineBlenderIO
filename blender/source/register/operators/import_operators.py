@@ -4,12 +4,11 @@ import os
 from ..property_groups.mesh_properties import MESH_DATA_TYPES
 
 from ...utility import progress_console
-from ...external import Library
+from ...external import Library, enums, CMeshImportSettings
 
 from .base_import_operators import (
     ImportMaterialOperator,
     ImportModelOperator,
-    ImportTerrainModelOperator,
     ImportCollisionMeshOperator,
     ImportPointCloudOperator
 )
@@ -67,20 +66,36 @@ class HEIO_OT_Import_Material_Active_if(ImportMaterialOperator):
 class HEIO_OT_Import_Model(ImportModelOperator):
     """Load a hedgehog engine model file"""
     bl_idname = "heio.import_model"
-    bl_label = "Import HE Model (*.model)"
+    bl_label = "Import HE Model (*.model;*.terrain-model)"
 
     def import_(self, context):
-        self._import_model_files(context, False)
-        return {'FINISHED'}
+        progress_console.update("Resolving, reading & converting model files")
 
+        directory = os.path.dirname(self.filepath)
+        filepaths = [os.path.join(directory, file.name) for file in self.files]
 
-class HEIO_OT_Import_TerrainModel(ImportTerrainModelOperator):
-    """Load a hedgehog engine terrain model file"""
-    bl_idname = "heio.import_terrainmodel"
-    bl_label = "Import HE Terrain-Model (*.terrain-model)"
+        mesh_import_settings = CMeshImportSettings()
+        mesh_import_settings.merge_distance = self.vertex_merge_distance
+        mesh_import_settings.merge_split_edges = self.merge_split_edges
+        mesh_import_settings.vertex_merge_mode = enums.VERTEX_MERGE_MODE.index(self.vertex_merge_mode)
 
-    def import_(self, context):
-        self._import_model_files(context, True)
+        models, resolve_info = Library.model_read_files(
+            filepaths,
+            self.import_lod_models,
+            mesh_import_settings
+        )
+        
+        self.resolve_infos.append(resolve_info)
+
+        progress_console.update("Importing data")
+
+        model_infos = self.node_converter.convert_model_sets(models)
+
+        for model_info in model_infos:
+            model_info.create_object(
+                model_info.name, context.scene.collection, context)
+
+        self._setup_lod_models(context, model_infos)
         return {'FINISHED'}
 
 
@@ -90,16 +105,19 @@ class HEIO_OT_Import_CollisionMesh(ImportCollisionMeshOperator):
     bl_label = "Import HE Collision Mesh (*.btmesh)"
 
     def import_(self, context):
-        progress_console.update("Resolving & reading files")
+        progress_console.update("Resolving, reading & converting mesh files")
 
         directory = os.path.dirname(self.filepath)
         filepaths = [os.path.join(directory, file.name) for file in self.files]
 
+        mesh_import_settings = CMeshImportSettings()
+        mesh_import_settings.merge_collision_vertices = self.merge_collision_verts
+        mesh_import_settings.collision_vertex_merge_distance = self.merge_collision_verts
+        mesh_import_settings.remove_unused_collision_vertices = self.remove_unused_vertices
+
         collision_meshes = Library.collision_mesh_read_files(
             filepaths,
-            self.merge_collision_verts,
-            self.merge_collision_vert_distance,
-            self.remove_unused_vertices
+            mesh_import_settings
         )
 
         progress_console.update("Importing data")

@@ -9,6 +9,7 @@ using SharpNeedle.IO;
 using SharpNeedle.Resource;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace HEIO.NET.Internal
@@ -117,7 +118,7 @@ namespace HEIO.NET.Internal
             ];
         }
 
-        public static ModelSet ReadModelFile<T>(IFile file, MeshImportSettings settings) where T : ModelBase, new()
+        public static ModelSet ReadModelFile(IFile file, MeshImportSettings settings)
         {
             string? signature = null;
             using (BinaryObjectReader reader = new(file.Open(), StreamOwnership.Transfer, Endianness.Big))
@@ -129,7 +130,7 @@ namespace HEIO.NET.Internal
                 catch { }
             }
 
-            T[] models;
+            ModelBase[] models;
             LODInfoBlock? lodInfo = null;
 
             if (signature == NeedleArchive.Signature)
@@ -140,9 +141,9 @@ namespace HEIO.NET.Internal
                 };
 
                 archive.Read(file);
-                models = archive.DataBlocks.OfType<ModelBlock>().Select(x => (T)x.Resource!).ToArray();
+                models = archive.DataBlocks.OfType<ModelBlock>().Select(x => x.Resource!).ToArray();
 
-                foreach (T model in models)
+                foreach (ModelBase model in models)
                 {
                     if (string.IsNullOrWhiteSpace(model.Name))
                     {
@@ -154,7 +155,17 @@ namespace HEIO.NET.Internal
             }
             else
             {
-                T model = new();
+                ModelBase model;
+
+                if(Path.GetExtension(file.Name) == ".terrain-model")
+                {
+                    model = new TerrainModel();
+                }
+                else
+                {
+                    model = new Model();
+                }
+
                 model.Read(file);
                 models = [model];
             }
@@ -162,15 +173,14 @@ namespace HEIO.NET.Internal
             return FromModels(models, lodInfo, settings);
         }
 
-        public static ModelSet[] ReadModelFiles<T>(string[] filepaths, bool includeLoD, MeshImportSettings settings, out ResolveInfo resolveInfo) where T : ModelBase, new()
+        public static ModelSet[] ReadModelFiles(IFile[] files, bool includeLoD, MeshImportSettings settings, DependencyResolverManager? dependencyManager, out ResolveInfo resolveInfo)
         {
             List<ModelSet> result = [];
             List<(MeshDataSet, IFile)> modelFiles = [];
 
-            foreach (string filepath in filepaths)
+            foreach (IFile file in files)
             {
-                IFile file = FileSystem.Instance.Open(filepath)!;
-                ModelSet modelSet = ReadModelFile<T>(file, settings);
+                ModelSet modelSet = ReadModelFile(file, settings);
 
                 if (includeLoD || modelSet.LODInfo == null)
                 {
@@ -185,10 +195,21 @@ namespace HEIO.NET.Internal
 
             }
 
-            DependencyResolverManager dependencyManager = new();
+            dependencyManager ??= new();
             resolveInfo = dependencyManager.ResolveDependencies(modelFiles, (x, r) => x.ResolveDependencies(r));
 
             return [.. result];
+        }
+
+        public static ModelSet[] ReadModelFiles(string[] filepaths, bool includeLoD, MeshImportSettings settings, out ResolveInfo resolveInfo)
+        {
+            return ReadModelFiles(
+                filepaths.Select(x => FileSystem.Instance.Open(x)!).ToArray(),
+                includeLoD,
+                settings,
+                null,
+                out resolveInfo
+            );
         }
     }
 }

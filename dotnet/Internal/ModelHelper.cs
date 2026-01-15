@@ -1,28 +1,11 @@
-﻿using SharpNeedle.Framework.HedgehogEngine.Bullet;
-using SharpNeedle.Framework.HedgehogEngine.Mirage.ModelData;
+﻿using SharpNeedle.Framework.HedgehogEngine.Mirage.ModelData;
 using SharpNeedle.Framework.HedgehogEngine.Needle.Archive;
-using SharpNeedle.IO;
 using System;
 
 namespace HEIO.NET.Internal
 {
     public static class ModelHelper
     {
-        public static BulletMesh[] LoadBulletMeshFiles(string[] filepaths)
-        {
-            BulletMesh[] result = new BulletMesh[filepaths.Length];
-
-            for (int i = 0; i < filepaths.Length; i++)
-            {
-                BulletMesh mesh = new();
-                IFile file = FileSystem.Instance.Open(filepaths[i])!;
-                mesh.Read(file);
-                result[i] = mesh;
-            }
-
-            return result;
-        }
-
         public static NeedleArchive CreateLODArchive(ModelBase[] models, byte[] lodCascades, float[] lodUnknowns)
         {
             NeedleArchive result = new()

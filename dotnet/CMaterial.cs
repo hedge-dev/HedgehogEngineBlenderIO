@@ -1,5 +1,4 @@
 ﻿using SharpNeedle.Framework.HedgehogEngine.Mirage.MaterialData;
-using SharpNeedle.IO;
 using SharpNeedle.Resource;
 using SharpNeedle.Structs;
 using System;

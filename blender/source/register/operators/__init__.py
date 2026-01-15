@@ -20,7 +20,6 @@ to_register = [
     import_operators.HEIO_OT_Import_Material_Active,
     import_operators.HEIO_OT_Import_Material_Active_if,
     import_operators.HEIO_OT_Import_Model,
-    import_operators.HEIO_OT_Import_TerrainModel,
     import_operators.HEIO_OT_Import_CollisionMesh,
     import_operators.HEIO_OT_Import_PointCloud,
 

@@ -1,7 +1,6 @@
 ﻿using SharpNeedle.Framework.HedgehogEngine.Mirage.MaterialData;
 using SharpNeedle.Framework.HedgehogEngine.Mirage.ModelData;
 using SharpNeedle.Resource;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;

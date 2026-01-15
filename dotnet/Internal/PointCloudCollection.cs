@@ -41,13 +41,13 @@ namespace HEIO.NET.Internal
             }
         }
 
-        public readonly struct Collection
+        public readonly struct Cloud
         {
             public string Name { get; }
 
             public Point[] Points { get; }
 
-            public Collection(string name, Point[] points)
+            public Cloud(string name, Point[] points)
             {
                 Name = name;
                 Points = points;
@@ -57,19 +57,19 @@ namespace HEIO.NET.Internal
 
         public ModelSet[] Models { get; }
 
-        public Collection[] ModelCollections { get; }
+        public Cloud[] ModelClouds { get; }
 
-        public BulletMesh[] CollisionMeshes { get; }
+        public CollisionMeshData[] CollisionMeshes { get; }
 
-        public Collection[] CollisionMeshCollections { get; }
+        public Cloud[] CollisionMeshClouds { get; }
 
 
-        public PointCloudCollection(ModelSet[] models, Collection[] modelCollections, BulletMesh[] collisionMeshes, Collection[] collisionMeshCollections)
+        public PointCloudCollection(ModelSet[] models, Cloud[] modelClouds, CollisionMeshData[] collisionMeshes, Cloud[] collisionMeshClouds)
         {
             Models = models;
-            ModelCollections = modelCollections;
+            ModelClouds = modelClouds;
             CollisionMeshes = collisionMeshes;
-            CollisionMeshCollections = collisionMeshCollections;
+            CollisionMeshClouds = collisionMeshClouds;
         }
 
 
@@ -143,58 +143,20 @@ namespace HEIO.NET.Internal
                 });
 
 
-            (Collection[] modelCollections, IFile[] modelSetFiles) = ToCollections(modelClouds);
-            ModelSet[] modelSets = new ModelSet[modelSetFiles.Length];
-            List<(MeshDataSet, IFile)> modelFiles = [];
-
-            for(int i = 0; i < modelSets.Length; i++)
-            {
-                IFile file = modelSetFiles[i];
-                ModelSet modelSet;
-
-                if(Path.GetExtension(file.Name) == ".model")
-                {
-                    modelSet = ModelSet.ReadModelFile<Model>(file, settings);
-                }
-                else
-                {
-                    modelSet = ModelSet.ReadModelFile<TerrainModel>(file, settings);
-                }
-
-                if(includeLoD || modelSet.LODInfo == null)
-                {
-                    modelSets[i] = modelSet;
-                    modelFiles.AddRange(modelSet.MeshDataSets.Select(x => (x, file)));
-                }
-                else
-                {
-                    modelSets[i] = new([modelSet.MeshDataSets[0]], null);
-                    modelFiles.Add((modelSet.MeshDataSets[0], file));
-                }
-            }
-
-            ResolveInfo terrainResolveInfo = dependencyManager.ResolveDependencies(modelFiles, (x, r) => x.ResolveDependencies(r));
+            (Cloud[] modelCollections, IFile[] modelSetFiles) = ToCollections(modelClouds);
+            ModelSet[] modelSets = ModelSet.ReadModelFiles(modelSetFiles, includeLoD, settings, dependencyManager, out ResolveInfo terrainResolveInfo);
             resolveInfo = ResolveInfo.Combine(pointCloudInfo, terrainResolveInfo);
 
+            (Cloud[] collisionMeshCollections, IFile[] bulletMeshFiles) = ToCollections(btmeshClouds);
+            CollisionMeshData[] collisionMeshes = CollisionMeshData.ReadFiles(bulletMeshFiles, settings);
 
-            (Collection[] collisionMeshCollections, IFile[] bulletMeshFiles) = ToCollections(btmeshClouds);
-            BulletMesh[] bulletMeshes = new BulletMesh[bulletMeshFiles.Length];
-
-            for(int i = 0; i < bulletMeshes.Length; i++)
-            {
-                IFile file = bulletMeshFiles[i];
-                BulletMesh mesh = new();
-                mesh.Read(file);
-                bulletMeshes[i] = mesh;
-            }
-
-            return new(modelSets, modelCollections, bulletMeshes, collisionMeshCollections);
+            return new(modelSets, modelCollections, collisionMeshes, collisionMeshCollections);
         }
 
-        private static (Collection[], IFile[]) ToCollections(List<(PointCloud, Dictionary<string, IFile>)> clouds)
+        private static (Cloud[], IFile[]) ToCollections(List<(PointCloud, Dictionary<string, IFile>)> clouds)
         {
             Dictionary<IFile, int> fileIndexMap = [];
-            List<Collection> collections = [];
+            List<Cloud> collections = [];
 
             foreach((PointCloud pointcloud, Dictionary<string, IFile> fileMap) in clouds)
             {

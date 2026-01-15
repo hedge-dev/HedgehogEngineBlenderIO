@@ -118,13 +118,14 @@ namespace HEIO.NET
         }
 
         [UnmanagedCallersOnly(EntryPoint = "collision_mesh_read_files")]
-        public static CArray ReadFiles(char** filepaths, nint filepathsSize, bool mergeVertices, float vertexMergeDistance, bool removeUnusedVertices)
+        public static CArray ReadFiles(char** filepaths, nint filepathsSize, CMeshImportSettings* settings)
         {
             try
             {
                 string[] filepathsArray = Util.ToStringArray(filepaths, filepathsSize);
+                MeshImportSettings internalSettings = settings->ToMeshImportSettings();
 
-                CollisionMeshData[] meshData = CollisionMeshData.ReadFiles(filepathsArray, mergeVertices, vertexMergeDistance, removeUnusedVertices);
+                CollisionMeshData[] meshData = CollisionMeshData.ReadFiles(filepathsArray, internalSettings);
                 
                 nint[] results = [.. meshData.Select(x => (nint)FromCollisionMeshData(x))];
                 CModelSet** result = (CModelSet**)Allocate.AllocFromArray(results);
