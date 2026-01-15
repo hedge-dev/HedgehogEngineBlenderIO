@@ -11,7 +11,10 @@ namespace HEIO.NET.Internal.Modeling.ConvertFrom
     {
         public static CollisionMeshData ConvertToCollisionMeshData(BulletMesh mesh, bool mergeVertices, float vertexMergeDistance, bool removeUnusedVertices)
         {
-            CollisionMeshData result = new();
+            CollisionMeshData result = new(mesh.Name)
+            {
+                Primitives = mesh.Primitives
+            };
 
             byte maxType = 0;
             uint mergedFlags = 0;

@@ -56,4 +56,4 @@ def c_to_bpy_scale(scale):
 
 
 def c_to_bpy_quaternion(quat: CQuaternion):
-    return c_to_bpy_matrix(Library.quaternion_create_from_rotation_matrix(quat)).to_quaternion()
+    return c_to_bpy_matrix(Library.matrix_create_from_quaternion(quat)).to_quaternion()

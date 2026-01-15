@@ -19,3 +19,10 @@ VERTEX_MERGE_MODE = [
     "SUBMESHGROUP",
     "ALL"
 ]
+
+BULLET_PRIMITIVE_SHAPE_TYPE = [
+    "SPHERE",
+    "BOX",
+    "CAPSULE",
+    "CYLINDER"
+]

@@ -4,7 +4,7 @@ import os
 from ..property_groups.mesh_properties import MESH_DATA_TYPES
 
 from ...utility import progress_console
-from ...dotnet import SharpNeedle, HEIO_NET
+from ...external import Library
 
 from .base_import_operators import (
     ImportMaterialOperator,
@@ -70,7 +70,7 @@ class HEIO_OT_Import_Model(ImportModelOperator):
     bl_label = "Import HE Model (*.model)"
 
     def import_(self, context):
-        self._import_model_files(context, SharpNeedle.MODEL)
+        self._import_model_files(context, False)
         return {'FINISHED'}
 
 
@@ -80,7 +80,7 @@ class HEIO_OT_Import_TerrainModel(ImportTerrainModelOperator):
     bl_label = "Import HE Terrain-Model (*.terrain-model)"
 
     def import_(self, context):
-        self._import_model_files(context, SharpNeedle.TERRAIN_MODEL)
+        self._import_model_files(context, True)
         return {'FINISHED'}
 
 
@@ -95,7 +95,12 @@ class HEIO_OT_Import_CollisionMesh(ImportCollisionMeshOperator):
         directory = os.path.dirname(self.filepath)
         filepaths = [os.path.join(directory, file.name) for file in self.files]
 
-        collision_meshes = HEIO_NET.MODEL_HELPER.LoadBulletMeshFiles(filepaths)
+        collision_meshes = Library.collision_mesh_read_files(
+            filepaths,
+            self.merge_collision_verts,
+            self.merge_collision_vert_distance,
+            self.remove_unused_vertices
+        )
 
         progress_console.update("Importing data")
 

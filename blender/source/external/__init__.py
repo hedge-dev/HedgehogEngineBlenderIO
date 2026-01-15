@@ -12,6 +12,7 @@ from .image import CImage
 from .pair import CStringPointerPair, CArray
 from .resolve_info import CResolveInfo
 from .sample_chunk_node import CSampleChunkNode
+from .collision_mesh_data import CCollisionMeshDataGroup, CBulletPrimitive, CCollisionMeshData
 from .util import get_dll_close, pointer_to_address
 
 from ..utility import general
@@ -121,6 +122,14 @@ class Library:
         lib.matrix_invert.argtypes = (CMatrix,)
         lib.matrix_invert.restype = CMatrix
         lib.matrix_invert.errcheck = cls._check_error
+
+        lib.collision_mesh_read_files.argtypes = (POINTER(c_wchar_p), c_size_t, c_bool, c_float, c_bool)
+        lib.collision_mesh_read_files.restype = CArray
+        lib.collision_mesh_read_files.errcheck = cls._check_error
+
+        lib.matrix_create_from_quaternion.argtypes = (CQuaternion,)
+        lib.matrix_create_from_quaternion.restype = CMatrix
+        lib.matrix_create_from_quaternion.errcheck = cls._check_error
 
     @classmethod
     def _as_array(cls, iterable: Iterable, type):
@@ -287,7 +296,28 @@ class Library:
     @classmethod
     def matrix_invert(cls, matrix: CMatrix):
         return cls.lib().matrix_invert(matrix)
+    
+    @classmethod
+    def matrix_create_from_quaternion(cls, quaternion: CQuaternion):
+        return cls.lib().matrix_create_from_quaternion(quaternion)
 
+    @classmethod
+    def collision_mesh_read_files(cls, filepaths: list[str], merge_vertices: bool, vertex_merge_distance: float, remove_unused_vertices: bool) -> list[TPointer[CCollisionMeshData]]:
+        c_filepaths = cls._as_array([c_wchar_p(filepath) for filepath in filepaths], c_wchar_p)
+        c_filepaths_size = c_size_t(len(filepaths))
+        c_merge_vertices = c_bool(merge_vertices)
+        c_vertex_merge_distance = c_float(vertex_merge_distance)
+        c_remove_unused_vertices = c_bool(remove_unused_vertices)
+
+        array = cls.lib().collision_mesh_read_files(
+            c_filepaths, 
+            c_filepaths_size,
+            c_merge_vertices,
+            c_vertex_merge_distance,
+            c_remove_unused_vertices
+        )
+
+        return cls._array_to_list(array, POINTER(CCollisionMeshData))
 
 
 

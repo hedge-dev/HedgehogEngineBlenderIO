@@ -136,5 +136,19 @@ namespace HEIO.NET
                 return default;
             }
         }
+
+        [UnmanagedCallersOnly(EntryPoint = "matrix_create_from_quaternion")]
+        public static Matrix4x4 CreateMatrixFromQuaternion(Quaternion quaternion)
+        {
+            try
+            {
+                return Matrix4x4.CreateFromQuaternion(quaternion);
+            }
+            catch (Exception exception)
+            {
+                ErrorHandler.HandleError(exception);
+                return default;
+            }
+        }
     }
 }

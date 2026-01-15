@@ -1,10 +1,9 @@
 import bpy
 
-from . import i_enum, i_transform
-from ..dotnet import HEIO_NET
+from . import i_transform
+from ..external import TPointer, pointer_to_address, CCollisionMeshData, CCollisionMeshDataGroup, CBulletPrimitive, enums
 from ..register.definitions import TargetDefinition
 from ..utility import progress_console
-from ..exceptions import HEIODevException
 
 
 class CollisionMeshConverter:
@@ -15,7 +14,7 @@ class CollisionMeshConverter:
     _vertex_merge_distance: float
     _remove_unused_vertices: bool
 
-    converted_meshes: dict[any, bpy.types.Mesh]
+    _converted_meshes: dict[any, bpy.types.Mesh]
     _mesh_name_lookup: dict[str, bpy.types.Mesh]
 
     def __init__(
@@ -31,153 +30,129 @@ class CollisionMeshConverter:
         self._vertex_merge_distance = vertex_merge_distance
         self._remove_unused_vertices = remove_unused_vertices
 
-        self.converted_meshes = {}
+        self._converted_meshes = {}
         self._mesh_name_lookup = {}
 
     @staticmethod
-    def _convert_groups(mesh, mesh_data):
+    def _convert_groups(mesh, collision_mesh_data: CCollisionMeshData):
         groups = mesh.heio_mesh.groups
 
         set_slot_indices = []
-        for i, mesh_layer in enumerate(mesh_data.Groups):
+        for i in range(collision_mesh_data.groups_size):
             group = groups.new(name=f"Shape_{i}")
+            mesh_group: CCollisionMeshDataGroup = collision_mesh_data.groups[i]
 
-            group.collision_layer.value = mesh_layer.Layer
+            group.collision_layer.value = mesh_group.layer
 
-            if mesh_layer.IsConvex:
+            if mesh_group.is_convex:
                 group.is_convex_collision = True
-                group.convex_type.value = mesh_layer.ConvexType
+                group.convex_type.value = mesh_group.convex_type
 
-                for value in mesh_layer.ConvexFlagValues:
-                    group.convex_flags.new(value=value)
+                for i in range(mesh_group.convex_flag_values_size):
+                    group.convex_flags.new(value=mesh_group.convex_flag_values[i])
 
-            set_slot_indices.extend([i] * mesh_layer.Size)
+            set_slot_indices.extend([i] * mesh_group.size)
 
         groups.initialize()
         groups.attribute.data.foreach_set("value", set_slot_indices)
 
     @staticmethod
-    def _convert_types(mesh, mesh_data):
-        if mesh_data.TypeValues is None:
+    def _convert_types(mesh, collision_mesh_data: CCollisionMeshData):
+        if not collision_mesh_data.type_values:
             return
 
         types = mesh.heio_mesh.collision_types
 
-        for value in mesh_data.TypeValues:
-            types.new(value=value)
-        types.initialize()
+        for i in range(collision_mesh_data.type_values_size):
+            types.new(value=collision_mesh_data.type_values[i])
 
-        types.attribute.data.foreach_set("value", [x for x in mesh_data.Types])
+        types.initialize()
+        types.attribute.data.foreach_set("value", [collision_mesh_data.types[i] for i in range(collision_mesh_data.types_size)])
 
     @staticmethod
-    def _convert_flags(mesh, mesh_data):
-        if mesh_data.FlagValues is None:
+    def _convert_flags(mesh, collision_mesh_data: CCollisionMeshData):
+        if not collision_mesh_data.flag_values:
             return
 
         flags = mesh.heio_mesh.collision_flags
 
-        for value in mesh_data.FlagValues:
-            flags.new(value=value)
+        for i in range(collision_mesh_data.flag_values_size):
+            flags.new(value=collision_mesh_data.flag_values[i])
 
         flags.initialize()
-        flags.attribute.data.foreach_set("value", [x for x in mesh_data.Flags])
+        flags.attribute.data.foreach_set("value", [collision_mesh_data.flags[i] for i in range(collision_mesh_data.flags_size)])
 
     @staticmethod
-    def _convert_primitives(mesh, collision_mesh):
+    def _convert_primitives(mesh, collision_mesh_data: CCollisionMeshData):
         primitives = mesh.heio_mesh.collision_primitives
 
-        for sn_primitive in collision_mesh.Primitives:
+        for i in range(collision_mesh_data.primitives_size):
+            c_primitive: CBulletPrimitive = collision_mesh_data.primitives[i]
             primitive = primitives.new()
 
-            primitive.shape_type = i_enum.from_bullet_shape_type(
-                sn_primitive.ShapeType)
+            primitive.shape_type = enums.BULLET_PRIMITIVE_SHAPE_TYPE[c_primitive.shape_type]
+            primitive.position = i_transform.c_to_bpy_position(c_primitive.position)
+            primitive.rotation = i_transform.c_to_bpy_quaternion(c_primitive.rotation)
+            primitive.dimensions = i_transform.c_to_bpy_scale(c_primitive.dimensions)
 
-            primitive.position = i_transform.net_to_bpy_position(sn_primitive.Position)
+            primitive.collision_layer.value = c_primitive.surface_layer
+            primitive.collision_type.value = c_primitive.surface_type
 
-            primitive.rotation = i_transform.net_to_bpy_quaternion(
-                sn_primitive.Rotation)
-
-            primitive.dimensions = i_transform.net_to_bpy_scale(sn_primitive.Dimensions)
-
-            primitive.collision_layer.value = sn_primitive.SurfaceLayer
-            primitive.collision_type.value = sn_primitive.SurfaceType
-
-            flags = sn_primitive.SurfaceFlags
+            flags = c_primitive.surface_flags
             for i in range(32):
                 if (flags & 1) != 0:
                     primitive.collision_flags.new(value=i)
                 flags >> 1
 
-    def _convert_mesh(self, collision_mesh):
+    def _convert_mesh(self, collision_mesh_data: CCollisionMeshData):
 
-        mesh_data = HEIO_NET.COLLISION_MESH_DATA.FromBulletMesh(
-            collision_mesh,
-            self._merge_vertices,
-            self._vertex_merge_distance,
-            self._remove_unused_vertices)
+        mesh = bpy.data.meshes.new(collision_mesh_data.name)
 
-        mesh = bpy.data.meshes.new(collision_mesh.Name)
-
-        if mesh_data.Vertices.Count == 0:
+        if collision_mesh_data.vertices_size == 0:
             return mesh
 
-        vertices = [i_transform.net_to_bpy_position(x) for x in mesh_data.Vertices]
+        vertices = [i_transform.c_to_bpy_position(collision_mesh_data.vertices[i]) for i in range(collision_mesh_data.vertices_size)]
 
         faces = []
-        for i in range(0, len(mesh_data.TriangleIndices), 3):
+        for i in range(0, collision_mesh_data.triangle_indices_size, 3):
             faces.append((
-                mesh_data.TriangleIndices[i],
-                mesh_data.TriangleIndices[i + 1],
-                mesh_data.TriangleIndices[i + 2])
+                collision_mesh_data.triangle_indices[i],
+                collision_mesh_data.triangle_indices[i + 1],
+                collision_mesh_data.triangle_indices[i + 2])
             )
 
         mesh.from_pydata(vertices, [], faces, shade_flat=True)
 
-        self._convert_groups(mesh, mesh_data)
-        self._convert_types(mesh, mesh_data)
-        self._convert_flags(mesh, mesh_data)
-        self._convert_primitives(mesh, collision_mesh)
+        self._convert_groups(mesh, collision_mesh_data)
+        self._convert_types(mesh, collision_mesh_data)
+        self._convert_flags(mesh, collision_mesh_data)
+        self._convert_primitives(mesh, collision_mesh_data)
 
         return mesh
 
-    def convert_collision_meshes(self, collision_meshes):
+    def convert_collision_meshes(self, collision_meshes: list[TPointer[CCollisionMeshData]]):
         result = []
 
         progress_console.start(
             "Converting Collision Meshes", len(collision_meshes))
 
-        for i, collision_mesh in enumerate(collision_meshes):
-            progress_console.update(
-                f"Converting Collision Mesh \"{collision_mesh.Name}\"", i)
+        for i, collision_mesh_data in enumerate(collision_meshes):
+            collision_mesh_data_address = pointer_to_address(collision_mesh_data)
+            collision_mesh_data: CCollisionMeshData = collision_mesh_data.contents
 
-            if collision_mesh in self.converted_meshes:
-                mesh = self.converted_meshes[collision_mesh]
+            progress_console.update(
+                f"Converting Collision Mesh \"{collision_mesh_data.name}\"", i)
+
+            if collision_mesh_data_address in self._converted_meshes:
+                mesh = self._converted_meshes[collision_mesh_data_address]
 
             else:
-                mesh = self._convert_mesh(collision_mesh)
-                self.converted_meshes[collision_mesh] = mesh
-                self._mesh_name_lookup[collision_mesh.Name] = mesh
+                mesh = self._convert_mesh(collision_mesh_data)
+                self._converted_meshes[collision_mesh_data_address] = mesh
+                self._mesh_name_lookup[collision_mesh_data.name] = mesh
 
             result.append(mesh)
 
         progress_console.end()
 
         return result
-
-    def get_mesh(self, key: any):
-
-        if isinstance(key, str):
-            if key in self._mesh_name_lookup:
-                return self._mesh_name_lookup[key]
-
-            mesh = bpy.data.meshes.new(key)
-            self._mesh_name_lookup[key] = mesh
-            return mesh
-
-        if key in self.converted_meshes:
-            return self.converted_meshes[key]
-
-        if hasattr(key, "Name") and key.Name in self._mesh_name_lookup:
-            return self._mesh_name_lookup[key.Name]
-
-        raise HEIODevException("Model lookup failed")
