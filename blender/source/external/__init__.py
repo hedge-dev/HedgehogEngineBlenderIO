@@ -4,17 +4,18 @@ from ctypes import cdll, CDLL, POINTER, pointer, cast, c_wchar_p, c_size_t, c_fl
 from contextlib import contextmanager
 
 # importing everything so we can import from external directly
+from .util import get_dll_close, pointer_to_address
 from .typing import TPointer
+from .pair import CStringPointerPair, CArray
 from .math import CVector3, CQuaternion, CMatrix
-from .material import CFloatMaterialParameter, CIntegerMaterialParameter, CBoolMaterialParameter, CTexture, CMaterial
-from .mesh_data import CUVDirection, CVertexWeight, CVertex, CMeshDataMeshSetInfo, CMeshDataGroupInfo, CMeshData, CModelNode, CMeshDataSet, CLODItem, CModelSet
+from .resolve_info import CResolveInfo
 from .mesh_import_settings import CMeshImportSettings
 from .image import CImage
-from .pair import CStringPointerPair, CArray
-from .resolve_info import CResolveInfo
 from .sample_chunk_node import CSampleChunkNode
+from .material import CFloatMaterialParameter, CIntegerMaterialParameter, CBoolMaterialParameter, CTexture, CMaterial
+from .mesh_data import CUVDirection, CVertexWeight, CVertex, CMeshDataMeshSetInfo, CMeshDataGroupInfo, CMeshData, CModelNode, CMeshDataSet, CLODItem, CModelSet
 from .collision_mesh_data import CCollisionMeshDataGroup, CBulletPrimitive, CCollisionMeshData
-from .util import get_dll_close, pointer_to_address
+from .point_cloud import CPointCloudPoint, CPointCloudCloud, CPointCloudCollection
 
 from ..utility import general
 from ..exceptions import HEIOException
@@ -131,6 +132,10 @@ class Library:
         lib.matrix_create_from_quaternion.argtypes = (CQuaternion,)
         lib.matrix_create_from_quaternion.restype = CMatrix
         lib.matrix_create_from_quaternion.errcheck = cls._check_error
+
+        lib.point_cloud_read_files.argtypes = (POINTER(c_wchar_p), c_size_t, c_bool, POINTER(CMeshImportSettings), POINTER(POINTER(CResolveInfo)))
+        lib.point_cloud_read_files.restype = POINTER(CPointCloudCollection)
+        lib.point_cloud_read_files.errcheck = cls._check_error
 
     @classmethod
     def _as_array(cls, iterable: Iterable, type):
@@ -314,5 +319,22 @@ class Library:
 
         return cls._array_to_list(array, POINTER(CCollisionMeshData))
 
+    @classmethod
+    def point_cloud_read_files(cls, filepaths: list[str], include_lod: bool, settings: CMeshImportSettings) -> tuple[TPointer[CPointCloudCollection], TPointer[CResolveInfo]]:
+        c_filepaths = cls._as_array([c_wchar_p(filepath) for filepath in filepaths], c_wchar_p)
+        c_filepaths_size = c_size_t(len(filepaths))
+        c_include_lod = c_bool(include_lod)
+        c_settings = pointer(settings)
+        c_resolve_info = pointer(POINTER(CResolveInfo)())
+
+        result = cls.lib().point_cloud_read_files(
+            c_filepaths, 
+            c_filepaths_size,
+            c_include_lod,
+            c_settings,
+            c_resolve_info
+        )
+
+        return result, c_resolve_info.contents
 
 

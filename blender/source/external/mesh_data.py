@@ -1,4 +1,4 @@
-from ctypes import Structure, c_byte, c_int, c_uint, c_short, c_float, c_bool, c_wchar_p, c_size_t, POINTER
+from ctypes import Structure, c_ubyte, c_int, c_uint, c_short, c_float, c_bool, c_wchar_p, c_size_t, POINTER
 from .util import FieldsFromTypeHints
 from .math import CVector2, CVector3, CVector4, CMatrix
 from .pair import CStringPointerPair
@@ -83,7 +83,7 @@ class CMeshDataSet(Structure, metaclass=FieldsFromTypeHints):
 class CLODItem(Structure, metaclass=FieldsFromTypeHints):
     cascade_flag: c_int
     unknown2: c_float
-    cascade_level: c_byte
+    cascade_level: c_ubyte
 
 class CModelSet(Structure, metaclass=FieldsFromTypeHints):
     mesh_data_sets: POINTER(CMeshDataSet)
@@ -91,4 +91,4 @@ class CModelSet(Structure, metaclass=FieldsFromTypeHints):
 
     lod_items: POINTER(CLODItem)
     lod_items_size: c_size_t
-    lod_unknown1: c_byte
+    lod_unknown1: c_ubyte

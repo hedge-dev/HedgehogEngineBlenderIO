@@ -73,7 +73,7 @@ namespace HEIO.NET.Internal
         }
 
 
-        public static PointCloudCollection LoadPointClouds(string[] filepaths, bool includeLoD, MeshImportSettings settings, out ResolveInfo resolveInfo)
+        public static PointCloudCollection ReadPointClouds(string[] filepaths, bool includeLoD, MeshImportSettings settings, out ResolveInfo resolveInfo)
         {
             DependencyResolverManager dependencyManager = new();
             List<PointCloud> pointClouds = [];

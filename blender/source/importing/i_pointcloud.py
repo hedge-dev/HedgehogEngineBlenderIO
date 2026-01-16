@@ -2,6 +2,7 @@ import bpy
 
 from . import i_transform, i_model
 
+from ..external import TPointer, CPointCloudCloud, CPointCloudPoint
 from ..utility import progress_console
 from ..exceptions import HEIODevException
 
@@ -22,15 +23,15 @@ class PointCloudConverter:
 
     def _create_object_from_point(
             self,
-            point,
+            point: CPointCloudPoint,
             resources: list,
             collection: bpy.types.Collection,
             context: bpy.types.Context):
 
         added = False
 
-        if point.ResourceIndex > -1:
-            resource = resources[point.ResourceIndex]
+        if point.resource_index > -1:
+            resource = resources[point.resource_index]
 
             if isinstance(resource, i_model.ModelInfo):
                 if self._model_instance_collection_collection is not None and resource.armature is not None:
@@ -41,13 +42,13 @@ class PointCloudConverter:
                         self._model_instance_collection_collection.children.link(instance_collection)
                         resource.create_object(resource.name, instance_collection, context)
 
-                    result = bpy.data.objects.new(point.InstanceName, None)
+                    result = bpy.data.objects.new(point.instance_name, None)
                     result.instance_type = 'COLLECTION'
                     result.instance_collection = instance_collection
 
                 else:
 
-                    mesh_objs, armature_obj = resource.create_object(point.InstanceName, collection, context)
+                    mesh_objs, armature_obj = resource.create_object(point.instance_name, collection, context)
                     if armature_obj is not None:
                         result = armature_obj
                     else:
@@ -55,18 +56,18 @@ class PointCloudConverter:
                     added = True
 
             elif isinstance(resource, bpy.types.Mesh):
-                result = bpy.data.objects.new(point.InstanceName, resource)
+                result = bpy.data.objects.new(point.instance_name, resource)
 
             else:
                 raise HEIODevException("Invalid Resource")
 
         else:
-            result = bpy.data.objects.new(point.InstanceName, None)
+            result = bpy.data.objects.new(point.instance_name, None)
 
-        result.matrix_world = i_transform.net_transforms_to_bpy_matrix(
-            point.Position,
-            point.Rotation,
-            point.Scale
+        result.matrix_world = i_transform.c_transforms_to_bpy_matrix(
+            point.position,
+            point.rotation,
+            point.scale
         )
 
         if not added:
@@ -74,21 +75,22 @@ class PointCloudConverter:
 
         return result
 
-    def convert_point_clouds(self, context: bpy.types.Context, point_collections, resources: list):
+    def convert_point_clouds(self, context: bpy.types.Context, clouds: TPointer[CPointCloudCloud], clouds_size: int, resources: list):
         result = []
 
-        progress_console.start("Importing Point Clouds", len(point_collections))
+        progress_console.start("Importing Point Clouds", clouds_size)
 
-        for i, point_collection in enumerate(point_collections):
-            progress_console.update(f"Importing \"{point_collection.Name}\"", i)
-            collection = bpy.data.collections.new(point_collection.Name)
+        for i in range(clouds_size):
+            cloud: CPointCloudCloud = clouds[i]
+            progress_console.update(f"Importing \"{cloud.name}\"", i)
+            collection = bpy.data.collections.new(cloud.name)
             result.append(collection)
 
-            progress_console.start("Importing points", len(point_collection.Points))
+            progress_console.start("Importing points", cloud.points_size)
 
-            for j, point in enumerate(point_collection.Points):
+            for j in range(cloud.points_size):
                 progress_console.update("", j)
-                self._create_object_from_point(point, resources, collection, context)
+                self._create_object_from_point(cloud.points[j], resources, collection, context)
 
             progress_console.end()
 

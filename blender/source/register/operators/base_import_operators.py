@@ -518,24 +518,3 @@ class ImportPointCloudOperator(ImportCollisionMeshOperator, ImportModelOperator)
             created
         )
 
-    def import_point_cloud_models(self, context: bpy.types.Context, point_cloud_collection):
-        progress_console.update("Importing Models")
-
-        model_infos = self.node_converter.convert_model_sets(
-            point_cloud_collection.Models)
-
-        collections = self.point_cloud_converter.convert_point_clouds(
-            context, point_cloud_collection.ModelCollections, model_infos)
-
-        self._setup_lod_models(context, model_infos)
-
-        return collections
-
-    def import_point_cloud_collision_meshes(self, context: bpy.types.Context, point_cloud_collection):
-        progress_console.update("Importing Collision Meshes")
-
-        collision_meshes = self.collision_mesh_converter.convert_collision_meshes(
-            point_cloud_collection.CollisionMeshes)
-
-        return self.point_cloud_converter.convert_point_clouds(
-            context, point_cloud_collection.CollisionMeshCollections, collision_meshes)

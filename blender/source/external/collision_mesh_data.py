@@ -1,4 +1,4 @@
-from ctypes import Structure, POINTER, c_size_t, c_uint, c_byte, c_bool, c_wchar_p
+from ctypes import Structure, POINTER, c_size_t, c_uint, c_ubyte, c_bool, c_wchar_p
 from .util import FieldsFromTypeHints
 from .math import CVector3, CQuaternion
 
@@ -8,13 +8,13 @@ class CCollisionMeshDataGroup(Structure, metaclass=FieldsFromTypeHints):
     is_convex: c_bool
     convex_type: c_uint
 
-    convex_flag_values: POINTER(c_byte)
+    convex_flag_values: POINTER(c_ubyte)
     convex_flag_values_size: c_size_t
 
 class CBulletPrimitive(Structure, metaclass=FieldsFromTypeHints):
-    shape_type: c_byte
-    surface_layer: c_byte
-    surface_type: c_byte
+    shape_type: c_ubyte
+    surface_layer: c_ubyte
+    surface_type: c_ubyte
     surface_flags: c_uint
     position: CVector3
     rotation: CQuaternion
@@ -32,13 +32,13 @@ class CCollisionMeshData(Structure, metaclass=FieldsFromTypeHints):
     types: POINTER(c_uint)
     types_size: c_size_t
 
-    type_values: POINTER(c_byte)
+    type_values: POINTER(c_ubyte)
     type_values_size: c_size_t
 
     flags: POINTER(c_uint)
     flags_size: c_size_t
 
-    flag_values: POINTER(c_byte)
+    flag_values: POINTER(c_ubyte)
     flag_values_size: c_size_t
 
     groups: POINTER(CCollisionMeshDataGroup)

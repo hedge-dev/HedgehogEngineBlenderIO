@@ -4,7 +4,7 @@ import os
 from ..property_groups.mesh_properties import MESH_DATA_TYPES
 
 from ...utility import progress_console
-from ...external import Library, enums, CMeshImportSettings
+from ...external import Library, enums, CMeshImportSettings, CPointCloudCollection
 
 from .base_import_operators import (
     ImportMaterialOperator,
@@ -136,18 +136,61 @@ class HEIO_OT_Import_PointCloud(ImportPointCloudOperator):
     bl_idname = "heio.import_pointcloud"
     bl_label = "Import HE Point Cloud (*.pcmodel;*.pccol)"
 
+    def import_point_cloud_models(self, context: bpy.types.Context, point_cloud_collection: CPointCloudCollection):
+        progress_console.update("Importing Models")
+
+        c_model_sets = point_cloud_collection.models[:point_cloud_collection.models_size]
+        model_infos = self.node_converter.convert_model_sets(c_model_sets)
+
+        collections = self.point_cloud_converter.convert_point_clouds(
+            context, 
+            point_cloud_collection.model_clouds, 
+            point_cloud_collection.model_clouds_size, 
+            model_infos
+        )
+
+        self._setup_lod_models(context, model_infos)
+
+        return collections
+
+    def import_point_cloud_collision_meshes(self, context: bpy.types.Context, point_cloud_collection: CPointCloudCollection):
+        progress_console.update("Importing Collision Meshes")
+
+        c_collision_meshes = point_cloud_collection.collision_meshes[:point_cloud_collection.collision_meshes_size]
+        collision_meshes = self.collision_mesh_converter.convert_collision_meshes(c_collision_meshes)
+
+        return self.point_cloud_converter.convert_point_clouds(
+            context, 
+            point_cloud_collection.collision_mesh_clouds,
+            point_cloud_collection.collision_mesh_clouds_size,
+            collision_meshes
+        )
+
     def import_(self, context):
         progress_console.update("Resolving & reading files")
 
         directory = os.path.dirname(self.filepath)
         filepaths = [os.path.join(directory, file.name) for file in self.files]
 
-        point_cloud_collection, resolve_info = HEIO_NET.POINT_CLOUD_COLLECTION.LoadPointClouds(
-            filepaths, self.import_lod_models, HEIO_NET.RESOLVE_INFO())
+        mesh_import_settings = CMeshImportSettings()
+        mesh_import_settings.merge_distance = self.vertex_merge_distance
+        mesh_import_settings.merge_split_edges = self.merge_split_edges
+        mesh_import_settings.vertex_merge_mode = enums.VERTEX_MERGE_MODE.index(self.vertex_merge_mode)
+        mesh_import_settings.merge_collision_vertices = self.merge_collision_verts
+        mesh_import_settings.collision_vertex_merge_distance = self.merge_collision_verts
+        mesh_import_settings.remove_unused_collision_vertices = self.remove_unused_vertices
 
+        point_cloud_collection, resolve_info = Library.point_cloud_read_files(
+            filepaths,
+            self.import_lod_models,
+            mesh_import_settings
+        )
+        
         self.resolve_infos.append(resolve_info)
 
         collections = []
+
+        point_cloud_collection = point_cloud_collection.contents
 
         collections += self.import_point_cloud_models(
             context, point_cloud_collection)

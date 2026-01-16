@@ -81,7 +81,7 @@ class ImageLoader:
         if c_image.streamed_data:
             from tempfile import TemporaryDirectory
 
-            byte_data = c_image.streamed_data[:c_image.streamed_data_size]
+            byte_data = bytes(c_image.streamed_data[:c_image.streamed_data_size])
 
             with TemporaryDirectory() as temp_dir:
                 temp = os.path.join(temp_dir, image_name + ".dds")

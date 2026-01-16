@@ -1,4 +1,4 @@
-from ctypes import Structure, c_uint, c_bool, c_wchar_p, c_byte, c_size_t, POINTER
+from ctypes import Structure, c_uint, c_bool, c_wchar_p, c_ubyte, c_size_t, POINTER
 from .util import FieldsFromTypeHints
 from .math import CVector4, CVector4Int
 from .sample_chunk_node import CSampleChunkNode
@@ -18,9 +18,9 @@ class CBoolMaterialParameter(Structure, metaclass=FieldsFromTypeHints):
 class CTexture(Structure, metaclass=FieldsFromTypeHints):
     name: c_wchar_p
     picture_name: c_wchar_p
-    texcoord_index: c_byte
-    wrap_mode_u: c_byte
-    wrap_mode_v: c_byte
+    texcoord_index: c_ubyte
+    wrap_mode_u: c_ubyte
+    wrap_mode_v: c_ubyte
     type: c_wchar_p
 
 class CMaterial(Structure, metaclass=FieldsFromTypeHints):
@@ -30,9 +30,9 @@ class CMaterial(Structure, metaclass=FieldsFromTypeHints):
     root_node: POINTER(CSampleChunkNode)
     
     shader_name: c_wchar_p
-    alpha_threshold: c_byte
+    alpha_threshold: c_ubyte
     no_back_face_culling: c_bool
-    blend_mode: c_byte
+    blend_mode: c_ubyte
 
     float_parameters: POINTER(CFloatMaterialParameter)
     float_parameters_size: c_size_t
