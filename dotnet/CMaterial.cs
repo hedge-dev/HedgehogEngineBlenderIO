@@ -19,7 +19,7 @@ namespace HEIO.NET
         public char* name;
         public Vector4 value;
 
-        public unsafe char* Name
+        public char* Name
         {
             readonly get => name;
             set => name = value;
@@ -37,7 +37,7 @@ namespace HEIO.NET
         public char* name;
         public Vector4Int value;
 
-        public unsafe char* Name
+        public char* Name
         {
             readonly get => name;
             set => name = value;
@@ -55,7 +55,7 @@ namespace HEIO.NET
         public char* name;
         public bool value;
 
-        public unsafe char* Name
+        public char* Name
         {
             readonly get => name;
             set => name = value;
@@ -213,6 +213,8 @@ namespace HEIO.NET
             {
                 T* parameter = &parameters[i];
 
+                Console.WriteLine(parameter->Value);
+
                 output.Add(
                     Util.FromPointer(parameter->Name)!,
                     new() { Value = parameter->Value }
@@ -233,6 +235,20 @@ namespace HEIO.NET
             {
                 ErrorHandler.HandleError(exception);
                 return null;
+            }
+        }
+
+        [UnmanagedCallersOnly(EntryPoint = "material_write_file")]
+        public static void WriteFile(CMaterial* material, char* filepath)
+        {
+            try
+            {
+                material->ToMaterial().Write(Util.FromPointer(filepath)!);
+            }
+            catch(Exception exception)
+            {
+                ErrorHandler.HandleError(exception);
+                return;
             }
         }
     }

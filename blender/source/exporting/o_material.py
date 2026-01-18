@@ -1,10 +1,11 @@
 import os
 from typing import Iterable
 import bpy
+from ctypes import pointer
 
-from . import o_enum, o_sca_parameters, o_image, o_util
+from . import o_sca_parameters, o_image, o_util
 
-from ..dotnet import SharpNeedle, System, HEIO_NET
+from ..external import Library, enums, TPointer, CMaterial, CBoolMaterialParameter, CFloatMaterialParameter, CVector4, CTexture
 from ..register.property_groups.material_properties import HEIO_Material
 from ..register.definitions import TargetDefinition
 from ..utility import progress_console
@@ -20,7 +21,7 @@ class MaterialProcessor:
     _image_mode: str
     _invert_normal_map_y_channel: bool
 
-    _output: dict[bpy.types.Material, any]
+    _output: dict[bpy.types.Material, TPointer[CMaterial]]
 
     def __init__(
             self,
@@ -66,29 +67,34 @@ class MaterialProcessor:
                 converted.append(self._output[material])
                 continue
 
-            sn_material = SharpNeedle.MATERIAL()
-            self._output[material] = sn_material
-            converted.append(sn_material)
+            c_material = CMaterial()
+            c_material_pointer = pointer(c_material)
+            self._output[material] = c_material_pointer
+            converted.append(c_material_pointer)
 
             material_properties: HEIO_Material = material.heio_material
 
-            sn_material.DataVersion = self._target_definition.data_versions.material
-            sn_material.Name = o_util.correct_filename(material.name)
+            c_material.data_version = self._target_definition.data_versions.material
+            c_material.name = o_util.correct_filename(material.name)
 
-            if self._target_definition.data_versions.sample_chunk == 1:
-                sn_material.Root = None
-            else:
-                sn_material.SetupNodes()
-                o_sca_parameters.convert_for_data(
-                    sn_material, material_properties.sca_parameters, sca_defaults)
+            if self._target_definition.data_versions.sample_chunk != 1:
+                c_material.root_node = o_sca_parameters.setup("Material", c_material.data_version)
+                o_sca_parameters.convert_to_node(
+                    c_material.root_node[0].child, 
+                    material_properties.sca_parameters, 
+                    sca_defaults
+                )
 
-            sn_material.ShaderName = material_properties.shader_name
+            c_material.shader_name = material_properties.shader_name
             if len(material_properties.variant_name) > 0:
-                sn_material.ShaderName += f"[{material_properties.variant_name}]"
+                c_material.shader_name += f"[{material_properties.variant_name}]"
 
-            sn_material.AlphaThreshold = int(material.alpha_threshold * 255)
-            sn_material.NoBackFaceCulling = not material.use_backface_culling
-            sn_material.BlendMode = o_enum.to_material_blend_mode(material_properties.blend_mode)
+            c_material.alpha_threshold = int(material.alpha_threshold * 255)
+            c_material.no_back_face_culling = not material.use_backface_culling
+            c_material.blend_mode = enums.MATERIAL_BLEND_MODE.index(material_properties.blend_mode)
+
+            boolean_parameters = []
+            float_parameters = []
 
             for parameter in material_properties.parameters:
 
@@ -96,41 +102,53 @@ class MaterialProcessor:
                     continue
 
                 if parameter.value_type == 'BOOLEAN':
-                    sn_material.BoolParameters.Add(
-                        parameter.name,
-                        HEIO_NET.PYTHON_HELPERS.CreateBoolParameter(
-                            parameter.boolean_value)
+                    boolean_parameters.append(
+                        CBoolMaterialParameter(
+                            name = parameter.name,
+                            value = parameter.boolean_value
+                        )
                     )
 
                 else:
-                    value = System.VECTOR4(
-                        parameter.float_value[0],
-                        parameter.float_value[1],
-                        parameter.float_value[2],
-                        parameter.float_value[3]
+                    float_parameters.append(
+                        CFloatMaterialParameter(
+                            name = parameter.name,
+                            value = CVector4(
+                                parameter.float_value[0],
+                                parameter.float_value[1],
+                                parameter.float_value[2],
+                                parameter.float_value[3]
+                            )
+                        )
                     )
 
-                    sn_material.FloatParameters.Add(
-                        parameter.name,
-                        HEIO_NET.PYTHON_HELPERS.CreateFloatParameter(value)
-                    )
+            c_material.bool_parameters = Library.as_array(boolean_parameters, CBoolMaterialParameter)
+            c_material.bool_parameters_size = len(boolean_parameters)
 
-            sn_material.Texset.Name = sn_material.Name
+            c_material.float_parameters = Library.as_array(float_parameters, CFloatMaterialParameter)
+            c_material.float_parameters_size = len(float_parameters)
+
+            c_material.textures_name = c_material.name
+
+            textures = []
 
             for j, texture in enumerate(material_properties.textures):
                 if texture.image is None:
                     continue
 
-                sn_texture = SharpNeedle.TEXTURE()
+                textures.append(
+                    CTexture(
+                        name = f"{c_material.name}-{j:04}",
+                        picture_name = o_util.correct_image_filename(texture.image.name),
+                        texcoord_index = texture.texcoord_index,
+                        wrap_mode_u = enums.WRAP_MODE.index(texture.wrapmode_u),
+                        wrap_mode_v = enums.WRAP_MODE.index(texture.wrapmode_v),
+                        type = texture.name,
+                    )
+                )
 
-                sn_texture.Name = f"{sn_material.Name}-{j:04}"
-                sn_texture.PictureName = o_util.correct_image_filename(texture.image.name)
-                sn_texture.Type = texture.name
-                sn_texture.TexCoordIndex = texture.texcoord_index
-                sn_texture.WrapModeU = o_enum.to_wrap_mode(texture.wrapmode_u)
-                sn_texture.WrapModeV = o_enum.to_wrap_mode(texture.wrapmode_v)
-
-                sn_material.Texset.Textures.Add(sn_texture)
+            c_material.textures = Library.as_array(textures, CTexture)
+            c_material.textures_size = len(textures)
 
         progress_console.end()
 
@@ -145,16 +163,16 @@ class MaterialProcessor:
 
         progress_console.start("Writing Materials to files", len(self._output))
 
-        for i, sn_material in enumerate(self._output.values()):
-            filepath = os.path.join(
-                directory, sn_material.Name + ".material")
+        for i, c_material in enumerate(self._output.values()):
+            material_name = c_material.contents.name 
+            filepath = os.path.join(directory, material_name + ".material")
 
             if self._material_mode != 'OVERWRITE' and os.path.isfile(filepath):
                 continue
 
-            progress_console.update(f"Writing material \"{sn_material.Name}\"", i)
+            progress_console.update(f"Writing material \"{material_name}\"", i)
 
-            SharpNeedle.RESOURCE_EXTENSIONS.Write(sn_material, filepath)
+            Library.material_write_file(c_material, filepath)
 
         progress_console.end()
 

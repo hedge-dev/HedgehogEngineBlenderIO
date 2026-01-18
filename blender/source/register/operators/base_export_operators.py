@@ -20,7 +20,7 @@ from ...exporting import (
     o_model
 )
 
-from ...dotnet import load_dotnet
+from ...external import Library
 from ...utility import progress_console
 
 
@@ -31,7 +31,7 @@ class ExportOperator(HEIOBaseFileSaveOperator):
         raise NotImplementedError()
 
     def _execute(self, context: Context):
-        with load_dotnet():
+        with Library.load():
 
             self.target_definition = definitions.get_target_definition(context)
             if self.target_definition is None:

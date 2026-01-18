@@ -6,22 +6,6 @@ namespace HEIO.NET.Internal
 {
     public static class PythonHelpers
     {
-        public static MaterialParameter<Vector4> CreateFloatParameter(Vector4 value)
-        {
-            return new()
-            {
-                Value = value
-            };
-        }
-
-        public static MaterialParameter<bool> CreateBoolParameter(bool value)
-        {
-            return new()
-            {
-                Value = value
-            };
-        }
-
         public static Matrix4x4 CreateRotationMatrix(Vector3 rotation)
         {
             float sX = MathF.Sin(rotation.X);

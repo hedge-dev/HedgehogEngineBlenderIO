@@ -1,13 +1,13 @@
 import os
 from typing import Iterable
-from ctypes import cdll, CDLL, POINTER, pointer, cast, c_wchar_p, c_size_t, c_float, c_bool
+from ctypes import cdll, CDLL, POINTER, pointer, byref, cast, c_wchar_p, c_size_t, c_float, c_bool
 from contextlib import contextmanager
 
 # importing everything so we can import from external directly
 from .util import get_dll_close, pointer_to_address
 from .typing import TPointer
 from .pair import CStringPointerPair, CArray
-from .math import CVector3, CQuaternion, CMatrix
+from .math import CVector2, CVector3, CVector4, CVector4Int, CQuaternion, CMatrix
 from .resolve_info import CResolveInfo
 from .mesh_import_settings import CMeshImportSettings
 from .image import CImage
@@ -137,8 +137,11 @@ class Library:
         lib.point_cloud_read_files.restype = POINTER(CPointCloudCollection)
         lib.point_cloud_read_files.errcheck = cls._check_error
 
+        lib.material_write_file.argtypes = (POINTER(CMaterial), c_wchar_p)
+        lib.material_write_file.errcheck = cls._check_error
+
     @classmethod
-    def _as_array(cls, iterable: Iterable, type):
+    def as_array(cls, iterable: Iterable, type):
         return cast((type * len(iterable))(*iterable), POINTER(type))
 
     @classmethod
@@ -176,7 +179,7 @@ class Library:
         rotation = CQuaternion(0, 0, 0, 1)
         scale = CVector3(1, 1, 1)
 
-        cls.lib().matrix_decompose(matrix, pointer(position), pointer(rotation), pointer(scale))
+        cls.lib().matrix_decompose(matrix, byref(position), byref(rotation), byref(scale))
 
         return position, rotation, scale
     
@@ -208,7 +211,7 @@ class Library:
     @classmethod
     def resolve_info_combine(cls, resolve_infos: list[TPointer[CResolveInfo]]) -> TPointer[CResolveInfo]:
 
-        c_resolve_infos = cls._as_array(resolve_infos, POINTER(CResolveInfo))
+        c_resolve_infos = cls.as_array(resolve_infos, POINTER(CResolveInfo))
         c_resolve_infos_size = c_size_t(len(resolve_infos))
 
         return cls.lib().resolve_info_combine(
@@ -221,7 +224,7 @@ class Library:
     def image_load_directory_images(cls, directory: str, images: Iterable[str], streaming_directory: str) -> tuple[dict[str, TPointer[CImage]], TPointer[CResolveInfo]]:
 
         c_directory = c_wchar_p(directory)
-        c_images = cls._as_array([c_wchar_p(image) for image in images], c_wchar_p)
+        c_images = cls.as_array([c_wchar_p(image) for image in images], c_wchar_p)
         c_images_size = c_size_t(len(images))
         c_streaming_directory = c_wchar_p(streaming_directory)
         c_resolve_info = pointer(POINTER(CResolveInfo)())
@@ -240,7 +243,7 @@ class Library:
 
     @classmethod
     def image_load_material_images(cls, materials: Iterable[TPointer[CMaterial]], streaming_directory: str) -> tuple[dict[str, TPointer[CImage]], TPointer[CResolveInfo]]:
-        c_materials = cls._as_array(materials, POINTER(CMaterial))
+        c_materials = cls.as_array(materials, POINTER(CMaterial))
         c_materials_size = c_size_t(len(materials))
         c_streaming_directory = c_wchar_p(streaming_directory)
         c_resolve_info = pointer(POINTER(CResolveInfo)())
@@ -267,10 +270,10 @@ class Library:
     
     @classmethod
     def model_read_files(cls, filepaths: list[str], include_lod: bool, settings: CMeshImportSettings) -> tuple[list[TPointer[CModelSet]], TPointer[CResolveInfo]]:
-        c_filepaths = cls._as_array([c_wchar_p(filepath) for filepath in filepaths], c_wchar_p)
+        c_filepaths = cls.as_array([c_wchar_p(filepath) for filepath in filepaths], c_wchar_p)
         c_filepaths_size = c_size_t(len(filepaths))
         c_include_lod = c_bool(include_lod)
-        c_settings = pointer(settings)
+        c_settings = byref(settings)
         c_resolve_info = pointer(POINTER(CResolveInfo)())
 
         array = cls.lib().model_read_files(
@@ -287,7 +290,7 @@ class Library:
     
     @classmethod
     def model_get_materials(cls, model_sets: list[TPointer[CModelSet]]) -> list[TPointer[CMaterial]]:
-        c_model_sets = cls._as_array(model_sets, POINTER(CModelSet))
+        c_model_sets = cls.as_array(model_sets, POINTER(CModelSet))
         c_model_sets_size = c_size_t(len(model_sets))
 
         array = cls.lib().model_get_materials(
@@ -307,9 +310,9 @@ class Library:
 
     @classmethod
     def collision_mesh_read_files(cls, filepaths: list[str], settings: CMeshImportSettings) -> list[TPointer[CCollisionMeshData]]:
-        c_filepaths = cls._as_array([c_wchar_p(filepath) for filepath in filepaths], c_wchar_p)
+        c_filepaths = cls.as_array([c_wchar_p(filepath) for filepath in filepaths], c_wchar_p)
         c_filepaths_size = c_size_t(len(filepaths))
-        c_settings = pointer(settings)
+        c_settings = byref(settings)
 
         array = cls.lib().collision_mesh_read_files(
             c_filepaths, 
@@ -321,10 +324,10 @@ class Library:
 
     @classmethod
     def point_cloud_read_files(cls, filepaths: list[str], include_lod: bool, settings: CMeshImportSettings) -> tuple[TPointer[CPointCloudCollection], TPointer[CResolveInfo]]:
-        c_filepaths = cls._as_array([c_wchar_p(filepath) for filepath in filepaths], c_wchar_p)
+        c_filepaths = cls.as_array([c_wchar_p(filepath) for filepath in filepaths], c_wchar_p)
         c_filepaths_size = c_size_t(len(filepaths))
         c_include_lod = c_bool(include_lod)
-        c_settings = pointer(settings)
+        c_settings = byref(settings)
         c_resolve_info = pointer(POINTER(CResolveInfo)())
 
         result = cls.lib().point_cloud_read_files(
@@ -337,4 +340,12 @@ class Library:
 
         return result, c_resolve_info.contents
 
+    @classmethod
+    def material_write_file(cls, material: TPointer[CMaterial], filepath: str):
+        c_filepath = c_wchar_p(filepath)
+
+        cls.lib().material_write_file(
+            material,
+            c_filepath
+        )
 

@@ -4,7 +4,7 @@ from typing import Iterable
 import numpy
 
 from . import o_util
-from ..dotnet import HEIO_NET, System
+from ..external import Library
 from ..utility import progress_console
 
 def _check_texture_is_normal_map(texture):
@@ -73,8 +73,9 @@ def export_material_images(
 			export_image.file_format = 'TARGA'
 
 		if image in normal_images:
+
 			pixels = numpy.array(export_image.pixels, dtype=numpy.float32)
-			HEIO_NET.IMAGE.InvertGreenChannel(System.INT_PTR(pixels.ctypes.data), len(pixels))
+			Library.image_invert_green_channel(pixels)
 			export_image.pixels = pixels
 
 		export_as_dds(context, export_image, filepath)
