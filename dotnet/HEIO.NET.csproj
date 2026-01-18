@@ -15,6 +15,7 @@
 		<PackageReference Include="J113D.Common" Version="1.0.0" />
 		<PackageReference Include="J113D.Strippify" Version="1.0.0" />
 		<PackageReference Include="MIConvexHull" Version="1.1.19.1019" />
+		<PackageReference Include="RhuBulletSharp" Version="1.2.5" />
 	</ItemGroup>
 
 	<ItemGroup>

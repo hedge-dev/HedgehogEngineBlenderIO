@@ -1,6 +1,6 @@
 import os
 from typing import Iterable
-from ctypes import cdll, CDLL, POINTER, pointer, byref, cast, c_wchar_p, c_size_t, c_float, c_bool
+from ctypes import cdll, CDLL, POINTER, pointer, byref, cast, c_wchar_p, c_size_t, c_int, c_float, c_bool
 from contextlib import contextmanager
 
 # importing everything so we can import from external directly
@@ -140,9 +140,21 @@ class Library:
         lib.material_write_file.argtypes = (POINTER(CMaterial), c_wchar_p)
         lib.material_write_file.errcheck = cls._check_error
 
+        lib.matrix_to_euler.argtypes = (CMatrix,)
+        lib.matrix_to_euler.restype = CVector3
+        lib.matrix_to_euler.errcheck = cls._check_error
+
+        lib.collision_mesh_write_to_file.argtypes = (POINTER(POINTER(CCollisionMeshData)), c_size_t, c_wchar_p, c_int, c_wchar_p)
+        lib.collision_mesh_write_to_file.errcheck = cls._check_error
+
     @classmethod
     def as_array(cls, iterable: Iterable, type):
-        return cast((type * len(iterable))(*iterable), POINTER(type))
+        array = (type * len(iterable))(*iterable)
+        return cast(array, POINTER(type))
+
+    @classmethod
+    def construct_array(cls, iterable: Iterable, type):
+        return cls.as_array([type(x) for x in iterable], type)
 
     @classmethod
     def _check_error(cls, result, func, arguments):
@@ -349,3 +361,22 @@ class Library:
             c_filepath
         )
 
+    @classmethod
+    def matrix_to_euler(cls, matrix: CMatrix):
+        return cls.lib().matrix_to_euler(matrix)
+    
+    @classmethod
+    def collision_mesh_write_to_file(cls, collision_mesh_data: list[CCollisionMeshData], name: str, bullet_mesh_version: int, filepath: str):
+        c_collision_mesh_data = cls.as_array([pointer(mesh_data) for mesh_data in collision_mesh_data], POINTER(CCollisionMeshData))
+        c_collision_mesh_data_size = c_size_t(len(collision_mesh_data))
+        c_name = c_wchar_p(name)
+        c_bullet_mesh_version = c_int(bullet_mesh_version)
+        c_filepath = c_wchar_p(filepath)
+
+        cls.lib().collision_mesh_write_to_file(
+            c_collision_mesh_data,
+            c_collision_mesh_data_size,
+            c_name,
+            c_bullet_mesh_version,
+            c_filepath
+        )

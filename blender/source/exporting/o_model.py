@@ -1,10 +1,9 @@
 import bpy
 from mathutils import Vector, Matrix
 
-from . import o_mesh, o_modelset, o_transform, o_material, o_object_manager, o_sca_parameters, o_enum
+from . import o_mesh, o_modelset, o_transform, o_material, o_object_manager, o_sca_parameters
 from ..register.definitions import TargetDefinition
 from ..register.property_groups.mesh_properties import MESH_DATA_TYPES
-from ..dotnet import HEIO_NET, SharpNeedle, System
 from ..exceptions import HEIOUserException
 from ..utility import progress_console
 
@@ -804,7 +803,7 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
         self._output_queue.clear()
         progress_console.end()
 
-    def write_output_to_files(self, directory):
-        super().write_output_to_files(directory)
+    def compile_output_to_files(self, use_multicore_processing: bool, directory: str):
+        super().compile_output_to_files(use_multicore_processing, directory)
         self._material_processor.write_output_to_files(directory)
         self._material_processor.write_output_images_to_files(directory)

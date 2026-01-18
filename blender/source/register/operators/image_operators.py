@@ -6,9 +6,9 @@ from .. import definitions
 from ...utility.general import get_addon_preferences
 from ...utility.resolve_info import print_resolve_info
 from ...utility import progress_console
-from ...dotnet import load_dotnet
 from ...importing import i_image
 from ...exceptions import HEIOUserException
+from ...external import Library
 
 
 class HEIO_OT_ReimportImages(HEIOBaseFileLoadOperator):
@@ -60,7 +60,7 @@ class HEIO_OT_ReimportImages(HEIOBaseFileLoadOperator):
         progress_console.cleanup()
         progress_console.start("Loading Images")
 
-        with load_dotnet():
+        with Library.load():
             image_loader.load_images_from_directory(
                 self.directory,
                 [image.heio_image.reimport_name for image in self.reimport_images]

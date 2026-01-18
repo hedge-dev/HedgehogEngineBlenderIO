@@ -328,9 +328,7 @@ class ExportBaseMeshDataOperator(ExportObjectSelectionOperator):
                 None, self.object_manager.base_objects, name)
 
         directory = os.path.dirname(self.filepath)
-
-        processor.compile_output(self.use_multicore_processing)
-        processor.write_output_to_files(directory)
+        processor.compile_output_to_files(self.use_multicore_processing, directory)
 
 
 class ExportModelBaseOperator(ExportMaterialOperator, ExportBaseMeshDataOperator):

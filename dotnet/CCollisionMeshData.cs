@@ -1,9 +1,11 @@
 ﻿using HEIO.NET.Internal.Modeling;
+using SharpNeedle.Resource;
+using SharpNeedle.Framework.HedgehogEngine.Bullet;
 using System;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
-using SharpNeedle.Framework.HedgehogEngine.Bullet;
+using BulletSharp;
 
 namespace HEIO.NET
 {
@@ -26,6 +28,7 @@ namespace HEIO.NET
         public Vector3 position;
         public Quaternion rotation;
         public Vector3 dimensions;
+
     }
 
     public unsafe struct CCollisionMeshData
@@ -117,6 +120,54 @@ namespace HEIO.NET
             return result;
         }
 
+        public CollisionMeshData ToCollisionMeshData()
+        {
+            CollisionMeshDataGroup[] resultGroups = new CollisionMeshDataGroup[groupsSize];
+            for (int i = 0; i < groupsSize; i++)
+            {
+                CCollisionMeshDataGroup* group = &groups[i];
+                CollisionMeshDataGroup resultGroup = new(
+                    group->size,
+                    group->layer,
+                    group->isConvex
+                ) {
+                    ConvexType = group->convexType,
+                    ConvexFlagValues = Util.ToArray(group->convexFlagValues, group->convexFlagValuesSize)
+                };
+
+                resultGroups[i] = resultGroup;
+            }
+
+            BulletPrimitive[] resultPrimitives = new BulletPrimitive[primitivesSize];
+            for (int i = 0; i < primitivesSize; i++)
+            {
+                CBulletPrimitive* primitive = &primitives[i];
+
+                resultPrimitives[i] = new()
+                {
+                    ShapeType = (BulletPrimiteShapeType)primitive->shapeType,
+                    SurfaceLayer = primitive->surfaceLayer,
+                    SurfaceType = primitive->surfaceType,
+                    SurfaceFlags = primitive->surfaceFlags,
+                    Position = primitive->position,
+                    Rotation = primitive->rotation,
+                    Dimensions = primitive->dimensions
+                };
+            }
+
+            return new CollisionMeshData(
+                Util.FromPointer(name)!,
+                Util.ToArray(vertices, verticesSize)!,
+                Util.ToArray(triangleIndices, triangleIndicesSize)!,
+                Util.ToArray(types, typesSize)!,
+                Util.ToArray(typeValues, typeValuesSize),
+                Util.ToArray(flags, flagsSize)!,
+                Util.ToArray(flagValues, flagValuesSize),
+                resultGroups,
+                resultPrimitives
+            );
+        }
+
         [UnmanagedCallersOnly(EntryPoint = "collision_mesh_read_files")]
         public static CArray ReadFiles(char** filepaths, nint filepathsSize, CMeshImportSettings* settings)
         {
@@ -126,9 +177,9 @@ namespace HEIO.NET
                 MeshImportSettings internalSettings = settings->ToMeshImportSettings();
 
                 CollisionMeshData[] meshData = CollisionMeshData.ReadFiles(filepathsArray, internalSettings);
-                
+
                 nint[] results = [.. meshData.Select(x => (nint)FromCollisionMeshData(x))];
-                CModelSet** result = (CModelSet**)Allocate.AllocFromArray(results);
+                CCollisionMeshData** result = (CCollisionMeshData**)Allocate.AllocFromArray(results);
 
                 return new(
                     result,
@@ -139,6 +190,31 @@ namespace HEIO.NET
             {
                 ErrorHandler.HandleError(exception);
                 return default;
+            }
+        }
+
+        [UnmanagedCallersOnly(EntryPoint = "collision_mesh_write_to_file")]
+        public static void WriteToFile(CCollisionMeshData** collisionMeshData, nint collisionMeshDataSize, char* name, int bulletMeshVersion, char* filepath)
+        {
+            try
+            {
+                Native.Load();
+                CollisionMeshData[] internalMeshData = new CollisionMeshData[collisionMeshDataSize];
+                for (int i = 0; i < collisionMeshDataSize; i++)
+                {
+                    internalMeshData[i] = collisionMeshData[i]->ToCollisionMeshData();
+                }
+
+                BulletMesh bulletMesh = CollisionMeshData.ToBulletMesh(internalMeshData);
+                bulletMesh.Name = Util.FromPointer(name)!;
+                bulletMesh.BulletMeshVersion = bulletMeshVersion;
+
+                bulletMesh.Write(Util.FromPointer(filepath)!, false);
+            }
+            catch (Exception exception)
+            {
+                ErrorHandler.HandleError(exception);
+                return;
             }
         }
     }

@@ -46,7 +46,9 @@ namespace HEIO.NET.Internal.Modeling.ConvertFrom
                 MergeVertices(result, settings.CollisionVertexMergeDistance);
             }
 
-            if(settings.RemoveUnusedCollisionVertices)
+            RemoveInvalidTriangles(result);
+
+            if (settings.RemoveUnusedCollisionVertices)
             {
                 RemoveUnusedVertices(result);
             }
@@ -184,11 +186,73 @@ namespace HEIO.NET.Internal.Modeling.ConvertFrom
             if(output.Vertices.TryCreateDistinctMap(mergeComparer, out DistinctMap<Vector3> map))
             {
                 output.Vertices = map.ValueArray;
-                for(int i = 0; i < output.TriangleIndices.Count; i++)
+                for (int i = 0; i < output.TriangleIndices.Count; i++)
                 {
                     output.TriangleIndices[i] = map[output.TriangleIndices[i]];
                 }
             }
+        }
+
+        private static void RemoveInvalidTriangles(CollisionMeshData output)
+        {
+            uint[] newTriangleIndices = new uint[output.TriangleIndices.Count];
+            uint[] newTypes = new uint[output.Types.Count];
+            uint[] newFlags = new uint[output.Flags.Count];
+            int newCount = 0;
+
+            int currentGroupIndex = 0;
+            int currentGroupSize = 0;
+            uint[] newGroupSizes = output.Groups.Select(x => x.Size).ToArray();
+
+            for(int i = 0; i < newTriangleIndices.Length; i += 3, currentGroupSize++)
+            {
+                if (currentGroupSize >= output.Groups[currentGroupIndex].Size)
+                {
+                    currentGroupIndex++;
+                    currentGroupSize = 0;
+                }
+
+                uint t1 = output.TriangleIndices[i];
+                uint t2 = output.TriangleIndices[i + 1];
+                uint t3 = output.TriangleIndices[i + 2];
+
+                if(t1 != t2 && t2 != t3 && t3 != t1)
+                {
+                    newTriangleIndices[newCount * 3] = t1;
+                    newTriangleIndices[newCount * 3 + 1] = t2;
+                    newTriangleIndices[newCount * 3 + 2] = t3;
+                    newTypes[newCount] = output.Types[i / 3];
+                    newFlags[newCount] = output.Flags[i / 3];
+
+                    newCount++;
+                }
+                else
+                {
+                    newGroupSizes[currentGroupIndex]--;
+                }
+            }
+
+            if (newCount < output.TriangleIndices.Count)
+            {
+                uint[] outTriangleIndices = new uint[newCount * 3];
+                Array.Copy(newTriangleIndices, outTriangleIndices, outTriangleIndices.Length);
+
+                uint[] outTypes = new uint[newCount];
+                Array.Copy(newTypes, outTypes, outTypes.Length);
+
+                uint[] outFlags = new uint[newCount];
+                Array.Copy(newFlags, outFlags, outFlags.Length);
+
+                output.TriangleIndices = outTriangleIndices;
+                output.Types = outTypes;
+                output.Flags = outFlags;
+
+                for(int i = 0; i < newGroupSizes.Length; i++)
+                {
+                    output.Groups[i].Size = newGroupSizes[i];   
+                }
+            }
+
         }
 
         private static void RemoveUnusedVertices(CollisionMeshData output)

@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System;
+using System.Runtime.InteropServices;
 
 namespace HEIO.NET
 {
@@ -18,6 +19,18 @@ namespace HEIO.NET
                 result[i] = FromPointer(values[i])!;
             }
 
+            return result;
+        }
+        
+        public static T[]? ToArray<T>(T* values, nint valuesSize) where T : unmanaged
+        {
+            if(values == null)
+            {
+                return null;
+            }
+
+            T[] result = new T[valuesSize];
+            new Span<T>(values, (int)valuesSize).CopyTo(new Span<T>(result, 0, (int)valuesSize));
             return result;
         }
     }

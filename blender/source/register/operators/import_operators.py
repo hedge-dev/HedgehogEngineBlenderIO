@@ -112,7 +112,7 @@ class HEIO_OT_Import_CollisionMesh(ImportCollisionMeshOperator):
 
         mesh_import_settings = CMeshImportSettings()
         mesh_import_settings.merge_collision_vertices = self.merge_collision_verts
-        mesh_import_settings.collision_vertex_merge_distance = self.merge_collision_verts
+        mesh_import_settings.collision_vertex_merge_distance = self.merge_collision_vert_distance
         mesh_import_settings.remove_unused_collision_vertices = self.remove_unused_vertices
 
         collision_meshes = Library.collision_mesh_read_files(

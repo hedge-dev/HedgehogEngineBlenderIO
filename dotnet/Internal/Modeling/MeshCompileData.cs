@@ -34,13 +34,13 @@ namespace HEIO.NET.Internal.Modeling
 
         public void SaveToJson(string directory)
         {
-            string json = JsonSerializer.Serialize(this, JsonConverters.Options);
+            string json = JsonSerializer.Serialize(this, SourceGenerationContext.Default.MeshCompileData);
             File.WriteAllText(Path.Combine(directory, Name + ".json"), json);
         }
 
         public static MeshCompileData FromJson(string json)
         {
-            return JsonSerializer.Deserialize<MeshCompileData>(json, JsonConverters.Options);
+            return JsonSerializer.Deserialize(json, SourceGenerationContext.Default.MeshCompileData);
         }
     }
 }

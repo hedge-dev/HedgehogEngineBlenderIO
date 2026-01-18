@@ -101,9 +101,9 @@ namespace HEIO.NET.Internal.Modeling
             return ConvertFrom.BulletMeshConverter.ConvertToCollisionMeshData(mesh, settings);
         }
 
-        public static BulletMesh ToBulletMesh(CollisionMeshData[] meshData, BulletPrimitive[] primitives)
+        public static BulletMesh ToBulletMesh(CollisionMeshData[] meshData)
         {
-            return ConvertTo.BulletMeshConverter.ConvertToBulletMesh(meshData, primitives);
+            return ConvertTo.BulletMeshConverter.ConvertToBulletMesh(meshData);
         }
     }
 }

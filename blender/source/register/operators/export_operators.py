@@ -5,7 +5,6 @@ from ...exporting import o_util
 from ..property_groups.mesh_properties import MESH_DATA_TYPES
 
 from ...exceptions import HEIODevException
-from ...dotnet import SharpNeedle
 
 from .base_export_operators import (
     ExportMaterialOperator,
@@ -123,8 +122,7 @@ class HEIO_OT_Export_PointCloud(ExportPointCloudOperator):
         directory = os.path.dirname(self.filepath)
 
         if self.write_resources:
-            processor.compile_output(self.use_multicore_processing)
-            processor.write_output_to_files(directory)
+            processor.compile_output_to_files(self.use_multicore_processing, directory)
 
         SharpNeedle.RESOURCE_EXTENSIONS.Write(pointcloud, self.filepath)
         return {'FINISHED'}
@@ -173,8 +171,7 @@ class HEIO_OT_Export_PointClouds(ExportPointCloudOperator):
         directory = os.path.dirname(self.filepath)
 
         if self.write_resources:
-            processor.compile_output(self.use_multicore_processing)
-            processor.write_output_to_files(directory)
+            processor.compile_output_to_files(self.use_multicore_processing, directory)
 
         extension = ".pc" + self.cloud_type.lower()
 

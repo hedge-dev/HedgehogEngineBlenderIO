@@ -213,8 +213,6 @@ namespace HEIO.NET
             {
                 T* parameter = &parameters[i];
 
-                Console.WriteLine(parameter->Value);
-
                 output.Add(
                     Util.FromPointer(parameter->Name)!,
                     new() { Value = parameter->Value }

@@ -1,7 +1,6 @@
 import bpy
 
 from . import o_model, o_collisionmesh, o_transform
-from ..dotnet import SharpNeedle
 from ..register.definitions import TargetDefinition
 from ..utility import progress_console
 

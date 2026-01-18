@@ -149,5 +149,38 @@ namespace HEIO.NET
                 return default;
             }
         }
+
+        [UnmanagedCallersOnly(EntryPoint = "matrix_to_euler")]
+        public static Vector3 MatrixToEuler(Matrix4x4 matrix)
+        {
+            try
+            {
+                const double threshold = 16 * 1.192092896e-07;
+                double cy = double.Hypot(matrix.M11, matrix.M12);
+
+                if (cy > threshold)
+                {
+                    return new(
+                        MathF.Atan2(matrix.M23, matrix.M33),
+                        MathF.Atan2(-matrix.M13, (float)cy),
+                        MathF.Atan2(matrix.M12, matrix.M11)
+                    );
+
+                }
+                else
+                {
+                    return new(
+                        MathF.Atan2(-matrix.M32, matrix.M22),
+                        MathF.Atan2(-matrix.M13, (float)cy),
+                        0f
+                    );
+                }
+            }
+            catch (Exception exception)
+            {
+                ErrorHandler.HandleError(exception);
+                return default;
+            }
+        }
     }
 }

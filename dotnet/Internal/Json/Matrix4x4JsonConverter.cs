@@ -18,7 +18,7 @@ namespace HEIO.NET.Internal.Json
                 throw new JsonException("Matrix4x4 must be an array!");
             }
 
-            Vector4[] rows = JsonSerializer.Deserialize<Vector4[]>(ref reader, options)
+            Vector4[] rows = JsonSerializer.Deserialize(ref reader, SourceGenerationContext.Default.Vector4Array)
                 ?? throw new JsonException("Failed to read Matrix4x4!");
 
             if(rows.Length < 4)
@@ -36,15 +36,15 @@ namespace HEIO.NET.Internal.Json
         /// <inheritdoc/>
         public override void Write(Utf8JsonWriter writer, Matrix4x4 value, JsonSerializerOptions options)
         {
-            Vector4[] rows = new Vector4[]
-            {
+            Vector4[] rows =
+            [
                 new(value.M11, value.M12, value.M13, value.M14),
                 new(value.M21, value.M22, value.M23, value.M24),
                 new(value.M31, value.M32, value.M33, value.M34),
                 new(value.M41, value.M42, value.M43, value.M44),
-            };
+            ];
 
-            JsonSerializer.Serialize(writer, rows, options);
+            JsonSerializer.Serialize(writer, rows, SourceGenerationContext.Default.Vector4Array);
         }
     }
 }

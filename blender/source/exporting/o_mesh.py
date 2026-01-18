@@ -1,9 +1,7 @@
-import os
 import bpy
 
 from . import o_modelset, o_object_manager, o_util
 from ..register.definitions import TargetDefinition
-from ..dotnet import SharpNeedle
 from ..exceptions import HEIODevException
 from ..utility import progress_console
 
@@ -14,7 +12,7 @@ class BaseMeshProcessor:
     _modelset_manager: o_modelset.ModelSetManager
 
     _meshdata_lut: dict[o_modelset.ModelSet, any]
-    _output: dict[str, tuple[str, any]]
+    _output: set[str]
     _output_queue: list
 
     def __init__(
@@ -28,7 +26,7 @@ class BaseMeshProcessor:
         self._modelset_manager = modelset_manager
 
         self._meshdata_lut = {}
-        self._output = {}
+        self._output = set()
         self._output_queue = []
 
     def _convert_model_set(self, model_set: o_modelset.ModelSet):
@@ -113,21 +111,9 @@ class BaseMeshProcessor:
             return None
 
         self._output_queue.append(compile_data)
-        self._output[name] = None
+        self._output.add(name)
 
         return name
 
-    def compile_output(self, use_multicore_processing: bool):
+    def compile_output_to_files(self, use_multicore_processing: bool, directory: str):
         raise NotImplementedError()
-
-    def write_output_to_files(self, directory: str):
-        progress_console.start("Writing models to files", len(self._output))
-
-        for i, output in enumerate(self._output.items()):
-            name, data = output
-            progress_console.update(f"Writing model \"{name}\"", i)
-
-            filepath = os.path.join(directory, name + data[1])
-            SharpNeedle.RESOURCE_EXTENSIONS.Write(data[0], filepath, False) # dependencies are managed by the python side of things
-
-        progress_console.end()
