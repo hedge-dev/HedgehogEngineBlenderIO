@@ -1,6 +1,6 @@
 import os
 from typing import Iterable
-from ctypes import cdll, CDLL, POINTER, pointer, byref, cast, c_wchar_p, c_size_t, c_int, c_float, c_bool
+from ctypes import CDLL, POINTER, pointer, byref, cast, c_void_p, c_wchar_p, c_size_t, c_int, c_uint, c_float, c_bool
 from contextlib import contextmanager
 
 # importing everything so we can import from external directly
@@ -14,14 +14,15 @@ from .image import CImage
 from .sample_chunk_node import CSampleChunkNode
 from .material import CFloatMaterialParameter, CIntegerMaterialParameter, CBoolMaterialParameter, CTexture, CMaterial
 from .mesh_data import CUVDirection, CVertexWeight, CVertex, CMeshDataMeshSetInfo, CMeshDataGroupInfo, CMeshData, CModelNode, CMeshDataSet, CLODItem, CModelSet
-from .collision_mesh_data import CCollisionMeshDataGroup, CBulletPrimitive, CCollisionMeshData
+from .collision_mesh_data import CCollisionMeshDataGroup, CBulletPrimitive, CCollisionMeshData, CBulletShape, CBulletMesh
 from .point_cloud import CPointCloudPoint, CPointCloudCloud, CPointCloudCollection
 
 from ..utility import general
 from ..exceptions import HEIOException
 
 LIB_DIRECTORY = os.path.join(general.ADDON_DIR, "DLL")
-LIB_NAME = "HEIO.NET"
+HEIO_NET_NAME = "HEIO.NET"
+LIB_BULLET_C_NAME = "libbulletc"
 
 LIB_EXT = ""
 if general.is_windows():
@@ -31,7 +32,8 @@ elif general.is_mac():
 elif general.is_linux():
     LIB_EXT = ".so"
 
-LIB_FILEPATH = os.path.join(LIB_DIRECTORY, LIB_NAME + LIB_EXT)
+HEIO_NET_FILENAME = os.path.join(LIB_DIRECTORY, HEIO_NET_NAME + LIB_EXT)
+LIB_BULLET_C_FILENAME = os.path.join(LIB_DIRECTORY, LIB_BULLET_C_NAME + LIB_EXT)
 
 class HEIOLibraryException(HEIOException):
     function_name: str
@@ -42,28 +44,43 @@ class HEIOLibraryException(HEIOException):
 
 class Library:
 
-    _LOADED_LIBRARY = None  
+    _HEIO_NET = None  
+    _LIB_BULLET_C = None
 
     @classmethod
     def lib(cls):
-        if cls._LOADED_LIBRARY is None:
+        if cls._HEIO_NET is None:
             raise Exception("Library not loaded")
-        return cls._LOADED_LIBRARY
+        return cls._HEIO_NET
+    
+    @classmethod
+    def bullet(cls):
+        if cls._LIB_BULLET_C is None:
+            raise Exception("Library not loaded")
+        return cls._LIB_BULLET_C
 
     @classmethod
     @contextmanager
     def load(cls):
         try:
-            cls._LOADED_LIBRARY = cdll.LoadLibrary(LIB_FILEPATH)
-            cls._setup(cls._LOADED_LIBRARY)
+            cls._HEIO_NET = CDLL(HEIO_NET_FILENAME)
+            cls._LIB_BULLET_C = CDLL(LIB_BULLET_C_FILENAME)
+            cls._setup()
             yield cls
         finally:
-            cls._LOADED_LIBRARY.free_all()
-            get_dll_close()(cls._LOADED_LIBRARY._handle)
-            cls._LOADED_LIBRARY = None
+            cls._HEIO_NET.free_all()
+            
+            close = get_dll_close()
+            close(cls._HEIO_NET._handle)
+            close(cls._LIB_BULLET_C._handle)
+
+            cls._HEIO_NET = None
+            cls._LIB_BULLET_C._handle = None
 
     @classmethod
-    def _setup(cls, lib: CDLL):
+    def _setup(cls):
+        lib = cls._HEIO_NET
+        bullet = cls._LIB_BULLET_C
 
         lib.error_get.restype = c_wchar_p
 
@@ -125,9 +142,9 @@ class Library:
         lib.matrix_invert.restype = CMatrix
         lib.matrix_invert.errcheck = cls._check_error
 
-        lib.collision_mesh_read_files.argtypes = (POINTER(c_wchar_p), c_size_t, POINTER(CMeshImportSettings))
-        lib.collision_mesh_read_files.restype = CArray
-        lib.collision_mesh_read_files.errcheck = cls._check_error
+        lib.bullet_mesh_read_files.argtypes = (POINTER(c_wchar_p), c_size_t, POINTER(CMeshImportSettings))
+        lib.bullet_mesh_read_files.restype = CArray
+        lib.bullet_mesh_read_files.errcheck = cls._check_error
 
         lib.matrix_create_from_quaternion.argtypes = (CQuaternion,)
         lib.matrix_create_from_quaternion.restype = CMatrix
@@ -144,8 +161,35 @@ class Library:
         lib.matrix_to_euler.restype = CVector3
         lib.matrix_to_euler.errcheck = cls._check_error
 
-        lib.collision_mesh_write_to_file.argtypes = (POINTER(POINTER(CCollisionMeshData)), c_size_t, c_wchar_p, c_int, c_wchar_p)
-        lib.collision_mesh_write_to_file.errcheck = cls._check_error
+        lib.bullet_mesh_compile_mesh_data.argtypes = (POINTER(POINTER(CCollisionMeshData)), c_size_t)
+        lib.bullet_mesh_compile_mesh_data.restype = POINTER(CBulletMesh)
+        lib.bullet_mesh_compile_mesh_data.errcheck = cls._check_error
+
+        lib.bullet_mesh_write_to_file.argtypes = (POINTER(CBulletMesh), c_wchar_p)
+        lib.bullet_mesh_write_to_file.errcheck = cls._check_error
+
+        bullet.btIndexedMesh_new.restype = c_void_p
+        bullet.btIndexedMesh_setIndexType.argtypes = (c_void_p, c_int)
+        bullet.btIndexedMesh_setNumTriangles.argtypes = (c_void_p, c_int)
+        bullet.btIndexedMesh_setNumVertices.argtypes = (c_void_p, c_int)
+        bullet.btIndexedMesh_setTriangleIndexBase.argtypes = (c_void_p, c_void_p)
+        bullet.btIndexedMesh_setTriangleIndexStride.argtypes = (c_void_p, c_int)
+        bullet.btIndexedMesh_setVertexBase.argtypes = (c_void_p, c_void_p)
+        bullet.btIndexedMesh_setVertexStride.argtypes = (c_void_p, c_int)
+        bullet.btIndexedMesh_setVertexType.argtypes = (c_void_p, c_int)
+        bullet.btIndexedMesh_delete.argtypes = (c_void_p,)
+
+        bullet.btTriangleIndexVertexArray_new.restype = c_void_p
+        bullet.btTriangleIndexVertexArray_addIndexedMesh.argtypes = (c_void_p, c_void_p, c_int)
+        bullet.btStridingMeshInterface_delete.argtypes = (c_void_p, )
+
+        bullet.btOptimizedBvh_new.restype = c_void_p
+        bullet.btOptimizedBvh_build.argtypes = (c_void_p, c_void_p, c_bool, POINTER(CVector3), POINTER(CVector3))
+        bullet.btQuantizedBvh_calculateSerializeBufferSize.argtypes = (c_void_p,)
+        bullet.btQuantizedBvh_calculateSerializeBufferSize.restype = c_uint
+        bullet.btOptimizedBvh_serializeInPlace.argtypes = (c_void_p, c_void_p, c_uint, c_bool)
+        bullet.btOptimizedBvh_serializeInPlace.restype = c_bool
+        bullet.btQuantizedBvh_delete.argtypes = (c_void_p, )
 
     @classmethod
     def as_array(cls, iterable: Iterable, type):
@@ -158,7 +202,7 @@ class Library:
 
     @classmethod
     def _check_error(cls, result, func, arguments):
-        error = cls._LOADED_LIBRARY.error_get()
+        error = cls._HEIO_NET.error_get()
         if error:
             raise HEIOLibraryException(error, func.__name__)
         
@@ -321,12 +365,12 @@ class Library:
         return cls.lib().matrix_create_from_quaternion(quaternion)
 
     @classmethod
-    def collision_mesh_read_files(cls, filepaths: list[str], settings: CMeshImportSettings) -> list[TPointer[CCollisionMeshData]]:
+    def bullet_mesh_read_files(cls, filepaths: list[str], settings: CMeshImportSettings) -> list[TPointer[CCollisionMeshData]]:
         c_filepaths = cls.as_array([c_wchar_p(filepath) for filepath in filepaths], c_wchar_p)
         c_filepaths_size = c_size_t(len(filepaths))
         c_settings = byref(settings)
 
-        array = cls.lib().collision_mesh_read_files(
+        array = cls.lib().bullet_mesh_read_files(
             c_filepaths, 
             c_filepaths_size,
             c_settings
@@ -366,17 +410,92 @@ class Library:
         return cls.lib().matrix_to_euler(matrix)
     
     @classmethod
-    def collision_mesh_write_to_file(cls, collision_mesh_data: list[CCollisionMeshData], name: str, bullet_mesh_version: int, filepath: str):
+    def bullet_mesh_compile_mesh_data(cls, collision_mesh_data: list[CCollisionMeshData]) -> TPointer[CBulletMesh]:
         c_collision_mesh_data = cls.as_array([pointer(mesh_data) for mesh_data in collision_mesh_data], POINTER(CCollisionMeshData))
         c_collision_mesh_data_size = c_size_t(len(collision_mesh_data))
-        c_name = c_wchar_p(name)
-        c_bullet_mesh_version = c_int(bullet_mesh_version)
+
+        return cls.lib().bullet_mesh_compile_mesh_data(
+            c_collision_mesh_data,
+            c_collision_mesh_data_size
+        )
+
+    @classmethod
+    def bullet_mesh_write_to_file(cls, bullet_mesh: TPointer[CBulletMesh], filepath: str):
         c_filepath = c_wchar_p(filepath)
 
-        cls.lib().collision_mesh_write_to_file(
-            c_collision_mesh_data,
-            c_collision_mesh_data_size,
-            c_name,
-            c_bullet_mesh_version,
+        cls.lib().bullet_mesh_write_to_file(
+            bullet_mesh,
             c_filepath
         )
+
+    @classmethod
+    def btIndexedMesh_new(cls):
+        return cls.bullet().btIndexedMesh_new()
+
+    @classmethod
+    def btIndexedMesh_setIndexType(cls, indexed_mesh: c_void_p, value: int):
+        cls.bullet().btIndexedMesh_setIndexType(indexed_mesh, c_int(value))
+
+    @classmethod
+    def btIndexedMesh_setNumTriangles(cls, indexed_mesh: c_void_p, value: int):
+        cls.bullet().btIndexedMesh_setNumTriangles(indexed_mesh, c_int(value))
+
+    @classmethod
+    def btIndexedMesh_setNumVertices(cls, indexed_mesh: c_void_p, value: int):
+        cls.bullet().btIndexedMesh_setNumVertices(indexed_mesh, c_int(value))
+
+    @classmethod
+    def btIndexedMesh_setTriangleIndexBase(cls, indexed_mesh: c_void_p, value: c_void_p):
+        cls.bullet().btIndexedMesh_setTriangleIndexBase(indexed_mesh, value)
+
+    @classmethod
+    def btIndexedMesh_setTriangleIndexStride(cls, indexed_mesh: c_void_p, value: int):
+        cls.bullet().btIndexedMesh_setTriangleIndexStride(indexed_mesh, c_int(value))
+
+    @classmethod
+    def btIndexedMesh_setVertexBase(cls, indexed_mesh: c_void_p, value: c_void_p):
+        cls.bullet().btIndexedMesh_setVertexBase(indexed_mesh, value)
+
+    @classmethod
+    def btIndexedMesh_setVertexStride(cls, indexed_mesh: c_void_p, value: int):
+        cls.bullet().btIndexedMesh_setVertexStride(indexed_mesh, c_int(value))
+
+    @classmethod
+    def btIndexedMesh_setVertexType(cls, indexed_mesh: c_void_p, value: int):
+        cls.bullet().btIndexedMesh_setVertexType(indexed_mesh, c_int(value))
+
+    @classmethod
+    def btIndexedMesh_delete(cls, indexed_mesh: c_void_p):
+        cls.bullet().btIndexedMesh_delete(indexed_mesh)
+
+    @classmethod
+    def btTriangleIndexVertexArray_new(cls):
+        return cls.bullet().btTriangleIndexVertexArray_new()
+    
+    @classmethod
+    def btTriangleIndexVertexArray_addIndexedMesh(cls, triangle_vertex_array: c_void_p, indexed_mesh: c_void_p, triangle_index_type: int):
+        cls.bullet().btTriangleIndexVertexArray_addIndexedMesh(triangle_vertex_array, indexed_mesh, c_int(triangle_index_type))
+
+    @classmethod
+    def btStridingMeshInterface_delete(cls, striding_mesh_interface: c_void_p):
+        cls.bullet().btStridingMeshInterface_delete(striding_mesh_interface)
+
+    @classmethod
+    def btOptimizedBvh_new(cls):
+        return cls.bullet().btOptimizedBvh_new()
+    
+    @classmethod
+    def btOptimizedBvh_build(cls, optimized_bvh: c_void_p, triangles: c_void_p, use_quantized_aabb_compression: bool, bvh_aabb_min: CVector3, bvh_aabb_max: CVector3):
+        cls.bullet().btOptimizedBvh_build(optimized_bvh, triangles, c_bool(use_quantized_aabb_compression), byref(bvh_aabb_min), byref(bvh_aabb_max))
+
+    @classmethod
+    def btQuantizedBvh_calculateSerializeBufferSize(cls, quantized_bvh: c_void_p):
+        return cls.bullet().btQuantizedBvh_calculateSerializeBufferSize(quantized_bvh)
+
+    @classmethod
+    def btOptimizedBvh_serializeInPlace(cls, quantized_bvh: c_void_p, aligned_data_buffer: c_void_p, data_buffer_size: int, swap_endian: bool):
+        return cls.bullet().btOptimizedBvh_serializeInPlace(quantized_bvh, aligned_data_buffer, c_uint(data_buffer_size), c_bool(swap_endian))
+
+    @classmethod
+    def btQuantizedBvh_delete(cls, quantized_bvh: c_void_p):
+        cls.bullet().btQuantizedBvh_delete(quantized_bvh)

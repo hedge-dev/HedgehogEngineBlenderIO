@@ -1,4 +1,4 @@
-from ctypes import Structure, POINTER, c_size_t, c_uint, c_ubyte, c_bool, c_wchar_p
+from ctypes import Structure, POINTER, c_size_t, c_int, c_uint, c_ubyte, c_bool, c_wchar_p, c_ulonglong
 from .util import FieldsFromTypeHints
 from .math import CVector3, CQuaternion
 
@@ -44,5 +44,34 @@ class CCollisionMeshData(Structure, metaclass=FieldsFromTypeHints):
     groups: POINTER(CCollisionMeshDataGroup)
     groups_size: c_size_t
 
+    primitives: POINTER(CBulletPrimitive)
+    primitives_size: c_size_t
+
+class CBulletShape(Structure, metaclass=FieldsFromTypeHints):
+    flags: c_ubyte
+    layer: c_uint
+
+    vertices: POINTER(CVector3)
+    vertices_size: c_size_t
+
+    faces: POINTER(c_uint)
+    faces_size: c_size_t
+
+    bvh: POINTER(c_ubyte)
+    bvh_size: c_size_t
+
+    types: POINTER(c_ulonglong)
+    types_size: c_size_t
+
+    unknown1: c_uint
+    unknown2: c_uint
+    
+class CBulletMesh(Structure, metaclass=FieldsFromTypeHints):
+    name: c_wchar_p
+    bullet_mesh_version: c_int
+    
+    shapes: POINTER(CBulletShape)
+    shapes_size: c_size_t
+    
     primitives: POINTER(CBulletPrimitive)
     primitives_size: c_size_t

@@ -1,9 +1,9 @@
 import os
 from mathutils import Vector, Quaternion, Matrix
-from ctypes import c_uint, c_ubyte
+from ctypes import c_uint, c_ubyte, cast, POINTER
 
 from . import o_mesh, o_modelset, o_transform
-from ..external import Library, enums, CBulletPrimitive, CCollisionMeshData, CCollisionMeshDataGroup, CVector3
+from ..external import Library, TPointer, enums, CBulletPrimitive, CCollisionMeshData, CCollisionMeshDataGroup, CVector3, CBulletMesh, CBulletShape
 from ..register.property_groups.mesh_properties import MESH_DATA_TYPES
 from ..utility import progress_console
 
@@ -306,6 +306,68 @@ class CollisionMeshProcessor(o_mesh.BaseMeshProcessor):
 
         return (name, c_meshdata)
 
+    @staticmethod
+    def generate_bvh_tree(shape: CBulletShape):
+
+        x_min = float("inf")
+        y_min = float("inf")
+        z_min = float("inf")
+        x_max = float("-inf")
+        y_max = float("-inf")
+        z_max = float("-inf")
+
+        for j in range(shape.vertices_size):
+            vertex: CVector3 = shape.vertices[j]
+
+            if vertex.x < x_min:
+                x_min = vertex.x
+
+            if vertex.y < y_min:
+                y_min = vertex.y
+
+            if vertex.z < z_min:
+                z_min = vertex.z
+
+            if vertex.x > x_max:
+                x_max = vertex.x
+
+            if vertex.y > y_max:
+                y_max = vertex.y
+
+            if vertex.z > z_max:
+                z_max = vertex.z
+
+        index_mesh = Library.btIndexedMesh_new()
+        index_type = 2 # Int32
+        Library.btIndexedMesh_setVertexType(index_mesh, 0) # Single
+        Library.btIndexedMesh_setIndexType(index_mesh, index_type) # Int32
+        Library.btIndexedMesh_setVertexStride(index_mesh, 12)
+        Library.btIndexedMesh_setNumTriangles(index_mesh, int(shape.faces_size / 3))
+        Library.btIndexedMesh_setTriangleIndexBase(index_mesh, shape.faces)
+        Library.btIndexedMesh_setNumVertices(index_mesh, shape.vertices_size)
+        Library.btIndexedMesh_setVertexBase(index_mesh, shape.vertices)
+
+        triangle_vertex_array = Library.btTriangleIndexVertexArray_new()
+        Library.btTriangleIndexVertexArray_addIndexedMesh(triangle_vertex_array, index_mesh, index_type)
+
+        bvh_builder = Library.btOptimizedBvh_new()
+
+        Library.btOptimizedBvh_build(
+            bvh_builder, 
+            triangle_vertex_array, 
+            True, 
+            CVector3(x_min, y_min, z_min),
+            CVector3(x_max, y_max, z_max)
+        )
+
+        shape.bvh_size = Library.btQuantizedBvh_calculateSerializeBufferSize(bvh_builder)
+        shape.bvh = cast((c_ubyte * shape.bvh_size)(), POINTER(c_ubyte))
+        Library.btOptimizedBvh_serializeInPlace(bvh_builder, shape.bvh, shape.bvh_size, False)
+
+        Library.btQuantizedBvh_delete(bvh_builder)
+        Library.btStridingMeshInterface_delete(triangle_vertex_array)
+        Library.btIndexedMesh_delete(index_mesh)
+
     def compile_output_to_files(self, use_multicore_processing: bool, directory: str):
         # TODO: compile with multithreading in c#, maybe
         progress_console.start("Compiling & writing collision meshes", len(self._output_queue))
@@ -313,12 +375,18 @@ class CollisionMeshProcessor(o_mesh.BaseMeshProcessor):
             name, c_meshdata = output
             progress_console.update(f"Compiling collision mesh \"{name}\"", i)
 
+            bullet_mesh = Library.bullet_mesh_compile_mesh_data(c_meshdata)
+            bullet_mesh.contents.name = name
+            bullet_mesh.contents.bullet_mesh_version = self._target_definition.data_versions.bullet_mesh
+
+            bullet_mesh_contents = bullet_mesh.contents
+            for j in range(bullet_mesh_contents.shapes_size):
+                CollisionMeshProcessor.generate_bvh_tree(bullet_mesh_contents.shapes[j])
+
             filepath = os.path.join(directory, name + ".btmesh")
 
-            Library.collision_mesh_write_to_file(
-                c_meshdata,
-                name,
-                self._target_definition.data_versions.bullet_mesh,
+            Library.bullet_mesh_write_to_file(
+                bullet_mesh,
                 filepath
             )
 

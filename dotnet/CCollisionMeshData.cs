@@ -1,11 +1,13 @@
-﻿using HEIO.NET.Internal.Modeling;
-using SharpNeedle.Resource;
+﻿using BulletSharp;
+using HEIO.NET.Internal.Modeling;
 using SharpNeedle.Framework.HedgehogEngine.Bullet;
+using SharpNeedle.Resource;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
-using BulletSharp;
+using static BulletSharp.DiscreteCollisionDetectorInterface;
 
 namespace HEIO.NET
 {
@@ -19,7 +21,7 @@ namespace HEIO.NET
         public nint convexFlagValuesSize;
     }
 
-    public struct CBulletPrimitive
+    public unsafe struct CBulletPrimitive
     {
         public byte shapeType;
         public byte surfaceLayer;
@@ -29,6 +31,49 @@ namespace HEIO.NET
         public Quaternion rotation;
         public Vector3 dimensions;
 
+        public static CBulletPrimitive* FromBulletPrimitiveArray(IList<BulletPrimitive> primitives)
+        {
+            CBulletPrimitive* result = Allocate.Alloc<CBulletPrimitive>(primitives.Count);
+
+            for (int i = 0; i < primitives.Count; i++)
+            {
+                BulletPrimitive primitive = primitives[i];
+                CBulletPrimitive* resultPrimitive = &result[i];
+
+                resultPrimitive->shapeType = (byte)primitive.ShapeType;
+                resultPrimitive->surfaceLayer = primitive.SurfaceLayer;
+                resultPrimitive->surfaceType = primitive.SurfaceType;
+                resultPrimitive->surfaceFlags = primitive.SurfaceFlags;
+                resultPrimitive->position = primitive.Position;
+                resultPrimitive->rotation = primitive.Rotation;
+                resultPrimitive->dimensions = primitive.Dimensions;
+            }
+
+            return result;
+        }
+
+        public static BulletPrimitive[] ToBulletPrimitiveArray(CBulletPrimitive* primitives, nint size)
+        {
+            BulletPrimitive[] result = new BulletPrimitive[size];
+
+            for (int i = 0; i < size; i++)
+            {
+                CBulletPrimitive* primitive = &primitives[i];
+
+                result[i] = new()
+                {
+                    ShapeType = (BulletPrimiteShapeType)primitive->shapeType,
+                    SurfaceLayer = primitive->surfaceLayer,
+                    SurfaceType = primitive->surfaceType,
+                    SurfaceFlags = primitive->surfaceFlags,
+                    Position = primitive->position,
+                    Rotation = primitive->rotation,
+                    Dimensions = primitive->dimensions
+                };
+            }
+
+            return result;
+        }
     }
 
     public unsafe struct CCollisionMeshData
@@ -101,21 +146,7 @@ namespace HEIO.NET
             }
 
             result->primitivesSize = meshData.Primitives.Count;
-            result->primitives = Allocate.Alloc<CBulletPrimitive>(result->primitivesSize);
-
-            for (int i = 0; i < result->primitivesSize; i++)
-            {
-                BulletPrimitive primitive = meshData.Primitives[i];
-                CBulletPrimitive* resultPrimitive = &result->primitives[i];
-
-                resultPrimitive->shapeType = (byte)primitive.ShapeType;
-                resultPrimitive->surfaceLayer = primitive.SurfaceLayer;
-                resultPrimitive->surfaceType = primitive.SurfaceType;
-                resultPrimitive->surfaceFlags = primitive.SurfaceFlags;
-                resultPrimitive->position = primitive.Position;
-                resultPrimitive->rotation = primitive.Rotation;
-                resultPrimitive->dimensions = primitive.Dimensions;
-            }
+            result->primitives = CBulletPrimitive.FromBulletPrimitiveArray(meshData.Primitives);
 
             return result;
         }
@@ -138,23 +169,6 @@ namespace HEIO.NET
                 resultGroups[i] = resultGroup;
             }
 
-            BulletPrimitive[] resultPrimitives = new BulletPrimitive[primitivesSize];
-            for (int i = 0; i < primitivesSize; i++)
-            {
-                CBulletPrimitive* primitive = &primitives[i];
-
-                resultPrimitives[i] = new()
-                {
-                    ShapeType = (BulletPrimiteShapeType)primitive->shapeType,
-                    SurfaceLayer = primitive->surfaceLayer,
-                    SurfaceType = primitive->surfaceType,
-                    SurfaceFlags = primitive->surfaceFlags,
-                    Position = primitive->position,
-                    Rotation = primitive->rotation,
-                    Dimensions = primitive->dimensions
-                };
-            }
-
             return new CollisionMeshData(
                 Util.FromPointer(name)!,
                 Util.ToArray(vertices, verticesSize)!,
@@ -164,11 +178,116 @@ namespace HEIO.NET
                 Util.ToArray(flags, flagsSize)!,
                 Util.ToArray(flagValues, flagValuesSize),
                 resultGroups,
-                resultPrimitives
+                CBulletPrimitive.ToBulletPrimitiveArray(primitives, primitivesSize)
             );
         }
 
-        [UnmanagedCallersOnly(EntryPoint = "collision_mesh_read_files")]
+    }
+
+    public unsafe struct CBulletShape
+    {
+        public byte flags;
+        public uint layer;
+
+        public Vector3* vertices;
+        public nint verticesSize;
+
+        public uint* faces;
+        public nint facesSize;
+
+        public byte* bvh;
+        public nint bvhSize;
+
+        public ulong* types;
+        public nint typesSize;
+
+        public uint unknown1;
+        public uint unknown2;
+    }
+
+    public unsafe struct CBulletMesh
+    {
+        public char* name;
+        public int bulletMeshVersion;
+        
+        public CBulletShape* shapes;
+        public nint shapesSize;
+        
+        public CBulletPrimitive* primitives;
+        public nint primitivesSize;
+
+        public static CBulletMesh* FromBulletMesh(BulletMesh mesh)
+        {
+            CBulletMesh* result = Allocate.Alloc<CBulletMesh>();
+
+            result->name = mesh.Name.ToPointer();
+            result->bulletMeshVersion = mesh.BulletMeshVersion;
+
+            result->shapesSize = mesh.Shapes.Length;
+            result->shapes = Allocate.Alloc<CBulletShape>(mesh.Shapes.Length);
+
+            for(int i = 0; i < result->shapesSize; i++)
+            {
+                CBulletShape* resultShape = &result->shapes[i];
+                BulletShape shape = mesh.Shapes[i];
+
+                resultShape->flags = (byte)shape.Flags;
+                resultShape->layer = shape.Layer;
+
+                resultShape->vertices = Allocate.AllocFromArray(shape.Vertices);
+                resultShape->verticesSize = shape.Vertices.Length;
+
+                resultShape->faces = Allocate.AllocFromArray(shape.Faces);
+                resultShape->facesSize = shape.Faces?.Length ?? 0;
+
+                resultShape->bvh = Allocate.AllocFromArray(shape.BVH);
+                resultShape->bvhSize = shape.BVH?.Length ?? 0;
+
+                resultShape->types = Allocate.AllocFromArray(shape.Types);
+                resultShape->typesSize = shape.Types.Length;
+
+                resultShape->unknown1 = shape.Unknown1;
+                resultShape->unknown2 = shape.Unknown2;
+            }
+
+            result->primitivesSize = mesh.Primitives.Length;
+            result->primitives = CBulletPrimitive.FromBulletPrimitiveArray(mesh.Primitives);
+
+            return result;
+        }
+
+        public BulletMesh ToBulletMesh()
+        {
+            BulletMesh result = new()
+            {
+                Name = Util.FromPointer(name)!,
+                BulletMeshVersion = bulletMeshVersion,
+                Shapes = new BulletShape[shapesSize],
+                Primitives = CBulletPrimitive.ToBulletPrimitiveArray(primitives, primitivesSize)
+            };
+
+            for(int i = 0; i < result.Shapes.Length; i++)
+            {
+                CBulletShape* shape = &shapes[i];
+
+                result.Shapes[i] = new()
+                {
+                    IsConvex =( (BulletShapeFlags)shape->flags).HasFlag(BulletShapeFlags.IsConvexShape),
+                    Layer = shape->layer,
+                    Vertices = Util.ToArray(shape->vertices, shape->verticesSize)!,
+                    Faces = Util.ToArray(shape->faces, shape->facesSize),
+                    BVH = Util.ToArray(shape->bvh, shape->bvhSize),
+                    Types = Util.ToArray(shape->types, shape->typesSize)!,
+                    Unknown1 = shape->unknown1,
+                    Unknown2 = shape->unknown2,
+                };
+            }
+
+            return result;
+        }
+
+
+        [UnmanagedCallersOnly(EntryPoint = "bullet_mesh_read_files")]
         public static CArray ReadFiles(char** filepaths, nint filepathsSize, CMeshImportSettings* settings)
         {
             try
@@ -178,7 +297,7 @@ namespace HEIO.NET
 
                 CollisionMeshData[] meshData = CollisionMeshData.ReadFiles(filepathsArray, internalSettings);
 
-                nint[] results = [.. meshData.Select(x => (nint)FromCollisionMeshData(x))];
+                nint[] results = [.. meshData.Select(x => (nint)CCollisionMeshData.FromCollisionMeshData(x))];
                 CCollisionMeshData** result = (CCollisionMeshData**)Allocate.AllocFromArray(results);
 
                 return new(
@@ -193,23 +312,33 @@ namespace HEIO.NET
             }
         }
 
-        [UnmanagedCallersOnly(EntryPoint = "collision_mesh_write_to_file")]
-        public static void WriteToFile(CCollisionMeshData** collisionMeshData, nint collisionMeshDataSize, char* name, int bulletMeshVersion, char* filepath)
+        [UnmanagedCallersOnly(EntryPoint = "bullet_mesh_compile_mesh_data")]
+        public static CBulletMesh* CompileMeshData(CCollisionMeshData** collisionMeshData, nint collisionMeshDataSize)
         {
             try
             {
-                Native.Load();
                 CollisionMeshData[] internalMeshData = new CollisionMeshData[collisionMeshDataSize];
                 for (int i = 0; i < collisionMeshDataSize; i++)
                 {
                     internalMeshData[i] = collisionMeshData[i]->ToCollisionMeshData();
                 }
 
-                BulletMesh bulletMesh = CollisionMeshData.ToBulletMesh(internalMeshData);
-                bulletMesh.Name = Util.FromPointer(name)!;
-                bulletMesh.BulletMeshVersion = bulletMeshVersion;
+                BulletMesh bulletMesh = CollisionMeshData.CompileBulletMesh(internalMeshData);
+                return FromBulletMesh(bulletMesh);
+            }
+            catch (Exception exception)
+            {
+                ErrorHandler.HandleError(exception);
+                return null;
+            }
+        }
 
-                bulletMesh.Write(Util.FromPointer(filepath)!, false);
+        [UnmanagedCallersOnly(EntryPoint = "bullet_mesh_write_to_file")]
+        public static void WriteToFile(CBulletMesh* bulletMesh, char* filepath)
+        {
+            try
+            {
+                bulletMesh->ToBulletMesh().Write(Util.FromPointer(filepath)!, false);
             }
             catch (Exception exception)
             {

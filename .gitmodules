@@ -1,0 +1,6 @@
+[submodule "include/BulletSharpPInvoke"]
+	path = include/BulletSharpPInvoke
+	url = https://github.com/AndresTraks/BulletSharpPInvoke
+[submodule "include/bullet3"]
+	path = include/bullet3
+	url = https://github.com/bulletphysics/bullet3
