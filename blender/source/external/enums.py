@@ -26,3 +26,14 @@ BULLET_PRIMITIVE_SHAPE_TYPE = [
     "CAPSULE",
     "CYLINDER"
 ]
+
+TOPOLOGY = [
+    "TRIANGLE_STRIPS",
+    "TRIANGLE_LIST"
+]
+
+MODEL_VERSION_MODE = [
+    "HE2",
+    "HE1",
+    "HE1_V4"
+]

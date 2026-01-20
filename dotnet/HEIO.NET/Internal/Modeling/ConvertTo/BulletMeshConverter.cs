@@ -107,8 +107,6 @@ namespace HEIO.NET.Internal.Modeling.ConvertTo
                                 shape.Types[i] |= (uint)(mesh.TypeValues[(int)internalType] << 24);
                             }
                         }
-
-                        shape.GenerateBVH();
                     }
 
 

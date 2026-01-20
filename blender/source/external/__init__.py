@@ -4,18 +4,10 @@ from ctypes import CDLL, POINTER, pointer, byref, cast, c_void_p, c_wchar_p, c_s
 from contextlib import contextmanager
 
 # importing everything so we can import from external directly
-from .util import get_dll_close, pointer_to_address
+from .util import get_dll_close, pointer_to_address, array_to_list, construct_array, as_array, string_pointer_pairs_to_dict
 from .typing import TPointer
-from .pair import CStringPointerPair, CArray
-from .math import CVector2, CVector3, CVector4, CVector4Int, CQuaternion, CMatrix
-from .resolve_info import CResolveInfo
-from .mesh_import_settings import CMeshImportSettings
-from .image import CImage
-from .sample_chunk_node import CSampleChunkNode
-from .material import CFloatMaterialParameter, CIntegerMaterialParameter, CBoolMaterialParameter, CTexture, CMaterial
-from .mesh_data import CUVDirection, CVertexWeight, CVertex, CMeshDataMeshSetInfo, CMeshDataGroupInfo, CMeshData, CModelNode, CMeshDataSet, CLODItem, CModelSet
-from .collision_mesh_data import CCollisionMeshDataGroup, CBulletPrimitive, CCollisionMeshData, CBulletShape, CBulletMesh
-from .point_cloud import CPointCloudPoint, CPointCloudCloud, CPointCloudCollection
+from .nettypes import *
+from structs import *
 
 from ..utility import general
 from ..exceptions import HEIOException
@@ -138,8 +130,8 @@ class Library:
         lib.model_get_materials.restype = CArray
         lib.model_get_materials.errcheck = cls._check_error
 
-        lib.matrix_invert.argtypes = (CMatrix,)
-        lib.matrix_invert.restype = CMatrix
+        lib.matrix_invert.argtypes = (POINTER(CMatrix),)
+        lib.matrix_invert.restype = c_bool
         lib.matrix_invert.errcheck = cls._check_error
 
         lib.bullet_mesh_read_files.argtypes = (POINTER(c_wchar_p), c_size_t, POINTER(CMeshImportSettings))
@@ -192,41 +184,11 @@ class Library:
         bullet.btQuantizedBvh_delete.argtypes = (c_void_p, )
 
     @classmethod
-    def as_array(cls, iterable: Iterable, type):
-        array = (type * len(iterable))(*iterable)
-        return cast(array, POINTER(type))
-
-    @classmethod
-    def construct_array(cls, iterable: Iterable, type):
-        return cls.as_array([type(x) for x in iterable], type)
-
-    @classmethod
     def _check_error(cls, result, func, arguments):
         error = cls._HEIO_NET.error_get()
         if error:
             raise HEIOLibraryException(error, func.__name__)
         
-        return result
-
-    @classmethod
-    def _string_pointer_pairs_to_dict(cls, array: CArray, target_type):
-        result = {}
-        
-        item_pointer = cast(array.array, POINTER(CStringPointerPair))
-        for i in range(array.size):
-            pair: CStringPointerPair = item_pointer[i]
-            result[pair.name] = cast(pair.pointer, POINTER(target_type))
-
-        return result
-    
-    @classmethod
-    def _array_to_list(cls, array: CArray, target_type):
-        result = []
-
-        item_pointer = cast(array.array, POINTER(target_type))
-        for i in range(array.size):
-            result.append(item_pointer[i])
-
         return result
 
     @classmethod
@@ -267,7 +229,7 @@ class Library:
     @classmethod
     def resolve_info_combine(cls, resolve_infos: list[TPointer[CResolveInfo]]) -> TPointer[CResolveInfo]:
 
-        c_resolve_infos = cls.as_array(resolve_infos, POINTER(CResolveInfo))
+        c_resolve_infos = as_array(resolve_infos, POINTER(CResolveInfo))
         c_resolve_infos_size = c_size_t(len(resolve_infos))
 
         return cls.lib().resolve_info_combine(
@@ -280,7 +242,7 @@ class Library:
     def image_load_directory_images(cls, directory: str, images: Iterable[str], streaming_directory: str) -> tuple[dict[str, TPointer[CImage]], TPointer[CResolveInfo]]:
 
         c_directory = c_wchar_p(directory)
-        c_images = cls.as_array([c_wchar_p(image) for image in images], c_wchar_p)
+        c_images = as_array([c_wchar_p(image) for image in images], c_wchar_p)
         c_images_size = c_size_t(len(images))
         c_streaming_directory = c_wchar_p(streaming_directory)
         c_resolve_info = pointer(POINTER(CResolveInfo)())
@@ -293,13 +255,13 @@ class Library:
             c_resolve_info 
         )
         
-        result = cls._string_pointer_pairs_to_dict(pairs, CImage)
+        result = string_pointer_pairs_to_dict(pairs, CImage)
 
         return result, c_resolve_info.contents
 
     @classmethod
     def image_load_material_images(cls, materials: Iterable[TPointer[CMaterial]], streaming_directory: str) -> tuple[dict[str, TPointer[CImage]], TPointer[CResolveInfo]]:
-        c_materials = cls.as_array(materials, POINTER(CMaterial))
+        c_materials = as_array(materials, POINTER(CMaterial))
         c_materials_size = c_size_t(len(materials))
         c_streaming_directory = c_wchar_p(streaming_directory)
         c_resolve_info = pointer(POINTER(CResolveInfo)())
@@ -311,7 +273,7 @@ class Library:
             c_resolve_info 
         )
 
-        result = cls._string_pointer_pairs_to_dict(pairs, CImage)
+        result = string_pointer_pairs_to_dict(pairs, CImage)
 
         return result, c_resolve_info.contents
     
@@ -326,7 +288,7 @@ class Library:
     
     @classmethod
     def model_read_files(cls, filepaths: list[str], include_lod: bool, settings: CMeshImportSettings) -> tuple[list[TPointer[CModelSet]], TPointer[CResolveInfo]]:
-        c_filepaths = cls.as_array([c_wchar_p(filepath) for filepath in filepaths], c_wchar_p)
+        c_filepaths = as_array([c_wchar_p(filepath) for filepath in filepaths], c_wchar_p)
         c_filepaths_size = c_size_t(len(filepaths))
         c_include_lod = c_bool(include_lod)
         c_settings = byref(settings)
@@ -340,13 +302,13 @@ class Library:
             c_resolve_info
         )
 
-        result = cls._array_to_list(array, POINTER(CModelSet))
+        result = array_to_list(array, POINTER(CModelSet))
 
         return result, c_resolve_info.contents
     
     @classmethod
     def model_get_materials(cls, model_sets: list[TPointer[CModelSet]]) -> list[TPointer[CMaterial]]:
-        c_model_sets = cls.as_array(model_sets, POINTER(CModelSet))
+        c_model_sets = as_array(model_sets, POINTER(CModelSet))
         c_model_sets_size = c_size_t(len(model_sets))
 
         array = cls.lib().model_get_materials(
@@ -354,11 +316,11 @@ class Library:
             c_model_sets_size
         )
 
-        return cls._array_to_list(array, POINTER(CMaterial))
+        return array_to_list(array, POINTER(CMaterial))
     
     @classmethod
     def matrix_invert(cls, matrix: CMatrix):
-        return cls.lib().matrix_invert(matrix)
+        return cls.lib().matrix_invert(byref(matrix))
     
     @classmethod
     def matrix_create_from_quaternion(cls, quaternion: CQuaternion):
@@ -366,7 +328,7 @@ class Library:
 
     @classmethod
     def bullet_mesh_read_files(cls, filepaths: list[str], settings: CMeshImportSettings) -> list[TPointer[CCollisionMeshData]]:
-        c_filepaths = cls.as_array([c_wchar_p(filepath) for filepath in filepaths], c_wchar_p)
+        c_filepaths = as_array([c_wchar_p(filepath) for filepath in filepaths], c_wchar_p)
         c_filepaths_size = c_size_t(len(filepaths))
         c_settings = byref(settings)
 
@@ -376,11 +338,11 @@ class Library:
             c_settings
         )
 
-        return cls._array_to_list(array, POINTER(CCollisionMeshData))
+        return array_to_list(array, POINTER(CCollisionMeshData))
 
     @classmethod
     def point_cloud_read_files(cls, filepaths: list[str], include_lod: bool, settings: CMeshImportSettings) -> tuple[TPointer[CPointCloudCollection], TPointer[CResolveInfo]]:
-        c_filepaths = cls.as_array([c_wchar_p(filepath) for filepath in filepaths], c_wchar_p)
+        c_filepaths = as_array([c_wchar_p(filepath) for filepath in filepaths], c_wchar_p)
         c_filepaths_size = c_size_t(len(filepaths))
         c_include_lod = c_bool(include_lod)
         c_settings = byref(settings)
@@ -411,7 +373,7 @@ class Library:
     
     @classmethod
     def bullet_mesh_compile_mesh_data(cls, collision_mesh_data: list[CCollisionMeshData]) -> TPointer[CBulletMesh]:
-        c_collision_mesh_data = cls.as_array([pointer(mesh_data) for mesh_data in collision_mesh_data], POINTER(CCollisionMeshData))
+        c_collision_mesh_data = as_array([pointer(mesh_data) for mesh_data in collision_mesh_data], POINTER(CCollisionMeshData))
         c_collision_mesh_data_size = c_size_t(len(collision_mesh_data))
 
         return cls.lib().bullet_mesh_compile_mesh_data(

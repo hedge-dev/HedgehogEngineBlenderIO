@@ -1,6 +1,8 @@
 import ctypes
 import os
 import platform
+from typing import Iterable
+from .structs import CArray, CStringPointerPair
 
 _STDLIB: ctypes.CDLL = None
 _DLCLOSE: any = None
@@ -114,14 +116,37 @@ def get_dll_close():
 
     return _DLCLOSE
 
-class FieldsFromTypeHints(type(ctypes.Structure)):
-    def __new__(cls, name, bases, namespace):
-        from typing import get_type_hints
-        class AnnotationDummy:
-            __annotations__ = namespace.get('__annotations__', {})
-        annotations = get_type_hints(AnnotationDummy)
-        namespace['_fields_'] = list(annotations.items())
-        return type(ctypes.Structure).__new__(cls, name, bases, namespace)
-    
 def pointer_to_address(pointer):
     return ctypes.cast(pointer, ctypes.c_void_p).value
+
+def as_array(iterable: Iterable, type):
+    if iterable is None:
+        return ctypes.POINTER(type)()
+
+    array = (type * len(iterable))(*iterable)
+    return ctypes.cast(array, ctypes.POINTER(type))
+
+def construct_array(iterable: Iterable, type):
+    if iterable is None:
+        return ctypes.POINTER(type)()
+    
+    return as_array([type(x) for x in iterable], type)
+
+def string_pointer_pairs_to_dict(array: CArray, target_type):
+    result = {}
+    
+    item_pointer = ctypes.cast(array.array, ctypes.POINTER(CStringPointerPair))
+    for i in range(array.size):
+        pair: CStringPointerPair = item_pointer[i]
+        result[pair.name] = ctypes.cast(pair.pointer, ctypes.POINTER(target_type))
+
+    return result
+
+def array_to_list(array: CArray, target_type):
+    result = []
+
+    item_pointer = ctypes.cast(array.array, ctypes.POINTER(target_type))
+    for i in range(array.size):
+        result.append(item_pointer[i])
+
+    return result

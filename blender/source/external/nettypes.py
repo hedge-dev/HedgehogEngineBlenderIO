@@ -1,5 +1,5 @@
 from ctypes import Structure, c_float, c_int
-from .util import FieldsFromTypeHints
+from .typing import FieldsFromTypeHints
 
 class CVector2(Structure, metaclass=FieldsFromTypeHints):
     x: c_float

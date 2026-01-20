@@ -1,0 +1,15 @@
+# !!! GENERATED USING HEIO.NET.Utils !!!
+# Please do not touch manually!
+import ctypes
+from .. import nettypes
+from ..typing import TPointer
+
+class CArray(ctypes.Structure):
+    array: ctypes.c_void_p
+    size: int
+
+CArray.__fields__ = [
+    ("array", ctypes.c_void_p),
+    ("size", ctypes.c_size_t),
+]
+
