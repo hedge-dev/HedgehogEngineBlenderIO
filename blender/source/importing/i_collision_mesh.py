@@ -115,10 +115,12 @@ class CollisionMeshConverter:
 
         faces = []
         for i in range(0, collision_mesh_data.triangle_indices_size, 3):
-            faces.append((
-                collision_mesh_data.triangle_indices[i],
-                collision_mesh_data.triangle_indices[i + 1],
-                collision_mesh_data.triangle_indices[i + 2])
+            faces.append(
+                (
+                    collision_mesh_data.triangle_indices[i],
+                    collision_mesh_data.triangle_indices[i + 1],
+                    collision_mesh_data.triangle_indices[i + 2]
+                )
             )
 
         mesh.from_pydata(vertices, [], faces, shade_flat=True)

@@ -18,7 +18,7 @@ namespace HEIO.NET.External.Structs
             foreach (KeyValuePair<string, MaterialParameter<V>> parameter in parameters)
             {
                 T* resultParameter = &result[index];
-                resultParameter->Name = parameter.Key.ToPointer();
+                resultParameter->Name = parameter.Key.AllocString();
                 resultParameter->Value = parameter.Value.Value;
                 index++;
             }
@@ -33,7 +33,7 @@ namespace HEIO.NET.External.Structs
                 T* parameter = &parameters[i];
 
                 output.Add(
-                    Util.FromPointer(parameter->Name)!,
+                    Util.ToString(parameter->Name)!,
                     new() { Value = parameter->Value }
                 );
             }

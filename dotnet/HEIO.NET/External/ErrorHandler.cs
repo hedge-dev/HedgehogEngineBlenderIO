@@ -16,7 +16,7 @@ namespace HEIO.NET.External
             Console.WriteLine(exception.StackTrace);
             Console.WriteLine();
 
-            _errorMessage = exception.Message.ToPointer();
+            _errorMessage = exception.Message.AllocString();
         }
 
         [UnmanagedCallersOnly(EntryPoint = "error_get")]

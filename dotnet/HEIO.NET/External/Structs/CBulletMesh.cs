@@ -17,7 +17,7 @@ namespace HEIO.NET.External.Structs
         {
             return new()
             {
-                name = mesh.Name.ToPointer(),
+                name = mesh.Name.AllocString(),
                 bulletMeshVersion = mesh.BulletMeshVersion,
 
                 shapes = Allocate.AllocFromArray(mesh.Shapes, CBulletShape.FromInternal),
@@ -28,18 +28,11 @@ namespace HEIO.NET.External.Structs
             };
         }
 
-        public static CBulletMesh* PointerFromInternal(BulletMesh mesh)
-        {
-            CBulletMesh* result = Allocate.Alloc<CBulletMesh>();
-            *result = FromInternal(mesh);
-            return result;
-        }
-
         public readonly BulletMesh ToInternal()
         {
             return new()
             {
-                Name = Util.FromPointer(name)!,
+                Name = Util.ToString(name)!,
                 BulletMeshVersion = bulletMeshVersion,
                 Shapes = Util.ToArray<CBulletShape, BulletShape>(shapes, shapesSize)!,
                 Primitives = CBulletPrimitive.ToInternalArray(primitives, primitivesSize)

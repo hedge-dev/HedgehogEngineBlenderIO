@@ -5,13 +5,13 @@ namespace HEIO.NET.External.Structs
 {
     public unsafe struct CPointCloudCollection : IConvertInternal<PointCloudCollection>
     {
-        public CModelSet* models;
+        public CModelSet** models;
         public nint modelsSize;
 
         public CPointCloudCloud* modelClouds;
         public nint modelCloudsSize;
 
-        public CCollisionMeshData* collisionMeshes;
+        public CCollisionMeshData** collisionMeshes;
         public nint collisionMeshesSize;
 
         public CPointCloudCloud* collisionMeshClouds;
@@ -21,13 +21,13 @@ namespace HEIO.NET.External.Structs
         {
             return new()
             {
-                models = Allocate.AllocFromArray(collection.Models, CModelSet.FromInternal),
+                models = Allocate.AllocPointersFromArray(collection.Models, CModelSet.FromInternal),
                 modelsSize = collection.Models.Length,
 
                 modelClouds = CPointCloudCloud.FromInternalArray(collection.ModelClouds),
                 modelCloudsSize = collection.ModelClouds.Length,
 
-                collisionMeshes = Allocate.AllocFromArray(collection.CollisionMeshes, CCollisionMeshData.FromInternal),
+                collisionMeshes = Allocate.AllocPointersFromArray(collection.CollisionMeshes, CCollisionMeshData.FromInternal),
                 collisionMeshesSize = collection.CollisionMeshes.Length,
 
                 collisionMeshClouds = CPointCloudCloud.FromInternalArray(collection.CollisionMeshClouds),
@@ -35,19 +35,12 @@ namespace HEIO.NET.External.Structs
             };
         }
 
-        public static CPointCloudCollection* PointerFromInternal(PointCloudCollection collection)
-        {
-            CPointCloudCollection* result = Allocate.Alloc<CPointCloudCollection>();
-            *result = FromInternal(collection);
-            return result;
-        }
-
-        public PointCloudCollection ToInternal()
+        public readonly PointCloudCollection ToInternal()
         {
             return new(
-                Util.ToArray<CModelSet, ModelSet>(models, modelsSize)!,
+                Util.PointersToArray<CModelSet, ModelSet>(models, modelsSize)!,
                 CPointCloudCloud.ToInternalArray(modelClouds, modelsSize),
-                Util.ToArray<CCollisionMeshData, CollisionMeshData>(collisionMeshes, collisionMeshesSize)!,
+                Util.PointersToArray<CCollisionMeshData, CollisionMeshData>(collisionMeshes, collisionMeshesSize)!,
                 CPointCloudCloud.ToInternalArray(collisionMeshClouds, collisionMeshCloudsSize)
             );
         }

@@ -15,7 +15,7 @@ namespace HEIO.NET.External.Structs
         {
             return new()
             {
-                instanceName = point.InstanceName.ToPointer(),
+                instanceName = point.InstanceName.AllocString(),
                 resourceIndex = point.ResourceIndex,
                 position = point.Position,
                 rotation = point.Rotation,
@@ -26,7 +26,7 @@ namespace HEIO.NET.External.Structs
         public readonly PointCloudCollection.Point ToInternal()
         {
             return new(
-                Util.FromPointer(instanceName)!,
+                Util.ToString(instanceName)!,
                 resourceIndex,
                 position,
                 rotation,

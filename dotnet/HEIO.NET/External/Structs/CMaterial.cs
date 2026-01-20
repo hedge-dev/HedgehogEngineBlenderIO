@@ -33,12 +33,12 @@ namespace HEIO.NET.External.Structs
         {
             return new()
             {
-                name = material.Name.ToPointer(),
+                name = material.Name.AllocString(),
                 dataVersion = material.DataVersion,
-                filePath = (material.BaseFile?.Path).ToPointer(),
+                filePath = (material.BaseFile?.Path).AllocString(),
                 rootNode = CSampleChunkNode.FromSampleChunkNodeTree(material.Root),
 
-                shaderName = material.ShaderName.ToPointer(),
+                shaderName = material.ShaderName.AllocString(),
                 alphaThreshold = material.AlphaThreshold,
                 noBackFaceCulling = material.NoBackFaceCulling,
                 blendMode = (byte)material.BlendMode,
@@ -52,27 +52,20 @@ namespace HEIO.NET.External.Structs
                 boolParametersSize = material.BoolParameters.Count,
                 boolParameters = IMaterialParameter<bool>.FromInternalParameters<CBoolMaterialParameter>(material.BoolParameters),
 
-                texturesName = material.Texset.Name.ToPointer(),
+                texturesName = material.Texset.Name.AllocString(),
                 texturesSize = material.Texset.Textures.Count,
                 textures = Allocate.AllocFromArray(material.Texset.Textures, CTexture.FromInternal),
             };
-        }
-
-        public static CMaterial* PointerFromInternal(Material material)
-        {
-            CMaterial* result = Allocate.Alloc<CMaterial>();
-            *result = FromInternal(material);
-            return result;
         }
 
         public readonly Material ToMaterial()
         {
             Material result = new()
             {
-                Name = Util.FromPointer(name)!,
+                Name = Util.ToString(name)!,
                 DataVersion = dataVersion,
 
-                ShaderName = Util.FromPointer(shaderName)!,
+                ShaderName = Util.ToString(shaderName)!,
                 AlphaThreshold = alphaThreshold,
                 BlendMode = (MaterialBlendMode)blendMode,
                 NoBackFaceCulling = noBackFaceCulling
@@ -89,7 +82,7 @@ namespace HEIO.NET.External.Structs
 
             result.Texset = new()
             {
-                Name = Util.FromPointer(texturesName)!,
+                Name = Util.ToString(texturesName)!,
                 Textures = [.. Util.ToArray<CTexture, Texture>(textures, texturesSize)!]
             };
 

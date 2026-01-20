@@ -11,7 +11,7 @@ namespace HEIO.NET.External.Structs
         {
             return new()
             {
-                name = info.Name.ToPointer(),
+                name = info.Name.AllocString(),
                 size = info.Size
             };
         }
@@ -19,7 +19,7 @@ namespace HEIO.NET.External.Structs
         public readonly MeshDataMeshGroupInfo ToInternal()
         {
             return new(
-                Util.FromPointer(name)!,
+                Util.ToString(name)!,
                 size
             );
         }

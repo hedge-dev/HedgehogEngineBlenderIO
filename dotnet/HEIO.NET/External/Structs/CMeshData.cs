@@ -36,7 +36,7 @@ namespace HEIO.NET.External.Structs
         {
             CMeshData result = new()
             {
-                name = meshData.Name.ToPointer(),
+                name = meshData.Name.AllocString(),
 
                 vertices = Allocate.AllocFromArray(meshData.Vertices, CVertex.FromInternal),
                 verticesSize = meshData.Vertices.Count,
@@ -59,7 +59,7 @@ namespace HEIO.NET.External.Structs
                 groupsSize = meshData.Groups.Count,
 
                 morphNamesSize = meshData.MorphNames?.Count ?? 0,
-                morphNames = meshData.MorphNames != null ? Allocate.FromStringArray([.. meshData.MorphNames]) : null
+                morphNames = meshData.MorphNames != null ? Allocate.AllocStringArray([.. meshData.MorphNames]) : null
             };
 
             Allocate.AllocFrom2DArray(meshData.TextureCoordinates, out result.textureCoordinates);
@@ -71,7 +71,7 @@ namespace HEIO.NET.External.Structs
         public readonly MeshData ToInternal()
         {
             return new(
-                Util.FromPointer(name)!,
+                Util.ToString(name)!,
                 Util.ToArray<CVertex, Vertex>(vertices, verticesSize)!,
                 Util.ToArray(triangleIndices, triangleIndexCount)!,
                 Util.ToArray(polygonNormals, triangleIndexCount),

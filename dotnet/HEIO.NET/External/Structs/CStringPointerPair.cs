@@ -19,7 +19,7 @@ namespace HEIO.NET.External.Structs
         {
             KeyValuePair<string, I>[] dictPairs = [.. dictionary];
             O* array = Allocate.AllocFromArray([.. dictPairs.Select(x => x.Value)], convert);
-            CStringPointerPair[] resultPairs = [.. dictPairs.Select((x, i) => new CStringPointerPair(x.Key.ToPointer(), &array[i]))];
+            CStringPointerPair[] resultPairs = [.. dictPairs.Select((x, i) => new CStringPointerPair(x.Key.AllocString(), &array[i]))];
             CStringPointerPair* result = Allocate.AllocFromArray(resultPairs);
 
             return new(

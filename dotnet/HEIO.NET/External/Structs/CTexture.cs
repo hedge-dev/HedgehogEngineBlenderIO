@@ -15,12 +15,12 @@ namespace HEIO.NET.External.Structs
         {
             return new()
             {
-                name = texture.Name.ToPointer(),
-                pictureName = texture.PictureName.ToPointer(),
+                name = texture.Name.AllocString(),
+                pictureName = texture.PictureName.AllocString(),
                 texCoordIndex = texture.TexCoordIndex,
                 wrapModeU = (byte)texture.WrapModeU,
                 wrapModeV = (byte)texture.WrapModeV,
-                type = texture.Type.ToPointer()
+                type = texture.Type.AllocString()
             };
         }
 
@@ -28,12 +28,12 @@ namespace HEIO.NET.External.Structs
         {
             return new Texture()
             {
-                Name = Util.FromPointer(name)!,
-                PictureName = Util.FromPointer(pictureName)!,
+                Name = Util.ToString(name)!,
+                PictureName = Util.ToString(pictureName)!,
                 TexCoordIndex = texCoordIndex,
                 WrapModeU = (WrapMode)wrapModeU,
                 WrapModeV = (WrapMode)wrapModeV,
-                Type = Util.FromPointer(type)!,
+                Type = Util.ToString(type)!,
             };
         }
     }

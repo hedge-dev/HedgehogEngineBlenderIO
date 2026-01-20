@@ -13,7 +13,7 @@ namespace HEIO.NET.External.Structs
         {
             return new()
             {
-                name = node.Name.ToPointer(),
+                name = node.Name.AllocString(),
                 parentIndex = node.ParentIndex,
                 transform = node.Transform
             };
@@ -23,7 +23,7 @@ namespace HEIO.NET.External.Structs
         {
             return new()
             {
-                Name = Util.FromPointer(name)!,
+                Name = Util.ToString(name)!,
                 ParentIndex = parentIndex,
                 Transform = transform
             };

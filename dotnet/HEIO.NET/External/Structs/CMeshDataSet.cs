@@ -20,7 +20,7 @@ namespace HEIO.NET.External.Structs
         {
             return new()
             {
-                name = set.Name.ToPointer(),
+                name = set.Name.AllocString(),
 
                 meshData = Allocate.AllocFromArray(set.MeshData, CMeshData.FromInternal),
                 meshDataSize = set.MeshData.Length,
@@ -35,7 +35,7 @@ namespace HEIO.NET.External.Structs
         public readonly MeshDataSet ToInternal()
         {
             return new(
-                Util.FromPointer(name)!,
+                Util.ToString(name)!,
                 Util.ToArray<CMeshData, MeshData>(meshData, meshDataSize)!,
                 Util.ToArray<CModelNode, Model.Node>(nodes, nodesSize),
                 sampleChunkNodeRoot->ToSampleChunkNodeTree(null)

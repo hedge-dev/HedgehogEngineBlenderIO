@@ -28,7 +28,7 @@ namespace HEIO.NET.External.Structs
                 CSampleChunkNode* resultNode = &result[i];
                 SampleChunkNode node = flatNodes[i];
 
-                resultNode->name = node.Name.ToPointer();
+                resultNode->name = node.Name.AllocString();
                 resultNode->value = node.SignedValue;
                 resultNode->isDataNode = node.Data != null;
                 resultNode->child = node.Children.Count > 0 ? &result[flatNodes.IndexOf(node.Children[0])] : null;
@@ -60,7 +60,7 @@ namespace HEIO.NET.External.Structs
 
         public readonly SampleChunkNode ToSampleChunkNodeTree(SampleChunkResource? target)
         {
-            SampleChunkNode result = new(Util.FromPointer(name)!, value);
+            SampleChunkNode result = new(Util.ToString(name)!, value);
 
             if (isDataNode)
             {

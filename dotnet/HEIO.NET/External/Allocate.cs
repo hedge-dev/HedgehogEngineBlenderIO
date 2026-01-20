@@ -1,4 +1,6 @@
-﻿using System;
+﻿using HEIO.NET.External.Structs;
+using HEIO.NET.Internal.Modeling;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -20,12 +22,6 @@ namespace HEIO.NET.External
             _allocations.Clear();
         }
 
-        public static char* ToPointer(this string? value)
-        {
-            char* result = (char*)Marshal.StringToHGlobalUni(value);
-            _allocations.Add((nint)result);
-            return result;
-        }
 
         public static T* Alloc<T>(nint count = 1) where T : unmanaged
         {
@@ -38,6 +34,22 @@ namespace HEIO.NET.External
             _allocations.Add((nint)result);
             return result;
         }
+
+
+        public static T* AllocFrom<T>(T data) where T : unmanaged
+        {
+            T* result = Alloc<T>();
+            *result = data;
+            return result;
+        }
+
+        public static O* AllocFrom<I, O>(I data, Func<I, O> convert) where O : unmanaged
+        {
+            O* result = Alloc<O>();
+            *result = convert(data);
+            return result;
+        }
+
 
         public static T* AllocFromArray<T>(IList<T>? values) where T : unmanaged
         {
@@ -56,10 +68,34 @@ namespace HEIO.NET.External
             return result;
         }
 
+        public static T** AllocPointersFromArray<T>(IList<T>? array) where T : unmanaged
+        {
+            if (array == null)
+            {
+                return null;
+            }
+
+            nint[] pointers = [.. array.Select(x => (nint)AllocFrom(x))];
+            return (T**)AllocFromArray(pointers);
+        }
+
+
         public static O* AllocFromArray<I, O>(IList<I>? values, Func<I, O> convert) where O : unmanaged
         {
             return AllocFromArray(values?.Select(convert).ToArray());
         }
+
+        public static O** AllocPointersFromArray<I, O>(IList<I>? array, Func<I, O> convert) where O : unmanaged
+        {
+            if(array == null)
+            {
+                return null;
+            }
+
+            nint[] pointers = [.. array.Select(x => (nint)AllocFrom(x, convert))];
+            return (O**)AllocFromArray(pointers);
+        }
+
 
         public static void AllocFrom2DArray<T>(IList<IList<T>> values, out T** outValues) where T : unmanaged
         {
@@ -91,13 +127,21 @@ namespace HEIO.NET.External
                 : null;
         }
 
-        public static char** FromStringArray(string[] values)
+
+        public static char* AllocString(this string? value)
+        {
+            char* result = (char*)Marshal.StringToHGlobalUni(value);
+            _allocations.Add((nint)result);
+            return result;
+        }
+
+        public static char** AllocStringArray(string[] values)
         {
             char** result = (char**)Alloc<nint>(values.Length);
 
             for (int i = 0; i < values.Length; i++)
             {
-                result[i] = values[i].ToPointer();
+                result[i] = values[i].AllocString();
             }
 
             return result;

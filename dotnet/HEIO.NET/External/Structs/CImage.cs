@@ -12,7 +12,7 @@ namespace HEIO.NET.External.Structs
         {
             CImage result = new()
             {
-                filePath = image.Filepath.ToPointer()
+                filePath = image.Filepath.AllocString()
             };
 
             if (image.StreamedData != null)

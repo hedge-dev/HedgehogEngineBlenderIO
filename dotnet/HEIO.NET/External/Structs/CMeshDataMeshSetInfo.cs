@@ -17,16 +17,16 @@ namespace HEIO.NET.External.Structs
 
         public static CMeshDataMeshSetInfo FromInternal(MeshDataMeshSetInfo info)
         {
-            CMaterial* material = info.Material.IsValid() ? CMaterial.PointerFromInternal(info.Material.Resource!) : null;
+            CMaterial* material = info.Material.IsValid() ? Allocate.AllocFrom(info.Material.Resource!, CMaterial.FromInternal) : null;
 
             return new()
             {
                 useByteColors = info.UseByteColors,
                 enable8Weights = info.Enable8Weights,
                 enableMultiTangent = info.EnableMultiTangent,
-                materialReference = new(info.Material.Name.ToPointer(), material),
+                materialReference = new(info.Material.Name.AllocString(), material),
                 meshSlotType = (uint)info.Slot.Type,
-                meshSlotName = info.Slot.Name.ToPointer(),
+                meshSlotName = info.Slot.Name.AllocString(),
                 size = info.Size
             };
         }
@@ -41,7 +41,7 @@ namespace HEIO.NET.External.Structs
             }
             else
             {
-                material = new(Util.FromPointer(materialReference.name)!);
+                material = new(Util.ToString(materialReference.name)!);
             }
 
             return new(
@@ -49,7 +49,7 @@ namespace HEIO.NET.External.Structs
                 enable8Weights,
                 enableMultiTangent,
                 material,
-                new((MeshType)meshSlotType, Util.FromPointer(meshSlotName)!),
+                new((MeshType)meshSlotType, Util.ToString(meshSlotName)!),
                 size
             );
         }

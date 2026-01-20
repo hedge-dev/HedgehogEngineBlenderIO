@@ -210,7 +210,7 @@ namespace HEIO.NET.External
                     resolveInfoArray[i] = resolveInfos[i]->ToResolveInfo();
                 }
 
-                return CResolveInfo.PointerFromInternal(ResolveInfo.Combine(resolveInfoArray));
+                return Allocate.AllocFrom(ResolveInfo.Combine(resolveInfoArray), CResolveInfo.FromInternal);
             }
             catch (Exception exception)
             {
@@ -231,13 +231,13 @@ namespace HEIO.NET.External
             {
                 Stack<nint> searchStack = [];
                 searchStack.Push((nint)node);
-                string nameString = Util.FromPointer(name)!;
+                string nameString = Util.ToString(name)!;
 
                 while (searchStack.TryPop(out nint currentNodeAddr))
                 {
                     CSampleChunkNode* currentNode = (CSampleChunkNode*)currentNodeAddr;
 
-                    string nodeName = Util.FromPointer(currentNode->name)!;
+                    string nodeName = Util.ToString(currentNode->name)!;
                     if (nodeName == nameString)
                     {
                         return currentNode;
@@ -273,13 +273,13 @@ namespace HEIO.NET.External
         {
             try
             {
-                string directoryString = Util.FromPointer(directory)!;
+                string directoryString = Util.ToString(directory)!;
                 string[] imagesStrings = Util.ToStringArray(images, imagesSize);
-                string streamingDirectoryString = Util.FromPointer(streamingDirectory)!;
+                string streamingDirectoryString = Util.ToString(streamingDirectory)!;
 
                 Dictionary<string, Image> output = Image.LoadDirectoryImages(directoryString, imagesStrings, streamingDirectoryString, out ResolveInfo outInfo);
 
-                *resolveInfo = CResolveInfo.PointerFromInternal(outInfo);
+                *resolveInfo = Allocate.AllocFrom(outInfo, CResolveInfo.FromInternal);
 
                 return CStringPointerPair.FromDictionary(output, CImage.FromInternal);
             }
@@ -303,12 +303,12 @@ namespace HEIO.NET.External
                 for (int i = 0; i < materialsSize; i++)
                 {
                     snMaterials[i] = materials[i]->ToMaterial();
-                    files[i] = system.Open(Util.FromPointer(materials[i]->filePath)!)!;
+                    files[i] = system.Open(Util.ToString(materials[i]->filePath)!)!;
                 }
 
-                string streamingDirectoryString = Util.FromPointer(streamingDirectory)!;
+                string streamingDirectoryString = Util.ToString(streamingDirectory)!;
                 Dictionary<string, Image> output = Image.LoadMaterialImages(snMaterials, files, streamingDirectoryString, out ResolveInfo outInfo);
-                *resolveInfo = CResolveInfo.PointerFromInternal(outInfo);
+                *resolveInfo = Allocate.AllocFrom(outInfo, CResolveInfo.FromInternal);
 
                 return CStringPointerPair.FromDictionary(output, CImage.FromInternal);
             }
@@ -344,10 +344,10 @@ namespace HEIO.NET.External
         {
             try
             {
-                string filePathString = Util.FromPointer(filePath)!;
+                string filePathString = Util.ToString(filePath)!;
                 Material material = new();
                 material.Read(filePathString);
-                return CMaterial.PointerFromInternal(material);
+                return Allocate.AllocFrom(material, CMaterial.FromInternal);
             }
             catch (Exception exception)
             {
@@ -361,7 +361,7 @@ namespace HEIO.NET.External
         {
             try
             {
-                material->ToMaterial().Write(Util.FromPointer(filepath)!);
+                material->ToMaterial().Write(Util.ToString(filepath)!);
             }
             catch (Exception exception)
             {
@@ -385,10 +385,12 @@ namespace HEIO.NET.External
 
                 ModelSet[] modelSets = ModelSet.ReadModelFiles(filepathsArray, includeLoD, internalSettings, out ResolveInfo resultResolveInfo);
 
-                *resolveInfo = CResolveInfo.PointerFromInternal(resultResolveInfo);
+                CModelSet** result = Allocate.AllocPointersFromArray(modelSets, CModelSet.FromInternal);
+
+                *resolveInfo = Allocate.AllocFrom(resultResolveInfo, CResolveInfo.FromInternal);
 
                 return new(
-                    Allocate.AllocFromArray(modelSets, CModelSet.FromInternal),
+                    result,
                     modelSets.Length
                 );
             }
@@ -467,12 +469,11 @@ namespace HEIO.NET.External
 
                 CollisionMeshData[] meshData = CollisionMeshData.ReadFiles(filepathsArray, internalSettings);
 
-                nint[] results = [.. meshData.Select(x => (nint)CCollisionMeshData.PointerFromInternal(x))];
-                CCollisionMeshData** result = (CCollisionMeshData**)Allocate.AllocFromArray(results);
+                CCollisionMeshData** result = Allocate.AllocPointersFromArray(meshData, CCollisionMeshData.FromInternal);
 
                 return new(
                     result,
-                    results.Length
+                    meshData.Length
                 );
             }
             catch (Exception exception)
@@ -494,7 +495,7 @@ namespace HEIO.NET.External
                 }
 
                 BulletMesh bulletMesh = CollisionMeshData.CompileBulletMesh(internalMeshData);
-                return CBulletMesh.PointerFromInternal(bulletMesh);
+                return Allocate.AllocFrom(bulletMesh, CBulletMesh.FromInternal);
             }
             catch (Exception exception)
             {
@@ -508,7 +509,7 @@ namespace HEIO.NET.External
         {
             try
             {
-                bulletMesh->ToInternal().Write(Util.FromPointer(filepath)!, false);
+                bulletMesh->ToInternal().Write(Util.ToString(filepath)!, false);
             }
             catch (Exception exception)
             {
@@ -532,9 +533,9 @@ namespace HEIO.NET.External
 
                 PointCloudCollection collection = PointCloudCollection.ReadPointClouds(filepathsArray, includeLoD, internalSettings, out ResolveInfo resultResolveInfo);
 
-                *resolveInfo = CResolveInfo.PointerFromInternal(resultResolveInfo);
+                *resolveInfo = Allocate.AllocFrom(resultResolveInfo, CResolveInfo.FromInternal);
 
-                return CPointCloudCollection.PointerFromInternal(collection);
+                return Allocate.AllocFrom(collection, CPointCloudCollection.FromInternal);
             }
             catch (Exception exception)
             {

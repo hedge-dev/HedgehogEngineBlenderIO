@@ -35,7 +35,7 @@ namespace HEIO.NET.External.Structs
         {
             return new()
             {
-                name = meshData.Name.ToPointer(),
+                name = meshData.Name.AllocString(),
 
                 vertices = Allocate.AllocFromArray(meshData.Vertices),
                 verticesSize = meshData.Vertices.Count,
@@ -63,17 +63,10 @@ namespace HEIO.NET.External.Structs
             };
         }
 
-        public static CCollisionMeshData* PointerFromInternal(CollisionMeshData meshData)
-        {
-            CCollisionMeshData* result = Allocate.Alloc<CCollisionMeshData>();
-            *result = FromInternal(meshData);
-            return result;
-        }
-
         public CollisionMeshData ToInternal()
         {
             return new CollisionMeshData(
-                Util.FromPointer(name)!,
+                Util.ToString(name)!,
                 Util.ToArray(vertices, verticesSize)!,
                 Util.ToArray(triangleIndices, triangleIndicesSize)!,
                 Util.ToArray(types, typesSize)!,

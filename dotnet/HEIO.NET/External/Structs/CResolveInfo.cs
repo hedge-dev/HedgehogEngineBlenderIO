@@ -24,28 +24,21 @@ namespace HEIO.NET.External.Structs
         {
             return new()
             {
-                unresolvedFiles = Allocate.FromStringArray(resolveInfo.UnresolvedFiles),
+                unresolvedFiles = Allocate.AllocStringArray(resolveInfo.UnresolvedFiles),
                 unresolvedFilesSize = resolveInfo.UnresolvedFiles.Length,
 
-                missingDependencies = Allocate.FromStringArray(resolveInfo.MissingDependencies),
+                missingDependencies = Allocate.AllocStringArray(resolveInfo.MissingDependencies),
                 missingDependenciesSize = resolveInfo.MissingDependencies.Length,
 
-                packedDependencies = Allocate.FromStringArray(resolveInfo.PackedDependencies),
+                packedDependencies = Allocate.AllocStringArray(resolveInfo.PackedDependencies),
                 packedDependenciesSize = resolveInfo.PackedDependencies.Length,
 
-                unresolvedNTSPFiles = Allocate.FromStringArray(resolveInfo.UnresolvedNTSPFiles),
+                unresolvedNTSPFiles = Allocate.AllocStringArray(resolveInfo.UnresolvedNTSPFiles),
                 unresolvedNTSPFilesSize = resolveInfo.UnresolvedNTSPFiles.Length,
 
-                missingStreamedImages = Allocate.FromStringArray(resolveInfo.MissingStreamedImages),
+                missingStreamedImages = Allocate.AllocStringArray(resolveInfo.MissingStreamedImages),
                 missingStreamedImagesSize = resolveInfo.MissingStreamedImages.Length
             };
-        }
-
-        public static CResolveInfo* PointerFromInternal(ResolveInfo resolveInfo)
-        {
-            CResolveInfo* result = Allocate.Alloc<CResolveInfo>();
-            *result = FromInternal(resolveInfo);
-            return result;
         }
 
         public readonly ResolveInfo ToResolveInfo()

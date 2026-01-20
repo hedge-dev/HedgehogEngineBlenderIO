@@ -13,7 +13,7 @@ namespace HEIO.NET.External.Structs
         {
             return new()
             {
-                name = cloud.Name.ToPointer(),
+                name = cloud.Name.AllocString(),
 
                 points = Allocate.AllocFromArray(cloud.Points, CPointCloudPoint.FromInternal),
                 pointsSize = cloud.Points.Length
@@ -28,7 +28,7 @@ namespace HEIO.NET.External.Structs
         public readonly PointCloudCollection.Cloud ToInternal()
         {
             return new(
-                Util.FromPointer(name)!,
+                Util.ToString(name)!,
                 Util.ToArray<CPointCloudPoint, PointCloudCollection.Point>(points, pointsSize)!
             );
         }
