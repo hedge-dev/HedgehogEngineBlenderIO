@@ -8,7 +8,7 @@ class CVertexWeight(ctypes.Structure):
     index: int
     weight: float
 
-CVertexWeight.__fields__ = [
+CVertexWeight._fields_ = [
     ("index", ctypes.c_short),
     ("weight", ctypes.c_float),
 ]

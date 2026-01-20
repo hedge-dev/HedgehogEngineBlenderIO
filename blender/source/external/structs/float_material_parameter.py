@@ -8,7 +8,7 @@ class CFloatMaterialParameter(ctypes.Structure):
     name: str
     value: nettypes.CVector4
 
-CFloatMaterialParameter.__fields__ = [
+CFloatMaterialParameter._fields_ = [
     ("name", ctypes.c_wchar_p),
     ("value", nettypes.CVector4),
 ]

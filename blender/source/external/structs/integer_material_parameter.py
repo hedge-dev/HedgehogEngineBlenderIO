@@ -6,10 +6,10 @@ from ..typing import TPointer
 
 class CIntegerMaterialParameter(ctypes.Structure):
     name: str
-    value: nettypes.Vector4Int
+    value: nettypes.CVector4Int
 
-CIntegerMaterialParameter.__fields__ = [
+CIntegerMaterialParameter._fields_ = [
     ("name", ctypes.c_wchar_p),
-    ("value", nettypes.Vector4Int),
+    ("value", nettypes.CVector4Int),
 ]
 

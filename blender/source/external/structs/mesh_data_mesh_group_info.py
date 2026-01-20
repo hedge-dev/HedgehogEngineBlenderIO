@@ -8,7 +8,7 @@ class CMeshDataMeshGroupInfo(ctypes.Structure):
     name: str
     size: int
 
-CMeshDataMeshGroupInfo.__fields__ = [
+CMeshDataMeshGroupInfo._fields_ = [
     ("name", ctypes.c_wchar_p),
     ("size", ctypes.c_int),
 ]

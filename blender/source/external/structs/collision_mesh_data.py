@@ -25,7 +25,7 @@ class CCollisionMeshData(ctypes.Structure):
     primitives: TPointer['CBulletPrimitive']
     primitives_size: int
 
-CCollisionMeshData.__fields__ = [
+CCollisionMeshData._fields_ = [
     ("name", ctypes.c_wchar_p),
     ("vertices", ctypes.POINTER(nettypes.CVector3)),
     ("vertices_size", ctypes.c_size_t),

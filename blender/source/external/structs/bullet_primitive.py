@@ -13,7 +13,7 @@ class CBulletPrimitive(ctypes.Structure):
     rotation: nettypes.CQuaternion
     dimensions: nettypes.CVector3
 
-CBulletPrimitive.__fields__ = [
+CBulletPrimitive._fields_ = [
     ("shape_type", ctypes.c_ubyte),
     ("surface_layer", ctypes.c_ubyte),
     ("surface_type", ctypes.c_ubyte),

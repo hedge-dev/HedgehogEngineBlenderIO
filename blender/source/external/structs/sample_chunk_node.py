@@ -3,7 +3,6 @@
 import ctypes
 from .. import nettypes
 from ..typing import TPointer
-from .sample_chunk_node import CSampleChunkNode
 
 class CSampleChunkNode(ctypes.Structure):
     name: str
@@ -12,7 +11,7 @@ class CSampleChunkNode(ctypes.Structure):
     child: TPointer['CSampleChunkNode']
     sibling: TPointer['CSampleChunkNode']
 
-CSampleChunkNode.__fields__ = [
+CSampleChunkNode._fields_ = [
     ("name", ctypes.c_wchar_p),
     ("value", ctypes.c_int),
     ("is_data_node", ctypes.c_bool),

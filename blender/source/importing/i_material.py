@@ -4,7 +4,7 @@ from ctypes import cast, POINTER
 
 from . import i_image, i_sca_parameters
 
-from ..external import pointer_to_address, TPointer, CMaterial, CTexture, CStringPointerPair
+from ..external import util, TPointer, CMaterial, CTexture, CStringPointerPair
 from ..external.enums import WRAP_MODE, MATERIAL_BLEND_MODE
 from ..register.definitions import TargetDefinition
 from ..register.property_groups.material_properties import (
@@ -30,7 +30,7 @@ class MaterialConverter:
     _create_undefined_parameters: bool
     _import_images: bool
 
-    _converted_materials: dict[any, bpy.types.Material]
+    _converted_materials: dict[int, bpy.types.Material]
     _material_name_lookup: dict[str, bpy.types.Material]
 
     def __init__(
@@ -81,7 +81,7 @@ class MaterialConverter:
             else:
                 continue
 
-            texture.texcoord_index = c_texture.texcoord_index
+            texture.texcoord_index = c_texture.tex_coord_index
             texture.wrapmode_u = WRAP_MODE[c_texture.wrap_mode_u]
             texture.wrapmode_v = WRAP_MODE[c_texture.wrap_mode_v]
             texture.image = self._image_loader.get_setup_image(
@@ -124,7 +124,7 @@ class MaterialConverter:
         new_converted_materials: list[tuple[CMaterial, bpy.types.Material]] = []
 
         for i, c_material in enumerate(c_materials):
-            c_material_address = pointer_to_address(c_material)
+            c_material_address = util.pointer_to_address(c_material)
             if c_material_address in self._converted_materials:
                 continue
 
@@ -233,7 +233,7 @@ class MaterialConverter:
             key = cast(key.pointer, POINTER(CMaterial))
 
         if isinstance(key, POINTER(CMaterial)):
-            c_address = pointer_to_address(key)
+            c_address = util.pointer_to_address(key)
             if c_address in self._converted_materials:
                 return self._converted_materials[c_address]
             

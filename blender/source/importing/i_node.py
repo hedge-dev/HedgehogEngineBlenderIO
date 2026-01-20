@@ -1,8 +1,9 @@
 import bpy
+from ctypes import pointer
 
 from . import i_transform, i_mesh, i_model, i_sca_parameters
 from ..register.definitions import TargetDefinition
-from ..external import Library, TPointer, CModelSet, CModelNode, CSampleChunkNode
+from ..external import HEIONET, TPointer, CModelSet, CModelNode, CSampleChunkNode, CMatrix
 from ..utility import progress_console
 from ..exceptions import HEIODevException
 
@@ -67,7 +68,9 @@ class NodeConverter:
                 parent = model_info.armature.edit_bones[node.parent_index]
                 bone.parent = parent
 
-            node_matrix = Library.matrix_invert(node.transform)
+            node_matrix = CMatrix()
+            pointer(node_matrix)[0] = node.transform
+            HEIONET.matrix_invert(node_matrix)
             world_space = matrix_remap(node_matrix)
             model_info.bone_matrices.append(world_space)
             bone.matrix = world_space.normalized()
@@ -138,7 +141,7 @@ class NodeConverter:
         if not model_info.c_mesh_data_set.sample_chunk_node_root:
             return
 
-        c_node = Library.sample_chunk_node_find(model_info.c_mesh_data_set.sample_chunk_node_root, "NodesExt")
+        c_node = HEIONET.sample_chunk_node_find(model_info.c_mesh_data_set.sample_chunk_node_root, "NodesExt")
         if c_node is None:
             return
         
@@ -195,7 +198,7 @@ class NodeConverter:
         progress_console.start("Converting Armatures", len(model_sets))
 
         for i, model_info in enumerate(result):
-            if model_info.armature is not None or model_info.c_mesh_data_set.is_terrain:
+            if model_info.armature is not None or not model_info.c_mesh_data_set.nodes:
                 continue
 
             progress_console.update(

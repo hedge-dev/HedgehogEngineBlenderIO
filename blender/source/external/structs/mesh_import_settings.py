@@ -12,7 +12,7 @@ class CMeshImportSettings(ctypes.Structure):
     collision_vertex_merge_distance: float
     remove_unused_collision_vertices: bool
 
-CMeshImportSettings.__fields__ = [
+CMeshImportSettings._fields_ = [
     ("vertex_merge_mode", ctypes.c_uint),
     ("merge_distance", ctypes.c_float),
     ("merge_split_edges", ctypes.c_bool),

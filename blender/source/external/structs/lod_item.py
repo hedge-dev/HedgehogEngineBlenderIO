@@ -9,7 +9,7 @@ class CLODItem(ctypes.Structure):
     unknown2: float
     cascade_level: int
 
-CLODItem.__fields__ = [
+CLODItem._fields_ = [
     ("cascade_flag", ctypes.c_int),
     ("unknown2", ctypes.c_float),
     ("cascade_level", ctypes.c_ubyte),

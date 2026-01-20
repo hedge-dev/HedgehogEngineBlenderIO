@@ -23,7 +23,7 @@ from ...importing import (
     i_pointcloud
 )
 
-from ...external import Library, CMeshImportSettings, enums
+from ...external import HEIONET
 from ...utility.general import get_addon_preferences
 from ...utility.resolve_info import print_resolve_info
 from ...utility import progress_console
@@ -39,7 +39,7 @@ class ImportOperator(HEIOBaseFileLoadOperator):
     )
 
     def _execute(self, context: Context):
-        with Library.load():
+        with HEIONET.load():
 
             self.target_definition = definitions.get_target_definition(context)
             if self.target_definition is None:
@@ -194,7 +194,7 @@ class ImportMaterialOperator(ImportOperator):
             filepath = os.path.join(directory, file.name)
 
             try:
-                material = Library.material_read_file(filepath)
+                material = HEIONET.material_read_file(filepath)
             except Exception as error:
                 print(f"An error occured while importing {file.name}")
                 raise error

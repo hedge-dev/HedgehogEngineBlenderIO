@@ -2,38 +2,49 @@ from ctypes import pointer
 from ..external import TPointer, CSampleChunkNode
 from ..register.property_groups.material_properties import HEIO_SCA_Parameters
 
-def convert_parameters_to_nodes(c_parent: CSampleChunkNode, sca_parameter_list: HEIO_SCA_Parameters, defaults: dict[str, any]):
-    added = set()
-
+def append_children_to_node(c_parent: CSampleChunkNode, children: list[CSampleChunkNode]):
     last_sibling = c_parent.child
-    if last_sibling and last_sibling.contents.sibling:
+    while last_sibling and last_sibling.contents.sibling:
         last_sibling = last_sibling.contents.sibling
 
-    def add_child(name: str, value: int):
-
-        node = CSampleChunkNode(
-            name = name,
-            value = value
-        )
-        node_pointer = pointer(node)
+    for child in children:
+        node_pointer = pointer(child)
 
         if last_sibling:
             last_sibling.contents.sibling = node_pointer
         else:
             c_parent.child = node_pointer
 
-        return node_pointer
+        last_sibling = node_pointer
+
+def convert_parameters_to_nodes(c_parent: CSampleChunkNode, sca_parameter_list: HEIO_SCA_Parameters, defaults: dict[str, any]):
+    added = set()
+    nodes = []
+
+    last_sibling = c_parent.child
+    while last_sibling and last_sibling.contents.sibling:
+        last_sibling = last_sibling.contents.sibling
+
+    def add_child(name: str, value: int):
+
+        nodes.append(
+            CSampleChunkNode(
+                name = name,
+                value = value
+            )
+        )
 
     if sca_parameter_list is not None:
         for sca_parameter in sca_parameter_list:
             if len(sca_parameter.name) > 0:
-                last_sibling = add_child(sca_parameter.name, sca_parameter.value)
+                add_child(sca_parameter.name, sca_parameter.value)
                 added.add(sca_parameter.name)
 
     for name, value in defaults.items():
-        if name in added:
-            continue
-        last_sibling = add_child(name, value)
+        if name not in added:
+            add_child(name, value)
+
+    append_children_to_node(c_parent, nodes)
 
 
 def convert_to_node(c_parent: TPointer[CSampleChunkNode], sca_parameter_list: HEIO_SCA_Parameters, defaults: dict[str, any]):

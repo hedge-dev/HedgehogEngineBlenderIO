@@ -8,7 +8,7 @@ class CStringPointerPair(ctypes.Structure):
     name: str
     pointer: ctypes.c_void_p
 
-CStringPointerPair.__fields__ = [
+CStringPointerPair._fields_ = [
     ("name", ctypes.c_wchar_p),
     ("pointer", ctypes.c_void_p),
 ]

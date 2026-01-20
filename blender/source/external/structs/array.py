@@ -8,7 +8,7 @@ class CArray(ctypes.Structure):
     array: ctypes.c_void_p
     size: int
 
-CArray.__fields__ = [
+CArray._fields_ = [
     ("array", ctypes.c_void_p),
     ("size", ctypes.c_size_t),
 ]

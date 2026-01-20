@@ -2,7 +2,7 @@ import bpy
 import numpy
 from typing import Iterable
 
-from ..external import Library, TPointer, CMaterial, CResolveInfo, CImage
+from ..external import HEIONET, TPointer, CMaterial, CResolveInfo, CImage
 from ..register.definitions import TargetDefinition
 from ..register.property_groups.material_texture_properties import HEIO_MaterialTexture
 from ..utility.material_setup import get_first_connected_socket
@@ -155,7 +155,7 @@ class ImageLoader:
                 image.pack()
 
             pixels = numpy.array(image.pixels, dtype=numpy.float32)
-            Library.image_invert_green_channel(pixels)
+            HEIONET.image_invert_green_channel(pixels)
             image.pixels = pixels
 
             filepath = image.packed_files[0].filepath
@@ -189,7 +189,7 @@ class ImageLoader:
         progress_console.start("Loading Images")
         progress_console.update("Resolving & preparing image files")
 
-        c_images, resolve_info = Library.image_load_material_images(
+        c_images, resolve_info = HEIONET.image_load_material_images(
             c_materials,
             self._ntsp_dir
         ) 
@@ -204,7 +204,7 @@ class ImageLoader:
         progress_console.start("Loading Images")
         progress_console.update("Resolving & preparing image files")
 
-        c_images, resolve_info = Library.image_load_directory_images(
+        c_images, resolve_info = HEIONET.image_load_directory_images(
             directory,
             filenames,
             self._ntsp_dir

@@ -28,7 +28,7 @@ class CMeshData(ctypes.Structure):
     morph_names: TPointer['str']
     morph_names_size: int
 
-CMeshData.__fields__ = [
+CMeshData._fields_ = [
     ("name", ctypes.c_wchar_p),
     ("vertices", ctypes.POINTER(CVertex)),
     ("vertices_size", ctypes.c_size_t),

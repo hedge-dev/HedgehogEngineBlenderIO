@@ -1,7 +1,7 @@
 import bpy
 from mathutils import Matrix
 
-from ..external import TPointer, CMeshDataSet, CLODItem
+from ..external import CMeshDataSet, CLODItem
 from ..exceptions import HEIODevException
 
 
@@ -94,7 +94,7 @@ class ModelInfo:
         if self.c_lod_items is None or self.lod_info_set_up:
             return
 
-        if self.c_mesh_data_set.is_terrain:
+        if not self.c_mesh_data_set.nodes:
             lod_info = self.meshes[0].heio_mesh.lod_info
         elif self.armature is not None:
             lod_info = self.armature.heio_armature.lod_info

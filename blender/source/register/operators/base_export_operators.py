@@ -20,7 +20,7 @@ from ...exporting import (
     o_model
 )
 
-from ...external import Library
+from ...external import HEIONET
 from ...utility import progress_console
 
 
@@ -31,7 +31,7 @@ class ExportOperator(HEIOBaseFileSaveOperator):
         raise NotImplementedError()
 
     def _execute(self, context: Context):
-        with Library.load():
+        with HEIONET.load():
 
             self.target_definition = definitions.get_target_definition(context)
             if self.target_definition is None:

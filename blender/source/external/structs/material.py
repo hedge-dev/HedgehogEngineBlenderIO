@@ -28,7 +28,7 @@ class CMaterial(ctypes.Structure):
     textures: TPointer['CTexture']
     textures_size: int
 
-CMaterial.__fields__ = [
+CMaterial._fields_ = [
     ("name", ctypes.c_wchar_p),
     ("data_version", ctypes.c_uint),
     ("file_path", ctypes.c_wchar_p),

@@ -12,7 +12,7 @@ class CCollisionMeshDataGroup(ctypes.Structure):
     convex_flag_values: TPointer['int']
     convex_flag_values_size: int
 
-CCollisionMeshDataGroup.__fields__ = [
+CCollisionMeshDataGroup._fields_ = [
     ("size", ctypes.c_uint),
     ("layer", ctypes.c_uint),
     ("is_convex", ctypes.c_bool),

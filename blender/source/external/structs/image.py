@@ -9,7 +9,7 @@ class CImage(ctypes.Structure):
     streamed_data: TPointer['int']
     streamed_data_size: int
 
-CImage.__fields__ = [
+CImage._fields_ = [
     ("file_path", ctypes.c_wchar_p),
     ("streamed_data", ctypes.POINTER(ctypes.c_ubyte)),
     ("streamed_data_size", ctypes.c_size_t),

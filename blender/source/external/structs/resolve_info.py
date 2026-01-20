@@ -16,7 +16,7 @@ class CResolveInfo(ctypes.Structure):
     missing_streamed_images: TPointer['str']
     missing_streamed_images_size: int
 
-CResolveInfo.__fields__ = [
+CResolveInfo._fields_ = [
     ("unresolved_files", ctypes.POINTER(ctypes.c_wchar_p)),
     ("unresolved_files_size", ctypes.c_size_t),
     ("missing_dependencies", ctypes.POINTER(ctypes.c_wchar_p)),

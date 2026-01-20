@@ -13,7 +13,7 @@ class CModelSet(ctypes.Structure):
     lod_items_size: int
     lod_unknown1: int
 
-CModelSet.__fields__ = [
+CModelSet._fields_ = [
     ("mesh_data_sets", ctypes.POINTER(ctypes.POINTER(CMeshDataSet))),
     ("mesh_data_sets_size", ctypes.c_size_t),
     ("lod_items", ctypes.POINTER(CLODItem)),

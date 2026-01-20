@@ -1,7 +1,7 @@
 import bpy
 
 from . import i_transform
-from ..external import TPointer, pointer_to_address, CCollisionMeshData, CCollisionMeshDataGroup, CBulletPrimitive, enums
+from ..external import enums, util, TPointer, CCollisionMeshData, CCollisionMeshDataGroup, CBulletPrimitive
 from ..register.definitions import TargetDefinition
 from ..utility import progress_console
 
@@ -14,7 +14,7 @@ class CollisionMeshConverter:
     _vertex_merge_distance: float
     _remove_unused_vertices: bool
 
-    _converted_meshes: dict[any, bpy.types.Mesh]
+    _converted_meshes: dict[int, bpy.types.Mesh]
     _mesh_name_lookup: dict[str, bpy.types.Mesh]
 
     def __init__(
@@ -137,7 +137,7 @@ class CollisionMeshConverter:
             "Converting Collision Meshes", len(collision_meshes))
 
         for i, collision_mesh_data in enumerate(collision_meshes):
-            collision_mesh_data_address = pointer_to_address(collision_mesh_data)
+            collision_mesh_data_address = util.pointer_to_address(collision_mesh_data)
             collision_mesh_data: CCollisionMeshData = collision_mesh_data.contents
 
             progress_console.update(

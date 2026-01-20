@@ -1,5 +1,5 @@
 from mathutils import Matrix, Vector
-from ..external import Library, CMatrix, CVector3, CQuaternion
+from ..external import HEIONET, CMatrix, CVector3, CQuaternion
 
 def c_to_bpy_matrix(matrix: CMatrix):
     return Matrix((
@@ -39,11 +39,11 @@ def c_to_bpy_bone_znx_matrix(matrix: CMatrix):
 
 def c_transforms_to_bpy_matrix(position: CVector3, euler_rotation: CVector3, scale: CVector3):
 
-    position_mtx = Library.matrix_create_translation(position)
-    rotation_matrix = Library.matrix_create_rotation(euler_rotation)
-    scale_mtx = Library.matrix_create_scale(scale)
+    position_mtx = HEIONET.matrix_create_translation(position)
+    rotation_matrix = HEIONET.matrix_create_rotation(euler_rotation)
+    scale_mtx = HEIONET.matrix_create_scale(scale)
 
-    matrix = Library.matrix_multiply(Library.matrix_multiply(scale_mtx, rotation_matrix), position_mtx)
+    matrix = HEIONET.matrix_multiply(HEIONET.matrix_multiply(scale_mtx, rotation_matrix), position_mtx)
     return c_to_bpy_matrix(matrix)
 
 
@@ -56,4 +56,4 @@ def c_to_bpy_scale(scale):
 
 
 def c_to_bpy_quaternion(quat: CQuaternion):
-    return c_to_bpy_matrix(Library.matrix_create_from_quaternion(quat)).to_quaternion()
+    return c_to_bpy_matrix(HEIONET.matrix_create_from_quaternion(quat)).to_quaternion()

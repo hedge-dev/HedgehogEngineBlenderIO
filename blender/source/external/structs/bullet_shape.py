@@ -18,7 +18,7 @@ class CBulletShape(ctypes.Structure):
     unknown1: int
     unknown2: int
 
-CBulletShape.__fields__ = [
+CBulletShape._fields_ = [
     ("flags", ctypes.c_ubyte),
     ("layer", ctypes.c_uint),
     ("vertices", ctypes.POINTER(nettypes.CVector3)),

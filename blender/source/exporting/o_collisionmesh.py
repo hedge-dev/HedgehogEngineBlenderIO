@@ -3,7 +3,7 @@ from mathutils import Vector, Quaternion, Matrix
 from ctypes import c_uint, c_ubyte, cast, POINTER
 
 from . import o_mesh, o_modelset, o_transform
-from ..external import Library, TPointer, enums, CBulletPrimitive, CCollisionMeshData, CCollisionMeshDataGroup, CVector3, CBulletMesh, CBulletShape
+from ..external import HEIONET, Bullet, util, enums, CBulletPrimitive, CCollisionMeshData, CCollisionMeshDataGroup, CVector3, CBulletShape
 from ..register.property_groups.mesh_properties import MESH_DATA_TYPES
 from ..utility import progress_console
 
@@ -82,7 +82,7 @@ class RawCollisionMeshDataGroup:
             is_convex = self.is_convex,
             convex_type = self.convex_type,
 
-            convex_flag_values = Library.construct_array(self.convex_flag_values, c_ubyte),
+            convex_flag_values = util.construct_array(self.convex_flag_values, c_ubyte),
             convex_flag_values_size = len(self.convex_flag_values)
         )
 
@@ -124,28 +124,28 @@ class RawCollisionMeshData:
         return CCollisionMeshData(
             name = "UNUSED",
 
-            vertices = Library.as_array(c_vertices, CVector3),
+            vertices = util.as_array(c_vertices, CVector3),
             vertices_size = len(vertices),
 
-            triangle_indices = Library.construct_array(self.triangle_indices, c_uint),
+            triangle_indices = util.construct_array(self.triangle_indices, c_uint),
             triangle_indices_size = len(self.triangle_indices),
 
-            types = Library.construct_array(self.types, c_uint),
+            types = util.construct_array(self.types, c_uint),
             types_size = len(self.types),
 
-            type_values = Library.construct_array(self.type_values, c_ubyte),
+            type_values = util.construct_array(self.type_values, c_ubyte),
             type_values_size = len(self.type_values),
 
-            flags = Library.construct_array(self.flags, c_uint),
+            flags = util.construct_array(self.flags, c_uint),
             flags_size = len(self.flags),
 
-            flag_values = Library.construct_array(self.flag_values, c_ubyte),
+            flag_values = util.construct_array(self.flag_values, c_ubyte),
             flag_values_size = len(self.flag_values),
 
-            groups = Library.as_array(c_groups, CCollisionMeshDataGroup),
+            groups = util.as_array(c_groups, CCollisionMeshDataGroup),
             groups_size = len(c_groups),
 
-            primitives = Library.as_array(c_primitives, CBulletPrimitive),
+            primitives = util.as_array(c_primitives, CBulletPrimitive),
             primitives_size = len(c_primitives)
         )
 
@@ -337,22 +337,22 @@ class CollisionMeshProcessor(o_mesh.BaseMeshProcessor):
             if vertex.z > z_max:
                 z_max = vertex.z
 
-        index_mesh = Library.btIndexedMesh_new()
+        index_mesh = Bullet.btIndexedMesh_new()
         index_type = 2 # Int32
-        Library.btIndexedMesh_setVertexType(index_mesh, 0) # Single
-        Library.btIndexedMesh_setIndexType(index_mesh, index_type) # Int32
-        Library.btIndexedMesh_setVertexStride(index_mesh, 12)
-        Library.btIndexedMesh_setNumTriangles(index_mesh, int(shape.faces_size / 3))
-        Library.btIndexedMesh_setTriangleIndexBase(index_mesh, shape.faces)
-        Library.btIndexedMesh_setNumVertices(index_mesh, shape.vertices_size)
-        Library.btIndexedMesh_setVertexBase(index_mesh, shape.vertices)
+        Bullet.btIndexedMesh_setVertexType(index_mesh, 0) # Single
+        Bullet.btIndexedMesh_setIndexType(index_mesh, index_type) # Int32
+        Bullet.btIndexedMesh_setVertexStride(index_mesh, 12)
+        Bullet.btIndexedMesh_setNumTriangles(index_mesh, int(shape.faces_size / 3))
+        Bullet.btIndexedMesh_setTriangleIndexBase(index_mesh, shape.faces)
+        Bullet.btIndexedMesh_setNumVertices(index_mesh, shape.vertices_size)
+        Bullet.btIndexedMesh_setVertexBase(index_mesh, shape.vertices)
 
-        triangle_vertex_array = Library.btTriangleIndexVertexArray_new()
-        Library.btTriangleIndexVertexArray_addIndexedMesh(triangle_vertex_array, index_mesh, index_type)
+        triangle_vertex_array = Bullet.btTriangleIndexVertexArray_new()
+        Bullet.btTriangleIndexVertexArray_addIndexedMesh(triangle_vertex_array, index_mesh, index_type)
 
-        bvh_builder = Library.btOptimizedBvh_new()
+        bvh_builder = Bullet.btOptimizedBvh_new()
 
-        Library.btOptimizedBvh_build(
+        Bullet.btOptimizedBvh_build(
             bvh_builder, 
             triangle_vertex_array, 
             True, 
@@ -360,35 +360,39 @@ class CollisionMeshProcessor(o_mesh.BaseMeshProcessor):
             CVector3(x_max, y_max, z_max)
         )
 
-        shape.bvh_size = Library.btQuantizedBvh_calculateSerializeBufferSize(bvh_builder)
+        shape.bvh_size = Bullet.btQuantizedBvh_calculateSerializeBufferSize(bvh_builder)
         shape.bvh = cast((c_ubyte * shape.bvh_size)(), POINTER(c_ubyte))
-        Library.btOptimizedBvh_serializeInPlace(bvh_builder, shape.bvh, shape.bvh_size, False)
+        Bullet.btOptimizedBvh_serializeInPlace(bvh_builder, shape.bvh, shape.bvh_size, False)
 
-        Library.btQuantizedBvh_delete(bvh_builder)
-        Library.btStridingMeshInterface_delete(triangle_vertex_array)
-        Library.btIndexedMesh_delete(index_mesh)
+        Bullet.btQuantizedBvh_delete(bvh_builder)
+        Bullet.btStridingMeshInterface_delete(triangle_vertex_array)
+        Bullet.btIndexedMesh_delete(index_mesh)
+
+    def _compile_output_to_file(self, name: str, c_meshdata: CCollisionMeshData, directory: str):
+        bullet_mesh = HEIONET.bullet_mesh_compile_mesh_data(c_meshdata)
+        bullet_mesh.contents.name = name
+        bullet_mesh.contents.bullet_mesh_version = self._target_definition.data_versions.bullet_mesh
+
+        with Bullet.load():
+            bullet_mesh_contents = bullet_mesh.contents
+            for j in range(bullet_mesh_contents.shapes_size):
+                CollisionMeshProcessor.generate_bvh_tree(bullet_mesh_contents.shapes[j])
+
+        filepath = os.path.join(directory, name + ".btmesh")
+
+        HEIONET.bullet_mesh_write_to_file(
+            bullet_mesh,
+            filepath
+        )
 
     def compile_output_to_files(self, use_multicore_processing: bool, directory: str):
         # TODO: compile with multithreading in c#, maybe
         progress_console.start("Compiling & writing collision meshes", len(self._output_queue))
         for i, output in enumerate(self._output_queue):
-            name, c_meshdata = output
+            name = output[0]
             progress_console.update(f"Compiling collision mesh \"{name}\"", i)
-
-            bullet_mesh = Library.bullet_mesh_compile_mesh_data(c_meshdata)
-            bullet_mesh.contents.name = name
-            bullet_mesh.contents.bullet_mesh_version = self._target_definition.data_versions.bullet_mesh
-
-            bullet_mesh_contents = bullet_mesh.contents
-            for j in range(bullet_mesh_contents.shapes_size):
-                CollisionMeshProcessor.generate_bvh_tree(bullet_mesh_contents.shapes[j])
-
-            filepath = os.path.join(directory, name + ".btmesh")
-
-            Library.bullet_mesh_write_to_file(
-                bullet_mesh,
-                filepath
-            )
+            self._compile_output_to_file(name, output[1], directory)
 
         self._output_queue.clear()
+        progress_console.end()
 

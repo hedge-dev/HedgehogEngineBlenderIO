@@ -1,6 +1,6 @@
 import bpy
 from ctypes import c_wchar_p
-from ..external import Library, CResolveInfo, TPointer
+from ..external import HEIONET, CResolveInfo, TPointer
 
 def _c_to_string_array(pointer: TPointer[c_wchar_p], size: int):
     result = []
@@ -10,7 +10,7 @@ def _c_to_string_array(pointer: TPointer[c_wchar_p], size: int):
         
 
 def print_resolve_info(context: bpy.types.Context, resolve_infos: list[TPointer[CResolveInfo]]):
-    resolve_info: CResolveInfo = Library.resolve_info_combine(resolve_infos).contents
+    resolve_info: CResolveInfo = HEIONET.resolve_info_combine(resolve_infos).contents
 
     unresolved_files = _c_to_string_array(resolve_info.unresolved_files, resolve_info.unresolved_files_size)
     missing_dependencies = _c_to_string_array(resolve_info.missing_dependencies, resolve_info.missing_dependencies_size)

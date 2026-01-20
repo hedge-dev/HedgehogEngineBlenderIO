@@ -1,12 +1,39 @@
 import bpy
 from mathutils import Vector, Matrix
+from ctypes import c_int, POINTER, pointer, c_wchar_p
 
 from . import o_mesh, o_modelset, o_transform, o_material, o_object_manager, o_sca_parameters
+from ..external import (
+    HEIONET, 
+    util,
+    enums, 
+    CMeshData, 
+    CMeshDataMeshGroupInfo, 
+    CMeshDataMeshSetInfo, 
+    CUVDirection, 
+    CVertex, 
+    CVertexWeight, 
+    CStringPointerPair,
+    CModelSet,
+    CMeshDataSet,
+    CModelNode,
+    CSampleChunkNode,
+    CLODItem,
+    CMatrix,
+    CVector4, 
+    CVector3, 
+    CVector2
+)
 from ..register.definitions import TargetDefinition
 from ..register.property_groups.mesh_properties import MESH_DATA_TYPES
 from ..exceptions import HEIOUserException
 from ..utility import progress_console
 
+LAYER_TYPE_NAMES = [
+    "opaque",
+    "transparent",
+    "punchthrough"
+]
 
 class RawVertex:
 
@@ -27,7 +54,7 @@ class RawVertex:
         self.morph_positions = morph_positions
         self.weights = weights
 
-    def convert_to_net(self, matrix: tuple[Matrix, Matrix] | None, weight_index_map: dict[str, int] | None):
+    def convert_to_c(self, matrix: tuple[Matrix, Matrix] | None, weight_index_map: dict[str, int] | None):
 
         position = self.position
         normal = self.normal
@@ -46,23 +73,24 @@ class RawVertex:
             for name, weight in self.weights:
                 index = weight_index_map.get(name, None)
                 if index is not None:
-                    weights.append(HEIO_NET.VERTEX_WEIGHT(index, weight))
+                    weights.append(CVertexWeight(index, weight))
 
-        return HEIO_NET.VERTEX(
-            o_transform.bpy_to_net_position(position),
+        result = CVertex(
+            position = o_transform.bpy_to_c_position(position),
+            normal = o_transform.bpy_to_c_position(normal),
 
-            ([o_transform.bpy_to_net_position(mp)
-              for mp in morph_positions]
-             if morph_positions is not None
-             else None),
-
-            o_transform.bpy_to_net_position(normal),
-            HEIO_NET.UV_DIRECTION(System.VECTOR3(
-                0, 0, 0), System.VECTOR3(0, 0, 0)),
-            HEIO_NET.UV_DIRECTION(System.VECTOR3(
-                0, 0, 0), System.VECTOR3(0, 0, 0)),
-            weights
+            weights = util.as_array(weights, CVertexWeight),
+            weights_size = len(weights)
         )
+
+        if morph_positions is not None:
+            result.morph_positions_size = len(morph_positions)
+            result.morph_positions = util.as_array(
+                [o_transform.bpy_to_c_position(mp) for mp in morph_positions],
+                CVector3
+            )
+
+        return result
 
 
 class RawMeshData:
@@ -73,14 +101,13 @@ class RawMeshData:
     polygon_uv_directions: list[tuple[Vector, Vector]]
     polygon_uv_directions2: list[tuple[Vector, Vector]] | None
 
-    texture_coordinates: list[any]
-    colors: list[any]
+    texture_coordinates: list[list[CVector2]]
+    colors: list[list[CVector4]]
 
-    mesh_sets: list[any]
-    group_names: list[str]
-    group_set_counts: list[int]
+    mesh_sets: list[CMeshDataMeshSetInfo]
+    groups: list[CMeshDataMeshGroupInfo]
 
-    morph_names: None
+    morph_names: list[str] | None
 
     def __init__(self):
         self.vertices = []
@@ -98,51 +125,58 @@ class RawMeshData:
 
         self.morph_names = None
 
-    def convert_to_net(self, matrix: tuple[Matrix, Matrix] | None, weight_index_map: dict[str, int] | None):
+    def convert_to_c(self, matrix: tuple[Matrix, Matrix] | None, weight_index_map: dict[str, int] | None):
 
-        polygon_tangents = self.polygon_uv_directions
-        polygon_tangents2 = self.polygon_uv_directions2
-
-        if matrix is not None:
-            normal_matrix = matrix[1]
-            polygon_tangents = [
-                ((normal_matrix @ t).normalized(),
-                 (normal_matrix @ b).normalized())
-                for t, b in polygon_tangents
+        def convert_uv_dirs(uv_dirs: list[tuple[Vector, Vector]] | None):
+            if uv_dirs is None:
+                return None
+            
+            if matrix is not None:
+                normal_matrix = matrix[1]
+                result = [
+                    ((normal_matrix @ t).normalized(),
+                    (normal_matrix @ b).normalized())
+                    for t, b in uv_dirs
+                ]
+            else:
+                result = uv_dirs
+            
+            return [
+                CUVDirection(
+                    o_transform.bpy_to_c_position(t[0]),
+                    o_transform.bpy_to_c_position(t[1])
+                ) for t in result
             ]
 
-            if polygon_tangents2 is not None:
-                polygon_tangents2 = [
-                    ((normal_matrix @ t).normalized(),
-                     (normal_matrix @ b).normalized())
-                    for t, b in polygon_tangents2
-                ]
+        polygon_tangents = convert_uv_dirs(self.polygon_uv_directions)
+        polygon_tangents2 = convert_uv_dirs(self.polygon_uv_directions2)
 
-        to_net = o_transform.bpy_to_net_position
+        return CMeshData(
+            name = "UNUSED",  # name is only important for import
 
-        return HEIO_NET.MESH_DATA(
-            "",  # name is only important for import
+            vertices = util.as_array([v.convert_to_c(matrix, weight_index_map) for v in self.vertices], CVertex),
+            vertices_size = len(self.vertices),
 
-            [v.convert_to_net(matrix, weight_index_map)
-             for v in self.vertices],
+            triangle_index_count = len(self.triangle_indices),
 
-            self.triangle_indices,
-            None,
+            triangle_indices = util.construct_array(self.triangle_indices, c_int),
+            polygon_uv_directions = util.as_array(polygon_tangents, CUVDirection),
+            polygon_uv_directions_2 = util.as_array(polygon_tangents2, CUVDirection),
 
-            [HEIO_NET.UV_DIRECTION(to_net(t), to_net(b))
-             for t, b in polygon_tangents],
+            texture_coordinates = util.as_array([util.as_array(tc, CVector2) for tc in self.texture_coordinates], POINTER(CVector2)),
+            texture_coordinates_size = len(self.texture_coordinates),
 
-            [HEIO_NET.UV_DIRECTION(to_net(t), to_net(b))
-             for t, b in polygon_tangents2] if polygon_tangents2 is not None else None,
+            colors = util.as_array([util.as_array(c, CVector4) for c in self.colors], POINTER(CVector4)),
+            colors_size = len(self.colors),
 
-            self.texture_coordinates,
-            self.colors,
+            mesh_sets = util.as_array(self.mesh_sets, CMeshDataMeshSetInfo),
+            mesh_sets_size = len(self.mesh_sets),
 
-            self.mesh_sets,
-            self.group_names,
-            self.group_set_counts,
+            groups = util.as_array(self.groups, CMeshDataMeshGroupInfo),
+            groups_size = len(self.groups),
 
-            self.morph_names
+            morph_names = util.construct_array(self.morph_names, c_wchar_p),
+            morph_names_size = len(self.morph_names) if self.morph_names is not None else 0
         )
 
 
@@ -158,8 +192,6 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
     _topology: any
     _model_version_mode: any
     _optimized_vertex_data: bool
-
-    _lod_output: dict[bpy.types.Object, any]
 
     def __init__(
             self,
@@ -186,12 +218,10 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
         self._use_pose_bone_matrices = use_pose_bone_matrices
         self._bone_orientation = bone_orientation
 
-        self._model_version_mode = o_enum.to_model_version_mode(model_version_mode)
-        self._topology = o_enum.to_topology(topology)
+        self._model_version_mode = enums.MODEL_VERSION_MODE.index(model_version_mode)
+        self._topology = enums.TOPOLOGY.index(topology)
 
         self._optimized_vertex_data = optimized_vertex_data
-
-        self._lod_output = {}
 
     ##################################################
 
@@ -259,9 +289,9 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
         layer_names = []
         materials = []
 
-        heiomesh = model_set.obj.data.heio_mesh
+        heio_mesh = model_set.obj.data.heio_mesh
 
-        if not heiomesh.groups.initialized or heiomesh.groups.attribute_invalid:
+        if not heio_mesh.groups.initialized or heio_mesh.groups.attribute_invalid:
             group_names.append("")
 
             def get_group_index(polygon: bpy.types.MeshPolygon):
@@ -271,7 +301,7 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
             group_name_lut = {}
             group_name_map = []
 
-            for group in heiomesh.groups:
+            for group in heio_mesh.groups:
                 if group.name not in group_name_lut:
                     index = len(group_names)
                     group_name_lut[group.name] = index
@@ -282,7 +312,7 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
                 group_name_map.append(index)
 
             group_attribute = model_set.evaluated_mesh.attributes.get(
-                heiomesh.groups.attribute_name, None)
+                heio_mesh.groups.attribute_name, None)
 
             if group_attribute is None:
                 def get_group_index(polygon: bpy.types.MeshPolygon):
@@ -294,9 +324,9 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
         layer_name_lut = {}
         layer_name_map = []
 
-        if heiomesh.render_layers.initialized and not heiomesh.render_layers.attribute_invalid:
+        if heio_mesh.render_layers.initialized and not heio_mesh.render_layers.attribute_invalid:
 
-            for layer in heiomesh.render_layers:
+            for layer in heio_mesh.render_layers:
                 if layer.name not in layer_name_lut:
                     index = len(layer_names)
                     layer_name_lut[layer.name] = index
@@ -307,7 +337,7 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
                 layer_name_map.append(index)
 
             layer_attribute = model_set.evaluated_mesh.attributes.get(
-                heiomesh.render_layers.attribute_name, None)
+                heio_mesh.render_layers.attribute_name, None)
 
             if layer_attribute is None:
                 def get_layer_index(polygon: bpy.types.MeshPolygon):
@@ -381,7 +411,7 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
 
     def _convert_colors(self, mesh: bpy.types.Mesh, loop_order: list[bpy.types.MeshLoop]):
         if len(mesh.color_attributes) == 0:
-            return [System.VECTOR4(1, 1, 1, 1)] * len(loop_order), True
+            return [CVector4(1, 1, 1, 1)] * len(loop_order), True
 
         color_attribute = mesh.color_attributes[mesh.color_attributes.render_color_index]
         colors = []
@@ -409,7 +439,7 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
 
         for loop in loop_order:
             color = get_color(loop)
-            colors.append(System.VECTOR4(
+            colors.append(CVector4(
                 color[0],
                 color[1],
                 color[2],
@@ -420,7 +450,7 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
 
     def _convert_uv_maps(self, mesh: bpy.types.Mesh, loop_order: list[bpy.types.MeshLoop]):
         if len(mesh.uv_layers) == 0:
-            return [[System.VECTOR2(0, 0)] * len(loop_order)]
+            return [[CVector2()] * len(loop_order)]
 
         result = []
 
@@ -428,7 +458,7 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
             texcoords = []
             for loop in loop_order:
                 uv = uv_layer.data[loop.index].uv
-                texcoords.append(System.VECTOR2(uv.x, uv.y))
+                texcoords.append(CVector2(uv.x, uv.y))
             result.append(texcoords)
 
         return result
@@ -506,7 +536,7 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
                 return
 
             materaial = materials[current_material]
-            sn_material = self._material_processor.get_converted_material(
+            c_material = self._material_processor.get_converted_material(
                 materaial)
 
             def get_param_or(fallback, param_name):
@@ -528,15 +558,28 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
             enable_multi_tangent = get_param_or(
                 model_set.obj.data.heio_mesh.force_enable_multi_tangent, "enable_multi_tangent_space")
 
-            raw_meshdata.mesh_sets.append(HEIO_NET.MESH_DATA_SET_INFO(
-                byte_colors,
-                enable_8_weight,
-                enable_multi_tangent,
-                SharpNeedle.RESOURCE_REFERENCE[SharpNeedle.MATERIAL](
-                    sn_material),
-                SharpNeedle.MESH_SLOT(layer_names[current_layer]),
-                set_size
-            ))
+            layer_name: str = layer_names[current_layer]
+            layer_type = LAYER_TYPE_NAMES.index(layer_name.lower())
+            if layer_type < 0:
+                layer_type = 3
+
+            raw_meshdata.mesh_sets.append(
+                CMeshDataMeshSetInfo(
+                    use_byte_colors = byte_colors,
+                    enable_8_weights = enable_8_weight,
+                    enable_multi_tangent = enable_multi_tangent,
+
+                    material_reference= CStringPointerPair(
+                        c_material.contents.name,
+                        c_material
+                    ),
+
+                    mesh_slot_type = layer_type,
+                    mesh_slot_name = layer_names[current_layer],
+                    
+                    size = set_size
+                )
+            )
 
             nonlocal group_size
             group_size += 1
@@ -585,11 +628,11 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
             bone_orientation = self._target_definition.bone_orientation
 
         if bone_orientation == 'XY':
-            matrix_remap = o_transform.bpy_bone_xy_to_net_matrix
+            matrix_remap = o_transform.bpy_bone_xy_to_c_matrix
         elif bone_orientation == 'XZ':
-            matrix_remap = o_transform.bpy_bone_xz_to_net_matrix
+            matrix_remap = o_transform.bpy_bone_xz_to_c_matrix
         else:  # ZNX
-            matrix_remap = o_transform.bpy_bone_znx_to_net_matrix
+            matrix_remap = o_transform.bpy_bone_znx_to_c_matrix
 
         for i, bone in enumerate(armature_obj.pose.bones):
             weight_index_map[bone.name] = i
@@ -599,23 +642,24 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
             else:
                 matrix = bone.bone.matrix_local
 
-            node = SharpNeedle.MODEL.Node()
-            node.Name = bone.name
 
             if bone.parent is not None:
-                node.ParentIndex = weight_index_map[bone.parent.name]
+                parent_index = weight_index_map[bone.parent.name]
             else:
-                node.ParentIndex = -1
+                parent_index = -1
 
-            net_matrix = matrix_remap(matrix)
-            valid, net_matrix = System.MATRIX4X4.Invert(
-                net_matrix, System.MATRIX4X4.Identity)
-            if not valid:
+            c_matrix = matrix_remap(matrix)
+            if not HEIONET.matrix_invert(c_matrix):
                 raise HEIOUserException(
-                    f"Bone \"{bone.name}\" on armature \"{armature_obj.data.name}\" has an invalid matrix! Make sure all scale channels are not 0")
-            node.Transform = net_matrix
+                    f"Bone \"{bone.name}\" on armature \"{armature_obj.data.name}\" has an invalid matrix! Make sure that not all scale channels are 0")
 
-            model_nodes.append(node)
+            model_nodes.append(
+                CModelNode(
+                    name = bone.name,
+                    parent_index = parent_index,
+                    transform = c_matrix
+                )
+            )
 
         return weight_index_map, model_nodes
 
@@ -647,10 +691,20 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
                 None, 0, defaults)
             sca_parameters.append(node)
 
-        return [x for x in sca_parameters if x is not None]
+        extension_node = CSampleChunkNode(
+            name = "NodesExt",
+            value = 1
+        )
+
+        o_sca_parameters.append_children_to_node(extension_node, sca_parameters)
+
+        root_node = o_sca_parameters.setup("Model", 0) # version is irrelevant, this will get ignored later
+        o_sca_parameters.append_children_to_node(root_node.contents, [extension_node])
+
+        return root_node
 
     def _assemble_compile_data_set(self, root, children, name: str):
-        sn_meshdata = []
+        c_meshdata: list[CMeshData] = []
         weight_index_map = None
         model_nodes = None
 
@@ -659,11 +713,18 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
 
         elif self.mode == 'MODEL':
 
-            node = SharpNeedle.MODEL.Node()
-            node.Name = name
-            node.ParentIndex = -1
-            node.Transform = System.MATRIX4X4.Identity
-            model_nodes = [node]
+            model_nodes = [
+                CModelNode(
+                    name = name,
+                    parent_index = -1,
+                    transform = CMatrix(
+                        m11 = 1,
+                        m22 = 1,
+                        m33 = 1,
+                        m44 = 1
+                    )
+                )
+            ]
 
         if root is None:
             parent_matrix = Matrix.Identity(4)
@@ -674,8 +735,9 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
             if root.type in MESH_DATA_TYPES:
                 root_meshdata = self.get_meshdata(root)
                 if root_meshdata is not None:
-                    sn_meshdata.append(
-                        root_meshdata.convert_to_net(None, weight_index_map))
+                    c_meshdata.append(
+                        root_meshdata.convert_to_c(None, weight_index_map)
+                    )
 
         for child in children:
             if child.type not in MESH_DATA_TYPES:
@@ -692,65 +754,110 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
 
             matrix = parent_matrix @ child.matrix_world
             normal_matrix = matrix.to_3x3().normalized()
-            sn_meshdata.append(child_meshdata.convert_to_net(
-                (matrix, normal_matrix), weight_index_map))
+            c_meshdata.append(child_meshdata.convert_to_c(
+                (matrix, normal_matrix), weight_index_map)
+            )
 
-        if len(sn_meshdata) == 0:
+        if len(c_meshdata) == 0:
             return None
 
-        if any([x.MorphNames is not None and x.GroupNames.Count > 1 for x in sn_meshdata]):
-            raise HEIOUserException("Model")
+        if any([x.morph_names and x.groups_size > 1 for x in c_meshdata]):
+            raise HEIOUserException(f"Model \"{name}\" is a shape model, which cannot have more than one mesh group!")
 
         sca_parameters = self._get_sca_parameters(root, model_nodes)
 
-        return HEIO_NET.MESH_COMPILE_DATA(
-            name,
-            sn_meshdata,
-            model_nodes,
-            sca_parameters
+        result = CMeshDataSet(
+            name = name,
+
+            mesh_data = util.as_array(c_meshdata, CMeshData),
+            mesh_data_size = len(c_meshdata)
         )
 
-    def _assemble_compile_data(self, root, children, name: str):
-        compile_data = self._assemble_compile_data_set(root, children, name)
+        if model_nodes is not None:
+            result.nodes = util.as_array(model_nodes, CModelNode)
+            result.nodes_size = len(model_nodes)
 
-        if compile_data is None:
-            return None
+        if sca_parameters is not None:
+            result.sample_chunk_node_root = sca_parameters
 
-        result = (name, compile_data, None)
+        return pointer(result)
 
+    def _assemble_lod_compile_data(self, root: bpy.types.Object | None, name: str):
         if root is None or self._target_definition.hedgehog_engine_version < 2:
-            return result
+            return None
 
         if root.type == 'ARMATURE':
             lod_info = root.data.heio_armature.lod_info
         elif root.type in MESH_DATA_TYPES:
             lod_info = root.data.heio_mesh.lod_info
         else:
-            return result
+            return None
 
         if len(lod_info.levels) == 0:
-            return result
-
+            return None
+        
         progress_console.start(
             "Preparing LOD mesh data for export", len(lod_info.levels) - 1)
+        
+        compile_data_sets = []
+        lod_items = []
 
         for i, level in enumerate(lod_info.levels.elements[1:]):
-            if level.target is None or level.target in self._lod_output:
+            if level.target is None:
                 continue
 
             progress_console.update(
                 f"Converting mesh data for LOD object \"{level.target.name}\"", i)
 
             lod_children = self._object_manager.lod_trees[level.target]
-            self._output_queue.append(
-                (level.target, self._assemble_compile_data_set(level.target, lod_children, name)))
-            self._lod_output[level.target] = None
+
+            compile_data_sets.append(
+                self._assemble_compile_data_set(level.target, lod_children, name)
+            )
+
+            lod_items.append(
+                CLODItem(
+                    cascade_flag = 1 << level.cascade,
+                    unknown2 = level.unknown,
+                    cascade_level = level.cascade
+                )
+            )
 
         progress_console.end()
 
-        return (name, compile_data, lod_info)
+        if len(compile_data_sets) == 0:
+            return None
+
+        return compile_data_sets, lod_items
+
+    def _assemble_compile_data(self, root, children, name: str):
+        compile_data = self._assemble_compile_data_set(root, children, name)
+
+        if compile_data is None:
+            return None
+        
+        compile_data_sets = [compile_data]
+
+        lod_compile_data = self._assemble_lod_compile_data(root)
+        lod_items = None
+
+        if lod_compile_data is not None:
+            compile_data_sets.extend(lod_compile_data[0])
+            lod_items = lod_compile_data[1]
+
+        return (
+            name, 
+            CModelSet(
+                mesh_data_sets = util.as_array(compile_data_sets, POINTER(CMeshDataSet)),
+                mesh_data_sets_size = len(compile_data_sets),
+
+                lod_items = util.as_array(lod_items, CLODItem),
+                lod_items_size = len(lod_items) if lod_items is not None else 0
+            )
+        )
 
     ##################################################
+
 
     def compile_output(self, use_multicore_processing: bool):
         progress_console.start("Compiling models")
@@ -804,6 +911,12 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
         progress_console.end()
 
     def compile_output_to_files(self, use_multicore_processing: bool, directory: str):
-        super().compile_output_to_files(use_multicore_processing, directory)
+        progress_console.start("Compiling & writing meshes", len(self._output_queue))
+
+        compile_sets = [x[1] for x in self._output_queue]
+
+        for i, output in enumerate(self._output_queue):
+            pass
+
         self._material_processor.write_output_to_files(directory)
         self._material_processor.write_output_images_to_files(directory)

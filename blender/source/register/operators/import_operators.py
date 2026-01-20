@@ -4,7 +4,7 @@ import os
 from ..property_groups.mesh_properties import MESH_DATA_TYPES
 
 from ...utility import progress_console
-from ...external import Library, enums, CMeshImportSettings, CPointCloudCollection
+from ...external import HEIONET, enums, CMeshImportSettings, CPointCloudCollection
 
 from .base_import_operators import (
     ImportMaterialOperator,
@@ -79,7 +79,7 @@ class HEIO_OT_Import_Model(ImportModelOperator):
         mesh_import_settings.merge_split_edges = self.merge_split_edges
         mesh_import_settings.vertex_merge_mode = enums.VERTEX_MERGE_MODE.index(self.vertex_merge_mode)
 
-        models, resolve_info = Library.model_read_files(
+        models, resolve_info = HEIONET.model_read_files(
             filepaths,
             self.import_lod_models,
             mesh_import_settings
@@ -115,7 +115,7 @@ class HEIO_OT_Import_CollisionMesh(ImportCollisionMeshOperator):
         mesh_import_settings.collision_vertex_merge_distance = self.merge_collision_vert_distance
         mesh_import_settings.remove_unused_collision_vertices = self.remove_unused_vertices
 
-        collision_meshes = Library.bullet_mesh_read_files(
+        collision_meshes = HEIONET.bullet_mesh_read_files(
             filepaths,
             mesh_import_settings
         )
@@ -180,7 +180,7 @@ class HEIO_OT_Import_PointCloud(ImportPointCloudOperator):
         mesh_import_settings.collision_vertex_merge_distance = self.merge_collision_verts
         mesh_import_settings.remove_unused_collision_vertices = self.remove_unused_vertices
 
-        point_cloud_collection, resolve_info = Library.point_cloud_read_files(
+        point_cloud_collection, resolve_info = HEIONET.point_cloud_read_files(
             filepaths,
             self.import_lod_models,
             mesh_import_settings

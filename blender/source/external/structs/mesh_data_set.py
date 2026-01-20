@@ -15,7 +15,7 @@ class CMeshDataSet(ctypes.Structure):
     nodes_size: int
     sample_chunk_node_root: TPointer['CSampleChunkNode']
 
-CMeshDataSet.__fields__ = [
+CMeshDataSet._fields_ = [
     ("name", ctypes.c_wchar_p),
     ("mesh_data", ctypes.POINTER(CMeshData)),
     ("mesh_data_size", ctypes.c_size_t),

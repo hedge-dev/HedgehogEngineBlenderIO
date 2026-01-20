@@ -14,7 +14,7 @@ class CMeshDataMeshSetInfo(ctypes.Structure):
     mesh_slot_name: str
     size: int
 
-CMeshDataMeshSetInfo.__fields__ = [
+CMeshDataMeshSetInfo._fields_ = [
     ("use_byte_colors", ctypes.c_bool),
     ("enable8weights", ctypes.c_bool),
     ("enable_multi_tangent", ctypes.c_bool),

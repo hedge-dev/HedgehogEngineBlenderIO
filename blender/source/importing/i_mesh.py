@@ -3,7 +3,7 @@ from mathutils import Vector
 
 from . import i_material, i_model, i_sca_parameters, i_transform
 
-from ..external import Library, pointer_to_address, TPointer, CModelSet, CMeshDataSet, CMeshData, CVertex, CVertexWeight, CMeshDataMeshSetInfo, CMeshDataGroupInfo
+from ..external import HEIONET, util, TPointer, CModelSet, CMeshDataSet, CMeshData, CVertex, CVertexWeight, CMeshDataMeshSetInfo, CMeshDataMeshGroupInfo
 from ..register.definitions import TargetDefinition
 from ..utility import progress_console
 
@@ -168,7 +168,7 @@ class MeshConverter:
         set_offset = 0
 
         for i in range(mesh_data.groups_size):
-            group: CMeshDataGroupInfo = mesh_data.groups[i]
+            group: CMeshDataMeshGroupInfo = mesh_data.groups[i]
 
             if i == 0:
                 meshgroup = groups[0]
@@ -322,11 +322,11 @@ class MeshConverter:
         model_info = i_model.ModelInfo(mesh_data_set.name + name_suffix, mesh_data_set)
 
         for i in range(mesh_data_set.mesh_data_size):
-            mesh_data: CMeshData = mesh_data_set.mesh_data[i].contents
+            mesh_data: CMeshData = mesh_data_set.mesh_data[i]
             mesh = self._convert_mesh_data(mesh_data, mesh_data_set, name_suffix)
             model_info.meshes.append(mesh)
 
-            if mesh_data_set.is_terrain:
+            if not mesh_data_set.nodes:
                 i_sca_parameters.convert_from_root(
                     mesh_data_set.sample_chunk_node_root, 
                     mesh.heio_mesh.sca_parameters, 
@@ -350,14 +350,14 @@ class MeshConverter:
         for i in range(1, model_set.mesh_data_sets_size):
             progress_console.update(f"Converting LOD level {i}", i - 1)
 
-            lod_model_info = self._convert_model(model_set.mesh_data_sets[i], f"_lv{i}")
+            lod_model_info = self._convert_model(model_set.mesh_data_sets[i].contents, f"_lv{i}")
 
             model_info.lod_models.append(lod_model_info)
 
         progress_console.end()
 
     def convert_model_sets(self, model_sets: list[TPointer[CModelSet]]) -> list[i_model.ModelInfo]:
-        c_materials = Library.model_get_materials(model_sets)
+        c_materials = HEIONET.model_get_materials(model_sets)
         self._material_converter.convert_materials(c_materials)
 
         result = []
@@ -365,10 +365,10 @@ class MeshConverter:
         progress_console.start("Converting Models", len(model_sets))
 
         for i, model_set in enumerate(model_sets):
-            model_set_address = pointer_to_address(model_set)
+            model_set_address = util.pointer_to_address(model_set)
             model_set: CModelSet = model_set.contents
         
-            main_mesh_set: CMeshDataSet =  model_set.mesh_data_sets[0]
+            main_mesh_set: CMeshDataSet =  model_set.mesh_data_sets[0].contents
             model_name = main_mesh_set.name
 
             progress_console.update(f"Converting model \"{model_name}\"", i)

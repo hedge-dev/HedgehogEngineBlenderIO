@@ -12,7 +12,7 @@ class CTexture(ctypes.Structure):
     wrap_mode_v: int
     type: str
 
-CTexture.__fields__ = [
+CTexture._fields_ = [
     ("name", ctypes.c_wchar_p),
     ("picture_name", ctypes.c_wchar_p),
     ("tex_coord_index", ctypes.c_ubyte),

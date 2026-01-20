@@ -17,7 +17,7 @@ class CPointCloudCollection(ctypes.Structure):
     collision_mesh_clouds: TPointer['CPointCloudCloud']
     collision_mesh_clouds_size: int
 
-CPointCloudCollection.__fields__ = [
+CPointCloudCollection._fields_ = [
     ("models", ctypes.POINTER(CModelSet)),
     ("models_size", ctypes.c_size_t),
     ("model_clouds", ctypes.POINTER(CPointCloudCloud)),

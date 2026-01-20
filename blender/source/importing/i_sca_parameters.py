@@ -1,5 +1,5 @@
 from ..register.definitions import TargetDefinition
-from ..external import Library, CSampleChunkNode, TPointer
+from ..external import HEIONET, CSampleChunkNode, TPointer
 
 def convert_from_node(
         c_scn_node: TPointer[CSampleChunkNode],
@@ -34,6 +34,6 @@ def convert_from_root(c_scn_root: TPointer[CSampleChunkNode], sca_parameter_list
     if not c_scn_root:
         return
 
-    node = Library.sample_chunk_node_find(c_scn_root, "SCAParam")
+    node = HEIONET.sample_chunk_node_find(c_scn_root, "SCAParam")
     convert_from_node(node, sca_parameter_list, target_definition, data_type)
 

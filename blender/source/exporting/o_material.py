@@ -5,7 +5,7 @@ from ctypes import pointer
 
 from . import o_sca_parameters, o_image, o_util
 
-from ..external import Library, enums, TPointer, CMaterial, CBoolMaterialParameter, CFloatMaterialParameter, CVector4, CTexture
+from ..external import HEIONET, util, enums, TPointer, CMaterial, CBoolMaterialParameter, CFloatMaterialParameter, CVector4, CTexture
 from ..register.property_groups.material_properties import HEIO_Material
 from ..register.definitions import TargetDefinition
 from ..utility import progress_console
@@ -122,10 +122,10 @@ class MaterialProcessor:
                         )
                     )
 
-            c_material.bool_parameters = Library.as_array(boolean_parameters, CBoolMaterialParameter)
+            c_material.bool_parameters = util.as_array(boolean_parameters, CBoolMaterialParameter)
             c_material.bool_parameters_size = len(boolean_parameters)
 
-            c_material.float_parameters = Library.as_array(float_parameters, CFloatMaterialParameter)
+            c_material.float_parameters = util.as_array(float_parameters, CFloatMaterialParameter)
             c_material.float_parameters_size = len(float_parameters)
 
             c_material.textures_name = c_material.name
@@ -140,14 +140,14 @@ class MaterialProcessor:
                     CTexture(
                         name = f"{c_material.name}-{j:04}",
                         picture_name = o_util.correct_image_filename(texture.image.name),
-                        texcoord_index = texture.texcoord_index,
+                        tex_coord_index = texture.texcoord_index,
                         wrap_mode_u = enums.WRAP_MODE.index(texture.wrapmode_u),
                         wrap_mode_v = enums.WRAP_MODE.index(texture.wrapmode_v),
                         type = texture.name,
                     )
                 )
 
-            c_material.textures = Library.as_array(textures, CTexture)
+            c_material.textures = util.as_array(textures, CTexture)
             c_material.textures_size = len(textures)
 
         progress_console.end()
@@ -172,7 +172,7 @@ class MaterialProcessor:
 
             progress_console.update(f"Writing material \"{material_name}\"", i)
 
-            Library.material_write_file(c_material, filepath)
+            HEIONET.material_write_file(c_material, filepath)
 
         progress_console.end()
 

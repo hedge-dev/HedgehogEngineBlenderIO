@@ -8,7 +8,7 @@ from ...utility.resolve_info import print_resolve_info
 from ...utility import progress_console
 from ...importing import i_image
 from ...exceptions import HEIOUserException
-from ...external import Library
+from ...external import HEIONET
 
 
 class HEIO_OT_ReimportImages(HEIOBaseFileLoadOperator):
@@ -60,7 +60,7 @@ class HEIO_OT_ReimportImages(HEIOBaseFileLoadOperator):
         progress_console.cleanup()
         progress_console.start("Loading Images")
 
-        with Library.load():
+        with HEIONET.load():
             image_loader.load_images_from_directory(
                 self.directory,
                 [image.heio_image.reimport_name for image in self.reimport_images]

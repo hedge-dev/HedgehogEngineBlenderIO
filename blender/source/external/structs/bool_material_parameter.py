@@ -8,7 +8,7 @@ class CBoolMaterialParameter(ctypes.Structure):
     name: str
     value: bool
 
-CBoolMaterialParameter.__fields__ = [
+CBoolMaterialParameter._fields_ = [
     ("name", ctypes.c_wchar_p),
     ("value", ctypes.c_bool),
 ]

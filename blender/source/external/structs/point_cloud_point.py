@@ -11,7 +11,7 @@ class CPointCloudPoint(ctypes.Structure):
     rotation: nettypes.CVector3
     scale: nettypes.CVector3
 
-CPointCloudPoint.__fields__ = [
+CPointCloudPoint._fields_ = [
     ("instance_name", ctypes.c_wchar_p),
     ("resource_index", ctypes.c_int),
     ("position", nettypes.CVector3),

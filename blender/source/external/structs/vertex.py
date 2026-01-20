@@ -16,7 +16,7 @@ class CVertex(ctypes.Structure):
     morph_positions: TPointer['nettypes.CVector3']
     morph_positions_size: int
 
-CVertex.__fields__ = [
+CVertex._fields_ = [
     ("position", nettypes.CVector3),
     ("normal", nettypes.CVector3),
     ("uv_direction", CUVDirection),

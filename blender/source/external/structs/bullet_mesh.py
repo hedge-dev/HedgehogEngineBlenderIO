@@ -14,7 +14,7 @@ class CBulletMesh(ctypes.Structure):
     primitives: TPointer['CBulletPrimitive']
     primitives_size: int
 
-CBulletMesh.__fields__ = [
+CBulletMesh._fields_ = [
     ("name", ctypes.c_wchar_p),
     ("bullet_mesh_version", ctypes.c_int),
     ("shapes", ctypes.POINTER(CBulletShape)),

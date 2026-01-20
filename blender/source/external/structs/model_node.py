@@ -9,7 +9,7 @@ class CModelNode(ctypes.Structure):
     parent_index: int
     transform: nettypes.CMatrix
 
-CModelNode.__fields__ = [
+CModelNode._fields_ = [
     ("name", ctypes.c_wchar_p),
     ("parent_index", ctypes.c_int),
     ("transform", nettypes.CMatrix),

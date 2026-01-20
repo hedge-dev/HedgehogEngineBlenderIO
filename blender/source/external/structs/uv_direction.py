@@ -8,7 +8,7 @@ class CUVDirection(ctypes.Structure):
     tangent: nettypes.CVector3
     binormal: nettypes.CVector3
 
-CUVDirection.__fields__ = [
+CUVDirection._fields_ = [
     ("tangent", nettypes.CVector3),
     ("binormal", nettypes.CVector3),
 ]
