@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net10.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<RootNamespace>HEIO.NET</RootNamespace>
+		<AssemblyName>HEIO.NET</AssemblyName>
+		<Platforms>AnyCPU</Platforms>
+		<AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+		<PublishAot>true</PublishAot>
+		<DebugType>embedded</DebugType>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="J113D.Common" Version="1.0.0" />
+		<PackageReference Include="J113D.Strippify" Version="1.0.0" />
+		<PackageReference Include="MIConvexHull" Version="1.1.19.1019" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\..\SharpNeedle\Source\SharpNeedle\SharpNeedle.csproj" />
+	</ItemGroup>
+
+</Project>
