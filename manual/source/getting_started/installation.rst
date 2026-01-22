@@ -3,42 +3,10 @@
 Installing HEIO
 ***************
 
-Installing HEIO is not as straightforward as most other addons. It requires **.NET 8** to be
-installed, as the addon relies on **C# Libraries** to boost performance and reduce on the amount
-of code needed to manage. You will have to ensure that you have the **.NET 8 Runtime** installed
-before being able to use the addon to its fullest.
-
-
-Installing .NET 8
-=================
-
-If you are unsure of whether your machine already has .NET 8 installed, you can check by opening
-the console and running ``dotnet --list-runtimes``.
-
-The output should look similar to this:
-
-.. figure:: /images/installing_dotnet8.png
-
-Notice the line marked in green, ``Microsoft.NETCore.App 8.X.X``. if you find this (or a newer
-version) among your installed runtimes, you have all you need!
-
-------------
-
-If you don't have the needed runtime installed, head over to
-`the download page <https://dotnet.microsoft.com/en-us/download>`_ and install the runtime.
-
-.. note::
-
-	The website recommends downloading the **SDK** (**S**\ oftware **D**\ evelopment **K**\ it). Unless you are a
-	developer, **you may only want the runtime**. You can head over to
-	"`All .NET 8.0 downloads <https://dotnet.microsoft.com/en-us/download/dotnet/8.0>`_" and
-	download the Desktop runtime from further down, saving space on your machines storage.
-
-
 Installing Blender
 ==================
 
-| The Addon is only supported on `Blender <https://blender.org/>`_ version 4.3 and above.
+| The Addon is only supported on `Blender <https://blender.org/>`_ version 5.0 and above.
 | It is recommended to install blender through `Steam <https://store.steampowered.com/app/365670>`_. This will ensure you're always using the latest release version.
 
 
