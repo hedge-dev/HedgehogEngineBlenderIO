@@ -87,8 +87,7 @@ class MeshConverter:
         for i, vertex in enumerate(vertex_data):
             for s in range(vertex.morph_positions_size):
                 position = vertex.morph_positions[s]
-                shapekey_positions[s][i] = Vector(
-                    (position.X, -position.Z, position.Y))
+                shapekey_positions[s][i] = i_transform.c_to_bpy_position(position)
 
         shapekey_dummy_obj = bpy.data.objects.new("DUMMY", mesh)
 
@@ -98,6 +97,7 @@ class MeshConverter:
             shapekey = shapekey_dummy_obj.shape_key_add(name=morph_name)
             for i, pos in enumerate(shapekey_positions[s]):
                 shapekey.data[i].co += pos
+            shapekey.value = 0
 
         bpy.data.objects.remove(shapekey_dummy_obj)
 
