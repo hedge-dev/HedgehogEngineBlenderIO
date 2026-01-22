@@ -179,8 +179,11 @@ class ExternalLibrary:
             yield cls
         finally:
             cls._cleanup()
-            get_dll_close()(cls._LIBRARY._handle)
-            cls._LIBRARY = None
+            handle = cls._LIBRARY._handle
+            del cls._LIBRARY._handle
+            cls._LIBRARY._handle = None
+
+            get_dll_close()(handle)
 
     @classmethod
     def _setup(cls):
