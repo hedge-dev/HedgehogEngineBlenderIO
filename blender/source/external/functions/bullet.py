@@ -65,7 +65,8 @@ FUNCTIONS = {
     "btIndexedMesh_delete": (
         (
             ctypes.c_void_p,
-        )
+        ),
+        None
     ),
     "btTriangleIndexVertexArray_new": (
         None,
@@ -103,11 +104,7 @@ FUNCTIONS = {
         (
             ctypes.c_void_p,
         ),
-        None
-    ),
-    "btQuantizedBvh_calculateSerializeBufferSize": (
-        None,
-        ctypes.c_uint
+        ctypes.c_int
     ),
     "btOptimizedBvh_serializeInPlace": (
         (
@@ -116,10 +113,6 @@ FUNCTIONS = {
             ctypes.c_uint, 
             ctypes.c_bool
         ),
-        None
-    ),
-    "btOptimizedBvh_serializeInPlace": (
-        None,
         ctypes.c_bool
     ),
     "btQuantizedBvh_delete": (
