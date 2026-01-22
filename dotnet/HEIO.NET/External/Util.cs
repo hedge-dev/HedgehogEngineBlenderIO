@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Text;
 
 namespace HEIO.NET.External
 {
@@ -11,6 +12,8 @@ namespace HEIO.NET.External
 
     internal static unsafe class Util
     {
+        public static bool IsWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
+
         public static T[]? ToArray<T>(T* values, int valuesSize) where T : unmanaged
         {
             if(values == null)
@@ -53,7 +56,22 @@ namespace HEIO.NET.External
 
         public static string? ToString(char* pointer)
         {
-            return Marshal.PtrToStringUni((nint)pointer);
+            if(IsWindows)
+            {
+                return Marshal.PtrToStringUni((nint)pointer);
+            }
+            else
+            {
+                int* utf32 = (int*)pointer;
+                int length = 0;
+
+                while (utf32[length] != 0)
+                {
+                    length++;
+                }
+
+                return Encoding.UTF32.GetString((byte*)pointer, length * 4);
+            }
         }
 
         public static string[]? ToStringArray(char** values, int valuesSize)

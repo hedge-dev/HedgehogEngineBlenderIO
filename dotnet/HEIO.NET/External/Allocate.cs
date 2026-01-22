@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Text;
 
 namespace HEIO.NET.External
 {
@@ -128,8 +129,24 @@ namespace HEIO.NET.External
 
         public static char* AllocString(this string? value)
         {
-            char* result = (char*)Marshal.StringToHGlobalUni(value);
+            if(value == null)
+            {
+                return null;
+            }
+
+            char* result;
+
+            if (Util.IsWindows)
+            {
+                result = (char*)Marshal.StringToHGlobalUni(value);
+            }
+            else
+            {
+                result = (char*)AllocFromArray(Encoding.UTF32.GetBytes(value + '\0'));
+            }
+
             _allocations.Add((nint)result);
+
             return result;
         }
 
