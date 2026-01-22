@@ -1,4 +1,5 @@
 import ctypes
+import ctypes.util
 import platform
 import os
 from contextlib import contextmanager
