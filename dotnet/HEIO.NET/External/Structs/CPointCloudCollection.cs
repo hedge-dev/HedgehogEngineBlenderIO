@@ -38,9 +38,9 @@ namespace HEIO.NET.External.Structs
         public readonly PointCloudCollection ToInternal()
         {
             return new(
-                Util.PointersToArray<CModelSet, ModelSet>(models, modelsSize)!,
+                Util.PointersToArray<CModelSet, ModelSet>(models, modelsSize) ?? [],
                 CPointCloudCloud.ToInternalArray(modelClouds, modelsSize),
-                Util.PointersToArray<CCollisionMeshData, CollisionMeshData>(collisionMeshes, collisionMeshesSize)!,
+                Util.PointersToArray<CCollisionMeshData, CollisionMeshData>(collisionMeshes, collisionMeshesSize) ?? [],
                 CPointCloudCloud.ToInternalArray(collisionMeshClouds, collisionMeshCloudsSize)
             );
         }

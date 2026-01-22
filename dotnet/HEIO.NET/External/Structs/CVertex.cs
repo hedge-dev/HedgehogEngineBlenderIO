@@ -41,7 +41,7 @@ namespace HEIO.NET.External.Structs
                 normal,
                 uvDirection.ToInternal(),
                 uvDirection2.ToInternal(),
-                Util.ToArray<CVertexWeight, VertexWeight>(weights, weightsSize)!
+                Util.ToArray<CVertexWeight, VertexWeight>(weights, weightsSize) ?? []
             );
         }
     }

@@ -61,9 +61,9 @@ class MeshConverter:
 
         used_groups = [False] * len(groups)
 
-        for vertex in vertex_data:
-            for i in range(vertex.weights_size):
-                weight: CVertexWeight = vertex.weights[i]
+        for i, vertex in enumerate(vertex_data):
+            for j in range(vertex.weights_size):
+                weight: CVertexWeight = vertex.weights[j]
                 groups[weight.index].add([i], weight.weight, 'REPLACE')
                 used_groups[weight.index] = True
 

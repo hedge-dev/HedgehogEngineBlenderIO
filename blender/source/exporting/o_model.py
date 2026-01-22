@@ -1,12 +1,13 @@
 import bpy
 from mathutils import Vector, Matrix
-from ctypes import c_int, POINTER, pointer, c_wchar_p
+from ctypes import c_int, POINTER, pointer, cast, c_void_p, c_wchar_p
 
 from . import o_mesh, o_modelset, o_transform, o_material, o_object_manager, o_sca_parameters
 from ..external import (
     HEIONET, 
     util,
     enums, 
+    TPointer,
     CMeshData, 
     CMeshDataMeshGroupInfo, 
     CMeshDataMeshSetInfo, 
@@ -75,6 +76,9 @@ class RawVertex:
                 if index is not None:
                     weights.append(CVertexWeight(index, weight))
 
+            if len(weights) == 0:
+                weights.append(CVertexWeight(0, 1))
+
         result = CVertex(
             position = o_transform.bpy_to_c_position(position),
             normal = o_transform.bpy_to_c_position(normal),
@@ -120,8 +124,7 @@ class RawMeshData:
         self.colors = []
 
         self.mesh_sets = []
-        self.group_names = []
-        self.group_set_counts = []
+        self.groups = []
 
         self.morph_names = None
 
@@ -161,7 +164,7 @@ class RawMeshData:
 
             triangle_indices = util.construct_array(self.triangle_indices, c_int),
             polygon_uv_directions = util.as_array(polygon_tangents, CUVDirection),
-            polygon_uv_directions_2 = util.as_array(polygon_tangents2, CUVDirection),
+            polygon_uv_directions2 = util.as_array(polygon_tangents2, CUVDirection),
 
             texture_coordinates = util.as_array([util.as_array(tc, CVector2) for tc in self.texture_coordinates], POINTER(CVector2)),
             texture_coordinates_size = len(self.texture_coordinates),
@@ -189,8 +192,8 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
     _auto_sca_parameters: bool
     _use_pose_bone_matrices: bool
     _bone_orientation: str
-    _topology: any
-    _model_version_mode: any
+    _topology: int
+    _model_version_mode: int
     _optimized_vertex_data: bool
 
     def __init__(
@@ -277,12 +280,14 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
             # loops on the same vertex must share the same normal, no need to merge or compare
             loop_normals[loop.vertex_index] = loop.normal
 
-        return [RawVertex(
-            vertex.co.copy(),
-            loop_normals[vertex.index].copy(),
-            get_shape_positions(vertex),
-            get_weights(vertex)
-        ) for vertex in model_set.evaluated_mesh.vertices]
+        return [
+            RawVertex(
+                vertex.co.copy(),
+                loop_normals[vertex.index].copy(),
+                get_shape_positions(vertex),
+                get_weights(vertex)
+            ) for vertex in model_set.evaluated_mesh.vertices
+        ]
 
     def _map_polygons(self, model_set: o_modelset.ModelSet):
         group_names = []
@@ -535,9 +540,9 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
             if set_size == 0:
                 return
 
-            materaial = materials[current_material]
+            material = materials[current_material]
             c_material = self._material_processor.get_converted_material(
-                materaial)
+                material)
 
             def get_param_or(fallback, param_name):
                 if self._target_definition.hedgehog_engine_version == 1:
@@ -546,7 +551,7 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
                 if fallback:
                     return fallback
 
-                parameter = materaial.heio_material.parameters.find_next(
+                parameter = material.heio_material.parameters.find_next(
                     param_name, 0, set(["BOOLEAN"]))
                 if parameter is not None:
                     return parameter.boolean_value
@@ -566,12 +571,12 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
             raw_meshdata.mesh_sets.append(
                 CMeshDataMeshSetInfo(
                     use_byte_colors = byte_colors,
-                    enable_8_weights = enable_8_weight,
+                    enable8weights = enable_8_weight,
                     enable_multi_tangent = enable_multi_tangent,
 
                     material_reference= CStringPointerPair(
                         c_material.contents.name,
-                        c_material
+                        cast(c_material, c_void_p)
                     ),
 
                     mesh_slot_type = layer_type,
@@ -587,9 +592,13 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
         def add_group():
             if group_size == 0:
                 return
-
-            raw_meshdata.group_names.append(group_names[current_group])
-            raw_meshdata.group_set_counts.append(group_size)
+            
+            raw_meshdata.groups.append(
+                CMeshDataMeshGroupInfo(
+                    name = group_names[current_group],
+                    size = group_size
+                )
+            )
 
         for _, poly_group, poly_layer, poly_material in polygon_mapping:
 
@@ -799,8 +808,7 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
         progress_console.start(
             "Preparing LOD mesh data for export", len(lod_info.levels) - 1)
         
-        compile_data_sets = []
-        lod_items = []
+        compile_data_sets: list[tuple[TPointer[CMeshDataSet], CLODItem]] = []
 
         for i, level in enumerate(lod_info.levels.elements[1:]):
             if level.target is None:
@@ -811,15 +819,18 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
 
             lod_children = self._object_manager.lod_trees[level.target]
 
-            compile_data_sets.append(
-                self._assemble_compile_data_set(level.target, lod_children, name)
-            )
+            compile_data = self._assemble_compile_data_set(level.target, lod_children, name)
+            if compile_data is None:
+                continue
 
-            lod_items.append(
-                CLODItem(
-                    cascade_flag = 1 << level.cascade,
-                    unknown2 = level.unknown,
-                    cascade_level = level.cascade
+            compile_data_sets.append(
+                (
+                    compile_data,
+                    CLODItem(
+                        cascade_flag = 1 << level.cascade,
+                        unknown2 = level.unknown,
+                        cascade_level = level.cascade
+                    )
                 )
             )
 
@@ -828,8 +839,13 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
         if len(compile_data_sets) == 0:
             return None
 
-        return compile_data_sets, lod_items
+        compile_data_sets.sort(lambda x: x[1].cascade_level)
 
+        return (
+            [x[0] for x in compile_data_sets],
+            [x[1] for x in compile_data_sets]
+        )
+            
     def _assemble_compile_data(self, root, children, name: str):
         compile_data = self._assemble_compile_data_set(root, children, name)
 
@@ -838,85 +854,47 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
         
         compile_data_sets = [compile_data]
 
-        lod_compile_data = self._assemble_lod_compile_data(root)
+        lod_compile_data = self._assemble_lod_compile_data(root, name)
         lod_items = None
+        lod_items_size = 0
+        lod_unknown1 = 0
 
         if lod_compile_data is not None:
             compile_data_sets.extend(lod_compile_data[0])
             lod_items = lod_compile_data[1]
+            lod_items_size = len(lod_items)
+            lod_unknown1 = 4
+            if lod_items[-1].cascade_level != 31:
+                lod_unknown1 |= 0x80
 
-        return (
-            name, 
+        return pointer(
             CModelSet(
                 mesh_data_sets = util.as_array(compile_data_sets, POINTER(CMeshDataSet)),
                 mesh_data_sets_size = len(compile_data_sets),
 
                 lod_items = util.as_array(lod_items, CLODItem),
-                lod_items_size = len(lod_items) if lod_items is not None else 0
+                lod_items_size = lod_items_size,
+                lod_unknown1 = lod_unknown1
             )
         )
-
+        
     ##################################################
-
-
-    def compile_output(self, use_multicore_processing: bool):
-        progress_console.start("Compiling models")
-        progress_console.update("This may take a while")
-
-        models = HEIO_NET.MESH_COMPILE_DATA.ToHEModels(
-            [x[1] for x in self._output_queue],
-            self._model_version_mode,
-            self._topology,
-            self._optimized_vertex_data,
-            use_multicore_processing
-        )
-
-        for queued, model in zip(self._output_queue, models):
-            if len(queued) == 3:
-                continue
-
-            self._lod_output[queued[0]] = model
-
-        for queued, model in zip(self._output_queue, models):
-            if len(queued) == 2:
-                continue
-
-            extension = ".terrain-model" if isinstance(
-                model, SharpNeedle.TERRAIN_MODEL) else ".model"
-
-            if queued[2] is None:
-                self._output[queued[0]] = (model, extension)
-                continue
-
-            lod_models = []
-            lod_cascades = []
-            lod_unknowns = []
-
-            lod_models.append(model)
-
-            for i, level in enumerate(queued[2].levels):
-                if i > 0 and level.target is None:
-                    continue
-
-                lod_cascades.append(level.cascade)
-                lod_unknowns.append(level.unknown)
-
-                if i > 0:
-                    lod_models.append(self._lod_output[level.target])
-
-            self._output[queued[0]] = (HEIO_NET.MODEL_HELPER.CreateLODArchive(
-                lod_models, lod_cascades, lod_unknowns), extension)
-
-        self._output_queue.clear()
-        progress_console.end()
 
     def compile_output_to_files(self, use_multicore_processing: bool, directory: str):
         progress_console.start("Compiling & writing meshes", len(self._output_queue))
 
-        compile_sets = [x[1] for x in self._output_queue]
+        HEIONET.model_compile_to_files(
+            self._output_queue,
+            self._model_version_mode,
+            self._topology,
+            self._optimized_vertex_data,
+            use_multicore_processing,
+            directory
+        )
 
-        for i, output in enumerate(self._output_queue):
-            pass
+        self._output_queue.clear()
+
+        progress_console.end()
 
         self._material_processor.write_output_to_files(directory)
         self._material_processor.write_output_images_to_files(directory)

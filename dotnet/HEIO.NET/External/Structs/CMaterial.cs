@@ -83,7 +83,7 @@ namespace HEIO.NET.External.Structs
             result.Texset = new()
             {
                 Name = Util.ToString(texturesName)!,
-                Textures = [.. Util.ToArray<CTexture, Texture>(textures, texturesSize)!]
+                Textures = [.. Util.ToArray<CTexture, Texture>(textures, texturesSize) ?? []]
             };
 
             return result;

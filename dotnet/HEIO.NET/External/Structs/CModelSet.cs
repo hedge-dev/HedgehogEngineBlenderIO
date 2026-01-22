@@ -1,5 +1,6 @@
 ﻿using HEIO.NET.Internal;
 using SharpNeedle.Framework.HedgehogEngine.Needle.Archive;
+using System.Collections.Generic;
 
 namespace HEIO.NET.External.Structs
 {
@@ -34,27 +35,45 @@ namespace HEIO.NET.External.Structs
             };
         }
 
+        public readonly LODInfoBlock? LODInfoToInternal()
+        {
+            if (lodItemsSize == 0)
+            {
+                return null;
+            }
+
+            return new()
+            {
+                Items = [.. Util.ToArray<CLODItem, LODInfoBlock.LODItem>(lodItems, lodItemsSize) ?? []],
+                Unknown1 = lodUnknown1
+            };
+        }
+
         public ModelSet ToInternal()
         {
             MeshDataSet[] meshDataSets = new MeshDataSet[meshDataSetsSize];
-            for(int i = 0; i < meshDataSetsSize; i++)
+            for (int i = 0; i < meshDataSetsSize; i++)
             {
                 meshDataSets[i] = this.meshDataSets[i]->ToInternal();
             }
 
-            LODInfoBlock? lodInfo = null;
-            if(lodItemsSize > 0)
+            return new(
+                meshDataSets,
+                LODInfoToInternal()
+            );
+        }
+
+        public ModelSet ToInternal(Dictionary<nint, MeshDataSet> internalMeshDataSets)
+        {
+            MeshDataSet[] meshDataSets = new MeshDataSet[meshDataSetsSize];
+            for (int i = 0; i < meshDataSetsSize; i++)
             {
-                lodInfo = new()
-                {
-                    Items = [.. Util.ToArray<CLODItem, LODInfoBlock.LODItem>(lodItems, lodItemsSize)!],
-                    Unknown1 = lodUnknown1
-                };
+                meshDataSets[i] = internalMeshDataSets[(nint)this.meshDataSets[i]];
             }
 
             return new(
                 meshDataSets,
-                lodInfo
+                LODInfoToInternal()
             );
         }
     }

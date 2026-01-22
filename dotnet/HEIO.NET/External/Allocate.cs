@@ -1,6 +1,4 @@
-﻿using HEIO.NET.External.Structs;
-using HEIO.NET.Internal.Modeling;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -135,11 +133,16 @@ namespace HEIO.NET.External
             return result;
         }
 
-        public static char** AllocStringArray(string[] values)
+        public static char** AllocStringArray(IList<string>? values)
         {
-            char** result = (char**)Alloc<nint>(values.Length);
+            if(values == null)
+            {
+                return null;
+            }
 
-            for (int i = 0; i < values.Length; i++)
+            char** result = (char**)Alloc<nint>(values.Count);
+
+            for (int i = 0; i < values.Count; i++)
             {
                 result[i] = values[i].AllocString();
             }

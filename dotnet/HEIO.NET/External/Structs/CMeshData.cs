@@ -1,4 +1,5 @@
 ﻿using HEIO.NET.Internal.Modeling;
+using System;
 using System.Numerics;
 
 namespace HEIO.NET.External.Structs
@@ -72,15 +73,15 @@ namespace HEIO.NET.External.Structs
         {
             return new(
                 Util.ToString(name)!,
-                Util.ToArray<CVertex, Vertex>(vertices, verticesSize)!,
-                Util.ToArray(triangleIndices, triangleIndexCount)!,
+                Util.ToArray<CVertex, Vertex>(vertices, verticesSize) ?? [],
+                Util.ToArray(triangleIndices, triangleIndexCount) ?? [],
                 Util.ToArray(polygonNormals, triangleIndexCount),
                 Util.ToArray<CUVDirection, UVDirection>(polygonUVDirections, triangleIndexCount),
                 Util.ToArray<CUVDirection, UVDirection>(polygonUVDirections2, triangleIndexCount),
-                Util.To2DArray(textureCoordinates, textureCoordinatesSize, triangleIndexCount)!,
-                Util.To2DArray(colors, colorsSize, triangleIndexCount)!,
-                Util.ToArray<CMeshDataMeshSetInfo, MeshDataMeshSetInfo>(meshSets, meshSetsSize)!,
-                Util.ToArray<CMeshDataMeshGroupInfo, MeshDataMeshGroupInfo>(groups, groupsSize)!,
+                Util.To2DArray(textureCoordinates, textureCoordinatesSize, triangleIndexCount) ?? [],
+                Util.To2DArray(colors, colorsSize, triangleIndexCount) ?? [],
+                Util.ToArray<CMeshDataMeshSetInfo, MeshDataMeshSetInfo>(meshSets, meshSetsSize) ?? [],
+                Util.ToArray<CMeshDataMeshGroupInfo, MeshDataMeshGroupInfo>(groups, groupsSize) ?? [],
                 Util.ToStringArray(morphNames, morphNamesSize)
             );
         }

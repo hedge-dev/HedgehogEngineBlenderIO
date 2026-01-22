@@ -53,10 +53,10 @@ namespace HEIO.NET.External.Structs
             {
                 IsConvex = ((BulletShapeFlags)flags).HasFlag(BulletShapeFlags.IsConvexShape),
                 Layer = layer,
-                Vertices = Util.ToArray(vertices, verticesSize)!,
+                Vertices = Util.ToArray(vertices, verticesSize) ?? [],
                 Faces = Util.ToArray(faces, facesSize),
                 BVH = Util.ToArray(bvh, bvhSize),
-                Types = Util.ToArray(types, typesSize)!,
+                Types = Util.ToArray(types, typesSize) ?? [],
                 Unknown1 = unknown1,
                 Unknown2 = unknown2,
             };

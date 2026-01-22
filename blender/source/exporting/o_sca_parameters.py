@@ -47,7 +47,7 @@ def convert_parameters_to_nodes(c_parent: CSampleChunkNode, sca_parameter_list: 
     append_children_to_node(c_parent, nodes)
 
 
-def convert_to_node(c_parent: TPointer[CSampleChunkNode], sca_parameter_list: HEIO_SCA_Parameters, defaults: dict[str, any]):
+def convert_to_node(c_parent: CSampleChunkNode, sca_parameter_list: HEIO_SCA_Parameters, defaults: dict[str, any]):
     sca_param_node = CSampleChunkNode(
         name = "SCAParam"
     )
@@ -55,9 +55,8 @@ def convert_to_node(c_parent: TPointer[CSampleChunkNode], sca_parameter_list: HE
     convert_parameters_to_nodes(sca_param_node, sca_parameter_list, defaults)
 
     if sca_param_node.child:
-        c_parent_contents = c_parent[0]
-        sca_param_node.sibling = c_parent_contents.child
-        c_parent_contents.child = pointer(sca_param_node)
+        sca_param_node.sibling = c_parent.child
+        c_parent.child = pointer(sca_param_node)
 
 def convert_to_model_node_prm(sca_parameter_list, index, defaults):
     prms_node = CSampleChunkNode(

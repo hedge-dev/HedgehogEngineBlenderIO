@@ -1,6 +1,6 @@
 ﻿using Amicitia.IO.Binary;
 
-namespace HEIO.NET.Modeling.ConvertTo
+namespace HEIO.NET.Internal.Modeling.ConvertTo
 {
     internal static partial class VertexFormatEncoder
     {

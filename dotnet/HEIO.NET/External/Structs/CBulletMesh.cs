@@ -34,7 +34,7 @@ namespace HEIO.NET.External.Structs
             {
                 Name = Util.ToString(name)!,
                 BulletMeshVersion = bulletMeshVersion,
-                Shapes = Util.ToArray<CBulletShape, BulletShape>(shapes, shapesSize)!,
+                Shapes = Util.ToArray<CBulletShape, BulletShape>(shapes, shapesSize) ?? [],
                 Primitives = CBulletPrimitive.ToInternalArray(primitives, primitivesSize)
             };
         }

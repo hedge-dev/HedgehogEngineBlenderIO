@@ -80,7 +80,7 @@ class MaterialProcessor:
             if self._target_definition.data_versions.sample_chunk != 1:
                 c_material.root_node = o_sca_parameters.setup("Material", c_material.data_version)
                 o_sca_parameters.convert_to_node(
-                    c_material.root_node[0].child, 
+                    c_material.root_node[0].child.contents, 
                     material_properties.sca_parameters, 
                     sca_defaults
                 )

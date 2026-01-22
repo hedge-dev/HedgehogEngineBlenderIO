@@ -1,7 +1,6 @@
 ﻿using Amicitia.IO.Binary;
 using Amicitia.IO.Streams;
 using HEIO.NET.Internal.Modeling.GPU;
-using HEIO.NET.Modeling.ConvertFrom;
 using SharpNeedle.Framework.HedgehogEngine.Mirage.ModelData;
 using SharpNeedle.Structs;
 using System;

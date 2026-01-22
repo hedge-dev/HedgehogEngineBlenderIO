@@ -29,13 +29,13 @@ namespace HEIO.NET.External.Structs
         {
             return new(
                 Util.ToString(name)!,
-                Util.ToArray<CPointCloudPoint, PointCloudCollection.Point>(points, pointsSize)!
+                Util.ToArray<CPointCloudPoint, PointCloudCollection.Point>(points, pointsSize) ?? []
             );
         }
 
         public static PointCloudCollection.Cloud[] ToInternalArray(CPointCloudCloud* clouds, nint cloudsSize)
         {
-            return Util.ToArray<CPointCloudCloud, PointCloudCollection.Cloud>(clouds, cloudsSize)!;
+            return Util.ToArray<CPointCloudCloud, PointCloudCollection.Cloud>(clouds, cloudsSize) ?? [];
         }
     }
 }

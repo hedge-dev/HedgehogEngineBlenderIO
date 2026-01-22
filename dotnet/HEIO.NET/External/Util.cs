@@ -56,8 +56,13 @@ namespace HEIO.NET.External
             return Marshal.PtrToStringUni((nint)pointer);
         }
 
-        public static string[] ToStringArray(char** values, nint valuesSize)
+        public static string[]? ToStringArray(char** values, nint valuesSize)
         {
+            if(values == null)
+            {
+                return null;
+            }
+
             string[] result = new string[valuesSize];
 
             for (int i = 0; i < result.Length; i++)

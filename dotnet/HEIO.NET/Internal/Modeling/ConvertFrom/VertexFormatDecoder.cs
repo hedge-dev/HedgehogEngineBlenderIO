@@ -6,7 +6,7 @@ using System.IO;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 
-namespace HEIO.NET.Modeling.ConvertFrom
+namespace HEIO.NET.Internal.Modeling.ConvertFrom
 {
     internal static partial class VertexFormatDecoder
     {

@@ -58,6 +58,18 @@ namespace HEIO.NET.Internal
             }
         }
 
+        public static ModelBase[] CompileMeshData(MeshDataSet[] compileData, ModelVersionMode versionMode, Topology topology, bool optimizedVertexData, bool multithreading)
+        {
+            return Modeling.ConvertTo.ModelConverter.CompileMeshData(
+                compileData,
+                versionMode,
+                topology,
+                optimizedVertexData,
+                multithreading
+            );
+        }
+
+
         public void SaveToJson(string directory)
         {
             string json = JsonSerializer.Serialize(this, SourceGenerationContext.Default.MeshDataSet);
@@ -225,5 +237,6 @@ namespace HEIO.NET.Internal
                 out resolveInfo
             );
         }
+
     }
 }

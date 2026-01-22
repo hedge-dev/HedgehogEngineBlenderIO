@@ -44,11 +44,11 @@ namespace HEIO.NET.External.Structs
         public readonly ResolveInfo ToResolveInfo()
         {
             return new(
-                Util.ToStringArray(unresolvedFiles, unresolvedFilesSize),
-                Util.ToStringArray(missingDependencies, missingDependenciesSize),
-                Util.ToStringArray(packedDependencies, packedDependenciesSize),
-                Util.ToStringArray(unresolvedNTSPFiles, unresolvedNTSPFilesSize),
-                Util.ToStringArray(missingStreamedImages, missingStreamedImagesSize)
+                Util.ToStringArray(unresolvedFiles, unresolvedFilesSize) ?? [],
+                Util.ToStringArray(missingDependencies, missingDependenciesSize) ?? [],
+                Util.ToStringArray(packedDependencies, packedDependenciesSize) ?? [],
+                Util.ToStringArray(unresolvedNTSPFiles, unresolvedNTSPFilesSize) ?? [],
+                Util.ToStringArray(missingStreamedImages, missingStreamedImagesSize) ?? []
             );
         }
     }

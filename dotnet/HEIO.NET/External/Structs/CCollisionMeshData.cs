@@ -67,13 +67,13 @@ namespace HEIO.NET.External.Structs
         {
             return new CollisionMeshData(
                 Util.ToString(name)!,
-                Util.ToArray(vertices, verticesSize)!,
-                Util.ToArray(triangleIndices, triangleIndicesSize)!,
-                Util.ToArray(types, typesSize)!,
+                Util.ToArray(vertices, verticesSize) ?? [],
+                Util.ToArray(triangleIndices, triangleIndicesSize) ?? [],
+                Util.ToArray(types, typesSize) ?? [],
                 Util.ToArray(typeValues, typeValuesSize),
-                Util.ToArray(flags, flagsSize)!,
+                Util.ToArray(flags, flagsSize) ?? [],
                 Util.ToArray(flagValues, flagValuesSize),
-                Util.ToArray<CCollisionMeshDataGroup, CollisionMeshDataGroup>(groups, groupsSize)!,
+                Util.ToArray<CCollisionMeshDataGroup, CollisionMeshDataGroup>(groups, groupsSize) ?? [],
                 CBulletPrimitive.ToInternalArray(primitives, primitivesSize)
             );
         }

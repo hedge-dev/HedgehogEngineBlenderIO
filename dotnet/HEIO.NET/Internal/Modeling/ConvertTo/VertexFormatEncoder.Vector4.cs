@@ -2,7 +2,7 @@
 using System;
 using System.Numerics;
 
-namespace HEIO.NET.Modeling.ConvertTo
+namespace HEIO.NET.Internal.Modeling.ConvertTo
 {
     internal static partial class VertexFormatEncoder
     {

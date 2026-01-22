@@ -1,7 +1,7 @@
 ﻿using Amicitia.IO.Binary;
 using SharpNeedle.Structs;
 
-namespace HEIO.NET.Modeling.ConvertFrom
+namespace HEIO.NET.Internal.Modeling.ConvertFrom
 {
     internal static partial class VertexFormatDecoder
     {

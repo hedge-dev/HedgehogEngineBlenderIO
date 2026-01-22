@@ -3,10 +3,13 @@ using HEIO.NET.Internal;
 using HEIO.NET.Internal.Modeling;
 using SharpNeedle.Framework.HedgehogEngine.Bullet;
 using SharpNeedle.Framework.HedgehogEngine.Mirage.MaterialData;
+using SharpNeedle.Framework.HedgehogEngine.Mirage.ModelData;
+using SharpNeedle.Framework.HedgehogEngine.Needle.Archive;
 using SharpNeedle.IO;
 using SharpNeedle.Resource;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
@@ -274,7 +277,7 @@ namespace HEIO.NET.External
             try
             {
                 string directoryString = Util.ToString(directory)!;
-                string[] imagesStrings = Util.ToStringArray(images, imagesSize);
+                string[] imagesStrings = Util.ToStringArray(images, imagesSize)!;
                 string streamingDirectoryString = Util.ToString(streamingDirectory)!;
 
                 Dictionary<string, Image> output = Image.LoadDirectoryImages(directoryString, imagesStrings, streamingDirectoryString, out ResolveInfo outInfo);
@@ -369,7 +372,7 @@ namespace HEIO.NET.External
                 return;
             }
         }
-        
+
         #endregion
 
 
@@ -380,7 +383,7 @@ namespace HEIO.NET.External
         {
             try
             {
-                string[] filepathsArray = Util.ToStringArray(filepaths, filepathsSize);
+                string[] filepathsArray = Util.ToStringArray(filepaths, filepathsSize)!;
                 MeshImportSettings internalSettings = settings->ToInternal();
 
                 ModelSet[] modelSets = ModelSet.ReadModelFiles(filepathsArray, includeLoD, internalSettings, out ResolveInfo resultResolveInfo);
@@ -402,15 +405,15 @@ namespace HEIO.NET.External
         }
 
         [UnmanagedCallersOnly(EntryPoint = "model_get_materials")]
-        public static CArray ModelGetMaterials(CModelSet** model_sets, nint model_sets_size)
+        public static CArray ModelGetMaterials(CModelSet** modelSets, nint modelSetsSize)
         {
             try
             {
                 List<nint> materials = [];
 
-                for (int i = 0; i < model_sets_size; i++)
+                for (int i = 0; i < modelSetsSize; i++)
                 {
-                    CModelSet* model_set = model_sets[i];
+                    CModelSet* model_set = modelSets[i];
 
                     for (int j = 0; j < model_set->meshDataSetsSize; j++)
                     {
@@ -443,15 +446,97 @@ namespace HEIO.NET.External
 
         [UnmanagedCallersOnly(EntryPoint = "model_compile_to_files")]
         public static void ModelCompileToFiles(
-            CModelSet** model_sets,
-            nint model_sets_size,
+            CModelSet** modelSets,
+            nint modelSetsSize,
             int versionMode,
             int topology,
             bool optimizedVertexData,
             bool multithreading,
             char* directory)
         {
+            try
+            {
+                string outputDirectory = Util.ToString(directory)!;
 
+                Dictionary<nint, MeshDataSet> meshDataSets = [];
+
+                for (int i = 0; i < modelSetsSize; i++)
+                {
+                    CModelSet* modelSet = modelSets[i];
+                    for (int j = 0; j < modelSet->meshDataSetsSize; j++)
+                    {
+                        CMeshDataSet* meshDataSet = modelSet->meshDataSets[j];
+                        if (!meshDataSets.ContainsKey((nint)meshDataSet))
+                        {
+                            MeshDataSet internalMeshDataSet = meshDataSet->ToInternal();
+                            internalMeshDataSet.SaveToJson(outputDirectory);
+                            meshDataSets.Add((nint)meshDataSet, internalMeshDataSet);
+                        }
+                    }
+                }
+
+                KeyValuePair<nint, MeshDataSet>[] meshDataSetsToConvert = meshDataSets.ToArray();
+
+                ModelBase[] models = MeshDataSet.CompileMeshData(
+                    [.. meshDataSetsToConvert.Select(x => x.Value)],
+                    (ModelVersionMode)versionMode,
+                    (Topology)topology,
+                    optimizedVertexData,
+                    multithreading
+                );
+
+                Dictionary<nint, ModelBase> modelDictionary = meshDataSetsToConvert.Select((x, i) => new KeyValuePair<nint, ModelBase>(x.Key, models[i])).ToDictionary();
+
+                for(int i = 0; i < modelSetsSize; i++)
+                {
+                    CModelSet* modelSet = modelSets[i];
+                    ResourceBase fileData;
+                    ModelBase mainModel = modelDictionary[(nint)modelSet->meshDataSets[0]];
+
+                    if (modelSet->lodItemsSize > 0)
+                    {
+                        NeedleArchive archive = new()
+                        {
+                            OffsetMode = NeedleArchiveDataOffsetMode.SelfRelative,
+                            DataBlocks = [ modelSet->LODInfoToInternal()! ]
+                        };
+
+                        for(int j = 0; j < modelSet->meshDataSetsSize; j++)
+                        {
+                            archive.DataBlocks.Add(
+                                new ModelBlock() 
+                                { 
+                                    Resource = modelDictionary[(nint)modelSet->meshDataSets[j]] 
+                                }
+                            );
+                        }
+
+                        fileData = archive;
+                    }
+                    else
+                    {
+                        fileData = mainModel;
+                    }
+
+                    string extension;
+                    if(mainModel is TerrainModel)
+                    {
+                        extension = ".terrain-model";
+                    }
+                    else
+                    {
+                        extension = ".model";
+                    }
+
+                    string filepath = Path.Join(outputDirectory, mainModel.Name + extension);
+                    fileData.Write(filepath);
+                }
+            }
+            catch (Exception exception)
+            {
+                ErrorHandler.HandleError(exception);
+                return;
+            }
         }
 
         #endregion
@@ -464,7 +549,7 @@ namespace HEIO.NET.External
         {
             try
             {
-                string[] filepathsArray = Util.ToStringArray(filepaths, filepathsSize);
+                string[] filepathsArray = Util.ToStringArray(filepaths, filepathsSize)!;
                 MeshImportSettings internalSettings = settings->ToInternal();
 
                 CollisionMeshData[] meshData = CollisionMeshData.ReadFiles(filepathsArray, internalSettings);
@@ -528,7 +613,7 @@ namespace HEIO.NET.External
         {
             try
             {
-                string[] filepathsArray = Util.ToStringArray(filepaths, filepathsSize);
+                string[] filepathsArray = Util.ToStringArray(filepaths, filepathsSize)!;
                 MeshImportSettings internalSettings = settings->ToInternal();
 
                 PointCloudCollection collection = PointCloudCollection.ReadPointClouds(filepathsArray, includeLoD, internalSettings, out ResolveInfo resultResolveInfo);

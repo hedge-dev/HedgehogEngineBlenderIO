@@ -36,7 +36,7 @@ namespace HEIO.NET.External.Structs
         {
             return new(
                 Util.ToString(name)!,
-                Util.ToArray<CMeshData, MeshData>(meshData, meshDataSize)!,
+                Util.ToArray<CMeshData, MeshData>(meshData, meshDataSize) ?? [],
                 Util.ToArray<CModelNode, Model.Node>(nodes, nodesSize),
                 sampleChunkNodeRoot->ToSampleChunkNodeTree(null)
             );

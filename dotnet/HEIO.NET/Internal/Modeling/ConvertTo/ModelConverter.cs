@@ -139,7 +139,7 @@ namespace HEIO.NET.Internal.Modeling.ConvertTo
                     if(data.SampleChunkNodeRoot.FindNode("NodesExt") is SampleChunkNode node)
                     {
                         SampleChunkNode nodesExt = new("NodesExt", 1);
-                        dataRoot.InsertChild(0, node);
+                        dataRoot.InsertChild(0, nodesExt);
 
                         foreach(SampleChunkNode scaParameter in node)
                         {
