@@ -571,7 +571,10 @@ class ExportPointCloudOperator(ExportCollisionModelOperator, ExportModelBaseOper
         super().setup(context)
 
         self.pointcloud_processor = o_pointcloud.PointCloudProcessor(
-            self.target_definition,
+            self.cloud_type,
+            self.write_resources,
+            self.model_set_manager,
             self.model_processor,
-            self.collision_mesh_processor
+            self.collision_mesh_processor,
+            self.target_definition,
         )

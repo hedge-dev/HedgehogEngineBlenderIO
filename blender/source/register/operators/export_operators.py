@@ -101,27 +101,17 @@ class HEIO_OT_Export_PointCloud(ExportPointCloudOperator):
     bl_label = "Export as HE Pointcloud (*.pcmodel;*.pccol)"
 
     def export(self, context):
-        if self.cloud_type == 'COL':
-            processor = self.collision_mesh_processor
-        elif self.cloud_type == 'MODEL':
-            processor = self.model_processor
-
-        if self.write_resources:
-            self.model_set_manager.evaluate_begin(
-                context, self.cloud_type == 'MODEL')
-            processor.prepare_all_meshdata()
-            self.model_set_manager.evaluate_end()
+        self.pointcloud_processor.prepare(context)
 
         self.pointcloud_processor.object_trees_to_pointcloud_file(
             self.filepath,
-            self.object_manager.object_trees,
-            self.cloud_type,
-            self.write_resources
+            self.object_manager.object_trees
         )
 
-        if self.write_resources:
-            directory = os.path.dirname(self.filepath)
-            processor.compile_output_to_files(self.use_multicore_processing, directory)
+        self.pointcloud_processor.compile_resources_to_files(
+            self.use_multicore_processing,
+            os.path.dirname(self.filepath)
+        )
 
         return {'FINISHED'}
 
@@ -136,16 +126,7 @@ class HEIO_OT_Export_PointClouds(ExportPointCloudOperator):
         if len(self.collection) == 0:
             raise HEIODevException("Invalid export call!")
 
-        if self.cloud_type == 'COL':
-            processor = self.collision_mesh_processor
-        elif self.cloud_type == 'MODEL':
-            processor = self.model_processor
-
-        if self.write_resources:
-            self.model_set_manager.evaluate_begin(
-                context, self.cloud_type == 'MODEL')
-            processor.prepare_all_meshdata()
-            self.model_set_manager.evaluate_end()
+        self.pointcloud_processor.prepare(context)
 
         collection = bpy.data.collections[self.collection]
 
@@ -159,20 +140,18 @@ class HEIO_OT_Export_PointClouds(ExportPointCloudOperator):
             object_trees = self.object_manager.assemble_object_trees(
                 set(col.all_objects))
             
+            name = col.name
             if col.name.lower().endswith(extension):
-                name = col.name[:-len(extension)]
+                name = name[:-len(extension)]
 
             filename = o_util.correct_filename(name)
             filepath = os.path.join(directory, filename + extension)
 
             self.pointcloud_processor.object_trees_to_pointcloud_file(
                 filepath,
-                object_trees,
-                self.cloud_type,
-                self.write_resources
+                object_trees
             )
 
-        if self.write_resources:
-            processor.compile_output_to_files(self.use_multicore_processing, directory)
+        self.pointcloud_processor.compile_resources_to_files(self.use_multicore_processing, directory)
 
         return {'FINISHED'}
