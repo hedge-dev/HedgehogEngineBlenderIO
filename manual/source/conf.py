@@ -20,7 +20,7 @@ sys.setrecursionlimit(2000)
 
 # -- Local Vars --------------------------------------------------------------
 
-heio_version = "1.0.0 RC1"
+heio_version = "1.0.0 RC2"
 
 
 # -- Project information -----------------------------------------------------
