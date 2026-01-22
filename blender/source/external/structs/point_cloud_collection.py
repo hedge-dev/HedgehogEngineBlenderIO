@@ -19,12 +19,12 @@ class CPointCloudCollection(ctypes.Structure):
 
 CPointCloudCollection._fields_ = [
     ("models", ctypes.POINTER(ctypes.POINTER(CModelSet))),
-    ("models_size", ctypes.c_size_t),
+    ("models_size", ctypes.c_int),
     ("model_clouds", ctypes.POINTER(CPointCloudCloud)),
-    ("model_clouds_size", ctypes.c_size_t),
+    ("model_clouds_size", ctypes.c_int),
     ("collision_meshes", ctypes.POINTER(ctypes.POINTER(CCollisionMeshData))),
-    ("collision_meshes_size", ctypes.c_size_t),
+    ("collision_meshes_size", ctypes.c_int),
     ("collision_mesh_clouds", ctypes.POINTER(CPointCloudCloud)),
-    ("collision_mesh_clouds_size", ctypes.c_size_t),
+    ("collision_mesh_clouds_size", ctypes.c_int),
 ]
 

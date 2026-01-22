@@ -10,6 +10,6 @@ class CArray(ctypes.Structure):
 
 CArray._fields_ = [
     ("array", ctypes.c_void_p),
-    ("size", ctypes.c_size_t),
+    ("size", ctypes.c_int),
 ]
 

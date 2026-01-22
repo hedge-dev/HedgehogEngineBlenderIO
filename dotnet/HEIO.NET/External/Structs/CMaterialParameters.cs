@@ -26,7 +26,7 @@ namespace HEIO.NET.External.Structs
             return result;
         }
 
-        public static void ToInternalParameters<T>(T* parameters, nint size, Dictionary<string, MaterialParameter<V>> output) where T : unmanaged, IMaterialParameter<V>
+        public static void ToInternalParameters<T>(T* parameters, int size, Dictionary<string, MaterialParameter<V>> output) where T : unmanaged, IMaterialParameter<V>
         {
             for (int i = 0; i < size; i++)
             {

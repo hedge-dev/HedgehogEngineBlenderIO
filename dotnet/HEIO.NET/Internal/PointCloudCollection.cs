@@ -1,4 +1,5 @@
-﻿using HEIO.NET.Internal.Modeling;
+﻿using HEIO.NET.External;
+using HEIO.NET.Internal.Modeling;
 using SharpNeedle.Framework.SonicTeam;
 using SharpNeedle.IO;
 using SharpNeedle.Resource;
@@ -200,6 +201,31 @@ namespace HEIO.NET.Internal
             }
 
             return ([.. collections], files);
+        }
+    
+        
+        public static void WritePointCloudToFile(Cloud cloud, string[] resourceNames, uint formatVersion, string filepath)
+        {
+            PointCloud pointCloud = new()
+            {
+                Name = cloud.Name,
+                FormatVersion = formatVersion
+            };
+
+            foreach(Point point in cloud.Points)
+            {
+                pointCloud.Instances.Add(new()
+                {
+                    Name = point.InstanceName,
+                    ResourceName = resourceNames[point.ResourceIndex],
+                    Position = point.Position,
+                    Field28 = 1,
+                    Rotation = point.Rotation,
+                    Scale = point.Scale
+                });
+            }
+
+            pointCloud.Write(filepath);
         }
     }
 }

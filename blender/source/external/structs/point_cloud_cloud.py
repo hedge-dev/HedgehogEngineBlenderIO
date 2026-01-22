@@ -13,6 +13,6 @@ class CPointCloudCloud(ctypes.Structure):
 CPointCloudCloud._fields_ = [
     ("name", ctypes.c_wchar_p),
     ("points", ctypes.POINTER(CPointCloudPoint)),
-    ("points_size", ctypes.c_size_t),
+    ("points_size", ctypes.c_int),
 ]
 

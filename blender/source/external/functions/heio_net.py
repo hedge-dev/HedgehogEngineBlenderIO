@@ -75,7 +75,7 @@ FUNCTIONS = {
     "resolve_info_combine": (
         (
             ctypes.POINTER(ctypes.POINTER(structs.CResolveInfo)),
-            ctypes.c_size_t,
+            ctypes.c_int,
         ),
         ctypes.POINTER(structs.CResolveInfo),
     ),
@@ -90,7 +90,7 @@ FUNCTIONS = {
         (
             ctypes.c_wchar_p,
             ctypes.POINTER(ctypes.c_wchar_p),
-            ctypes.c_size_t,
+            ctypes.c_int,
             ctypes.c_wchar_p,
             ctypes.POINTER(ctypes.POINTER(structs.CResolveInfo)),
         ),
@@ -99,7 +99,7 @@ FUNCTIONS = {
     "image_load_material_images": (
         (
             ctypes.POINTER(ctypes.POINTER(structs.CMaterial)),
-            ctypes.c_size_t,
+            ctypes.c_int,
             ctypes.c_wchar_p,
             ctypes.POINTER(ctypes.POINTER(structs.CResolveInfo)),
         ),
@@ -128,7 +128,7 @@ FUNCTIONS = {
     "model_read_files": (
         (
             ctypes.POINTER(ctypes.c_wchar_p),
-            ctypes.c_size_t,
+            ctypes.c_int,
             ctypes.c_bool,
             ctypes.POINTER(structs.CMeshImportSettings),
             ctypes.POINTER(ctypes.POINTER(structs.CResolveInfo)),
@@ -138,14 +138,14 @@ FUNCTIONS = {
     "model_get_materials": (
         (
             ctypes.POINTER(ctypes.POINTER(structs.CModelSet)),
-            ctypes.c_size_t,
+            ctypes.c_int,
         ),
         structs.CArray,
     ),
     "model_compile_to_files": (
         (
             ctypes.POINTER(ctypes.POINTER(structs.CModelSet)),
-            ctypes.c_size_t,
+            ctypes.c_int,
             ctypes.c_int,
             ctypes.c_int,
             ctypes.c_bool,
@@ -157,7 +157,7 @@ FUNCTIONS = {
     "bullet_mesh_read_files": (
         (
             ctypes.POINTER(ctypes.c_wchar_p),
-            ctypes.c_size_t,
+            ctypes.c_int,
             ctypes.POINTER(structs.CMeshImportSettings),
         ),
         structs.CArray,
@@ -165,7 +165,7 @@ FUNCTIONS = {
     "bullet_mesh_compile_mesh_data": (
         (
             ctypes.POINTER(ctypes.POINTER(structs.CCollisionMeshData)),
-            ctypes.c_size_t,
+            ctypes.c_int,
         ),
         ctypes.POINTER(structs.CBulletMesh),
     ),
@@ -179,11 +179,21 @@ FUNCTIONS = {
     "point_cloud_read_files": (
         (
             ctypes.POINTER(ctypes.c_wchar_p),
-            ctypes.c_size_t,
+            ctypes.c_int,
             ctypes.c_bool,
             ctypes.POINTER(structs.CMeshImportSettings),
             ctypes.POINTER(ctypes.POINTER(structs.CResolveInfo)),
         ),
         ctypes.POINTER(structs.CPointCloudCollection),
+    ),
+    "point_cloud_write_file": (
+        (
+            ctypes.POINTER(structs.CPointCloudCloud),
+            ctypes.POINTER(ctypes.c_wchar_p),
+            ctypes.c_int,
+            ctypes.c_uint,
+            ctypes.c_wchar_p,
+        ),
+        None,
     ),
 }

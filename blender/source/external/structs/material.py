@@ -38,13 +38,13 @@ CMaterial._fields_ = [
     ("no_back_face_culling", ctypes.c_bool),
     ("blend_mode", ctypes.c_ubyte),
     ("float_parameters", ctypes.POINTER(CFloatMaterialParameter)),
-    ("float_parameters_size", ctypes.c_size_t),
+    ("float_parameters_size", ctypes.c_int),
     ("integer_parameters", ctypes.POINTER(CIntegerMaterialParameter)),
-    ("integer_parameters_size", ctypes.c_size_t),
+    ("integer_parameters_size", ctypes.c_int),
     ("bool_parameters", ctypes.POINTER(CBoolMaterialParameter)),
-    ("bool_parameters_size", ctypes.c_size_t),
+    ("bool_parameters_size", ctypes.c_int),
     ("textures_name", ctypes.c_wchar_p),
     ("textures", ctypes.POINTER(CTexture)),
-    ("textures_size", ctypes.c_size_t),
+    ("textures_size", ctypes.c_int),
 ]
 

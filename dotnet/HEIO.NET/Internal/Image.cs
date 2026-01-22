@@ -184,7 +184,7 @@ namespace HEIO.NET.Internal
         }
 
 
-        public static unsafe void InvertGreenChannel(float* pixels, nint pixelsSize)
+        public static unsafe void InvertGreenChannel(float* pixels, int pixelsSize)
         {
             for(int i = 1; i < pixelsSize; i += 4)
             {

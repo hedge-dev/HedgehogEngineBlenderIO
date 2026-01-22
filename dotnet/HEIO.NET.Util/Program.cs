@@ -3,7 +3,6 @@ using HEIO.NET.External;
 using SharpNeedle.Structs;
 using System.Numerics;
 using System.Reflection;
-using System.Reflection.Metadata;
 using System.Runtime.InteropServices;
 using System.Text;
 
@@ -15,7 +14,7 @@ namespace HEIO.NET.Util
         {
             { typeof(char*).FullName!, ("ctypes.c_wchar_p", "str") },
             { typeof(void*).FullName!, ("ctypes.c_void_p", "ctypes.c_void_p") },
-            { typeof(nint).FullName!, ("ctypes.c_size_t", "int") },
+            { typeof(nint).FullName!, ("ctypes.c_size_t", "ctypes.c_void_p") },
             { typeof(byte).FullName!, ("ctypes.c_ubyte", "int") },
             { typeof(short).FullName!, ("ctypes.c_short", "int") },
             { typeof(ushort).FullName!, ("ctypes.c_ushort", "int") },

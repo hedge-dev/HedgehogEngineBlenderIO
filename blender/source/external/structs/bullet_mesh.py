@@ -18,8 +18,8 @@ CBulletMesh._fields_ = [
     ("name", ctypes.c_wchar_p),
     ("bullet_mesh_version", ctypes.c_int),
     ("shapes", ctypes.POINTER(CBulletShape)),
-    ("shapes_size", ctypes.c_size_t),
+    ("shapes_size", ctypes.c_int),
     ("primitives", ctypes.POINTER(CBulletPrimitive)),
-    ("primitives_size", ctypes.c_size_t),
+    ("primitives_size", ctypes.c_int),
 ]
 

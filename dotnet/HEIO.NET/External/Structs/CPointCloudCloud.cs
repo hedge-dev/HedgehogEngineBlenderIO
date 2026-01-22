@@ -7,7 +7,7 @@ namespace HEIO.NET.External.Structs
     {
         public char* name;
         public CPointCloudPoint* points;
-        public nint pointsSize;
+        public int pointsSize;
 
         public static CPointCloudCloud FromInternal(PointCloudCollection.Cloud cloud)
         {
@@ -33,7 +33,7 @@ namespace HEIO.NET.External.Structs
             );
         }
 
-        public static PointCloudCollection.Cloud[] ToInternalArray(CPointCloudCloud* clouds, nint cloudsSize)
+        public static PointCloudCollection.Cloud[] ToInternalArray(CPointCloudCloud* clouds, int cloudsSize)
         {
             return Util.ToArray<CPointCloudCloud, PointCloudCollection.Cloud>(clouds, cloudsSize) ?? [];
         }

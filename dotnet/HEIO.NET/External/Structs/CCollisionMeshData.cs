@@ -8,28 +8,28 @@ namespace HEIO.NET.External.Structs
         public char* name;
 
         public Vector3* vertices;
-        public nint verticesSize;
+        public int verticesSize;
 
         public uint* triangleIndices;
-        public nint triangleIndicesSize;
+        public int triangleIndicesSize;
 
         public uint* types;
-        public nint typesSize;
+        public int typesSize;
 
         public byte* typeValues;
-        public nint typeValuesSize;
+        public int typeValuesSize;
 
         public uint* flags;
-        public nint flagsSize;
+        public int flagsSize;
 
         public byte* flagValues;
-        public nint flagValuesSize;
+        public int flagValuesSize;
 
         public CCollisionMeshDataGroup* groups;
-        public nint groupsSize;
+        public int groupsSize;
 
         public CBulletPrimitive* primitives;
-        public nint primitivesSize;
+        public int primitivesSize;
 
         public static CCollisionMeshData FromInternal(CollisionMeshData meshData)
         {

@@ -17,17 +17,17 @@ namespace HEIO.NET.External.Structs
         public byte blendMode;
 
         public CFloatMaterialParameter* floatParameters;
-        public nint floatParametersSize;
+        public int floatParametersSize;
 
         public CIntegerMaterialParameter* integerParameters;
-        public nint integerParametersSize;
+        public int integerParametersSize;
 
         public CBoolMaterialParameter* boolParameters;
-        public nint boolParametersSize;
+        public int boolParametersSize;
 
         public char* texturesName;
         public CTexture* textures;
-        public nint texturesSize;
+        public int texturesSize;
 
         public static CMaterial FromInternal(Material material)
         {

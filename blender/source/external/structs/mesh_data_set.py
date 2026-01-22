@@ -18,9 +18,9 @@ class CMeshDataSet(ctypes.Structure):
 CMeshDataSet._fields_ = [
     ("name", ctypes.c_wchar_p),
     ("mesh_data", ctypes.POINTER(CMeshData)),
-    ("mesh_data_size", ctypes.c_size_t),
+    ("mesh_data_size", ctypes.c_int),
     ("nodes", ctypes.POINTER(CModelNode)),
-    ("nodes_size", ctypes.c_size_t),
+    ("nodes_size", ctypes.c_int),
     ("sample_chunk_node_root", ctypes.POINTER(CSampleChunkNode)),
 ]
 

@@ -5,19 +5,19 @@ namespace HEIO.NET.External.Structs
     public unsafe struct CResolveInfo
     {
         public char** unresolvedFiles;
-        public nint unresolvedFilesSize;
+        public int unresolvedFilesSize;
 
         public char** missingDependencies;
-        public nint missingDependenciesSize;
+        public int missingDependenciesSize;
 
         public char** packedDependencies;
-        public nint packedDependenciesSize;
+        public int packedDependenciesSize;
 
         public char** unresolvedNTSPFiles;
-        public nint unresolvedNTSPFilesSize;
+        public int unresolvedNTSPFilesSize;
 
         public char** missingStreamedImages;
-        public nint missingStreamedImagesSize;
+        public int missingStreamedImagesSize;
 
 
         public static CResolveInfo FromInternal(ResolveInfo resolveInfo)

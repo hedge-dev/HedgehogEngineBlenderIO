@@ -9,16 +9,16 @@ namespace HEIO.NET.External.Structs
         public uint layer;
 
         public Vector3* vertices;
-        public nint verticesSize;
+        public int verticesSize;
 
         public uint* faces;
-        public nint facesSize;
+        public int facesSize;
 
         public byte* bvh;
-        public nint bvhSize;
+        public int bvhSize;
 
         public ulong* types;
-        public nint typesSize;
+        public int typesSize;
 
         public uint unknown1;
         public uint unknown2;

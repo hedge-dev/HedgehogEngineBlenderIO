@@ -11,7 +11,7 @@ namespace HEIO.NET.External
 
     internal static unsafe class Util
     {
-        public static T[]? ToArray<T>(T* values, nint valuesSize) where T : unmanaged
+        public static T[]? ToArray<T>(T* values, int valuesSize) where T : unmanaged
         {
             if(values == null)
             {
@@ -23,17 +23,17 @@ namespace HEIO.NET.External
             return result;
         }
 
-        public static O[]? ToArray<I, O>(I* values, nint valuesSize) where I : unmanaged, IConvertInternal<O>
+        public static O[]? ToArray<I, O>(I* values, int valuesSize) where I : unmanaged, IConvertInternal<O>
         {
             return ToArray(values, valuesSize)?.Select(x => x.ToInternal()).ToArray();
         }
 
-        public static O[]? PointersToArray<I, O>(I** values, nint valuesSize) where I : unmanaged, IConvertInternal<O>
+        public static O[]? PointersToArray<I, O>(I** values, int valuesSize) where I : unmanaged, IConvertInternal<O>
         {
             return ToArray((nint*)values, valuesSize)?.Select(x => ((I*)x)->ToInternal()).ToArray();
         }
 
-        public static T[][]? To2DArray<T>(T** values, nint valuesSize, nint innerValuesSize) where T : unmanaged
+        public static T[][]? To2DArray<T>(T** values, int valuesSize, int innerValuesSize) where T : unmanaged
         {
             if(values == null)
             {
@@ -56,7 +56,7 @@ namespace HEIO.NET.External
             return Marshal.PtrToStringUni((nint)pointer);
         }
 
-        public static string[]? ToStringArray(char** values, nint valuesSize)
+        public static string[]? ToStringArray(char** values, int valuesSize)
         {
             if(values == null)
             {

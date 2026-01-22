@@ -47,7 +47,7 @@ namespace HEIO.NET.External.Structs
             };
         }
 
-        public static BulletPrimitive[] ToInternalArray(CBulletPrimitive* primitives, nint size)
+        public static BulletPrimitive[] ToInternalArray(CBulletPrimitive* primitives, int size)
         {
             return Util.ToArray<CBulletPrimitive, BulletPrimitive>(primitives, size) ?? [];
         }

@@ -18,6 +18,6 @@ CCollisionMeshDataGroup._fields_ = [
     ("is_convex", ctypes.c_bool),
     ("convex_type", ctypes.c_uint),
     ("convex_flag_values", ctypes.POINTER(ctypes.c_ubyte)),
-    ("convex_flag_values_size", ctypes.c_size_t),
+    ("convex_flag_values_size", ctypes.c_int),
 ]
 

@@ -6,16 +6,16 @@ namespace HEIO.NET.External.Structs
     public unsafe struct CPointCloudCollection : IConvertInternal<PointCloudCollection>
     {
         public CModelSet** models;
-        public nint modelsSize;
+        public int modelsSize;
 
         public CPointCloudCloud* modelClouds;
-        public nint modelCloudsSize;
+        public int modelCloudsSize;
 
         public CCollisionMeshData** collisionMeshes;
-        public nint collisionMeshesSize;
+        public int collisionMeshesSize;
 
         public CPointCloudCloud* collisionMeshClouds;
-        public nint collisionMeshCloudsSize;
+        public int collisionMeshCloudsSize;
 
         public static CPointCloudCollection FromInternal(PointCloudCollection collection)
         {

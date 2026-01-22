@@ -203,7 +203,7 @@ namespace HEIO.NET.External
         #region Resolve Info
 
         [UnmanagedCallersOnly(EntryPoint = "resolve_info_combine")]
-        public static CResolveInfo* ResolveInfoCombine(CResolveInfo** resolveInfos, nint resolveInfosSize)
+        public static CResolveInfo* ResolveInfoCombine(CResolveInfo** resolveInfos, int resolveInfosSize)
         {
             try
             {
@@ -272,7 +272,7 @@ namespace HEIO.NET.External
         #region Image
 
         [UnmanagedCallersOnly(EntryPoint = "image_load_directory_images")]
-        public static CArray ImageLoadDirectoryImages(char* directory, char** images, nint imagesSize, char* streamingDirectory, CResolveInfo** resolveInfo)
+        public static CArray ImageLoadDirectoryImages(char* directory, char** images, int imagesSize, char* streamingDirectory, CResolveInfo** resolveInfo)
         {
             try
             {
@@ -294,7 +294,7 @@ namespace HEIO.NET.External
         }
 
         [UnmanagedCallersOnly(EntryPoint = "image_load_material_images")]
-        public static CArray ImageLoadMaterialImages(CMaterial** materials, nint materialsSize, char* streamingDirectory, CResolveInfo** resolveInfo)
+        public static CArray ImageLoadMaterialImages(CMaterial** materials, int materialsSize, char* streamingDirectory, CResolveInfo** resolveInfo)
         {
             try
             {
@@ -379,7 +379,7 @@ namespace HEIO.NET.External
         #region Model
 
         [UnmanagedCallersOnly(EntryPoint = "model_read_files")]
-        public static CArray ModelReadFiles(char** filepaths, nint filepathsSize, bool includeLoD, CMeshImportSettings* settings, CResolveInfo** resolveInfo)
+        public static CArray ModelReadFiles(char** filepaths, int filepathsSize, bool includeLoD, CMeshImportSettings* settings, CResolveInfo** resolveInfo)
         {
             try
             {
@@ -405,7 +405,7 @@ namespace HEIO.NET.External
         }
 
         [UnmanagedCallersOnly(EntryPoint = "model_get_materials")]
-        public static CArray ModelGetMaterials(CModelSet** modelSets, nint modelSetsSize)
+        public static CArray ModelGetMaterials(CModelSet** modelSets, int modelSetsSize)
         {
             try
             {
@@ -447,7 +447,7 @@ namespace HEIO.NET.External
         [UnmanagedCallersOnly(EntryPoint = "model_compile_to_files")]
         public static void ModelCompileToFiles(
             CModelSet** modelSets,
-            nint modelSetsSize,
+            int modelSetsSize,
             int versionMode,
             int topology,
             bool optimizedVertexData,
@@ -469,7 +469,7 @@ namespace HEIO.NET.External
                         if (!meshDataSets.ContainsKey((nint)meshDataSet))
                         {
                             MeshDataSet internalMeshDataSet = meshDataSet->ToInternal();
-                            internalMeshDataSet.SaveToJson(outputDirectory);
+                            //internalMeshDataSet.SaveToJson(outputDirectory);
                             meshDataSets.Add((nint)meshDataSet, internalMeshDataSet);
                         }
                     }
@@ -545,7 +545,7 @@ namespace HEIO.NET.External
         #region Bullet Mesh
 
         [UnmanagedCallersOnly(EntryPoint = "bullet_mesh_read_files")]
-        public static CArray BulletMeshReadFiles(char** filepaths, nint filepathsSize, CMeshImportSettings* settings)
+        public static CArray BulletMeshReadFiles(char** filepaths, int filepathsSize, CMeshImportSettings* settings)
         {
             try
             {
@@ -569,7 +569,7 @@ namespace HEIO.NET.External
         }
 
         [UnmanagedCallersOnly(EntryPoint = "bullet_mesh_compile_mesh_data")]
-        public static CBulletMesh* BulletMeshCompileMeshData(CCollisionMeshData** collisionMeshData, nint collisionMeshDataSize)
+        public static CBulletMesh* BulletMeshCompileMeshData(CCollisionMeshData** collisionMeshData, int collisionMeshDataSize)
         {
             try
             {
@@ -609,7 +609,7 @@ namespace HEIO.NET.External
         #region Point cloud
 
         [UnmanagedCallersOnly(EntryPoint = "point_cloud_read_files")]
-        public static CPointCloudCollection* PointCloudReadFiles(char** filepaths, nint filepathsSize, bool includeLoD, CMeshImportSettings* settings, CResolveInfo** resolveInfo)
+        public static CPointCloudCollection* PointCloudReadFiles(char** filepaths, int filepathsSize, bool includeLoD, CMeshImportSettings* settings, CResolveInfo** resolveInfo)
         {
             try
             {
@@ -626,6 +626,27 @@ namespace HEIO.NET.External
             {
                 ErrorHandler.HandleError(exception);
                 return null;
+            }
+        }
+
+        [UnmanagedCallersOnly(EntryPoint = "point_cloud_write_file")]
+        public static void PointCloudWriteFile(CPointCloudCloud* cloud, char** resourceNames, int resourceNamesSize, uint formatVersion, char* filepath)
+        {
+            try
+            {
+                string[] resourceNamesArray = Util.ToStringArray(resourceNames, resourceNamesSize)!;
+
+                PointCloudCollection.WritePointCloudToFile(
+                    cloud->ToInternal(),
+                    resourceNamesArray,
+                    formatVersion,
+                    Util.ToString(filepath)!
+                );
+            }
+            catch (Exception exception)
+            {
+                ErrorHandler.HandleError(exception);
+                return;
             }
         }
 

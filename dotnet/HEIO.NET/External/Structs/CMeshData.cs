@@ -9,9 +9,9 @@ namespace HEIO.NET.External.Structs
         public char* name;
 
         public CVertex* vertices;
-        public nint verticesSize;
+        public int verticesSize;
 
-        public nint triangleIndexCount;
+        public int triangleIndexCount;
 
         public int* triangleIndices;
         public Vector3* polygonNormals;
@@ -19,19 +19,19 @@ namespace HEIO.NET.External.Structs
         public CUVDirection* polygonUVDirections2;
 
         public Vector2** textureCoordinates;
-        public nint textureCoordinatesSize;
+        public int textureCoordinatesSize;
 
         public Vector4** colors;
-        public nint colorsSize;
+        public int colorsSize;
 
         public CMeshDataMeshSetInfo* meshSets;
-        public nint meshSetsSize;
+        public int meshSetsSize;
 
         public CMeshDataMeshGroupInfo* groups;
-        public nint groupsSize;
+        public int groupsSize;
 
         public char** morphNames;
-        public nint morphNamesSize;
+        public int morphNamesSize;
 
         public static CMeshData FromInternal(MeshData meshData)
         {

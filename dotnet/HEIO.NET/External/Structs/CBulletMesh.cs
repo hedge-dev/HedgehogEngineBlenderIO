@@ -8,10 +8,10 @@ namespace HEIO.NET.External.Structs
         public int bulletMeshVersion;
 
         public CBulletShape* shapes;
-        public nint shapesSize;
+        public int shapesSize;
 
         public CBulletPrimitive* primitives;
-        public nint primitivesSize;
+        public int primitivesSize;
 
         public static CBulletMesh FromInternal(BulletMesh mesh)
         {

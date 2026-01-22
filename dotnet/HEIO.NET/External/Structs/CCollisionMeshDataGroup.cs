@@ -9,7 +9,7 @@ namespace HEIO.NET.External.Structs
         public bool isConvex;
         public uint convexType;
         public byte* convexFlagValues;
-        public nint convexFlagValuesSize;
+        public int convexFlagValuesSize;
 
         public static CCollisionMeshDataGroup FromInternal(CollisionMeshDataGroup group)
         {

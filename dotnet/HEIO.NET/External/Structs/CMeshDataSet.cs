@@ -9,10 +9,10 @@ namespace HEIO.NET.External.Structs
         public char* name;
 
         public CMeshData* meshData;
-        public nint meshDataSize;
+        public int meshDataSize;
 
         public CModelNode* nodes;
-        public nint nodesSize;
+        public int nodesSize;
 
         public CSampleChunkNode* sampleChunkNodeRoot;
 

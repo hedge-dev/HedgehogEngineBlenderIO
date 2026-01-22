@@ -15,9 +15,9 @@ class CModelSet(ctypes.Structure):
 
 CModelSet._fields_ = [
     ("mesh_data_sets", ctypes.POINTER(ctypes.POINTER(CMeshDataSet))),
-    ("mesh_data_sets_size", ctypes.c_size_t),
+    ("mesh_data_sets_size", ctypes.c_int),
     ("lod_items", ctypes.POINTER(CLODItem)),
-    ("lod_items_size", ctypes.c_size_t),
+    ("lod_items_size", ctypes.c_int),
     ("lod_unknown1", ctypes.c_ubyte),
 ]
 

@@ -12,6 +12,6 @@ class CImage(ctypes.Structure):
 CImage._fields_ = [
     ("file_path", ctypes.c_wchar_p),
     ("streamed_data", ctypes.POINTER(ctypes.c_ubyte)),
-    ("streamed_data_size", ctypes.c_size_t),
+    ("streamed_data_size", ctypes.c_int),
 ]
 

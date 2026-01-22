@@ -1,4 +1,4 @@
-from ctypes import POINTER, pointer, byref, c_wchar_p, c_size_t, c_bool
+from ctypes import POINTER, pointer, byref, c_wchar_p, c_bool, c_uint
 from typing import Iterable
 
 from . import util
@@ -99,7 +99,7 @@ class HEIONET(ExternalLibrary):
     def resolve_info_combine(cls, resolve_infos: list[TPointer[CResolveInfo]]) -> TPointer[CResolveInfo]:
 
         c_resolve_infos = util.as_array(resolve_infos, POINTER(CResolveInfo))
-        c_resolve_infos_size = c_size_t(len(resolve_infos))
+        c_resolve_infos_size = c_int(len(resolve_infos))
 
         return cls._lib().resolve_info_combine(
             c_resolve_infos,
@@ -124,7 +124,7 @@ class HEIONET(ExternalLibrary):
 
         c_directory = c_wchar_p(directory)
         c_images = util.as_array([c_wchar_p(image) for image in images], c_wchar_p)
-        c_images_size = c_size_t(len(images))
+        c_images_size = c_int(len(images))
         c_streaming_directory = c_wchar_p(streaming_directory)
         c_resolve_info = pointer(POINTER(CResolveInfo)())
 
@@ -143,7 +143,7 @@ class HEIONET(ExternalLibrary):
     @classmethod
     def image_load_material_images(cls, materials: Iterable[TPointer[CMaterial]], streaming_directory: str) -> tuple[dict[str, TPointer[CImage]], TPointer[CResolveInfo]]:
         c_materials = util.as_array(materials, POINTER(CMaterial))
-        c_materials_size = c_size_t(len(materials))
+        c_materials_size = c_int(len(materials))
         c_streaming_directory = c_wchar_p(streaming_directory)
         c_resolve_info = pointer(POINTER(CResolveInfo)())
 
@@ -187,7 +187,7 @@ class HEIONET(ExternalLibrary):
     @classmethod
     def model_read_files(cls, filepaths: list[str], include_lod: bool, settings: CMeshImportSettings) -> tuple[list[TPointer[CModelSet]], TPointer[CResolveInfo]]:
         c_filepaths = util.as_array([c_wchar_p(filepath) for filepath in filepaths], c_wchar_p)
-        c_filepaths_size = c_size_t(len(filepaths))
+        c_filepaths_size = c_int(len(filepaths))
         c_include_lod = c_bool(include_lod)
         c_settings = byref(settings)
         c_resolve_info = pointer(POINTER(CResolveInfo)())
@@ -207,7 +207,7 @@ class HEIONET(ExternalLibrary):
     @classmethod
     def model_get_materials(cls, model_sets: list[TPointer[CModelSet]]) -> list[TPointer[CMaterial]]:
         c_model_sets = util.as_array(model_sets, POINTER(CModelSet))
-        c_model_sets_size = c_size_t(len(model_sets))
+        c_model_sets_size = c_int(len(model_sets))
 
         array = cls._lib().model_get_materials(
             c_model_sets, 
@@ -219,7 +219,7 @@ class HEIONET(ExternalLibrary):
     @classmethod
     def model_compile_to_files(cls, model_sets: list[TPointer[CModelSet]], version_mode: int, topology: int, optimize_vertex_data: bool, multi_threading: bool, output_directory: str):
         c_model_sets = util.as_array(model_sets, POINTER(CModelSet))
-        c_model_sets_size = c_size_t(len(model_sets))
+        c_model_sets_size = c_int(len(model_sets))
         c_version_mode = c_int(version_mode)
         c_topology = c_int(topology)
         c_optimize_vertex_data = c_bool(optimize_vertex_data)
@@ -243,7 +243,7 @@ class HEIONET(ExternalLibrary):
     @classmethod
     def bullet_mesh_read_files(cls, filepaths: list[str], settings: CMeshImportSettings) -> list[TPointer[CCollisionMeshData]]:
         c_filepaths = util.as_array([c_wchar_p(filepath) for filepath in filepaths], c_wchar_p)
-        c_filepaths_size = c_size_t(len(filepaths))
+        c_filepaths_size = c_int(len(filepaths))
         c_settings = byref(settings)
 
         array = cls._lib().bullet_mesh_read_files(
@@ -257,7 +257,7 @@ class HEIONET(ExternalLibrary):
     @classmethod
     def bullet_mesh_compile_mesh_data(cls, collision_mesh_data: list[CCollisionMeshData]) -> TPointer[CBulletMesh]:
         c_collision_mesh_data = util.as_array([pointer(mesh_data) for mesh_data in collision_mesh_data], POINTER(CCollisionMeshData))
-        c_collision_mesh_data_size = c_size_t(len(collision_mesh_data))
+        c_collision_mesh_data_size = c_int(len(collision_mesh_data))
 
         return cls._lib().bullet_mesh_compile_mesh_data(
             c_collision_mesh_data,
@@ -280,7 +280,7 @@ class HEIONET(ExternalLibrary):
     @classmethod
     def point_cloud_read_files(cls, filepaths: list[str], include_lod: bool, settings: CMeshImportSettings) -> tuple[TPointer[CPointCloudCollection], TPointer[CResolveInfo]]:
         c_filepaths = util.as_array([c_wchar_p(filepath) for filepath in filepaths], c_wchar_p)
-        c_filepaths_size = c_size_t(len(filepaths))
+        c_filepaths_size = c_int(len(filepaths))
         c_include_lod = c_bool(include_lod)
         c_settings = byref(settings)
         c_resolve_info = pointer(POINTER(CResolveInfo)())
@@ -294,3 +294,18 @@ class HEIONET(ExternalLibrary):
         )
 
         return result, c_resolve_info.contents
+    
+    @classmethod
+    def point_cloud_write_file(cls, cloud: TPointer[CPointCloudCloud], resource_names: list[str], format_version: int, filepath: str):
+        c_resource_names = util.as_array([c_wchar_p(resource_name) for resource_name in resource_names], c_wchar_p)
+        c_resource_names_size = c_int(len(resource_names))
+        c_format_version = c_uint(format_version)
+        c_filepath = c_wchar_p(filepath)
+
+        cls._lib().point_cloud_write_file(
+            cloud,
+            c_resource_names,
+            c_resource_names_size,
+            c_format_version,
+            c_filepath
+        )

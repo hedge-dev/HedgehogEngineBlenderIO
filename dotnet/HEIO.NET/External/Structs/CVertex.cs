@@ -11,10 +11,10 @@ namespace HEIO.NET.External.Structs
         public CUVDirection uvDirection2;
 
         public CVertexWeight* weights;
-        public nint weightsSize;
+        public int weightsSize;
 
         public Vector3* morphPositions;
-        public nint morphPositionsSize;
+        public int morphPositionsSize;
 
         public static CVertex FromInternal(Vertex vertex)
         {

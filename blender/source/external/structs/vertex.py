@@ -22,8 +22,8 @@ CVertex._fields_ = [
     ("uv_direction", CUVDirection),
     ("uv_direction2", CUVDirection),
     ("weights", ctypes.POINTER(CVertexWeight)),
-    ("weights_size", ctypes.c_size_t),
+    ("weights_size", ctypes.c_int),
     ("morph_positions", ctypes.POINTER(nettypes.CVector3)),
-    ("morph_positions_size", ctypes.c_size_t),
+    ("morph_positions_size", ctypes.c_int),
 ]
 

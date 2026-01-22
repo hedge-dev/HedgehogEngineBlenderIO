@@ -18,14 +18,14 @@ class CResolveInfo(ctypes.Structure):
 
 CResolveInfo._fields_ = [
     ("unresolved_files", ctypes.POINTER(ctypes.c_wchar_p)),
-    ("unresolved_files_size", ctypes.c_size_t),
+    ("unresolved_files_size", ctypes.c_int),
     ("missing_dependencies", ctypes.POINTER(ctypes.c_wchar_p)),
-    ("missing_dependencies_size", ctypes.c_size_t),
+    ("missing_dependencies_size", ctypes.c_int),
     ("packed_dependencies", ctypes.POINTER(ctypes.c_wchar_p)),
-    ("packed_dependencies_size", ctypes.c_size_t),
+    ("packed_dependencies_size", ctypes.c_int),
     ("unresolved_ntsp_files", ctypes.POINTER(ctypes.c_wchar_p)),
-    ("unresolved_ntsp_files_size", ctypes.c_size_t),
+    ("unresolved_ntsp_files_size", ctypes.c_int),
     ("missing_streamed_images", ctypes.POINTER(ctypes.c_wchar_p)),
-    ("missing_streamed_images_size", ctypes.c_size_t),
+    ("missing_streamed_images_size", ctypes.c_int),
 ]
 

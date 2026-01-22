@@ -112,19 +112,17 @@ class HEIO_OT_Export_PointCloud(ExportPointCloudOperator):
             processor.prepare_all_meshdata()
             self.model_set_manager.evaluate_end()
 
-        pointcloud = self.pointcloud_processor.object_trees_to_pointscloud(
-            os.path.splitext(os.path.basename(self.filepath))[0],
+        self.pointcloud_processor.object_trees_to_pointcloud_file(
+            self.filepath,
             self.object_manager.object_trees,
             self.cloud_type,
             self.write_resources
         )
 
-        directory = os.path.dirname(self.filepath)
-
         if self.write_resources:
+            directory = os.path.dirname(self.filepath)
             processor.compile_output_to_files(self.use_multicore_processing, directory)
 
-        SharpNeedle.RESOURCE_EXTENSIONS.Write(pointcloud, self.filepath)
         return {'FINISHED'}
 
 
@@ -150,7 +148,9 @@ class HEIO_OT_Export_PointClouds(ExportPointCloudOperator):
             self.model_set_manager.evaluate_end()
 
         collection = bpy.data.collections[self.collection]
-        pointclouds = []
+
+        directory = os.path.dirname(self.filepath)
+        extension = ".pc" + self.cloud_type.lower()
 
         for col in collection.children:
             if len(col.all_objects) == 0:
@@ -158,32 +158,21 @@ class HEIO_OT_Export_PointClouds(ExportPointCloudOperator):
 
             object_trees = self.object_manager.assemble_object_trees(
                 set(col.all_objects))
+            
+            if col.name.lower().endswith(extension):
+                name = col.name[:-len(extension)]
 
-            pointcloud = self.pointcloud_processor.object_trees_to_pointscloud(
-                col.name,
+            filename = o_util.correct_filename(name)
+            filepath = os.path.join(directory, filename + extension)
+
+            self.pointcloud_processor.object_trees_to_pointcloud_file(
+                filepath,
                 object_trees,
                 self.cloud_type,
                 self.write_resources
             )
 
-            pointclouds.append(pointcloud)
-
-        directory = os.path.dirname(self.filepath)
-
         if self.write_resources:
             processor.compile_output_to_files(self.use_multicore_processing, directory)
-
-        extension = ".pc" + self.cloud_type.lower()
-
-        for pc in pointclouds:
-            if pc.Name.lower().endswith(extension):
-                pc.Name = pc.Name[:-len(extension)]
-
-            filename = o_util.correct_filename(pc.Name)
-
-            filepath = os.path.join(
-                directory, filename + extension)
-
-            SharpNeedle.RESOURCE_EXTENSIONS.Write(pc, filepath)
 
         return {'FINISHED'}

@@ -116,12 +116,12 @@ namespace HEIO.NET.External
             }
         }
 
-        public static void AllocFrom2DArray<T>(IList<IList<T>> values, out T** outValues, out nint* outSizes) where T : unmanaged
+        public static void AllocFrom2DArray<T>(IList<IList<T>> values, out T** outValues, out int* outSizes) where T : unmanaged
         {
             AllocFrom2DArray(values, out outValues);
 
             outSizes = outValues != null
-                ? AllocFromArray(values.Select(x => (nint)x.Count).ToArray())
+                ? AllocFromArray(values.Select(x => x.Count).ToArray())
                 : null;
         }
 

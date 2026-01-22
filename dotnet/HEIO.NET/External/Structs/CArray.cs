@@ -3,9 +3,9 @@
     public unsafe struct CArray
     {
         public void* array;
-        public nint size;
+        public int size;
 
-        public CArray(void* array, nint size)
+        public CArray(void* array, int size)
         {
             this.array = array;
             this.size = size;

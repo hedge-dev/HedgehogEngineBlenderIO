@@ -7,10 +7,10 @@ namespace HEIO.NET.External.Structs
     public unsafe struct CModelSet : IConvertInternal<ModelSet>
     {
         public CMeshDataSet** meshDataSets;
-        public nint meshDataSetsSize;
+        public int meshDataSetsSize;
 
         public CLODItem* lodItems;
-        public nint lodItemsSize;
+        public int lodItemsSize;
         public byte lodUnknown1;
 
 

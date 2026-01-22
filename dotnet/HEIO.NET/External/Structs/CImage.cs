@@ -6,7 +6,7 @@ namespace HEIO.NET.External.Structs
     {
         public char* filePath;
         public byte* streamedData;
-        public nint streamedDataSize;
+        public int streamedDataSize;
 
         public static CImage FromInternal(Image image)
         {
