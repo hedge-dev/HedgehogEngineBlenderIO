@@ -3,17 +3,33 @@ import platform
 import os
 from contextlib import contextmanager
 from ..utility import general
-from ..exceptions import HEIODevException
+from ..exceptions import HEIODevException, HEIOUserException
 
-LIB_DIRECTORY = os.path.join(general.ADDON_DIR, "DLL")
+if general.is_x64():
+    if general.is_arm():
+        ARCHITECTURE_FOLDER = "arm64"
+    else:
+        ARCHITECTURE_FOLDER = "x64"
+else:
+    if general.is_arm():
+        ARCHITECTURE_FOLDER = "arm"
+    else:
+        ARCHITECTURE_FOLDER = "x86"
 
-LIB_EXT = ""
 if general.is_windows():
+    OS_FOLDER = "windows"
     LIB_EXT = ".dll"
 elif general.is_mac():
+    OS_FOLDER = "macos"
     LIB_EXT = ".dylib"
 elif general.is_linux():
+    OS_FOLDER = "linux"
     LIB_EXT = ".so"
+else:
+    OS_FOLDER = ""
+    LIB_EXT = ""
+
+LIB_DIRECTORY = os.path.join(general.ADDON_DIR, "DLL", ARCHITECTURE_FOLDER, OS_FOLDER)
 
 _STDLIB: ctypes.CDLL = None
 _DLCLOSE: any = None
@@ -143,12 +159,17 @@ class ExternalLibrary:
     @classmethod
     def _lib(cls):
         if cls._LIBRARY is None:
-            raise Exception("Library is not loaded")
+            raise HEIODevException("Library is not loaded")
         return cls._LIBRARY
     
     @classmethod
     @contextmanager
     def load(cls):
+        if len(LIB_EXT) == 0:
+            raise HEIOUserException("Unknown/Unsupported Operating system!")
+
+        if not os.path.isdir(LIB_DIRECTORY):
+            raise HEIOUserException(f"External libraries are not compiled for {ARCHITECTURE_FOLDER} {OS_FOLDER}! Please open a github issue!")
     
         library_filepath = os.path.join(LIB_DIRECTORY, cls._get_library_filename() + LIB_EXT)
         cls._LIBRARY = ctypes.CDLL(library_filepath)

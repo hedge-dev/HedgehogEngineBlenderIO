@@ -1,6 +1,7 @@
 import os
 import bpy
 import platform
+import struct
 
 from os.path import dirname
 
@@ -29,6 +30,8 @@ def is_mac():
 def is_arm():
     return 'arm' in platform.machine().lower()
 
+def is_x64():
+    return struct.calcsize("P") == 8
 
 def get_addon_preferences(context: bpy.types.Context | None):
     if context is None:
