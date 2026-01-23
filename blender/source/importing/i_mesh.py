@@ -339,7 +339,8 @@ class MeshConverter:
     def _convert_lod_models(self, model_info: i_model.ModelInfo, model_set: CModelSet):
         progress_console.start(
             "Converting LOD Models",
-            len(model_set.mesh_data_sets_size) - 1)
+            model_set.mesh_data_sets_size - 1
+        )
 
         model_info.c_lod_items = []
         model_info.c_lod_unknown1 = model_set.lod_unknown1
