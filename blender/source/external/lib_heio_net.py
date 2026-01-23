@@ -1,4 +1,4 @@
-from ctypes import POINTER, pointer, byref, c_wchar_p, c_bool, c_uint
+from ctypes import POINTER, pointer, byref, cast, c_wchar_p, c_bool, c_uint
 from typing import Iterable
 
 from . import util
@@ -160,7 +160,7 @@ class HEIONET(ExternalLibrary):
     
     @classmethod
     def image_invert_green_channel(cls, pixels):
-        cls._lib().image_invert_green_channel(pixels.ctypes.data, len(pixels))
+        cls._lib().image_invert_green_channel(cast(pixels.ctypes.data, POINTER(c_float)), len(pixels))
 
     
     ################################################################################################
