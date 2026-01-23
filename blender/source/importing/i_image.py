@@ -103,11 +103,11 @@ class ImageLoader:
 
     @staticmethod
     def _import_image_native(image_name: str, c_image: CImage):
-        if c_image.streamed_data is not None:
+        if c_image.streamed_data:
             image = bpy.data.images.new(image_name, 1, 1)
             image.source = 'FILE'
             image.filepath = c_image.file_path
-            byte_data = c_image.streamed_data[:c_image.streamed_data_size]
+            byte_data = bytes(c_image.streamed_data[:c_image.streamed_data_size])
             image.pack(data=byte_data, data_len=len(byte_data))
             image.packed_files[0].filepath = image.filepath
 
