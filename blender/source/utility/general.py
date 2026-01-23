@@ -2,6 +2,7 @@ import os
 import bpy
 import platform
 import struct
+import sys
 
 from os.path import dirname
 
@@ -9,23 +10,6 @@ ADDON_DIR = dirname(dirname(dirname(os.path.realpath(__file__))))
 ADDON_NAME = os.path.basename(ADDON_DIR)
 PACKAGE_NAME = '.'.join(__package__.split('.')[:3])
 ICON_DIR = os.path.join(ADDON_DIR, "icons")
-
-
-def get_os_name():
-    return platform.system()
-
-
-def is_windows():
-    return get_os_name() == 'Windows'
-
-
-def is_linux():
-    return get_os_name() == 'Linux'
-
-
-def is_mac():
-    return get_os_name() == 'Darwin'
-
 
 def is_arm():
     return 'arm' in platform.machine().lower()

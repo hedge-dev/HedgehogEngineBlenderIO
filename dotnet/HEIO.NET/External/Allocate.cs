@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 
@@ -139,13 +140,12 @@ namespace HEIO.NET.External
             if (Util.IsWindows)
             {
                 result = (char*)Marshal.StringToHGlobalUni(value);
+                _allocations.Add((nint)result);
             }
             else
             {
                 result = (char*)AllocFromArray(Encoding.UTF32.GetBytes(value + '\0'));
             }
-
-            _allocations.Add((nint)result);
 
             return result;
         }
