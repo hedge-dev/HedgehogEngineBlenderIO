@@ -25,7 +25,7 @@ class BaseCollisionPrimitiveSelectGizmoGroup(bpy.types.GizmoGroup):
             and context.mode == 'OBJECT'
             and obj is not None
             and obj.visible_get(view_layer=context.view_layer)
-            and obj.type not in MESH_DATA_TYPES
+            and obj.type in MESH_DATA_TYPES
             and len(obj.data.heio_mesh.collision_primitives) > 0
         )
 
