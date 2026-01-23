@@ -839,7 +839,7 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
         if len(compile_data_sets) == 0:
             return None
 
-        compile_data_sets.sort(lambda x: x[1].cascade_level)
+        compile_data_sets.sort(key=lambda x: x[1].cascade_level)
 
         return (
             [x[0] for x in compile_data_sets],
