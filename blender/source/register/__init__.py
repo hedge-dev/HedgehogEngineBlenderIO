@@ -9,6 +9,8 @@ from . import (
     definitions,
     manual
 )
+from ..external import HEIONET
+from ..exceptions import HEIOUserException
 
 classes = []
 
@@ -51,6 +53,25 @@ def unregister():
             bpy.utils.unregister_class(cls)
         elif hasattr(cls, "unregister"):
             cls.unregister()
+
+    if HEIONET._LIBRARY is not None:
+        # Formatted to appear correctly for the user in blender,
+        # as there seem to be no other means to display a message
+        # when unregistering
+        raise HEIOUserException(
+            (
+                "\n\n"
+                "#===================================#\n"
+                "#                                                                      #\n"
+                "#     The external HEIO library is still loaded!    #\n"
+                "#                                                                      #\n"
+                "#         Please restart blender, and if you          #\n"
+                "#    attempted to update: reinstall the addon     #\n"
+                "#                                                                      #\n"
+                "#===================================#"
+            )
+        )
+    
 
 
 def reload_package(module_dict_main):

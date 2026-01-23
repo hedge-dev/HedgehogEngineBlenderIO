@@ -1,5 +1,4 @@
 import ctypes
-import _ctypes
 import os
 import sys
 from contextlib import contextmanager
@@ -31,7 +30,7 @@ LIB_DIRECTORY = os.path.join(general.ADDON_DIR, "DLL", ARCHITECTURE_FOLDER, OS_F
 
 class ExternalLibrary:
 
-    _LIBRARY: ctypes.CDLL | None
+    _LIBRARY: ctypes.CDLL | None = None
 
     @classmethod
     def _get_library_filename(cls):
@@ -50,29 +49,29 @@ class ExternalLibrary:
     @classmethod
     @contextmanager
     def load(cls):
-        if len(LIB_EXT) == 0:
-            raise HEIOUserException("Unknown/Unsupported Operating system!")
-
-        if not os.path.isdir(LIB_DIRECTORY):
-            raise HEIOUserException(f"External libraries are not compiled for {ARCHITECTURE_FOLDER} {OS_FOLDER}! Please open a github issue!")
     
-        library_filepath = os.path.join(LIB_DIRECTORY, cls._get_library_filename() + LIB_EXT)
-        cls._LIBRARY = ctypes.CDLL(library_filepath)
+        if cls._LIBRARY is None:
+            if len(LIB_EXT) == 0:
+                raise HEIOUserException("Unknown/Unsupported Operating system!")
+
+            if not os.path.isdir(LIB_DIRECTORY):
+                raise HEIOUserException(f"External libraries are not compiled for {ARCHITECTURE_FOLDER} {OS_FOLDER}! Please open a github issue!")
+            
+            library_filepath = os.path.join(LIB_DIRECTORY, cls._get_library_filename() + LIB_EXT)
+            cls._LIBRARY = ctypes.CDLL(library_filepath)
+            cls._setup()
 
         try:
-            cls._setup()
             yield cls
         finally:
             cls._cleanup()
 
-            handle = cls._LIBRARY._handle
-            del cls._LIBRARY
-            cls._LIBRARY = None
+            # I initially wanted to unload the library here,
+            # but unfortunately that is not supported for
+            # dotnet aot libraries:
+            # https://learn.microsoft.com/en-us/dotnet/core/deploying/native-aot/libraries
 
-            try:
-                _ctypes.FreeLibrary(handle)
-            except AttributeError:
-                _ctypes.dlclose(handle)
+            # As such, it's not worth to unload any libraries here
                 
 
     @classmethod
