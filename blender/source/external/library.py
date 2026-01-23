@@ -66,8 +66,8 @@ class ExternalLibrary:
             cls._cleanup()
 
             handle = cls._LIBRARY._handle
-            # del cls._LIBRARY
-            # cls._LIBRARY = None
+            del cls._LIBRARY
+            cls._LIBRARY = None
 
             try:
                 _ctypes.FreeLibrary(handle)
