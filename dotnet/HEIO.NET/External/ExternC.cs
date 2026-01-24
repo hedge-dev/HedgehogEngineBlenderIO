@@ -469,7 +469,10 @@ namespace HEIO.NET.External
                         if (!meshDataSets.ContainsKey((nint)meshDataSet))
                         {
                             MeshDataSet internalMeshDataSet = meshDataSet->ToInternal();
-                            //internalMeshDataSet.SaveToJson(outputDirectory);
+
+                            //string json = JsonSerializer.Serialize(internalMeshDataSet, SourceGenerationContext.Default.MeshDataSet);
+                            //File.WriteAllText(Path.Combine(outputDirectory, $"{meshDataSets.Count}_{internalMeshDataSet.Name}.json"), json);
+
                             meshDataSets.Add((nint)meshDataSet, internalMeshDataSet);
                         }
                     }

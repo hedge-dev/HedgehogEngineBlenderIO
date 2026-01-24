@@ -1,5 +1,4 @@
-﻿using HEIO.NET.External;
-using HEIO.NET.Internal.Modeling;
+﻿using HEIO.NET.Internal.Modeling;
 using SharpNeedle.Framework.SonicTeam;
 using SharpNeedle.IO;
 using SharpNeedle.Resource;

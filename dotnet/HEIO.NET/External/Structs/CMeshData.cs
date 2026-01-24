@@ -1,5 +1,4 @@
 ﻿using HEIO.NET.Internal.Modeling;
-using System;
 using System.Numerics;
 
 namespace HEIO.NET.External.Structs

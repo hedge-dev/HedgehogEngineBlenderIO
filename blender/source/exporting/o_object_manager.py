@@ -76,9 +76,7 @@ class ObjectManager:
             if level.target is None:
                 continue
 
-            lod_objects = [level.target]
-            lod_objects.extend(level.target.children_recursive)
-            result[level.target] = lod_objects
+            result[level.target] = list(level.target.children_recursive)
 
         return result
 
