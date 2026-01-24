@@ -8,6 +8,9 @@ def append_children_to_node(c_parent: CSampleChunkNode, children: list[CSampleCh
         last_sibling = last_sibling.contents.sibling
 
     for child in children:
+        if child is None:
+            continue
+        
         node_pointer = pointer(child)
 
         if last_sibling:

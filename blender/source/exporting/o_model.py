@@ -708,7 +708,7 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
         o_sca_parameters.append_children_to_node(extension_node, sca_parameters)
 
         root_node = o_sca_parameters.setup("Model", 0) # version is irrelevant, this will get ignored later
-        o_sca_parameters.append_children_to_node(root_node.contents, [extension_node])
+        o_sca_parameters.append_children_to_node(root_node.contents.child.contents, [extension_node])
 
         return root_node
 

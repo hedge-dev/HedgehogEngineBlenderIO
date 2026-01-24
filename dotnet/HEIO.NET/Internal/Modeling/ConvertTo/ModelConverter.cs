@@ -136,15 +136,9 @@ namespace HEIO.NET.Internal.Modeling.ConvertTo
                         dataRoot.InsertChild(0, new("Topology", 3));
                     }
 
-                    if(data.SampleChunkNodeRoot.FindNode("NodesExt") is SampleChunkNode node)
+                    if(data.SampleChunkNodeRoot.FindNode("NodesExt") is SampleChunkNode nodesExt)
                     {
-                        SampleChunkNode nodesExt = new("NodesExt", 1);
-                        dataRoot.InsertChild(0, nodesExt);
-
-                        foreach(SampleChunkNode scaParameter in node)
-                        {
-                            nodesExt.AddChild(new SampleChunkNode(node.Name, node.Value));
-                        }
+                        dataRoot.InsertChild(0, CloneTree(nodesExt));
                     }
                 }
 
@@ -193,5 +187,16 @@ namespace HEIO.NET.Internal.Modeling.ConvertTo
             return result;
         }
 
+        private static SampleChunkNode CloneTree(SampleChunkNode root)
+        {
+            SampleChunkNode result = new(root.Name, root.Value);
+
+            foreach (SampleChunkNode node in root)
+            {
+                result.AddChild(CloneTree(node));
+            }
+
+            return result;
+        }
     }
 }
