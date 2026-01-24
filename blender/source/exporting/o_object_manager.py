@@ -112,17 +112,24 @@ class ObjectManager:
 
             self.all_objects.update(collection_objects)
 
-        if self.lod_trees is not None:
-            roots = list(self.object_trees.keys())
-            roots.extend([root for root, _ in self.collection_trees.values() if root is not None])
+        # Handling LOD trees
 
-            for root in roots:
-                trees = self._get_lod_trees(root)
+        roots = list(self.object_trees.keys())
+        roots.extend([root for root, _ in self.collection_trees.values() if root is not None])
 
-                for root, children in trees.items():
+        for root in roots:
+            trees = self._get_lod_trees(root)
+
+            for root, children in trees.items():
+
+                if self.lod_trees is not None:
                     self.all_objects.add(root)
                     self.all_objects.update(children)
 
+                if root in self.object_trees:
+                    del self.object_trees[root]
+
+            if self.lod_trees is not None:
                 self.lod_trees.update(trees)
 
 
