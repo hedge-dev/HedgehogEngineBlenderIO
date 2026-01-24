@@ -12,7 +12,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="J113D.Common" Version="1.0.0" />
+		<PackageReference Include="J113D.Common" Version="1.1.0" />
 		<PackageReference Include="J113D.Strippify" Version="1.0.0" />
 		<PackageReference Include="MIConvexHull" Version="1.1.19.1019" />
 	</ItemGroup>

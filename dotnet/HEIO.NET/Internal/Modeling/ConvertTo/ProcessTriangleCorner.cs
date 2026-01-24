@@ -1,4 +1,5 @@
 ﻿using HEIO.NET.Internal.Modeling.GPU;
+using J113D.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -94,7 +95,7 @@ namespace HEIO.NET.Internal.Modeling.ConvertTo
 
         public static GPUVertex[] EvaluateGPUData(Vertex[] vertices, ProcessTriangleCorner[] triangles, int weightSets, out int[] faceIndices, out HashSet<short> usedBones, out int[] resultVertexIndices)
         {
-            if(J113D.Common.DistinctMap.TryCreateDistinctMap(triangles, out J113D.Common.DistinctMap<ProcessTriangleCorner> cornerMap))
+            if(triangles.TryCreateDistinctMapSSP(x => x.vertexIndex, 1, out DistinctMap<ProcessTriangleCorner> cornerMap))
             {
                 faceIndices = cornerMap.Map!;
             }

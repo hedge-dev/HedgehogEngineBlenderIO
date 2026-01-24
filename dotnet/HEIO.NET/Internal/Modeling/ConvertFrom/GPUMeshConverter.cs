@@ -11,6 +11,7 @@ namespace HEIO.NET.Internal.Modeling.ConvertFrom
 {
     internal class GPUMeshConverter
     {
+        private readonly MeshImportSettings _settings;
         private readonly Topology _topology;
         private readonly int _morphCount;
         private readonly EqualityComparer<Vertex>? _mergeComparer;
@@ -27,13 +28,14 @@ namespace HEIO.NET.Internal.Modeling.ConvertFrom
 
         public GPUMeshConverter(string name, Topology topology, MeshImportSettings settings, int morphCount)
         {
+            _settings = settings;
             _topology = topology;
             _morphCount = morphCount;
 
             if(settings.MergeVertices)
             {
                 _mergeSplitEdges = settings.MergeSplitEdges;
-                _mergeComparer = Vertex.GetMergeComparer(settings.VertexMergeDistance, !settings.MergeSplitEdges, morphCount > 0);
+                _mergeComparer = Vertex.GetMergeComparer(_settings.VertexMergeDistance, !_settings.MergeSplitEdges, morphCount > 0);
             }
 
             ResultData = new(name, _mergeSplitEdges);
@@ -144,7 +146,7 @@ namespace HEIO.NET.Internal.Modeling.ConvertFrom
         {
             DistinctMap<Vertex> vertices = _mergeComparer == null
                     ? new(_tempVertices, null)
-                    : DistinctMap.CreateDistinctMap(_tempVertices, _mergeComparer);
+                    : _tempVertices.CreateDistinctMapSSP(x => x.Position.GetSSP(), _settings.VertexMergeDistance, _mergeComparer);
 
             int vertexIndexOffset = ResultData.Vertices.Count;
             foreach(Vertex vertex in vertices.Values)

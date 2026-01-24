@@ -123,7 +123,7 @@ namespace HEIO.NET.Internal.Modeling.ConvertFrom
             IEnumerable<int> resultTypes;
             IEnumerable<uint> resultTypeValues;
 
-            if(types.TryCreateDistinctMap(out DistinctMap<uint> map))
+            if(types.TryCreateDistinctMapSSP<uint, uint>(x => x, 1, out DistinctMap<uint> map))
             {
                 resultTypeValues = map.Values;
                 resultTypes = map.Map!;
@@ -183,7 +183,7 @@ namespace HEIO.NET.Internal.Modeling.ConvertFrom
             EqualityComparer<Vector3> mergeComparer = EqualityComparer<Vector3>.Create((v1, v2) =>
                     Vector3.DistanceSquared(v1, v2) < mergeDistanceSquared);
 
-            if(output.Vertices.TryCreateDistinctMap(mergeComparer, out DistinctMap<Vector3> map))
+            if(output.Vertices.TryCreateDistinctMapSSP(x => x.GetSSP(), vertexMergeDistance, mergeComparer, out DistinctMap<Vector3> map))
             {
                 output.Vertices = map.ValueArray;
                 for (int i = 0; i < output.TriangleIndices.Count; i++)
