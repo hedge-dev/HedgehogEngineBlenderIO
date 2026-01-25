@@ -1,4 +1,5 @@
 ﻿using HEIO.NET.Internal.Modeling.GPU;
+using J113D.Common;
 using SharpNeedle.Framework.HedgehogEngine.Mirage.MaterialData;
 using SharpNeedle.Framework.HedgehogEngine.Mirage.ModelData;
 using System;
@@ -23,6 +24,7 @@ namespace HEIO.NET.Internal.Modeling.ConvertTo
         private readonly int _texcoordSets;
         private readonly bool[] _texcoordSetsUsed;
         private readonly int _weightSets;
+        private readonly bool _enableMultiTangent;
 
         private readonly List<Vertex> _vertices;
         private readonly List<ProcessTriangleCorner> _triangles;
@@ -39,6 +41,7 @@ namespace HEIO.NET.Internal.Modeling.ConvertTo
             _weightSets = addWeights ? triangleData.Any(x => x.data.MeshSets[x.setIndex].Enable8Weights) ? 2 : 1 : 0;
             _texcoordSets = int.Clamp(_triangleData.Max(x => x.data.TextureCoordinates.Count), 1, 4);
             _texcoordSetsUsed = new bool[_texcoordSets];
+            _enableMultiTangent = _triangleData.Any(x => x.data.MeshSets[x.setIndex].EnableMultiTangent);
 
             _vertices = [];
             _triangles = [];
@@ -81,7 +84,8 @@ namespace HEIO.NET.Internal.Modeling.ConvertTo
                             triangleData.data,
                             faceIndex,
                             _texcoordSets,
-                            1
+                            1,
+                            _enableMultiTangent
                         );
 
                         for(int j = 1; j < texcoordCount; j++)
@@ -199,8 +203,7 @@ namespace HEIO.NET.Internal.Modeling.ConvertTo
                 [.. _triangles],
                 _weightSets,
                 out int[] gpuTriangles,
-                out HashSet<short> usedBones,
-                out _
+                out HashSet<short> usedBones
             );
 
             int realTexcoordCount = _texcoordSets;
@@ -218,7 +221,7 @@ namespace HEIO.NET.Internal.Modeling.ConvertTo
                 1,
                 _triangleData.All(x => x.data.MeshSets[x.setIndex].UseByteColors),
                 false,
-                _triangleData.Any(x => x.data.MeshSets[x.setIndex].EnableMultiTangent),
+                _enableMultiTangent,
                 Topology.TriangleList,
                 _material,
                 _slot

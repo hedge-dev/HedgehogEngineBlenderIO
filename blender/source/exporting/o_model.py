@@ -152,7 +152,12 @@ class RawMeshData:
             ]
 
         polygon_tangents = convert_uv_dirs(self.polygon_uv_directions)
-        polygon_tangents2 = convert_uv_dirs(self.polygon_uv_directions2)
+
+        polygon_tangents2 = None
+        for mesh_set in self.mesh_sets:
+            if mesh_set.enable_multi_tangent:
+                polygon_tangents2 = convert_uv_dirs(self.polygon_uv_directions2)
+                break
 
         return CMeshData(
             name = "UNUSED",  # name is only important for import
@@ -493,8 +498,8 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
         mesh.free_tangents()
 
         uv_directions2 = None
-        if len(mesh.uv_layers) > 2:
-            mesh.calc_tangents(uvmap=mesh.uv_layers[2].name)
+        if len(mesh.uv_layers) > 1:
+            mesh.calc_tangents(uvmap=mesh.uv_layers[1].name)
             uv_directions2 = [(l.tangent.normalized(), l.bitangent.normalized())
                               for l in loop_order]
             mesh.free_tangents()

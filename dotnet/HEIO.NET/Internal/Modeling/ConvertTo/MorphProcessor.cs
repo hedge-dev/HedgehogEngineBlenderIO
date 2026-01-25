@@ -65,7 +65,8 @@ namespace HEIO.NET.Internal.Modeling.ConvertTo
                         _data,
                         i + t,
                         _gpuMesh.TexcoordSets,
-                        _gpuMesh.ColorSets
+                        _gpuMesh.ColorSets,
+                        _gpuMesh.MultiTangent
                      ));
                 }
             }
@@ -85,8 +86,7 @@ namespace HEIO.NET.Internal.Modeling.ConvertTo
                 [.. _triangles],
                 _weightSets,
                 out int[] gpuTriangles,
-                out HashSet<short> usedBones,
-                out int[] resultVertexIndices
+                out HashSet<short> usedBones
             );
 
             if(usedBones.Count > 25 && versionMode != ModelVersionMode.HE2)
@@ -151,7 +151,7 @@ namespace HEIO.NET.Internal.Modeling.ConvertTo
                 Result.Targets.Add(new()
                 {
                     Name = _data.MorphNames[i],
-                    Positions = resultVertexIndices.Select(x => _data.Vertices[x].MorphPositions![i]).ToArray()
+                    Positions = gpuVertices.Select(x => x.MorphPositions![i]).ToArray()
                 });
             }
         }

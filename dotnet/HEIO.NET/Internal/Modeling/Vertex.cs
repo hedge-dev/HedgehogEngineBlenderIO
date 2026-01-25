@@ -38,19 +38,6 @@ namespace HEIO.NET.Internal.Modeling
             Weights = [.. weights.Where(x => x.Weight != 0).OrderBy(x => x.Index)];
         }
 
-        private static bool CompareMorphs(Vector3[] a, Vector3[] b, float mergeDistanceSquared)
-        {
-            for(int i = 0; i < a.Length; i++)
-            {
-                if(Vector3.DistanceSquared(a[i], b[i]) >= mergeDistanceSquared)
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
         public static EqualityComparer<Vertex> GetMergeComparer(float mergeDistance, bool compareNormals, bool compareMorphs)
         {
             float mergeDistanceSquared = mergeDistance * mergeDistance;
@@ -61,7 +48,7 @@ namespace HEIO.NET.Internal.Modeling
                 {
                     return EqualityComparer<Vertex>.Create((v1, v2) =>
                         Vector3.DistanceSquared(v1.Position, v2.Position) < mergeDistanceSquared
-                        && CompareMorphs(v1.MorphPositions!, v2.MorphPositions!, mergeDistanceSquared)
+                        && VectorUtils.CompareArrayDistances(v1.MorphPositions!, v2.MorphPositions!, mergeDistanceSquared)
                         && VertexWeight.CompareEquality(v1.Weights, v2.Weights)
                         && UVDirection.AreNormalsEqual(v1.Normal, v2.Normal));
                 }
@@ -69,7 +56,7 @@ namespace HEIO.NET.Internal.Modeling
                 {
                     return EqualityComparer<Vertex>.Create((v1, v2) =>
                         Vector3.DistanceSquared(v1.Position, v2.Position) < mergeDistanceSquared
-                        && CompareMorphs(v1.MorphPositions!, v2.MorphPositions!, mergeDistanceSquared)
+                        && VectorUtils.CompareArrayDistances(v1.MorphPositions!, v2.MorphPositions!, mergeDistanceSquared)
                         && VertexWeight.CompareEquality(v1.Weights, v2.Weights));
                 }
             }

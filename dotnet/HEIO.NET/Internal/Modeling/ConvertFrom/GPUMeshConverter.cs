@@ -146,7 +146,7 @@ namespace HEIO.NET.Internal.Modeling.ConvertFrom
         {
             DistinctMap<Vertex> vertices = _mergeComparer == null
                     ? new(_tempVertices, null)
-                    : _tempVertices.CreateDistinctMapSSP(x => x.Position.GetSSP(), _settings.VertexMergeDistance, _mergeComparer);
+                    : _tempVertices.CreateDistinctMapSSP(x => x.Position.GetPositionSSP(), _settings.VertexMergeDistance, _mergeComparer);
 
             int vertexIndexOffset = ResultData.Vertices.Count;
             foreach(Vertex vertex in vertices.Values)

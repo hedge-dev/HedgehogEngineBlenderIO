@@ -7,10 +7,8 @@ using System.Numerics;
 
 namespace HEIO.NET.Internal.Modeling.ConvertTo
 {
-    internal readonly struct ProcessTriangleCorner : IEquatable<ProcessTriangleCorner>
+    internal readonly struct ProcessTriangleCorner
     {
-        private static readonly float _colorThreshold = new Vector4(2 / 255f).LengthSquared();
-
         public readonly int vertexIndex;
         public readonly UVDirection uvDirection;
         public readonly UVDirection uvDirection2;
@@ -26,39 +24,7 @@ namespace HEIO.NET.Internal.Modeling.ConvertTo
             this.colors = colors;
         }
 
-        public bool Equals(ProcessTriangleCorner other)
-        {
-            if(vertexIndex != other.vertexIndex
-                || !UVDirection.AreNormalsEqual(uvDirection.Tangent, other.uvDirection.Tangent)
-                || !UVDirection.AreNormalsEqual(uvDirection.Binormal, other.uvDirection.Binormal)
-                || !UVDirection.AreNormalsEqual(uvDirection2.Tangent, other.uvDirection2.Tangent)
-                || !UVDirection.AreNormalsEqual(uvDirection2.Binormal, other.uvDirection2.Binormal))
-            {
-                return false;
-            }
-
-            const float texcoordDistanceCheck = (float)(0.001 * 0.001);
-
-            for(int i = 0; i < textureCoordinates.Length; i++)
-            {
-                if(Vector2.DistanceSquared(textureCoordinates[i], other.textureCoordinates[i]) > texcoordDistanceCheck)
-                {
-                    return false;
-                }
-            }
-
-            for(int i = 0; i < colors.Length; i++)
-            {
-                if(Vector4.DistanceSquared(colors[i], other.colors[i]) > _colorThreshold)
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
-        public static ProcessTriangleCorner EvalProcessTriangles(int vertexIndex, MeshData data, int faceIndex, int texcoordSets, int colorSets)
+        public static ProcessTriangleCorner EvalProcessTriangles(int vertexIndex, MeshData data, int faceIndex, int texcoordSets, int colorSets, bool multiTangent)
         {
             Vector2[] textureCoordinates = new Vector2[texcoordSets];
 
@@ -87,38 +53,27 @@ namespace HEIO.NET.Internal.Modeling.ConvertTo
             return new(
                 vertexIndex,
                 uvDirection,
-                data.PolygonUVDirections2?[faceIndex] ?? uvDirection,
+                multiTangent && data.PolygonUVDirections2 != null ? data.PolygonUVDirections2[faceIndex] : uvDirection,
                 textureCoordinates,
                 colors
             );
         }
 
-        public static GPUVertex[] EvaluateGPUData(Vertex[] vertices, ProcessTriangleCorner[] triangles, int weightSets, out int[] faceIndices, out HashSet<short> usedBones, out int[] resultVertexIndices)
+        public static GPUVertex[] EvaluateGPUData(Vertex[] vertices, ProcessTriangleCorner[] triangles, int weightSets, out int[] faceIndices, out HashSet<short> usedBones)
         {
-            if(triangles.TryCreateDistinctMapSSP(x => x.vertexIndex, 1, out DistinctMap<ProcessTriangleCorner> cornerMap))
-            {
-                faceIndices = cornerMap.Map!;
-            }
-            else
-            {
-                faceIndices = [.. Enumerable.Range(0, triangles.Length)];
-            }
-
-            ProcessTriangleCorner[] distinctCorners = cornerMap.ValueArray;
             int weightCount = weightSets * 4;
 
             usedBones = [];
-            GPUVertex[] result = new GPUVertex[distinctCorners.Length];
-            resultVertexIndices = new int[result.Length];
-            int texcoordSets = distinctCorners[0].textureCoordinates.Length;
-            int colorSets = distinctCorners[0].colors.Length;
+            GPUVertex[] rawVertices = new GPUVertex[triangles.Length];
+            int texcoordSets = triangles[0].textureCoordinates.Length;
+            int colorSets = triangles[0].colors.Length;
 
-            for(int i = 0; i < distinctCorners.Length; i++)
+            for(int i = 0; i < triangles.Length; i++)
             {
-                ProcessTriangleCorner corner = distinctCorners[i];
+                ProcessTriangleCorner corner = triangles[i];
                 Vertex vertex = vertices[corner.vertexIndex];
 
-                GPUVertex gpuVertex = new(texcoordSets, colorSets, weightCount)
+                GPUVertex gpuVertex = new(vertex.MorphPositions?.Length, texcoordSets, colorSets, weightCount)
                 {
                     Position = vertex.Position,
                     Normal = vertex.Normal,
@@ -126,26 +81,34 @@ namespace HEIO.NET.Internal.Modeling.ConvertTo
                     UVDirection2 = corner.uvDirection2,
                 };
 
-                for(int j = 0; j < texcoordSets; j++)
+                if(vertex.MorphPositions != null)
                 {
-                    gpuVertex.TextureCoordinates[j] = corner.textureCoordinates[j];
+                    Array.Copy(vertex.MorphPositions, gpuVertex.MorphPositions!, vertex.MorphPositions.Length);
                 }
 
-                for(int j = 0; j < colorSets; j++)
-                {
-                    gpuVertex.Colors[j] = corner.colors[j];
-                }
+                Array.Copy(gpuVertex.TextureCoordinates, corner.textureCoordinates, texcoordSets);
+                Array.Copy(gpuVertex.Colors, corner.colors, colorSets);
 
                 if(weightCount != 0)
                 {
                     TransferWeights(vertex.Weights, gpuVertex.Weights, usedBones);
                 }
 
-                result[i] = gpuVertex;
-                resultVertexIndices[i] = corner.vertexIndex;
+                rawVertices[i] = gpuVertex;
             }
 
-            return result;
+            EqualityComparer<GPUVertex> comparer = GPUVertex.GetMergeComparer(0.001f, rawVertices[0].MorphPositions != null);
+
+            if(rawVertices.TryCreateDistinctMapSSP(x => x.Position.GetPositionSSP(), 0.001f, comparer, out DistinctMap<GPUVertex> verticesMap))
+            {
+                faceIndices = verticesMap.Map!;
+                return verticesMap.ValueArray;
+            }
+            else
+            {
+                faceIndices = [.. Enumerable.Range(0, rawVertices.Length)];
+                return rawVertices;
+            }
         }
 
         private static void TransferWeights(VertexWeight[] input, VertexWeight[] output, HashSet<short> usedBones)

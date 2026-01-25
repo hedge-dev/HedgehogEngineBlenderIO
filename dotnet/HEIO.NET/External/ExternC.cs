@@ -1,5 +1,6 @@
 ﻿using HEIO.NET.External.Structs;
 using HEIO.NET.Internal;
+using HEIO.NET.Internal.Json;
 using HEIO.NET.Internal.Modeling;
 using SharpNeedle.Framework.HedgehogEngine.Bullet;
 using SharpNeedle.Framework.HedgehogEngine.Mirage.MaterialData;
@@ -13,6 +14,7 @@ using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
+using System.Text.Json;
 
 namespace HEIO.NET.External
 {
