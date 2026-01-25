@@ -472,8 +472,8 @@ namespace HEIO.NET.External
                         {
                             MeshDataSet internalMeshDataSet = meshDataSet->ToInternal();
 
-                            //string json = JsonSerializer.Serialize(internalMeshDataSet, SourceGenerationContext.Default.MeshDataSet);
-                            //File.WriteAllText(Path.Combine(outputDirectory, $"{meshDataSets.Count}_{internalMeshDataSet.Name}.json"), json);
+                            string json = JsonSerializer.Serialize(internalMeshDataSet, SourceGenerationContext.Default.MeshDataSet);
+                            File.WriteAllText(Path.Combine(outputDirectory, $"{meshDataSets.Count}_{internalMeshDataSet.Name}.json"), json);
 
                             meshDataSets.Add((nint)meshDataSet, internalMeshDataSet);
                         }

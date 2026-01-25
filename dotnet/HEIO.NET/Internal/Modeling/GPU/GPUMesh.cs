@@ -78,7 +78,7 @@ namespace HEIO.NET.Internal.Modeling.GPU
 
                 if(i < strips.Length - 1)
                 {
-                    triangles.Add(ushort.MaxValue);
+                    triangles.Add(-1);
                 }
             }
 
