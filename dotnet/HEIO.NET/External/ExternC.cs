@@ -534,7 +534,7 @@ namespace HEIO.NET.External
                     }
 
                     string filepath = Path.Join(outputDirectory, mainModel.Name + extension);
-                    fileData.Write(filepath);
+                    fileData.Write(filepath, false); // dependencies are handled by external
                 }
             }
             catch (Exception exception)
