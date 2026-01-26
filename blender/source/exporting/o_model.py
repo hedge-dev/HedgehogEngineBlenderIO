@@ -796,7 +796,7 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
 
         return pointer(result)
 
-    def _assemble_lod_compile_data(self, root: bpy.types.Object | None, name: str):
+    def _assemble_lod_compile_data(self, root: bpy.types.Object | None, name: str, base_compile_data: TPointer[CMeshDataSet]):
         if root is None or self._target_definition.hedgehog_engine_version < 2:
             return None
 
@@ -815,18 +815,22 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
         
         compile_data_sets: list[tuple[TPointer[CMeshDataSet], CLODItem]] = []
 
-        for i, level in enumerate(lod_info.levels.elements[1:]):
-            if level.target is None:
+        for i, level in enumerate(lod_info.levels.elements):
+            if i == 0:
+                compile_data = base_compile_data
+
+            elif level.target is None:
                 continue
 
-            progress_console.update(
-                f"Converting mesh data for LOD object \"{level.target.name}\"", i)
+            else:
+                progress_console.update(
+                    f"Converting mesh data for LOD object \"{level.target.name}\"", i)
 
-            lod_children = self._object_manager.lod_trees[level.target]
+                lod_children = self._object_manager.lod_trees[level.target]
 
-            compile_data = self._assemble_compile_data_set(level.target, lod_children, name)
-            if compile_data is None:
-                continue
+                compile_data = self._assemble_compile_data_set(level.target, lod_children, name)
+                if compile_data is None:
+                    continue
 
             compile_data_sets.append(
                 (
@@ -841,9 +845,6 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
 
         progress_console.end()
 
-        if len(compile_data_sets) == 0:
-            return None
-
         compile_data_sets.sort(key=lambda x: x[1].cascade_level)
 
         return (
@@ -857,20 +858,20 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
         if compile_data is None:
             return None
         
-        compile_data_sets = [compile_data]
-
-        lod_compile_data = self._assemble_lod_compile_data(root, name)
-        lod_items = None
-        lod_items_size = 0
-        lod_unknown1 = 0
+        lod_compile_data = self._assemble_lod_compile_data(root, name, compile_data)
 
         if lod_compile_data is not None:
-            compile_data_sets.extend(lod_compile_data[0])
+            compile_data_sets = lod_compile_data[0]
             lod_items = lod_compile_data[1]
             lod_items_size = len(lod_items)
             lod_unknown1 = 4
             if lod_items[-1].cascade_level != 31:
                 lod_unknown1 |= 0x80
+        else:
+            compile_data_sets = [compile_data]
+            lod_items = None
+            lod_items_size = 0
+            lod_unknown1 = 0
 
         return pointer(
             CModelSet(
