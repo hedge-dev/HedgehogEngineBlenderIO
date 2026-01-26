@@ -146,6 +146,8 @@ namespace HEIO.NET.Internal
 
         public static ModelSet ReadModelFile(IFile file, MeshImportSettings settings)
         {
+            Console.WriteLine("Reading model file " + file.Name);
+
             string? signature = null;
             using (BinaryObjectReader reader = new(file.Open(), StreamOwnership.Transfer, Endianness.Big))
             {

@@ -1,5 +1,6 @@
 ﻿using SharpNeedle.Framework.HedgehogEngine.Bullet;
 using SharpNeedle.IO;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
@@ -79,6 +80,8 @@ namespace HEIO.NET.Internal.Modeling
 
             for (int i = 0; i < files.Length; i++)
             {
+                Console.WriteLine("Reading bullet mesh file " + files[i].Name);
+
                 BulletMesh mesh = new();
                 mesh.Read(files[i]);
 
