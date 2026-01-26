@@ -762,7 +762,7 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
             if child_meshdata is None:
                 continue
 
-            if model_nodes is not None and child_meshdata.morph_names is not None and len(child_meshdata.group_names) > 1:
+            if model_nodes is not None and child_meshdata.morph_names is not None and len(child_meshdata.groups) > 1:
                 raise HEIOUserException(
                     f"Mesh \"{child.data.name}\" is a shape model, which cannot have more than one mesh group!")
 

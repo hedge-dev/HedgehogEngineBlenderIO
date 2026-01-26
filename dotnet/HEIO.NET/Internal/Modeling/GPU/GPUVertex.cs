@@ -32,7 +32,6 @@ namespace HEIO.NET.Internal.Modeling.GPU
             TextureCoordinates = new Vector2[texcoordSets];
             Colors = new Vector4[colorSets];
             Weights = new VertexWeight[weightCount];
-            MorphPositions = null;
 
             Array.Fill(Colors, new(1));
             Array.Fill(Weights, new(-1, 0));
