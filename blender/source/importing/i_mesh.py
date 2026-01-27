@@ -177,8 +177,8 @@ class MeshConverter:
 
             meshgroup.name = group.name
 
-            for i in range(group.size):
-                group_indices.extend([i] * mesh_data.mesh_sets[set_offset + i].size)
+            for j in range(group.size):
+                group_indices.extend([i] * mesh_data.mesh_sets[set_offset + j].size)
             set_offset += group.size
 
         groups.attribute.data.foreach_set("value", group_indices)
