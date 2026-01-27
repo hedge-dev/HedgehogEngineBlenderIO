@@ -215,9 +215,8 @@ def setup_principled_bsdf_materials(target_definition: TargetDefinition | None, 
                 "ShaderNodeTexImage")
             diffuse_texture_node.location = (-700, 60)
             diffuse_texture_node.name = "Texture diffuse"
-            diffuse_texture_node.label = "Texture diffuse"
+            diffuse_texture_node.label = "sRGB-PBSDF; Texture diffuse"
             diffuse_texture_node.image = diffuse_tex.image
-            diffuse_texture_node.extension = "REPEAT"
             material.node_tree.links.new(
                 principled_node.inputs[0], diffuse_texture_node.outputs[0])
             material.node_tree.links.new(
@@ -239,9 +238,8 @@ def setup_principled_bsdf_materials(target_definition: TargetDefinition | None, 
                 "ShaderNodeTexImage")
             normal_texture_node.location = (-700, -240)
             normal_texture_node.name = "Texture normal"
-            normal_texture_node.label = "Texture normal"
+            normal_texture_node.label = "Normal-PBSDF; Texture normal"
             normal_texture_node.image = normal_tex.image
-            normal_texture_node.extension = "REPEAT"
             material.node_tree.links.new(
                 normal_map_node.inputs[1], normal_texture_node.outputs[0])
 

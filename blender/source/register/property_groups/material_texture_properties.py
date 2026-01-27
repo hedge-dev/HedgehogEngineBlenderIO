@@ -14,7 +14,7 @@ from bpy.props import (
 from .base_list import BaseList
 
 from .. import definitions
-TEXTURE_MODES = {"sRGB", "Linear", "Normal"}
+TEXTURE_MODES = {"sRGB", "Linear", "Normal", "sRGB-PBSDF", "Linear-PBSDF", "Normal-PBSDF"}
 
 
 TEXTURE_WRAP_MAPPING = {
@@ -150,10 +150,10 @@ class HEIO_MaterialTexture(bpy.types.PropertyGroup):
 
         texture_mode = self.get_texture_mode(target_definition)
         if texture_mode is not None and self.image is not None:
-            if texture_mode == 'sRGB':
+            if texture_mode.startswith('sRGB'):
                 self.image.colorspace_settings.is_data = False
                 self.image.colorspace_settings.name = 'sRGB'
-            elif texture_mode == 'Linear' or texture_mode == 'Normal':
+            elif texture_mode.startswith('Linear') or texture_mode.startswith('Normal'):
                 self.image.colorspace_settings.is_data = True
                 self.image.colorspace_settings.name = 'Non-Color'
 
@@ -161,9 +161,13 @@ class HEIO_MaterialTexture(bpy.types.PropertyGroup):
         if nodes[0] is not None:
             texture = nodes[0]
             texture.image = self.image
-            texture.extension = 'EXTEND'
             texture.interpolation = 'Cubic'
             texture.projection = 'FLAT'
+            
+            if texture_mode is not None and texture_mode.endswith("-PBSDF"):
+                texture.extension = 'REPEAT'
+            else:
+                texture.extension = 'EXTEND'
 
         if nodes[1] is not None:
             nodes[1].outputs[0].default_value = 0 if self.image is None else 1
