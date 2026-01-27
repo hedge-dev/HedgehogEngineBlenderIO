@@ -134,13 +134,13 @@ class RawCollisionMeshData:
             types_size = len(self.types),
 
             type_values = util.construct_array(self.type_values, c_ubyte),
-            type_values_size = len(self.type_values),
+            type_values_size = len(self.type_values) if self.type_values is not None else 0,
 
             flags = util.construct_array(self.flags, c_uint),
             flags_size = len(self.flags),
 
             flag_values = util.construct_array(self.flag_values, c_ubyte),
-            flag_values_size = len(self.flag_values),
+            flag_values_size = len(self.flag_values) if self.flag_values is not None else 0,
 
             groups = util.as_array(c_groups, CCollisionMeshDataGroup),
             groups_size = len(c_groups),
