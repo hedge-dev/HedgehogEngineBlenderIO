@@ -86,8 +86,8 @@ namespace HEIO.NET.Internal.Modeling.ConvertTo
                     Array.Copy(vertex.MorphPositions, gpuVertex.MorphPositions!, vertex.MorphPositions.Length);
                 }
 
-                Array.Copy(gpuVertex.TextureCoordinates, corner.textureCoordinates, texcoordSets);
-                Array.Copy(gpuVertex.Colors, corner.colors, colorSets);
+                Array.Copy(corner.textureCoordinates, gpuVertex.TextureCoordinates, texcoordSets);
+                Array.Copy(corner.colors, gpuVertex.Colors, colorSets);
 
                 if(weightCount != 0)
                 {
