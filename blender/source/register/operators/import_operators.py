@@ -93,7 +93,7 @@ class HEIO_OT_Import_Model(ImportModelOperator):
 
         for model_info in model_infos:
             model_info.create_object(
-                model_info.name, context.scene.collection, context)
+                model_info.name, context.scene.collection, True, context)
 
         self._setup_lod_models(context, model_infos)
         return {'FINISHED'}

@@ -37,10 +37,8 @@ class PointCloudConverter:
                 if self._model_instance_collection_collection is not None and resource.armature is not None:
                     instance_collection = self._model_instance_collections.get(resource.name, None)
                     if instance_collection is None:
-                        instance_collection = bpy.data.collections.new(resource.name)
+                        _, _, instance_collection = resource.create_object(resource.name, self._model_instance_collection_collection, True, context)
                         self._model_instance_collections[resource.name] = instance_collection
-                        self._model_instance_collection_collection.children.link(instance_collection)
-                        resource.create_object(resource.name, instance_collection, context)
 
                     result = bpy.data.objects.new(point.instance_name, None)
                     result.instance_type = 'COLLECTION'
@@ -48,7 +46,7 @@ class PointCloudConverter:
 
                 else:
 
-                    mesh_objs, armature_obj = resource.create_object(point.instance_name, collection, context)
+                    mesh_objs, armature_obj, _ = resource.create_object(point.instance_name, collection, False, context)
                     if armature_obj is not None:
                         result = armature_obj
                     else:

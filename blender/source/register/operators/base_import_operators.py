@@ -395,7 +395,7 @@ class ImportModelOperator(ImportMaterialOperator):
         for model_info in model_infos:
             model_info.setup_lod_info(lod_collection, context)
 
-        if created and len(lod_collection.objects) == 0:
+        if created and len(lod_collection.all_objects) == 0:
             bpy.data.collections.remove(lod_collection)
 
 

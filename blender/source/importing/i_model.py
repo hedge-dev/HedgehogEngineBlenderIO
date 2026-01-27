@@ -39,22 +39,30 @@ class ModelInfo:
         self.lod_models = []
         self.lod_info_set_up = False
 
-    def create_object(self, name: str, collection: bpy.types.Collection, context: bpy.types.Context):
+    def create_object(self, name: str, collection: bpy.types.Collection, create_model_collection: bool, context: bpy.types.Context):
 
         mesh_objs = []
 
+        if create_model_collection:
+            model_collection = bpy.data.collections.new(self.name)
+            collection.children.link(model_collection)
+            model_collection_result = model_collection
+        else:
+            model_collection = collection
+            model_collection_result = None
+
         def add_mesh(obj):
             mesh_objs.append(obj)
-            collection.objects.link(obj)
+            model_collection.objects.link(obj)
             self.mesh_objects.append(obj)
 
         if self.armature is not None:
             armature_obj = bpy.data.objects.new(name, self.armature)
-            collection.objects.link(armature_obj)
+            model_collection.objects.link(armature_obj)
             self.armatures_objects.append(armature_obj)
 
-            if collection != bpy.context.scene.collection:
-                bpy.context.scene.collection.objects.link(armature_obj)
+            if model_collection != context.scene.collection:
+                context.scene.collection.objects.link(armature_obj)
             context.view_layer.depsgraph.update()
 
             for i, pose_bone in enumerate(armature_obj.pose.bones):
@@ -75,8 +83,8 @@ class ModelInfo:
 
                 add_mesh(mesh_obj)
 
-            if collection != bpy.context.scene.collection:
-                bpy.context.scene.collection.objects.unlink(armature_obj)
+            if model_collection != context.scene.collection:
+                context.scene.collection.objects.unlink(armature_obj)
 
         elif len(self.meshes) == 1:
             armature_obj = None
@@ -88,7 +96,7 @@ class ModelInfo:
         else:
             raise HEIODevException("Model has too many meshes!")
 
-        return mesh_objs, armature_obj
+        return mesh_objs, armature_obj, model_collection_result
 
     def setup_lod_info(self, lod_collection: bpy.types.Collection, context: bpy.types.Context):
         if self.c_lod_items is None or self.lod_info_set_up:
@@ -100,6 +108,10 @@ class ModelInfo:
             lod_info = self.armature.heio_armature.lod_info
         else:
             return
+
+        if len(self.c_lod_items) > 1:
+            collection = bpy.data.collections.new(self.name + " LOD")
+            lod_collection.children.link(collection)
 
         self.lod_info_set_up = True
         lod_info.initialize()
@@ -116,7 +128,7 @@ class ModelInfo:
             lod_info_level.unknown = c_lod_info_item.unknown2
 
             lod_model = self.lod_models[i - 1]
-            mesh_objs, armature_obj = lod_model.create_object(lod_model.name, lod_collection, context)
+            mesh_objs, armature_obj, _ = lod_model.create_object(lod_model.name, collection, True, context)
 
             if armature_obj is not None:
                 lod_info_level.target = armature_obj
