@@ -267,6 +267,12 @@ class ExportBaseMeshDataOperator(ExportObjectSelectionOperator):
         default=False
     )
 
+    export_morphs: BoolProperty(
+        name="Export morphs",
+        description="Add shape keys on models as morphs to the exported model",
+        default=True
+    )
+
     use_multicore_processing: BoolProperty(
         name="Use multicore processing",
         description="Uses all CPU cores (threads) to speed up exporting model data",
@@ -288,6 +294,9 @@ class ExportBaseMeshDataOperator(ExportObjectSelectionOperator):
     def _hide_mesh_panel(self):
         return False
 
+    def _hide_morph_export_option(self):
+        return True
+
     def draw_mesh_mode(self, layout):
         if self._get_force_directory_mode() is None:
             layout.use_property_split = True
@@ -305,20 +314,24 @@ class ExportBaseMeshDataOperator(ExportObjectSelectionOperator):
         body.prop(self, "apply_modifiers")
         body.prop(self, "apply_poses")
 
+        if not self._hide_morph_export_option():
+            body.prop(self, "export_morphs")
+
     def setup(self, context):
         super().setup(context)
 
         self.model_set_manager = o_modelset.ModelSetManager(
             self.target_definition,
             self.apply_modifiers,
-            self.apply_poses
+            self.apply_poses,
+            self.export_morphs and not self._hide_morph_export_option()
         )
 
         self.model_set_manager.register_objects(
             self.object_manager.all_objects)
 
-    def export_basemesh_files(self, context, processor: o_mesh.BaseMeshProcessor, eval_shapekeys: bool):
-        self.model_set_manager.evaluate_begin(context, eval_shapekeys)
+    def export_basemesh_files(self, context, processor: o_mesh.BaseMeshProcessor):
+        self.model_set_manager.evaluate_begin(context)
         processor.prepare_all_meshdata()
         self.model_set_manager.evaluate_end()
 
@@ -472,8 +485,7 @@ class ExportModelBaseOperator(ExportMaterialOperator, ExportBaseMeshDataOperator
 
     def export_model_files(self, context, mode):
         self.model_processor.mode = mode
-        self.export_basemesh_files(
-            context, self.model_processor, mode != 'TERRAIN')
+        self.export_basemesh_files(context, self.model_processor)
 
 
 class ExportCollisionModelOperator(ExportBaseMeshDataOperator):

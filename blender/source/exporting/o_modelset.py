@@ -122,6 +122,7 @@ class ModelSetManager:
 
     _apply_modifiers: bool
     _apply_armature: bool
+    _export_morphs: bool
 
     _registered_objects: set[bpy.types.Object]
     _registered_armatures: dict[bpy.types.Armature, str]
@@ -132,13 +133,15 @@ class ModelSetManager:
             self,
             target_definition: TargetDefinition,
             apply_modifiers: bool,
-            apply_armature: bool):
+            apply_armature: bool,
+            export_morphs: bool):
 
         self.target_definition = target_definition
         self.eval_depsgraph = None
 
         self._apply_modifiers = apply_modifiers
         self._apply_armature = apply_armature
+        self._export_morphs = export_morphs
 
         self._registered_objects = set()
         self._registered_armatures = {}
@@ -193,7 +196,7 @@ class ModelSetManager:
                 else:
                     model_set.attached_bone_name = None
 
-    def evaluate_begin(self, context: bpy.types.Context, eval_shapekeys: bool):
+    def evaluate_begin(self, context: bpy.types.Context):
 
         model_meshes = self.model_set_lut.values()
 
@@ -207,7 +210,7 @@ class ModelSetManager:
         self.depsgraph = context.evaluated_depsgraph_get()
 
         for mesh in model_meshes:
-            mesh.evaluate(self.depsgraph, eval_shapekeys)
+            mesh.evaluate(self.depsgraph, self._export_morphs)
 
     def evaluate_end(self):
         for mesh in self.model_set_lut.values():

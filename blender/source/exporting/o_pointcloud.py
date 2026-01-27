@@ -31,7 +31,9 @@ class PointCloudProcessor:
 
     def prepare(self, context: bpy.types.Context):
         if self.write_resources:
-            self.model_set_manager.evaluate_begin(context, self.type == 'MODEL')
+            # games that use point clouds do not support
+            # morph models, so we always pass false
+            self.model_set_manager.evaluate_begin(context)
             self.mesh_processor.prepare_all_meshdata()
             self.model_set_manager.evaluate_end()
 

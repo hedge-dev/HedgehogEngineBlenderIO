@@ -62,6 +62,9 @@ class HEIO_OT_Export_Model(ExportModelBaseOperator):
 
     filename_ext = ".model"
 
+    def _hide_morph_export_option(self):
+        return False
+
     def export(self, context):
         self.export_model_files(context, 'MODEL')
         return {'FINISHED'}
@@ -86,8 +89,7 @@ class HEIO_OT_Export_CollisionMesh(ExportCollisionModelOperator):
     bl_label = "Export as HE Collision Mesh (*.btmesh)"
 
     def export(self, context):
-        self.export_basemesh_files(
-            context, self.collision_mesh_processor, False)
+        self.export_basemesh_files(context, self.collision_mesh_processor)
         return {'FINISHED'}
 
 
