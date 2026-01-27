@@ -12,7 +12,7 @@ bl_info = {
     "author": "Justin113D, hedge-dev",
     "description": "Import/Exporter for Hedgehog Engine 3D related formats",
     "version": (0, 0, 1),
-    "blender": (5, 0, 0),
+    "blender": (4, 5, 0),
     "doc_url": "https://hedge-dev.github.io/HedgehogEngineBlenderIO/",
     "tracker_url": "https://github.com/hedge-dev/HedgehogEngineBlenderIO/issues/new",
     "category": "Import-Export"
