@@ -157,9 +157,12 @@ class ObjectManager:
         self._update_objects(new_objects)
         return new_objects
 
-    def collect_objects_from_collection(self, collection: bpy.types.Collection):
-        col_objects = set(collection.all_objects)
+    def collect_objects_from_collections(self, collections: list[bpy.types.Collection]):
+        col_objects = set()
         new_objects = set()
+
+        for collection in collections:
+            col_objects.update(collection.all_objects)
 
         for obj in col_objects:
             if obj in new_objects:

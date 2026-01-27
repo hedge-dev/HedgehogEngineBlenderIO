@@ -118,6 +118,9 @@ class ExportObjectSelectionOperator(ExportOperator):
     def _include_lod_models(self):
         return self.target_definition.hedgehog_engine_version > 1
 
+    def _include_base_collection(self):
+        return True
+
     def setup(self, context):
         super().setup(context)
         self.object_manager = o_object_manager.ObjectManager(
@@ -125,7 +128,13 @@ class ExportObjectSelectionOperator(ExportOperator):
 
         if len(self.collection) > 0:
             collection = bpy.data.collections[self.collection]
-            self.object_manager.collect_objects_from_collection(collection)
+            
+            if self._include_base_collection():
+                collections = [ collection ]
+            else:
+                collections = list(collection.children)
+
+            self.object_manager.collect_objects_from_collections(collections)
 
         else:
             self.object_manager.collect_objects(
@@ -588,6 +597,9 @@ class ExportPointCloudOperator(ExportObjectSelectionOperator):
         )
 
 class ExportPointCloudsOperator(ExportPointCloudOperator):
+
+    def _include_base_collection(self):
+        return False
 
     def export_collections(self, context):
         if len(self.collection) == 0:
