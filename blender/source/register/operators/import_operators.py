@@ -177,7 +177,7 @@ class HEIO_OT_Import_PointCloud(ImportPointCloudOperator):
         mesh_import_settings.merge_split_edges = self.merge_split_edges
         mesh_import_settings.vertex_merge_mode = enums.VERTEX_MERGE_MODE.index(self.vertex_merge_mode)
         mesh_import_settings.merge_collision_vertices = self.merge_collision_verts
-        mesh_import_settings.collision_vertex_merge_distance = self.merge_collision_verts
+        mesh_import_settings.collision_vertex_merge_distance = self.merge_collision_vert_distance
         mesh_import_settings.remove_unused_collision_vertices = self.remove_unused_vertices
 
         point_cloud_collection, resolve_info = HEIONET.point_cloud_read_files(

@@ -52,23 +52,43 @@ class HEIO_FH_CollisionMesh(bpy.types.FileHandler):
         return poll_file_object_drop(context)
 
 
-class HEIO_FH_PointCloud(bpy.types.FileHandler):
-    bl_idname = "HEIO_FH_pointcloud"
-    bl_label = "HE Point cloud (*.pcmodel;*.pccol)"
+class HEIO_FH_ModelPointCloud(bpy.types.FileHandler):
+    bl_idname = "HEIO_FH_modelpointcloud"
+    bl_label = "HE Model Point cloud (*.pcmodel)"
     bl_import_operator = import_operators.HEIO_OT_Import_PointCloud.bl_idname
-    bl_export_operator = export_operators.HEIO_OT_Export_PointCloud.bl_idname
-    bl_file_extensions = ".pcmodel;.pccol"
+    bl_export_operator = export_operators.HEIO_OT_Export_ModelPointCloud.bl_idname
+    bl_file_extensions = ".pcmodel"
 
     @classmethod
     def poll_drop(cls, context):
         return poll_file_object_drop(context)
 
+class HEIO_FH_CollisionPointCloud(bpy.types.FileHandler):
+    bl_idname = "HEIO_FH_colpointcloud"
+    bl_label = "HE Collision Point cloud (*.pccol)"
+    bl_import_operator = import_operators.HEIO_OT_Import_PointCloud.bl_idname
+    bl_export_operator = export_operators.HEIO_OT_Export_CollisionPointCloud.bl_idname
+    bl_file_extensions = ".pccol"
 
-class HEIO_FH_PointClouds(bpy.types.FileHandler):
-    bl_idname = "HEIO_FH_pointclouds"
-    bl_label = "Collections as HE Point clouds (*.pcmodel;*.pccol)"
-    bl_export_operator = export_operators.HEIO_OT_Export_PointClouds.bl_idname
-    bl_file_extensions = ".pcmodel;.pccol"
+    @classmethod
+    def poll_drop(cls, context):
+        return poll_file_object_drop(context)
+
+class HEIO_FH_ModelPointClouds(bpy.types.FileHandler):
+    bl_idname = "HEIO_FH_modelpointclouds"
+    bl_label = "Collections as HE Model Point clouds (*.pcmodel)"
+    bl_export_operator = export_operators.HEIO_OT_Export_ModelPointClouds.bl_idname
+    bl_file_extensions = ".pcmodel"
+
+    @classmethod
+    def poll_drop(cls, context):
+        return poll_file_object_drop(context)
+
+class HEIO_FH_CollisionPointClouds(bpy.types.FileHandler):
+    bl_idname = "HEIO_FH_colpointclouds"
+    bl_label = "Collections as HE Collision Point clouds (*.pccol)"
+    bl_export_operator = export_operators.HEIO_OT_Export_CollisionPointClouds.bl_idname
+    bl_file_extensions = ".pccol"
 
     @classmethod
     def poll_drop(cls, context):

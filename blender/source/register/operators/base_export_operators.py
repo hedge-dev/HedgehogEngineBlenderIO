@@ -9,7 +9,7 @@ from bpy.props import (
 
 from .base import HEIOBaseFileSaveOperator
 from .. import definitions
-from ...exceptions import HEIOUserException
+from ...exceptions import HEIOUserException, HEIODevException
 from ...exporting import (
     o_mesh,
     o_modelset,
@@ -17,7 +17,8 @@ from ...exporting import (
     o_collisionmesh,
     o_material,
     o_pointcloud,
-    o_model
+    o_model,
+    o_util
 )
 
 from ...external import HEIONET
@@ -188,8 +189,11 @@ class ExportMaterialOperator(ExportObjectSelectionOperator):
     def _ignore_material_mode(self):
         return False
 
+    def _hide_material_panel(self):
+        return False
+
     def draw_panel_material(self, context):
-        if not self._ignore_material_mode() and self.material_mode == 'NONE':
+        if self._hide_material_panel() or (not self._ignore_material_mode() and self.material_mode == 'NONE'):
             return
 
         header, body = self.layout.panel(
@@ -281,6 +285,9 @@ class ExportBaseMeshDataOperator(ExportObjectSelectionOperator):
     def _get_force_directory_mode(self):
         return None
 
+    def _hide_mesh_panel(self):
+        return False
+
     def draw_mesh_mode(self, layout):
         if self._get_force_directory_mode() is None:
             layout.use_property_split = True
@@ -368,8 +375,8 @@ class ExportModelBaseOperator(ExportMaterialOperator, ExportBaseMeshDataOperator
         default=True
     )
 
-    def _hide_model_panel(self):
-        return False
+    def _hide_material_panel(self):
+        return self._hide_mesh_panel()
 
     def _draw_panel_model_general(self, layout, target_def: definitions.TargetDefinition):
         header, body = layout.panel(
@@ -408,7 +415,7 @@ class ExportModelBaseOperator(ExportMaterialOperator, ExportBaseMeshDataOperator
             body.prop(self, "optimized_vertex_data")
 
     def draw_panel_model(self, context):
-        if self._hide_model_panel():
+        if self._hide_mesh_panel():
             return
 
         header, body = self.layout.panel(
@@ -473,11 +480,8 @@ class ExportCollisionModelOperator(ExportBaseMeshDataOperator):
 
     filename_ext = ".btmesh"
 
-    def _hide_collision_mesh_panel(self):
-        return False
-
     def draw_panel_collision_model(self):
-        if self._hide_collision_mesh_panel():
+        if self._hide_mesh_panel():
             return
 
         header, body = self.layout.panel(
@@ -511,17 +515,7 @@ class ExportCollisionModelOperator(ExportBaseMeshDataOperator):
         )
 
 
-class ExportPointCloudOperator(ExportCollisionModelOperator, ExportModelBaseOperator):
-
-    cloud_type: EnumProperty(
-        name="Collection Type",
-        description="Type of pointcloud to export",
-        items=(
-            ('MODEL', "Terrain (*.pcmodel)", ''),
-            ('COL', "Collision (*.pccol)", '')
-        ),
-        default='MODEL'
-    )
+class ExportPointCloudOperator(ExportObjectSelectionOperator):
 
     write_resources: BoolProperty(
         name="Write Resources",
@@ -532,11 +526,8 @@ class ExportPointCloudOperator(ExportCollisionModelOperator, ExportModelBaseOper
     def _get_force_directory_mode(self):
         return False
 
-    def _hide_model_panel(self):
-        return self.cloud_type != 'MODEL' or not self.write_resources
-
-    def _hide_collision_mesh_panel(self):
-        return self.cloud_type != 'COL' or not self.write_resources
+    def _hide_mesh_panel(self):
+        return not self.write_resources
 
     def draw_panel_pointcloud(self):
         header, body = self.layout.panel(
@@ -556,25 +547,66 @@ class ExportPointCloudOperator(ExportCollisionModelOperator, ExportModelBaseOper
         super().draw(context)
         self.draw_panel_pointcloud()
 
-    def check(self, context):
-        self.filename_ext = '.pc' + self.cloud_type.lower()
-        return super().check(context)
-
-    def _include_lod_models(self):
-        return self.cloud_type == 'MODEL'
+    def _get_mesh_processor(self) -> o_mesh.BaseMeshProcessor:
+        raise NotImplementedError()
 
     def setup(self, context):
         if self.target_definition.data_versions.point_cloud is None:
             raise HEIOUserException(
-                f"Target game \"{self.target_definition.name}\" does not support exporting point cloud!")
+                f"Target game \"{self.target_definition.name}\" does not support exporting point clouds!")
 
         super().setup(context)
 
         self.pointcloud_processor = o_pointcloud.PointCloudProcessor(
-            self.cloud_type,
+            self.filename_ext[3:].upper(),
             self.write_resources,
             self.model_set_manager,
-            self.model_processor,
-            self.collision_mesh_processor,
+            self._get_mesh_processor(),
             self.target_definition,
         )
+
+    def export_collection(self, context):
+        self.pointcloud_processor.prepare(context)
+
+        self.pointcloud_processor.object_trees_to_pointcloud_file(
+            self.filepath,
+            self.object_manager.object_trees
+        )
+
+        self.pointcloud_processor.compile_resources_to_files(
+            self.use_multicore_processing,
+            os.path.dirname(self.filepath)
+        )
+
+class ExportPointCloudsOperator(ExportPointCloudOperator):
+
+    def export_collections(self, context):
+        if len(self.collection) == 0:
+            raise HEIODevException("Invalid export call!")
+
+        self.pointcloud_processor.prepare(context)
+
+        collection: bpy.types.Collection = bpy.data.collections[self.collection]
+
+        directory = os.path.dirname(self.filepath)
+
+        for col in collection.children:
+            if len(col.all_objects) == 0:
+                continue
+
+            object_trees = self.object_manager.assemble_object_trees(
+                set(col.all_objects))
+            
+            name = col.name
+            if name.lower().endswith(self.filename_ext):
+                name = name[:-len(self.filename_ext)]
+
+            filename = o_util.correct_filename(name)
+            filepath = os.path.join(directory, filename + self.filename_ext)
+
+            self.pointcloud_processor.object_trees_to_pointcloud_file(
+                filepath,
+                object_trees
+            )
+
+        self.pointcloud_processor.compile_resources_to_files(self.use_multicore_processing, directory)

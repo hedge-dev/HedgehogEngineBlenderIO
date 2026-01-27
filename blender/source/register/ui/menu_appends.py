@@ -15,7 +15,8 @@ class TOPBAR_MT_HEIO_Export(bpy.types.Menu):
         layout.operator(export_operators.HEIO_OT_Export_Model.bl_idname, text="HE Model (*.model)")
         layout.operator(export_operators.HEIO_OT_Export_TerrainModel.bl_idname, text="HE Terrain-Model (*.terrain-model)")
         layout.operator(export_operators.HEIO_OT_Export_CollisionMesh.bl_idname, text="HE Collision Mesh (*.btmesh)")
-        layout.operator(export_operators.HEIO_OT_Export_PointCloud.bl_idname, text="HE Point Cloud (*.pcmodel;*.pccol)")
+        layout.operator(export_operators.HEIO_OT_Export_ModelPointCloud.bl_idname, text="HE Model Point Cloud (*.pcmodel)")
+        layout.operator(export_operators.HEIO_OT_Export_CollisionPointCloud.bl_idname, text="HE Collision Point Cloud (*.pccol)")
 
     @staticmethod
     def menu_func(self, context):

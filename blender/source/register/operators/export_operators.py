@@ -1,16 +1,12 @@
-import os
-import bpy
 
-from ...exporting import o_util
 from ..property_groups.mesh_properties import MESH_DATA_TYPES
-
-from ...exceptions import HEIODevException
 
 from .base_export_operators import (
     ExportMaterialOperator,
     ExportModelBaseOperator,
     ExportCollisionModelOperator,
-    ExportPointCloudOperator
+    ExportPointCloudOperator,
+    ExportPointCloudsOperator
 )
 
 
@@ -95,63 +91,60 @@ class HEIO_OT_Export_CollisionMesh(ExportCollisionModelOperator):
         return {'FINISHED'}
 
 
-class HEIO_OT_Export_PointCloud(ExportPointCloudOperator):
-    """Export a hedgehog engine pointcloud file"""
-    bl_idname = "heio.export_pointcloud"
-    bl_label = "Export as HE Pointcloud (*.pcmodel;*.pccol)"
+class HEIO_OT_Export_ModelPointCloud(ExportPointCloudOperator, ExportModelBaseOperator):
+    """Export a hedgehog engine model pointcloud file"""
+    bl_idname = "heio.export_modelpointcloud"
+    bl_label = "Export as HE Model Pointcloud (*.pcmodel)"
+
+    filename_ext = '.pcmodel'
+
+    def _get_mesh_processor(self):
+        return self.model_processor
 
     def export(self, context):
-        self.pointcloud_processor.prepare(context)
-
-        self.pointcloud_processor.object_trees_to_pointcloud_file(
-            self.filepath,
-            self.object_manager.object_trees
-        )
-
-        self.pointcloud_processor.compile_resources_to_files(
-            self.use_multicore_processing,
-            os.path.dirname(self.filepath)
-        )
-
+        self.export_collection(context)
         return {'FINISHED'}
 
+class HEIO_OT_Export_CollisionPointCloud(ExportPointCloudOperator, ExportCollisionModelOperator):
+    """Export a hedgehog engine collision pointcloud file"""
+    bl_idname = "heio.export_colpointcloud"
+    bl_label = "Export as HE Collision Pointcloud (*.pccol)"
 
-class HEIO_OT_Export_PointClouds(ExportPointCloudOperator):
-    """Export multiple hedgehog engine pointcloud files"""
-    bl_idname = "heio.export_pointclouds"
-    bl_label = "Collections as HE Pointclouds (*.pcmodel;*.pccol)"
-    bl_options = {'PRESET', 'UNDO', 'INTERNAL'}
+    filename_ext = '.pccol'
+
+    def _get_mesh_processor(self):
+        return self.collision_mesh_processor
 
     def export(self, context):
-        if len(self.collection) == 0:
-            raise HEIODevException("Invalid export call!")
+        self.export_collection(context)
+        return {'FINISHED'}
 
-        self.pointcloud_processor.prepare(context)
+class HEIO_OT_Export_ModelPointClouds(ExportPointCloudsOperator, ExportModelBaseOperator):
+    """Export multiple hedgehog engine pointcloud files"""
+    bl_idname = "heio.export_modelpointclouds"
+    bl_label = "Collections as HE Model Pointclouds (*.pcmodel)"
+    bl_options = {'PRESET', 'UNDO', 'INTERNAL'}
 
-        collection = bpy.data.collections[self.collection]
+    filename_ext = '.pcmodel'
 
-        directory = os.path.dirname(self.filepath)
-        extension = ".pc" + self.cloud_type.lower()
+    def _get_mesh_processor(self):
+        return self.model_processor
 
-        for col in collection.children:
-            if len(col.all_objects) == 0:
-                continue
+    def export(self, context):
+        self.export_collections(context)
+        return {'FINISHED'}
 
-            object_trees = self.object_manager.assemble_object_trees(
-                set(col.all_objects))
-            
-            name = col.name
-            if col.name.lower().endswith(extension):
-                name = name[:-len(extension)]
+class HEIO_OT_Export_CollisionPointClouds(ExportPointCloudsOperator, ExportCollisionModelOperator):
+    """Export multiple hedgehog engine pointcloud files"""
+    bl_idname = "heio.export_colpointclouds"
+    bl_label = "Collections as HE Collision Pointclouds (*.pccol)"
+    bl_options = {'PRESET', 'UNDO', 'INTERNAL'}
 
-            filename = o_util.correct_filename(name)
-            filepath = os.path.join(directory, filename + extension)
+    filename_ext = '.pccol'
 
-            self.pointcloud_processor.object_trees_to_pointcloud_file(
-                filepath,
-                object_trees
-            )
+    def _get_mesh_processor(self):
+        return self.collision_mesh_processor
 
-        self.pointcloud_processor.compile_resources_to_files(self.use_multicore_processing, directory)
-
+    def export(self, context):
+        self.export_collections(context)
         return {'FINISHED'}
