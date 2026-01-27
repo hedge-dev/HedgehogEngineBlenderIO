@@ -549,9 +549,6 @@ class ExportPointCloudOperator(ExportObjectSelectionOperator):
         if not body:
             return
 
-        body.use_property_split = True
-        body.prop(self, "cloud_type")
-
         body.use_property_split = False
         body.prop(self, "write_resources")
 
