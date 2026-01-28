@@ -1,4 +1,5 @@
 ﻿using HEIO.NET.Internal;
+using SharpNeedle.Framework.HedgehogEngine.Mirage.MaterialData;
 using SharpNeedle.Framework.HedgehogEngine.Needle.Archive;
 using System.Collections.Generic;
 
@@ -14,9 +15,9 @@ namespace HEIO.NET.External.Structs
         public byte lodUnknown1;
 
 
-        public static CModelSet FromInternal(ModelSet modelSet)
+        public static CModelSet FromInternal(ModelSet modelSet, Dictionary<Material, nint> materialPointers)
         {
-            CMeshDataSet* meshData = Allocate.AllocFromArray(modelSet.MeshDataSets, CMeshDataSet.FromInternal);
+            CMeshDataSet* meshData = Allocate.AllocFromArray(modelSet.MeshDataSets, CMeshDataSet.FromInternal, materialPointers);
             CMeshDataSet** meshDataPointers = (CMeshDataSet**)Allocate.Alloc<nint>(modelSet.MeshDataSets.Length);
 
             for (int i = 0; i < modelSet.MeshDataSets.Length; i++)

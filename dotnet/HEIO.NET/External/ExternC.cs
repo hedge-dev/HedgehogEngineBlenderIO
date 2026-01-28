@@ -389,8 +389,9 @@ namespace HEIO.NET.External
                 MeshImportSettings internalSettings = settings->ToInternal();
 
                 ModelSet[] modelSets = ModelSet.ReadModelFiles(filepathsArray, includeLoD, internalSettings, out ResolveInfo resultResolveInfo);
+                Dictionary<Material, nint> materialPointers = [];
 
-                CModelSet** result = Allocate.AllocPointersFromArray(modelSets, CModelSet.FromInternal);
+                CModelSet** result = Allocate.AllocPointersFromArray(modelSets, CModelSet.FromInternal, materialPointers);
 
                 *resolveInfo = Allocate.AllocFrom(resultResolveInfo, CResolveInfo.FromInternal);
 
@@ -625,7 +626,9 @@ namespace HEIO.NET.External
 
                 *resolveInfo = Allocate.AllocFrom(resultResolveInfo, CResolveInfo.FromInternal);
 
-                return Allocate.AllocFrom(collection, CPointCloudCollection.FromInternal);
+                Dictionary<Material, nint> materialPointers = [];
+
+                return Allocate.AllocFrom(collection, CPointCloudCollection.FromInternal, materialPointers);
             }
             catch (Exception exception)
             {

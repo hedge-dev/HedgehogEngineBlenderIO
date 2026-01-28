@@ -49,6 +49,12 @@ namespace HEIO.NET.External
             return result;
         }
 
+        public static O* AllocFrom<I, C, O>(I data, Func<I, C, O> convert, C context) where O : unmanaged
+        {
+            O* result = Alloc<O>();
+            *result = convert(data, context);
+            return result;
+        }
 
         public static T* AllocFromArray<T>(IList<T>? values) where T : unmanaged
         {
@@ -95,6 +101,22 @@ namespace HEIO.NET.External
             return (O**)AllocFromArray(pointers);
         }
 
+
+        public static O* AllocFromArray<I, C, O>(IList<I>? values, Func<I, C, O> convert, C context) where O : unmanaged
+        {
+            return AllocFromArray(values?.Select(x => convert(x, context)).ToArray());
+        }
+
+        public static O** AllocPointersFromArray<I, C, O>(IList<I>? array, Func<I, C, O> convert, C context) where O : unmanaged
+        {
+            if (array == null)
+            {
+                return null;
+            }
+
+            nint[] pointers = [.. array.Select(x => (nint)AllocFrom(x, convert, context))];
+            return (O**)AllocFromArray(pointers);
+        }
 
         public static void AllocFrom2DArray<T>(IList<IList<T>> values, out T** outValues) where T : unmanaged
         {

@@ -1,4 +1,6 @@
 ﻿using HEIO.NET.Internal.Modeling;
+using SharpNeedle.Framework.HedgehogEngine.Mirage.MaterialData;
+using System.Collections.Generic;
 using System.Numerics;
 
 namespace HEIO.NET.External.Structs
@@ -32,7 +34,7 @@ namespace HEIO.NET.External.Structs
         public char** morphNames;
         public int morphNamesSize;
 
-        public static CMeshData FromInternal(MeshData meshData)
+        public static CMeshData FromInternal(MeshData meshData, Dictionary<Material, nint> materialPointers)
         {
             CMeshData result = new()
             {
@@ -52,7 +54,7 @@ namespace HEIO.NET.External.Structs
 
                 colorsSize = meshData.Colors.Count,
 
-                meshSets = Allocate.AllocFromArray(meshData.MeshSets, CMeshDataMeshSetInfo.FromInternal),
+                meshSets = Allocate.AllocFromArray(meshData.MeshSets, CMeshDataMeshSetInfo.FromInternal, materialPointers),
                 meshSetsSize = meshData.MeshSets.Count,
 
                 groups = Allocate.AllocFromArray(meshData.Groups, CMeshDataMeshGroupInfo.FromInternal),

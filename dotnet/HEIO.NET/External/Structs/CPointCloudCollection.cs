@@ -1,5 +1,7 @@
 ﻿using HEIO.NET.Internal;
 using HEIO.NET.Internal.Modeling;
+using SharpNeedle.Framework.HedgehogEngine.Mirage.MaterialData;
+using System.Collections.Generic;
 
 namespace HEIO.NET.External.Structs
 {
@@ -17,11 +19,11 @@ namespace HEIO.NET.External.Structs
         public CPointCloudCloud* collisionMeshClouds;
         public int collisionMeshCloudsSize;
 
-        public static CPointCloudCollection FromInternal(PointCloudCollection collection)
+        public static CPointCloudCollection FromInternal(PointCloudCollection collection, Dictionary<Material, nint> materialPointers)
         {
             return new()
             {
-                models = Allocate.AllocPointersFromArray(collection.Models, CModelSet.FromInternal),
+                models = Allocate.AllocPointersFromArray(collection.Models, CModelSet.FromInternal, materialPointers),
                 modelsSize = collection.Models.Length,
 
                 modelClouds = CPointCloudCloud.FromInternalArray(collection.ModelClouds),

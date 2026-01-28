@@ -2,6 +2,7 @@
 using SharpNeedle.Framework.HedgehogEngine.Mirage.MaterialData;
 using SharpNeedle.Framework.HedgehogEngine.Mirage.ModelData;
 using SharpNeedle.Resource;
+using System.Collections.Generic;
 
 namespace HEIO.NET.External.Structs
 {
@@ -15,9 +16,21 @@ namespace HEIO.NET.External.Structs
         public char* meshSlotName;
         public int size;
 
-        public static CMeshDataMeshSetInfo FromInternal(MeshDataMeshSetInfo info)
+        public static CMeshDataMeshSetInfo FromInternal(MeshDataMeshSetInfo info, Dictionary<Material, nint> materialPointers)
         {
-            CMaterial* material = info.Material.IsValid() ? Allocate.AllocFrom(info.Material.Resource!, CMaterial.FromInternal) : null;
+            CMaterial* material = null;
+            if (info.Material.IsValid())
+            {
+                if(materialPointers.TryGetValue(info.Material.Resource!, out nint materialPointer))
+                {
+                    material = (CMaterial*)materialPointer;
+                }
+                else
+                {
+                    material = Allocate.AllocFrom(info.Material.Resource!, CMaterial.FromInternal);
+                    materialPointers.Add(info.Material.Resource!, (nint)material);
+                }
+            }
 
             return new()
             {

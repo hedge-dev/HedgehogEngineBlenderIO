@@ -1,6 +1,8 @@
 ﻿using HEIO.NET.Internal;
 using HEIO.NET.Internal.Modeling;
+using SharpNeedle.Framework.HedgehogEngine.Mirage.MaterialData;
 using SharpNeedle.Framework.HedgehogEngine.Mirage.ModelData;
+using System.Collections.Generic;
 
 namespace HEIO.NET.External.Structs
 {
@@ -16,13 +18,13 @@ namespace HEIO.NET.External.Structs
 
         public CSampleChunkNode* sampleChunkNodeRoot;
 
-        public static CMeshDataSet FromInternal(MeshDataSet set)
+        public static CMeshDataSet FromInternal(MeshDataSet set, Dictionary<Material, nint> materialPointers)
         {
             return new()
             {
                 name = set.Name.AllocString(),
 
-                meshData = Allocate.AllocFromArray(set.MeshData, CMeshData.FromInternal),
+                meshData = Allocate.AllocFromArray(set.MeshData, CMeshData.FromInternal, materialPointers),
                 meshDataSize = set.MeshData.Length,
 
                 nodes = Allocate.AllocFromArray(set.Nodes, CModelNode.FromInternal),
