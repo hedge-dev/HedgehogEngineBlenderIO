@@ -30,7 +30,7 @@ body:
   - type: dropdown
     id: game
     attributes:
-      label: Which game did you try to mod?
+      label: Which game(s) did you try to work with?
       multiple: true
       options:
         - Sonic Unleashed
