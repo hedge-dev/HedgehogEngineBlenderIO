@@ -383,7 +383,7 @@ namespace HEIO.NET.Internal.Modeling.ConvertTo
             return [.. result];
         }
 
-        public void Process(ModelVersionMode versionMode, bool optimizedVertexData)
+        public void Process(ModelVersionMode versionMode, bool compressedVertexData)
         {
             if (Result != null)
             {
@@ -475,7 +475,7 @@ namespace HEIO.NET.Internal.Modeling.ConvertTo
                 gpuMeshes = [.. splitMeshes];
             }
 
-            Result = gpuMeshes.Select(x => MeshConverter.ConvertToMesh(x, versionMode, optimizedVertexData)).ToArray();
+            Result = gpuMeshes.Select(x => MeshConverter.ConvertToMesh(x, versionMode, compressedVertexData)).ToArray();
         }
     }
 }

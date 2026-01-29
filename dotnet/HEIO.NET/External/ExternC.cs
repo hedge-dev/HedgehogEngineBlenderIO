@@ -453,7 +453,7 @@ namespace HEIO.NET.External
             int modelSetsSize,
             int versionMode,
             int topology,
-            bool optimizedVertexData,
+            bool compressVertexData,
             bool multithreading,
             char* directory)
         {
@@ -487,7 +487,7 @@ namespace HEIO.NET.External
                     [.. meshDataSetsToConvert.Select(x => x.Value)],
                     (ModelVersionMode)versionMode,
                     (Topology)topology,
-                    optimizedVertexData,
+                    compressVertexData,
                     multithreading
                 );
 

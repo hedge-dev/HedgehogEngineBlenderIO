@@ -7,6 +7,6 @@ namespace HEIO.NET.Internal.Modeling.ConvertTo
         public Vector3 AABBMin { get; }
         public Vector3 AABBMax { get; }
 
-        public void Process(ModelVersionMode versionMode, bool optimizedVertexData);
+        public void Process(ModelVersionMode versionMode, bool compressVertexData);
     }
 }

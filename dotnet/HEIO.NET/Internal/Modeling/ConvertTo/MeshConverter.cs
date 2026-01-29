@@ -13,13 +13,13 @@ namespace HEIO.NET.Internal.Modeling.ConvertTo
 {
     internal static class MeshConverter
     {
-        public static Mesh ConvertToMesh(GPUMesh gpuMesh, ModelVersionMode versionMode, bool optimizedVertexData)
+        public static Mesh ConvertToMesh(GPUMesh gpuMesh, ModelVersionMode versionMode, bool compressVertexData)
         {
             List<VertexElement> elements = EvaluateVertexElements(
                 gpuMesh,
                 gpuMesh.Vertices[0].Weights.Length / 4,
                 versionMode,
-                optimizedVertexData,
+                compressVertexData,
                 out ushort vertexSize);
 
             return new()
@@ -35,13 +35,13 @@ namespace HEIO.NET.Internal.Modeling.ConvertTo
             };
         }
 
-        private static List<VertexElement> EvaluateVertexElements(GPUMesh gpuMesh, int weightSets, ModelVersionMode versionMode, bool optimizedVertexData, out ushort vertexSize)
+        private static List<VertexElement> EvaluateVertexElements(GPUMesh gpuMesh, int weightSets, ModelVersionMode versionMode, bool compressVertexData, out ushort vertexSize)
         {
-            VertexFormatSetup formatSetup = !optimizedVertexData
+            VertexFormatSetup formatSetup = !compressVertexData
                 ? VertexFormatSetups._full
                 : versionMode == ModelVersionMode.HE2
-                ? VertexFormatSetups._he2Optimized
-                : VertexFormatSetups._he1Optimized;
+                ? VertexFormatSetups._he2Compressed
+                : VertexFormatSetups._he1Compressed;
 
             List<(VertexType, VertexFormat, byte)> info = [
                 (VertexType.Position, VertexFormat.Float3, 0),

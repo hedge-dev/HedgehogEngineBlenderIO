@@ -199,7 +199,7 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
     _bone_orientation: str
     _topology: int
     _model_version_mode: int
-    _optimized_vertex_data: bool
+    _compressed_vertex_data: bool
 
     def __init__(
             self,
@@ -213,7 +213,7 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
             bone_orientation: str,
             model_version_mode,
             topology: str,
-            optimized_vertex_data: bool):
+            compressed_vertex_data: bool):
 
         super().__init__(
             target_definition, 
@@ -233,7 +233,7 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
         self._model_version_mode = enums.MODEL_VERSION_MODE.index(model_version_mode)
         self._topology = enums.TOPOLOGY.index(topology)
 
-        self._optimized_vertex_data = optimized_vertex_data
+        self._compressed_vertex_data = compressed_vertex_data
 
     ##################################################
 
@@ -897,7 +897,7 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
             self._output_queue,
             self._model_version_mode,
             self._topology,
-            self._optimized_vertex_data,
+            self._compressed_vertex_data,
             use_multicore_processing,
             directory
         )

@@ -23,12 +23,12 @@ namespace HEIO.NET.Internal.Modeling.ConvertTo
             VertexFormat.Float2
         );
 
-        public static readonly VertexFormatSetup _he1Optimized = new(
+        public static readonly VertexFormatSetup _he1Compressed = new(
             VertexFormat.Hend3Norm,
             VertexFormat.Float16_2
         );
 
-        public static readonly VertexFormatSetup _he2Optimized = new(
+        public static readonly VertexFormatSetup _he2Compressed = new(
             VertexFormat.Dec3Norm,
             VertexFormat.Float16_2
         );

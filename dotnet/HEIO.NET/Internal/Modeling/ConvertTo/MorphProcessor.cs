@@ -72,7 +72,7 @@ namespace HEIO.NET.Internal.Modeling.ConvertTo
             }
         }
 
-        public void Process(ModelVersionMode versionMode, bool optimizedVertexData)
+        public void Process(ModelVersionMode versionMode, bool compressedVertexData)
         {
             if(Result != null)
             {

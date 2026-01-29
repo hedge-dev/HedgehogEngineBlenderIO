@@ -60,7 +60,7 @@ namespace HEIO.NET.Internal.Modeling.ConvertTo
         }
 
 
-        public static ModelBase[] CompileMeshData(MeshDataSet[] compileData, ModelVersionMode versionMode, Topology topology, bool optimizedVertexData, bool multithreading)
+        public static ModelBase[] CompileMeshData(MeshDataSet[] compileData, ModelVersionMode versionMode, Topology topology, bool compressedVertexData, bool multithreading)
         {
             IProcessable[][] processors = new IProcessable[compileData.Length][];
             void processProcessor(MeshDataSet cData, ParallelLoopState? state, long i)
@@ -81,7 +81,7 @@ namespace HEIO.NET.Internal.Modeling.ConvertTo
                     throw new InvalidOperationException("Collecting process data failed!");
                 }
 
-                parallelLoopResult = Parallel.ForEach(processors.SelectMany(x => x), (processor) => processor.Process(versionMode, optimizedVertexData));
+                parallelLoopResult = Parallel.ForEach(processors.SelectMany(x => x), (processor) => processor.Process(versionMode, compressedVertexData));
 
                 if(!parallelLoopResult.IsCompleted)
                 {
@@ -97,7 +97,7 @@ namespace HEIO.NET.Internal.Modeling.ConvertTo
 
                 foreach(IProcessable processor in processors.SelectMany(x => x))
                 {
-                    processor.Process(versionMode, optimizedVertexData);
+                    processor.Process(versionMode, compressedVertexData);
                 }
             }
 

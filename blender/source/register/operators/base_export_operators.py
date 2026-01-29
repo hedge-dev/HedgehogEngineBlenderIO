@@ -391,9 +391,9 @@ class ExportModelBaseOperator(ExportMaterialOperator, ExportBaseMeshDataOperator
         default=False
     )
 
-    optimized_vertex_data: BoolProperty(
-        name="Optimized vertex data",
-        description="Use optimized vertex data (less precise but smaller files)",
+    compressed_vertex_data: BoolProperty(
+        name="Compressed vertex data",
+        description="Use compressed vertex data (less precise but smaller files)",
         default=True
     )
 
@@ -434,7 +434,7 @@ class ExportModelBaseOperator(ExportMaterialOperator, ExportBaseMeshDataOperator
             body.prop(self, "use_triangle_strips")
 
         if target_def is None or target_def.hedgehog_engine_version == 2 or context.scene.heio_scene.target_console:
-            body.prop(self, "optimized_vertex_data")
+            body.prop(self, "compressed_vertex_data")
 
     def draw_panel_model(self, context):
         if self._hide_mesh_panel():
@@ -473,10 +473,10 @@ class ExportModelBaseOperator(ExportMaterialOperator, ExportBaseMeshDataOperator
         else:
             topology = 'TRIANGLE_LIST'
 
-        optimize_vertex_data = self.optimized_vertex_data
+        compressed_vertex_data = self.compressed_vertex_data
         if self.target_definition.hedgehog_engine_version == 1 and not context.scene.heio_scene.target_console:
-            # he1 doesnt support optimized vertex data on pc
-            optimize_vertex_data = False
+            # he1 doesnt support compressed vertex data on pc
+            compressed_vertex_data = False
 
         self.model_processor = o_model.ModelProcessor(
             self.target_definition,
@@ -489,7 +489,7 @@ class ExportModelBaseOperator(ExportMaterialOperator, ExportBaseMeshDataOperator
             self.bone_orientation,
             model_version_mode,
             topology,
-            optimize_vertex_data
+            compressed_vertex_data
         )
 
     def export_model_files(self, context, mode):

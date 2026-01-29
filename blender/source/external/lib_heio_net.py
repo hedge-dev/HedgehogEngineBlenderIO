@@ -217,12 +217,12 @@ class HEIONET(ExternalLibrary):
         return util.array_to_list(array, POINTER(CMaterial))
 
     @classmethod
-    def model_compile_to_files(cls, model_sets: list[TPointer[CModelSet]], version_mode: int, topology: int, optimize_vertex_data: bool, multi_threading: bool, output_directory: str):
+    def model_compile_to_files(cls, model_sets: list[TPointer[CModelSet]], version_mode: int, topology: int, compress_vertex_data: bool, multi_threading: bool, output_directory: str):
         c_model_sets = util.as_array(model_sets, POINTER(CModelSet))
         c_model_sets_size = c_int(len(model_sets))
         c_version_mode = c_int(version_mode)
         c_topology = c_int(topology)
-        c_optimize_vertex_data = c_bool(optimize_vertex_data)
+        c_compress_vertex_data = c_bool(compress_vertex_data)
         c_multi_threading = c_bool(multi_threading)
         c_output_directory = c_wchar_p(output_directory)
 
@@ -231,7 +231,7 @@ class HEIONET(ExternalLibrary):
             c_model_sets_size,
             c_version_mode,
             c_topology,
-            c_optimize_vertex_data,
+            c_compress_vertex_data,
             c_multi_threading,
             c_output_directory
         )
