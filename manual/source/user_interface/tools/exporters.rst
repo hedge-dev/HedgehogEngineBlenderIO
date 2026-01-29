@@ -152,9 +152,9 @@ Advanced
 		Only available for games released after Sonic Forces. Sonic Forces and older can only use
 		triangle strips.
 
-	Optimized Vertex Data
+	Compressed Vertex Data
 		Vertex data can be stored in different ways, often depending on the game. By default,
-		data is stored with optimized / compressed formats, but doesn't have to.
+		data is stored with compressed formats, but doesn't have to.
 
 		Not available for HE1 PC games.
 
@@ -179,11 +179,7 @@ No unique export options for collision mesh export.
 Point cloud export
 ==================
 
-Cloud type
-	Type of point cloud to export.
-
-	- ``Terrain``: Exports collected object trees as a .pcmodel file, as well as corresponding .terrain-model and .model files.
-	- ``Collision``: Exports collected object trees as a .pccol file, as well as corresponding .btmesh files.
+Which point cloud type you export depends on which exporter you picked.
 
 Write Resources
 	Whether to evaluate and export resource files (like .terrain-model). Otherwise exports only the point cloud file.

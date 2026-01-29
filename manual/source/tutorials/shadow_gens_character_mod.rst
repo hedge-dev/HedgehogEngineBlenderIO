@@ -148,8 +148,8 @@ Once your model is prepared, it's time to bring it ingame!
 	The model i prepared (armature is hidden)
 
 
-To do so, let's set up a collection operator again! Put the armature and it's children in a new
-collection, then add a ``.model`` exporter to it that exports to a ``dummy.model`` file in your
+To do so, let's set up a collection operator again! Select the collection that the model imported 
+with and add a ``.model`` exporter to it that exports to a ``dummy.model`` file in your
 mods ``shadow`` directory:
 
 

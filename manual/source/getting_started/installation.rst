@@ -3,10 +3,14 @@
 Installing HEIO
 ***************
 
+.. attention::
+
+	Right now, only x64-Windows and x64-Linux are supported!
+
 Installing Blender
 ==================
 
-| The Addon is only supported on `Blender <https://blender.org/>`_ version 5.0 and above.
+| The Addon is only supported on `Blender <https://blender.org/>`_ version 4.5 and above.
 | It is recommended to install blender through `Steam <https://store.steampowered.com/app/365670>`_. This will ensure you're always using the latest release version.
 
 

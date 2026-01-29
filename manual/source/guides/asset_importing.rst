@@ -79,6 +79,7 @@ Usually models are imported standalone, but can also be part of a ``.pcmodel`` f
 
 		Where to find the importer
 
+
 Terrain models
 --------------
 
@@ -91,15 +92,7 @@ Terrain models, stored in ``.terrain-model`` files, are nearly identical to mode
 While they too can be imported standalone, they are usually part of ``.pcmodel`` files (HE2) or
 referenced by ``.terrain-instanceinfo`` files (HE1) (not yet supported)
 
-.. dropdown:: How to import .terrain-model files
-	:icon: download
-
-	Open :ref:`the importer <bpy.ops.heio.import_terrain_model>`, select your
-	file(s) to import, configure the import properties and then confirm.
-
-	.. figure:: images/asset_importing_terrain_model.png
-
-		Where to find the importer
+They are imported the same way that ``.model`` files are.
 
 
 Collision meshes
