@@ -2,8 +2,9 @@ import os
 from mathutils import Vector, Quaternion, Matrix
 from ctypes import c_uint, c_ubyte, cast, POINTER
 
-from . import o_mesh, o_modelset, o_transform
+from . import o_mesh, o_modelset, o_transform, o_object_manager
 from ..external import HEIONET, Bullet, util, enums, CBulletPrimitive, CCollisionMeshData, CCollisionMeshDataGroup, CVector3, CBulletShape
+from ..register.definitions import TargetDefinition
 from ..register.property_groups.mesh_properties import MESH_DATA_TYPES
 from ..utility import progress_console
 
@@ -151,6 +152,19 @@ class RawCollisionMeshData:
 
 
 class CollisionMeshProcessor(o_mesh.BaseMeshProcessor):
+
+    def __init__(
+        self,
+        target_definition: TargetDefinition,
+        object_manager: o_object_manager.ObjectManager,
+        model_set_manager: o_modelset.ModelSetManager):
+
+        super().__init__(
+            target_definition, 
+            object_manager,
+            model_set_manager,
+            "_col"
+        )
 
     def _convert_model_set(self, model_set: o_modelset.ModelSet):
         if len(model_set.evaluated_mesh.polygons) == 0:

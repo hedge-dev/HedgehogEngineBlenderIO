@@ -215,8 +215,12 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
             topology: str,
             optimized_vertex_data: bool):
 
-        super().__init__(target_definition, object_manager,
-                         model_set_manager)
+        super().__init__(
+            target_definition, 
+            object_manager,
+            model_set_manager,
+            None
+        )
 
         self.mode = 'AUTO'
 

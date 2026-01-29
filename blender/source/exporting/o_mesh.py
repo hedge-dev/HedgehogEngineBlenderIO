@@ -9,7 +9,9 @@ class BaseMeshProcessor:
 
     _target_definition: TargetDefinition
     _object_manager: o_object_manager.ObjectManager
-    _modelset_manager: o_modelset.ModelSetManager
+    _model_set_manager: o_modelset.ModelSetManager
+
+    _name_suffix: str | None
 
     _meshdata_lut: dict[o_modelset.ModelSet, any]
     _output: set[str]
@@ -19,11 +21,14 @@ class BaseMeshProcessor:
             self,
             target_definition: TargetDefinition,
             object_manager: o_object_manager.ObjectManager,
-            modelset_manager: o_modelset.ModelSetManager):
+            model_set_manager: o_modelset.ModelSetManager,
+            name_suffix: str | None):
 
         self._target_definition = target_definition
         self._object_manager = object_manager
-        self._modelset_manager = modelset_manager
+        self._model_set_manager = model_set_manager
+
+        self._name_suffix = name_suffix
 
         self._meshdata_lut = {}
         self._output = set()
@@ -36,11 +41,11 @@ class BaseMeshProcessor:
         pass
 
     def prepare_all_meshdata(self):
-        self._pre_prepare_mesh_data(self._modelset_manager.model_set_lut.values())
+        self._pre_prepare_mesh_data(self._model_set_manager.model_set_lut.values())
 
-        progress_console.start("Preparing mesh data for export", len(self._modelset_manager.model_set_lut))
+        progress_console.start("Preparing mesh data for export", len(self._model_set_manager.model_set_lut))
 
-        for i, model_set in enumerate(self._modelset_manager.model_set_lut.values()):
+        for i, model_set in enumerate(self._model_set_manager.model_set_lut.values()):
             progress_console.update(f"Converting mesh data for object \"{model_set.obj.name}\"", i)
 
             if model_set in self._meshdata_lut:
@@ -51,13 +56,13 @@ class BaseMeshProcessor:
         progress_console.end()
 
     def prepare_object_meshdata(self, objects: list[bpy.types.Object]):
-        self._pre_prepare_mesh_data([self._modelset_manager.obj_mesh_mapping[obj] for obj in objects])
+        self._pre_prepare_mesh_data([self._model_set_manager.obj_mesh_mapping[obj] for obj in objects])
 
-        progress_console.start("Preparing mesh data for export", len(self._modelset_manager.model_set_lut))
+        progress_console.start("Preparing mesh data for export", len(self._model_set_manager.model_set_lut))
 
         for i, obj in enumerate(objects):
             progress_console.update(f"Converting mesh data for object \"{obj.name}\"", i)
-            model_set = self._modelset_manager.obj_mesh_mapping[obj]
+            model_set = self._model_set_manager.obj_mesh_mapping[obj]
 
             if model_set in self._meshdata_lut:
                 continue
@@ -67,7 +72,7 @@ class BaseMeshProcessor:
         progress_console.end()
 
     def get_meshdata(self, obj: bpy.types.Object):
-        model_set = self._modelset_manager.obj_mesh_mapping[obj]
+        model_set = self._model_set_manager.obj_mesh_mapping[obj]
         return self._meshdata_lut[model_set]
 
     @staticmethod
@@ -93,6 +98,13 @@ class BaseMeshProcessor:
 
         if name is None:
             raise HEIODevException("No export name!")
+
+        if self._name_suffix is not None:
+            if name.lower().endswith(self._name_suffix):
+                # ensuring the the suffix is lower case!
+                name = name[:-len(self._name_suffix)] + self._name_suffix
+            else:
+                name += self._name_suffix
 
         if name in self._output:
             return name
