@@ -447,8 +447,8 @@ orientation so that armatures can be properly posed with mirroring and more.</p>
 <p>Only available for games released after Sonic Forces. Sonic Forces and older can only use
 triangle strips.</p>
 </dd>
-<dt>Optimized Vertex Data</dt><dd><p>Vertex data can be stored in different ways, often depending on the game. By default,
-data is stored with optimized / compressed formats, but doesn’t have to.</p>
+<dt>Compressed Vertex Data</dt><dd><p>Vertex data can be stored in different ways, often depending on the game. By default,
+data is stored with compressed formats, but doesn’t have to.</p>
 <p>Not available for HE1 PC games.</p>
 </dd>
 </dl>
@@ -463,13 +463,8 @@ data is stored with optimized / compressed formats, but doesn’t have to.</p>
 </section>
 <section id="point-cloud-export">
 <span id="bpy-ops-heio-export-point-clouds"></span><span id="bpy-ops-heio-export-point-cloud"></span><h2>Point cloud export<a class="headerlink" href="#point-cloud-export" title="Link to this heading">¶</a></h2>
+<p>Which point cloud type you export depends on which exporter you picked.</p>
 <dl class="simple">
-<dt>Cloud type</dt><dd><p>Type of point cloud to export.</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">Terrain</span></code>: Exports collected object trees as a .pcmodel file, as well as corresponding .terrain-model and .model files.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">Collision</span></code>: Exports collected object trees as a .pccol file, as well as corresponding .btmesh files.</p></li>
-</ul>
-</dd>
 <dt>Write Resources</dt><dd><p>Whether to evaluate and export resource files (like .terrain-model). Otherwise exports only the point cloud file.</p>
 </dd>
 </dl>
@@ -510,7 +505,7 @@ data is stored with optimized / compressed formats, but doesn’t have to.</p>
             Made with 
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2026-01-22</div>
+              Last updated on 2026-01-29</div>
           </div>
           <div class="right-details">
             
