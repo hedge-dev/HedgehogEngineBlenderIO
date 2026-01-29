@@ -42,8 +42,8 @@ body:
         - Sonic Generations (2024)
         - Shadow Generations
         - Other
-      validations:
-        required: false
+    validations:
+      required: false
   - type: textarea
     id: report
     attributes:
