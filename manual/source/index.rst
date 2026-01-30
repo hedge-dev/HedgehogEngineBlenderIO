@@ -1,3 +1,4 @@
+:og:description: The Hedgehog Engine Blender I/O addon manual
 
 .. image:: ../build_files/theme/heio-logo.svg
     :width: 100%

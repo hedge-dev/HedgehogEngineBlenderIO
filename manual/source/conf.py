@@ -20,7 +20,7 @@ sys.setrecursionlimit(2000)
 
 # -- Local Vars --------------------------------------------------------------
 
-heio_version = "1.0.0 RC2"
+heio_version = "0.1.123"
 
 
 # -- Project information -----------------------------------------------------
@@ -40,7 +40,8 @@ extensions = [
 	"reference",
 	"sphinx_design",
     "sphinx.ext.todo",
-	"sphinx.ext.autosectionlabel"
+	"sphinx.ext.autosectionlabel",
+    "sphinxext.opengraph"
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -177,3 +178,6 @@ todo_include_todos = True
 # todo_link_only = True
 
 autosectionlabel_prefix_document = True
+
+ogp_site_url = "https://hedge-dev.github.io/HedgehogEngineBlenderIO/"
+ogp_image = "_images/heio-logo.svg"

@@ -1,3 +1,5 @@
+:og:description: Learn how to perform basic tasks with the addon
+:og:image: _images/index_guides.png
 
 ######
 Guides

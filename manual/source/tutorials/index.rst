@@ -1,3 +1,5 @@
+:og:description: Step-by-step walkthroughs for creating mods with HEIO
+:og:image: _images/index_tutorials.png
 
 #########
 Tutorials
