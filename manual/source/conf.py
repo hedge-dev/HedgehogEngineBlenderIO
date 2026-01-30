@@ -185,5 +185,5 @@ ogp_type = "website"
 ogp_enable_meta_description = True
 ogp_custom_meta_tags = [
     "<meta name=\"theme-color\" content=\"#21BFB7\" />",
-    "<meta name=\"twitter:card\" content=\"#summary_large_image\" />",
+    "<meta name=\"twitter:card\" content=\"summary_large_image\" />",
 ]
