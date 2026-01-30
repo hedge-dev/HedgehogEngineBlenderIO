@@ -358,6 +358,7 @@ class CollisionMeshProcessor(o_mesh.BaseMeshProcessor):
         Bullet.btIndexedMesh_setVertexStride(index_mesh, 12)
         Bullet.btIndexedMesh_setNumTriangles(index_mesh, int(shape.faces_size / 3))
         Bullet.btIndexedMesh_setTriangleIndexBase(index_mesh, shape.faces)
+        Bullet.btIndexedMesh_setTriangleIndexStride(index_mesh, 12)
         Bullet.btIndexedMesh_setNumVertices(index_mesh, shape.vertices_size)
         Bullet.btIndexedMesh_setVertexBase(index_mesh, shape.vertices)
 
