@@ -40,7 +40,8 @@ extensions = [
 	"reference",
 	"sphinx_design",
     "sphinx.ext.todo",
-	"sphinx.ext.autosectionlabel"
+	"sphinx.ext.autosectionlabel",
+    "sphinxext.opengraph"
 ]
 
 # Add any paths that contain templates here, relative to this directory.
