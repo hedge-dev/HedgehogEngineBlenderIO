@@ -627,7 +627,7 @@ class HEIO_OT_MergeMeshGroups(HEIOBasePopupOperator):
         for child in obj.children:
             self._get_mesh_children(child, True, mesh_children)
 
-        if mesh_children is None:
+        if len(mesh_children) == 0:
             raise HEIOUserException("No meshes to merge!")
 
         self._check_meshinfo_valid(context)
