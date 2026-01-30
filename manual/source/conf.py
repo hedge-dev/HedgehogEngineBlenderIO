@@ -40,8 +40,7 @@ extensions = [
 	"reference",
 	"sphinx_design",
     "sphinx.ext.todo",
-	"sphinx.ext.autosectionlabel",
-    "sphinxext.opengraph"
+	"sphinx.ext.autosectionlabel"
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -180,5 +179,10 @@ todo_include_todos = True
 autosectionlabel_prefix_document = True
 
 ogp_site_url = "https://hedge-dev.github.io/HedgehogEngineBlenderIO/"
-ogp_image = "_images/heio-logo.svg"
-ogp_type = "article"
+ogp_image = "_images/heio-logo.png"
+ogp_type = "website"
+ogp_enable_meta_description = True
+ogp_custom_meta_tags = [
+    "<meta name=\"theme-color\" content=\"#21BFB7\" />",
+    "<meta name=\"twitter:card\" content=\"#summary_large_image\" />",
+]

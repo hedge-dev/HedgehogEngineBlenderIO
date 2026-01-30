@@ -1,3 +1,7 @@
+.. meta::
+   :theme-color: #21BFB7
+   :twitter:card: summary_large_image
+   
 :og:description: Step-by-step walkthroughs for creating mods with HEIO
 :og:image: _images/index_tutorials.png
 
