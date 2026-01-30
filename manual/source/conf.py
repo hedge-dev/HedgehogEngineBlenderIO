@@ -181,3 +181,4 @@ autosectionlabel_prefix_document = True
 
 ogp_site_url = "https://hedge-dev.github.io/HedgehogEngineBlenderIO/"
 ogp_image = "_images/heio-logo.svg"
+ogp_type = "article"
