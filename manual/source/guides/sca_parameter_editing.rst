@@ -1,3 +1,5 @@
+:og:description: SCA parameter editing made easy
+:og:image: _images/index_sca_parameter_editing.png
 
 #####################
 SCA Parameter editing

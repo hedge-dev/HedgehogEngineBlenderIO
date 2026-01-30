@@ -1,3 +1,5 @@
+:og:description: The Hedgehog Engine Blender I/O (HEIO) reference manual
+
 .. image:: ../build_files/theme/heio-logo.png
     :width: 100%
 

@@ -1,3 +1,5 @@
+:og:description: The HEIO collision types user interface
+:og:image: _images/index_user_interface.png
 
 .. _bpy.types.HEIO_CollisionType:
 

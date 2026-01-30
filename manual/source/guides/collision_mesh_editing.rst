@@ -1,3 +1,5 @@
+:og:description: The different components of collision meshes explained
+:og:image: _images/index_collision_mesh_editing.png
 
 ######################
 Collision mesh editing

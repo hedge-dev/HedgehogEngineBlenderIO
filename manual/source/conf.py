@@ -180,6 +180,7 @@ todo_include_todos = True
 autosectionlabel_prefix_document = True
 
 ogp_site_url = "https://hedge-dev.github.io/HedgehogEngineBlenderIO/"
+ogp_site_name = "Hedgehog Engine Blender I/O Manual"
 ogp_image = "_images/heio-logo.png"
 ogp_type = "website"
 ogp_enable_meta_description = True

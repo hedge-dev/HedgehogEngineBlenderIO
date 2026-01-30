@@ -1,3 +1,5 @@
+:og:description: The HEIO mesh properties user interface
+:og:image: _images/index_user_interface.png
 
 .. _bpy.ops.heio.mesh_info_initialize:
 .. _bpy.ops.heio.mesh_info_delete:

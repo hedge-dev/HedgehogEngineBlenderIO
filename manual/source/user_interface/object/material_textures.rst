@@ -1,3 +1,5 @@
+:og:description: The HEIO Material textures user interface
+:og:image: _images/index_user_interface.png
 
 .. _bpy.ops.heio.material_textures_add:
 .. _bpy.ops.heio.material_textures_remove:

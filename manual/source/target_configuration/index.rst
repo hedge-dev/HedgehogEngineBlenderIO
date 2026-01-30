@@ -1,3 +1,5 @@
+:og:description: Configuring target games for HEIO
+:og:image: _images/index_target_configuration.png
 
 ####################
 Target Configuration

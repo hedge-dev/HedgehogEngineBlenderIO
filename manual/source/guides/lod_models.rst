@@ -1,3 +1,5 @@
+:og:description: Working with Level-of-Detail models
+:og:image: _images/index_lod_models.png
 
 ##########
 LoD Models

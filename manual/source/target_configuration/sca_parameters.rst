@@ -1,3 +1,5 @@
+:og:description: Configuring sca parameters for HEIO target games
+:og:image: _images/index_target_configuration.png
 
 **************
 SCA Parameters

@@ -1,3 +1,5 @@
+:og:description: Here you will learn the basics of how to modify and create your own stage geometry mod.
+:og:image: _images/index_shadow_gens_stage_mod.png
 
 ########################################
 Tutorial 1: Shadow Generations stage mod

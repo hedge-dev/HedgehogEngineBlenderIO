@@ -1,3 +1,5 @@
+:og:description: The HEIO info toolbar
+:og:image: _images/index_user_interface.png
 
 ==========
 Info Tools

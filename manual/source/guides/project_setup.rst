@@ -1,3 +1,5 @@
+:og:description: Create and setup a new blender HEIO project
+:og:image: _images/index_project_setup.png
 
 .. _guides-project-setup:
 

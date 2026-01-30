@@ -1,3 +1,5 @@
+:og:description: The HEIO collision primitive overlay
+:og:image: _images/index_user_interface.png
 
 .. _bpy.types.HEIO_View3DOverlay_CollisionPrimitive:
 

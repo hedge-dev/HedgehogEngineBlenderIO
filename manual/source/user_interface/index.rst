@@ -1,3 +1,5 @@
+:og:description: All new panels and tools added by HEIO
+:og:image: _images/index_user_interface.png
 
 ##############
 User Interface

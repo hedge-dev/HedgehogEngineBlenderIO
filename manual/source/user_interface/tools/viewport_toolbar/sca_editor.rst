@@ -1,3 +1,5 @@
+:og:description: The HEIO SCA Parameter editor viewport tools
+:og:image: _images/index_user_interface.png
 
 .. _bpy.types.HEIO_SCAP_MassEdit:
 

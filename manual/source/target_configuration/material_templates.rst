@@ -1,3 +1,5 @@
+:og:description: Configuring material templates for HEIO target games
+:og:image: _images/index_target_configuration.png
 
 ******************
 Material Templates

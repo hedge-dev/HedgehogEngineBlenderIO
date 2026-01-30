@@ -1,3 +1,5 @@
+:og:description: The HEIO Material parameters user interface
+:og:image: _images/index_user_interface.png
 
 .. _bpy.types.HEIO_MaterialParameter:
 .. _bpy.ops.heio.material_parameters_add:

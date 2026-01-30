@@ -1,3 +1,5 @@
+:og:description: Editing (and porting) multiple materials at the same time
+:og:image: _images/index_material_mass_editing.png
 
 #####################
 Material Mass-editing

@@ -1,3 +1,5 @@
+:og:description: The HEIO Material user interface
+:og:image: _images/index_user_interface.png
 
 .. _bpy.types.HEIO_Material:
 

@@ -1,3 +1,5 @@
+:og:description: Editing materials for export
+:og:image: _images/index_material_editing.png
 
 ################
 Material Editing

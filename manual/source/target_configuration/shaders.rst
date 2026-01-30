@@ -1,3 +1,5 @@
+:og:description: Configuring shader definitions for HEIO target games
+:og:image: _images/index_target_configuration.png
 
 *******
 Shaders

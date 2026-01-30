@@ -1,3 +1,5 @@
+:og:description: Exporting assets to files
+:og:image: _images/index_asset_exporting.png
 
 ###############
 Asset exporting

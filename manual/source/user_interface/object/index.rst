@@ -1,3 +1,5 @@
+:og:description: HEIO Object properties
+:og:image: _images/index_user_interface.png
 
 ##############
 Object Related

@@ -1,3 +1,5 @@
+:og:description: The HEIO mesh export settings user interface
+:og:image: _images/index_user_interface.png
 
 ***************
 Export Settings

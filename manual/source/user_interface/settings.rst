@@ -1,3 +1,5 @@
+:og:description: HEIO Scene settings
+:og:image: _images/index_user_interface.png
 
 .. _bpy.types.HEIO_Scene:
 

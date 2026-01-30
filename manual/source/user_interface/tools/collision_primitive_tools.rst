@@ -1,3 +1,5 @@
+:og:description: The HEIO tools for editing collision primitives
+:og:image: _images/index_user_interface.png
 
 .. _bpy.ops.heio.collision_primitive_gizmo_clicked:
 .. _bpy.ops.heio.collision_primitive_move:

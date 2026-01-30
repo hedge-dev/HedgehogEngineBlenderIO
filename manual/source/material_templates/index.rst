@@ -1,3 +1,5 @@
+:og:description: Status on material templates for all game shaders
+:og:image: _images/index_material_templates.png
 
 ##################
 Material Templates

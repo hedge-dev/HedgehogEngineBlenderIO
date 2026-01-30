@@ -1,3 +1,5 @@
+:og:description: The HEIO SCA Parameter user interface
+:og:image: _images/index_user_interface.png
 
 .. _bpy.types.HEIO_SCA_Parameter:
 .. _bpy.types.HEIO_Node:

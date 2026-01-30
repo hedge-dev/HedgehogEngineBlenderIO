@@ -1,3 +1,5 @@
+:og:description: The HEIO material editor viewport tools
+:og:image: _images/index_user_interface.png
 
 ******************
 Material Mass-edit

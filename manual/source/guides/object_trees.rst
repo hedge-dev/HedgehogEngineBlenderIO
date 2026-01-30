@@ -1,3 +1,5 @@
+:og:description: Understanding object trees
+:og:image: _images/index_object_trees.png
 
 ############
 Object Trees

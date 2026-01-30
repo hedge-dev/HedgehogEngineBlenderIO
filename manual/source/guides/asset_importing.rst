@@ -1,3 +1,5 @@
+:og:description: Importing assets from files
+:og:image: _images/index_asset_importing.png
 
 ###############
 Asset importing

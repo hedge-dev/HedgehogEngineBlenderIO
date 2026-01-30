@@ -1,3 +1,5 @@
+:og:description: Render layers explained
+:og:image: _images/index_render_layers.png
 
 #############
 Render Layers

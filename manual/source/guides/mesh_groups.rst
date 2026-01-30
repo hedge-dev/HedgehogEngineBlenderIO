@@ -1,3 +1,5 @@
+:og:description: Working with mesh groups
+:og:image: _images/index_mesh_groups.png
 
 ###########
 Mesh Groups

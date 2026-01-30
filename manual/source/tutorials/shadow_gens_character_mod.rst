@@ -1,3 +1,5 @@
+:og:description: Here you will learn the basics of how to modify and create your own character mod (changing the model of Shadow)
+:og:image: _images/index_shadow_gens_chr_mod.png
 
 ############################################
 Tutorial 2: Shadow Generations character mod

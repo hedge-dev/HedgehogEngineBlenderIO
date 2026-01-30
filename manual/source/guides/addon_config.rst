@@ -1,3 +1,5 @@
+:og:description: Configure the addon to make use of its full power
+:og:image: _images/index_addon_config.png
 
 .. _guides-addon-configuration:
 
