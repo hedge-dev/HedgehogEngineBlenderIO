@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/">
-  <ShortName>Hedgehog Engine Blender I/O 1.0.0 RC2</ShortName>
-  <Description>Search HEIO 1.0.0 RC2 Manual</Description>
+  <ShortName>Hedgehog Engine Blender I/O 0.1.123</ShortName>
+  <Description>Search HEIO 0.1.123 Manual</Description>
   <InputEncoding>utf-8</InputEncoding>
   <Url type="text/html" method="get"
        template="https://hedge-dev.github.io/HedgehogEngineBlenderIO//search.html?q={searchTerms}"/>
-  <LongName>HEIO 1.0.0 RC2 Manual</LongName>
+  <LongName>HEIO 0.1.123 Manual</LongName>
   <Image height="16" width="16" type="image/x-icon">https://hedge-dev.github.io/HedgehogEngineBlenderIO//_static/favicon.png</Image>
   
 </OpenSearchDescription>
