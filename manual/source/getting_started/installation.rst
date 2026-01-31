@@ -10,7 +10,7 @@ Installing HEIO
 Installing Blender
 ==================
 
-| The Addon is only supported on `Blender <https://blender.org/>`_ version 4.5 and above.
+| The Addon is only supported on `Blender <https://blender.org/>`_ version 4.2 and above.
 | It is recommended to install blender through `Steam <https://store.steampowered.com/app/365670>`_. This will ensure you're always using the latest release version.
 
 
