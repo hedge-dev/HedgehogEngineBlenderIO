@@ -19,10 +19,13 @@ classes.extend(operators.to_register)
 classes.extend(ui.to_register)
 classes.extend(tools.to_register)
 
+MAPPING = None
 
 def manual_hook():
-    mapping = manual.get_mapping(classes)
-    return "https://hedge-dev.github.io/HedgehogEngineBlenderIO", mapping
+    global MAPPING
+    if MAPPING is None:
+        MAPPING = manual.get_mapping(classes)
+    return "https://hedge-dev.github.io/HedgehogEngineBlenderIO", MAPPING
 
 
 def register():

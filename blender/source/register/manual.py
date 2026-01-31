@@ -5,6 +5,7 @@ TYPE_PAGE_MAP = {
     "HEIO_SCA_Parameter": "object/sca_parameters",
     "HEIO_SCA_Parameters": "object/sca_parameters",
     "HEIO_SCAP_MassEdit": "tools/viewport_toolbar/sca_editor",
+    "HEIO_Material_MassEdit": "tools/viewport_toolbar/material_editor",
     "HEIO_LODInfoLevel": "object/lod_info",
     "HEIO_LODInfoLevelList": "object/lod_info",
     "HEIO_LODInfo": "object/lod_info",
@@ -45,8 +46,10 @@ OPS_PAGE_MAP = {
     "heio.export_model": "tools/exporters",
     "heio.export_terrainmodel": "tools/exporters",
     "heio.export_collisionmesh": "tools/exporters",
-    "heio.export_pointcloud": "tools/exporters",
-    "heio.export_pointclouds": "tools/exporters",
+    "heio.export_modelpointcloud": "tools/exporters",
+    "heio.export_colpointcloud": "tools/exporters",
+    "heio.export_modelpointclouds": "tools/exporters",
+    "heio.export_colpointclouds": "tools/exporters",
     "heio.sca_parameters_add": "object/sca_parameters",
     "heio.sca_parameters_remove": "object/sca_parameters",
     "heio.sca_parameters_move": "object/sca_parameters",
@@ -66,13 +69,17 @@ OPS_PAGE_MAP = {
     "heio.mesh_info_move": "object/mesh/index",
     "heio.material_setup_nodes": "viewport_toolbar/general.html",
     "heio.material_setup_nodes_active": "viewport_toolbar/general.html",
-    "heio.material_parameters_add": "",
-    "heio.material_parameters_remove": "",
-    "heio.material_parameters_move": "",
+    "heio.material_parameters_add": "object/material_parameters",
+    "heio.material_parameters_remove": "object/material_parameters",
+    "heio.material_parameters_move": "object/material_parameters",
     "heio.split_meshgroups": "viewport_toolbar/general.html",
     "heio.merge_submeshes": "viewport_toolbar/general.html",
     "heio.collision_primitives_to_geometry": "viewport_toolbar/general.html",
     "heio.reimport_images": "viewport_toolbar/general.html",
+    "heio.material_to_principled": "tools/viewport_toolbar/material_editor",
+    "heio.material_from_principled": "tools/viewport_toolbar/material_editor",
+    "heio.material_massedit_udpate": "tools/viewport_toolbar/material_editor",
+    "heio.material_massedit_remove": "tools/viewport_toolbar/material_editor",
     "heio.scap_massedit_select": "tools/viewport_toolbar/sca_editor",
     "heio.scap_massedit_set": "tools/viewport_toolbar/sca_editor",
     "heio.scap_massedit_remove": "tools/viewport_toolbar/sca_editor",
@@ -90,13 +97,16 @@ OPS_PAGE_MAP = {
 }
 
 def _to_link(path: str, dir: str):
-    return "/user_interface/" + dir + ".html#" + path.replace(".", "-").replace("_", "-")
+    return "/" + dir + ".html#" + path.replace(".", "-").replace("_", "-")
+
+def _to_ui_link(path: str, dir: str):
+    return _to_link(path, "user_interface/" + dir)
 
 
 def get_mapping(classes):
 
     mapping = [
-        ("bpy.types.HEIO_Scene.show_all_shaders*", _to_link("bpy.types.HEIO_Scene.show_all_shaders", "object/material"))
+        ("bpy.types.HEIO_Scene.show_all_shaders*", _to_ui_link("bpy.types.HEIO_Scene.show_all_shaders", "object/material"))
     ]
 
     for cls in classes:
@@ -110,9 +120,10 @@ def get_mapping(classes):
             continue
 
         if page_mapping is None:
+            print(f"{path} = {page_mapping}")
             continue
 
-        page = _to_link(path, page_mapping)
+        page = _to_ui_link(path, page_mapping)
 
         annotations = inspect.get_annotations(cls)
         for name in annotations.keys():
