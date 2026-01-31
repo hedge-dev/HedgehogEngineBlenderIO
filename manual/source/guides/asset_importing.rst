@@ -107,7 +107,7 @@ Collision meshes usually part of a ``.pcmodel`` file, but can also be imported s
 .. dropdown:: How to import .btmesh files
 	:icon: download
 
-	Open :ref:`the importer <bpy.ops.heio.import_collision_mesh>`, select your
+	Open :ref:`the importer <bpy.ops.heio.import_collisionmesh>`, select your
 	file(s) to import, configure the import properties and then confirm.
 
 	.. figure:: images/asset_importing_bulletmesh.png
@@ -133,7 +133,7 @@ When imported, HEIO will also attempt to import the referenced resource files, s
 .. dropdown:: How to import .pcmodel / .pccol files
 	:icon: download
 
-	Open :ref:`the importer <bpy.ops.heio.import_point_cloud>`, select your
+	Open :ref:`the importer <bpy.ops.heio.import_pointcloud>`, select your
 	file(s) to import, configure the import properties and then confirm.
 
 	.. figure:: images/asset_importing_pointcloud.png

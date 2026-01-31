@@ -106,7 +106,7 @@ also export armature object trees, although the bone and weight information will
 .. dropdown:: How to export .terrain-model files
 	:icon: upload
 
-	Open :ref:`the exporter <bpy.ops.heio.export_terrain_model>`, select a directory/file to export to,
+	Open :ref:`the exporter <bpy.ops.heio.export_terrainmodel>`, select a directory/file to export to,
 	configure the export properties and then confirm.
 
 	.. figure:: images/asset_exporting_terrain_model.png
@@ -127,7 +127,7 @@ export armature object trees, although the bone and weight information will be l
 .. dropdown:: How to export .terrain-model files
 	:icon: upload
 
-	Open :ref:`the exporter <bpy.ops.heio.export_collision_mesh>`, select a directory/file to export to,
+	Open :ref:`the exporter <bpy.ops.heio.export_collisionmesh>`, select a directory/file to export to,
 	configure the export properties and then confirm.
 
 	.. figure:: images/asset_exporting_bullet_mesh.png
@@ -144,7 +144,7 @@ corresponding resource file (``.terrain-model``, etc).
 .. dropdown:: How to export .pcmodel or .pccol files
 	:icon: upload
 
-	Open :ref:`the exporter <bpy.ops.heio.export_point_cloud>`, select the type of point cloud to
+	Open :ref:`the exporter <bpy.ops.heio.export_modelpointcloud>`, select the type of point cloud to
 	export, select the file to export to, configure the export properties and then confirm.
 
 	.. figure:: images/asset_exporting_point_cloud.png
