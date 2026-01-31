@@ -120,7 +120,7 @@ Apply Poses
 ----
 
 .. _bpy.ops.heio.export_model:
-.. _bpy.ops.heio.export_terrain_model:
+.. _bpy.ops.heio.export_terrainmodel:
 
 Model / Terrain model export
 ============================
@@ -164,7 +164,7 @@ Advanced
 ----
 
 
-.. _bpy.ops.heio.export_collision_mesh:
+.. _bpy.ops.heio.export_collisionmesh:
 
 Collision mesh export
 =====================
@@ -175,8 +175,10 @@ No unique export options for collision mesh export.
 ----
 
 
-.. _bpy.ops.heio.export_point_cloud:
-.. _bpy.ops.heio.export_point_clouds:
+.. _bpy.ops.heio.export_modelpointcloud:
+.. _bpy.ops.heio.export_colpointcloud:
+.. _bpy.ops.heio.export_modelpointclouds:
+.. _bpy.ops.heio.export_colpointclouds:
 
 Point cloud export
 ==================

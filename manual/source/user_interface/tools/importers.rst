@@ -85,7 +85,6 @@ an object:
 ----
 
 .. _bpy.ops.heio.import_model:
-.. _bpy.ops.heio.import_terrain_model:
 
 Model / Terrain model import
 ============================
@@ -149,7 +148,7 @@ Armature
 
 ----
 
-.. _bpy.ops.heio.import_collision_mesh:
+.. _bpy.ops.heio.import_collisionmesh:
 
 Collision mesh import
 =====================
@@ -167,7 +166,7 @@ Remove unused vertices
 ----
 
 
-.. _bpy.ops.heio.import_point_cloud:
+.. _bpy.ops.heio.import_pointcloud:
 
 Point cloud import
 ==================
