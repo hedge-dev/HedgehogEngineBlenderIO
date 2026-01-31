@@ -11,8 +11,7 @@ from . import (
     material_texture_properties,
     material_properties,
 	material_mass_edit_properties,
-    image_properties,
-	blender_utitilies
+    image_properties
 )
 
 to_register = [
@@ -56,7 +55,5 @@ to_register = [
 
     material_mass_edit_properties.HEIO_Material_MassEdit,
 
-    image_properties.HEIO_Image,
-
-    blender_utitilies.HEIO_BlenderUtilities
+    image_properties.HEIO_Image
 ]

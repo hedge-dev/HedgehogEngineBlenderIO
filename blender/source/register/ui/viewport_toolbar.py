@@ -6,8 +6,7 @@ from .. operators import (
     image_operators,
     info_operators,
     scap_mass_edit_operators,
-    material_mass_edit_operators,
-    unleashed_fur_operators
+    material_mass_edit_operators
 )
 
 from . import (
@@ -48,11 +47,6 @@ class HEIO_PT_VTP_GeneralTools(ViewportToolPanel):
             image_operators.HEIO_OT_ReimportImages.bl_idname)
 
         layout.separator(type='LINE', factor=1.5)
-
-        layout.operator(
-            unleashed_fur_operators.HEIO_OT_UnleashedFur_AddShells.bl_idname)
-        layout.operator(
-            unleashed_fur_operators.HEIO_OT_UnleashedFur_AddEditor.bl_idname)
 
 
 class HEIO_PT_VTP_SCAP_MassEdit(ViewportToolPanel):
@@ -288,59 +282,6 @@ class HEIO_PT_VTP_Info(ViewportToolPanel):
         layout.operator(info_operators.HEIO_OT_Info_Manual.bl_idname)
         layout.operator(info_operators.HEIO_OT_Info_Discord.bl_idname)
         layout.operator(info_operators.HEIO_OT_Info_Report.bl_idname)
-
-
-class HEIO_PT_VTP_FurPaint(ViewportToolPanel):
-    bl_label = "Fur Paint Utilities"
-
-    @classmethod
-    def poll(cls, context):
-        return context.mode == "PAINT_VERTEX"
-
-    def draw(self, context):
-        util_props = context.scene.heio_blender_utilities
-
-        self.layout.use_property_split = True
-        self.layout.use_property_decorate = False
-        color_name = context.active_object.data.color_attributes.active_color_name
-
-
-        header = self.layout.row()
-        header.operator(unleashed_fur_operators.HEIO_OT_UnleashedFur_SwitchVertexColors.bl_idname, text="", icon="BRUSH_DATA").attribute_name = "FurDirection"
-        header.label(text="Fur direction")
-
-        dirblock = self.layout.column()
-        dirblock.active = color_name == "FurDirection"
-
-        split = dirblock.split(factor=0.5)
-        split.prop(util_props, "vertex_paint_direction", text="")
-        col = split.column()
-        col.prop(util_props, "vertex_paint_direction", text="", index=0)
-        col.prop(util_props, "vertex_paint_direction", text="", index=1)
-        col.prop(util_props, "vertex_paint_direction", text="", index=2)
-
-        row = dirblock.row()
-        operator = unleashed_fur_operators.HEIO_OT_UnleashedFur_SetBrushDir.bl_idname
-        row.operator(operator, text="+X").direction = (1,0,0)
-        row.operator(operator, text="-X").direction = (-1,0,0)
-        row.operator(operator, text="+Y").direction = (0,1,0)
-        row.operator(operator, text="-Y").direction = (0,-1,0)
-        row.operator(operator, text="+Z").direction = (0,0,1)
-        row.operator(operator, text="-Z").direction = (0,0,-1)
-        dirblock.label(text="Pointing towards: " + util_props.vertex_direction_info)
-
-        dirblock.prop(util_props, "vertex_paint_factor", text="Normal <-> Color")
-
-        self.layout.separator(type='LINE')
-
-        header = self.layout.row()
-        header.operator(unleashed_fur_operators.HEIO_OT_UnleashedFur_SwitchVertexColors.bl_idname, text="", icon="BRUSH_DATA").attribute_name = "FurLength"
-        header.label(text="Fur length")
-
-        lengthblock = self.layout.column()
-        lengthblock.active = color_name == "FurLength"
-        lengthblock.prop(util_props, "vertex_paint_length", text="")
-
 
 
 class ViewportToolDataPanel(ViewportToolPanel):
