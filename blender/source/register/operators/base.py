@@ -105,6 +105,11 @@ class HEIOBaseFileLoadOperator(HEIOBaseOperator):
         layout.use_property_split = True
         layout.use_property_decorate = False  # No animation.
 
+    def get_files(self):
+        if len(os.path.basename(self.filepath)) == 0:
+            raise HEIOUserException("No file selected!")
+        return [os.path.join(self.directory, file.name) for file in self.files]
+
 
 class HEIOBaseFileSaveOperator(HEIOBaseOperator):
 

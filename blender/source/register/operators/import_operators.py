@@ -71,8 +71,7 @@ class HEIO_OT_Import_Model(ImportModelOperator):
     def import_(self, context):
         progress_console.update("Resolving, reading & converting model files")
 
-        directory = os.path.dirname(self.filepath)
-        filepaths = [os.path.join(directory, file.name) for file in self.files]
+        filepaths = self.get_files()
 
         mesh_import_settings = CMeshImportSettings()
         mesh_import_settings.merge_distance = self.vertex_merge_distance
@@ -107,9 +106,8 @@ class HEIO_OT_Import_CollisionMesh(ImportCollisionMeshOperator):
     def import_(self, context):
         progress_console.update("Resolving, reading & converting mesh files")
 
-        directory = os.path.dirname(self.filepath)
-        filepaths = [os.path.join(directory, file.name) for file in self.files]
-
+        filepaths = self.get_files()
+        
         mesh_import_settings = CMeshImportSettings()
         mesh_import_settings.merge_collision_vertices = self.merge_collision_verts
         mesh_import_settings.collision_vertex_merge_distance = self.merge_collision_vert_distance
@@ -169,8 +167,7 @@ class HEIO_OT_Import_PointCloud(ImportPointCloudOperator):
     def import_(self, context):
         progress_console.update("Resolving & reading files")
 
-        directory = os.path.dirname(self.filepath)
-        filepaths = [os.path.join(directory, file.name) for file in self.files]
+        filepaths = self.get_files()
 
         mesh_import_settings = CMeshImportSettings()
         mesh_import_settings.merge_distance = self.vertex_merge_distance
