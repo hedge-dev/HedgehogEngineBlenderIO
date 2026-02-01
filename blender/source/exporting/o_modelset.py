@@ -10,6 +10,7 @@ class ModelSet:
 
     _viewport_modifier_states: dict[bpy.types.Modifier, bool]
     _armature_modifier: bpy.types.ArmatureModifier | None
+    _triangulate_modifier: bpy.types.TriangulateModifier | None
 
     evaluated_object: bpy.types.Object | None
     evaluated_mesh: bpy.types.Mesh | None
@@ -23,6 +24,7 @@ class ModelSet:
 
         self._viewport_modifier_states = {}
         self._armature_modifier = None
+        self._triangulate_modifier = None
 
         self.evaluated_object = None
         self.evaluated_mesh = None
@@ -51,6 +53,15 @@ class ModelSet:
                         if "HEIO_EXPORT_IGNORE" in socket.description.split(";"):
                             modifier.show_viewport = False
                         break
+
+        # add triangulate modifier
+        self._triangulate_modifier = self.obj.modifiers.new(
+            "ExportTriangulate",
+            'TRIANGULATE')
+        self._triangulate_modifier.quad_method = 'FIXED'
+        self._triangulate_modifier.ngon_method = 'CLIP'
+        self._triangulate_modifier.min_vertices = 5
+        self._triangulate_modifier.keep_custom_normals = True
 
     def _evaluate_shapekeys(self, depsgraph: bpy.types.Depsgraph, eval_shapekeys: bool):
 
@@ -83,6 +94,10 @@ class ModelSet:
             depsgraph=depsgraph)
 
     def cleanup_modifiers(self):
+        if self._triangulate_modifier is not None:
+            self.obj.modifiers.remove(self._triangulate_modifier)
+            self._triangulate_modifier = None
+
         for modifier in self.obj.modifiers:
             modifier.show_viewport = self._viewport_modifier_states[modifier]
 
