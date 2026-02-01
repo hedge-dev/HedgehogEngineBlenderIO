@@ -224,7 +224,6 @@ class MeshConverter:
     def _convert_normals(mesh: bpy.types.Mesh, mesh_data: CMeshData, vertices: list[CVertex]):
         if not mesh_data.polygon_normals:
 
-
             mesh.normals_split_custom_set_from_vertices(
                 [(v.normal.x, -v.normal.z, v.normal.y)
                  for v in vertices]

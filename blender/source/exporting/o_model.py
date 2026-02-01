@@ -102,6 +102,7 @@ class RawMeshData:
     vertices: list[RawVertex]
     triangle_indices: list[int]
 
+    polygon_normals: list[Vector]
     polygon_uv_directions: list[tuple[Vector, Vector]]
     polygon_uv_directions2: list[tuple[Vector, Vector]] | None
 
@@ -117,6 +118,7 @@ class RawMeshData:
         self.vertices = []
         self.triangle_indices = []
 
+        self.polygon_normals = []
         self.polygon_uv_directions = []
         self.polygon_uv_directions2 = None
 
@@ -129,6 +131,12 @@ class RawMeshData:
         self.morph_names = None
 
     def convert_to_c(self, matrix: tuple[Matrix, Matrix] | None, weight_index_map: dict[str, int] | None):
+        
+        if matrix is not None:
+            normal_matrix = matrix[1]
+            polygon_normals = [(normal_matrix @ n).normalized() for n in self.polygon_normals]
+        else:
+            polygon_normals = self.polygon_normals
 
         def convert_uv_dirs(uv_dirs: list[tuple[Vector, Vector]] | None):
             if uv_dirs is None:
@@ -150,7 +158,7 @@ class RawMeshData:
                     o_transform.bpy_to_c_position(t[1])
                 ) for t in result
             ]
-
+        
         polygon_tangents = convert_uv_dirs(self.polygon_uv_directions)
 
         polygon_tangents2 = None
@@ -168,6 +176,7 @@ class RawMeshData:
             triangle_index_count = len(self.triangle_indices),
 
             triangle_indices = util.construct_array(self.triangle_indices, c_int),
+            polygon_normals = util.as_array([o_transform.bpy_to_c_position(n) for n in polygon_normals], CVector3),
             polygon_uv_directions = util.as_array(polygon_tangents, CUVDirection),
             polygon_uv_directions2 = util.as_array(polygon_tangents2, CUVDirection),
 
@@ -283,16 +292,10 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
             def get_shape_positions(vertex: bpy.types.MeshVertex):
                 return None
 
-        loop_normals: list[Vector] = [x.vector.copy()
-                                      for x in model_set.evaluated_mesh.vertex_normals]
-        for loop in model_set.evaluated_mesh.loops:
-            # loops on the same vertex must share the same normal, no need to merge or compare
-            loop_normals[loop.vertex_index] = loop.normal
-
         return [
             RawVertex(
                 vertex.co.copy(),
-                loop_normals[vertex.index].copy(),
+                vertex.normal.copy(), # not used, but we pass it over either way just in case
                 get_shape_positions(vertex),
                 get_weights(vertex)
             ) for vertex in model_set.evaluated_mesh.vertices
@@ -308,7 +311,7 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
         if not heio_mesh.groups.initialized or heio_mesh.groups.attribute_invalid:
             group_names.append("")
 
-            def get_group_index(polygon: bpy.types.MeshPolygon):
+            def get_group_index(triangle: bpy.types.MeshLoopTriangle):
                 return 0
 
         else:
@@ -329,11 +332,11 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
                 heio_mesh.groups.attribute_name, None)
 
             if group_attribute is None:
-                def get_group_index(polygon: bpy.types.MeshPolygon):
+                def get_group_index(triangle: bpy.types.MeshLoopTriangle):
                     return 0
             else:
-                def get_group_index(polygon: bpy.types.MeshPolygon):
-                    return group_name_map[group_attribute.data[polygon.index].value]
+                def get_group_index(triangle: bpy.types.MeshLoopTriangle):
+                    return group_name_map[group_attribute.data[triangle.polygon_index].value]
 
         layer_name_lut = {}
         layer_name_map = []
@@ -354,11 +357,11 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
                 heio_mesh.render_layers.attribute_name, None)
 
             if layer_attribute is None:
-                def get_layer_index(polygon: bpy.types.MeshPolygon):
+                def get_layer_index(triangle: bpy.types.MeshLoopTriangle):
                     return 0
             else:
-                def get_layer_index(polygon: bpy.types.MeshPolygon):
-                    return layer_name_map[layer_attribute.data[polygon.index].value]
+                def get_layer_index(triangle: bpy.types.MeshLoopTriangle):
+                    return layer_name_map[layer_attribute.data[triangle.polygon_index].value]
 
         else:
             for material_slot in model_set.evaluated_object.material_slots:
@@ -387,11 +390,11 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
 
             layer_count = len(layer_name_map)
 
-            def get_layer_index(polygon: bpy.types.MeshPolygon):
-                if polygon.material_index >= layer_count:
+            def get_layer_index(triangle: bpy.types.MeshLoopTriangle):
+                if triangle.material_index >= layer_count:
                     return 0
 
-                return layer_name_map[polygon.material_index]
+                return layer_name_map[triangle.material_index]
 
         material_lut = {}
         material_map = []
@@ -408,17 +411,17 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
 
         material_count = len(material_map)
 
-        def get_material_index(polygon: bpy.types.MeshPolygon):
-            if polygon.material_index >= material_count:
+        def get_material_index(triangle: bpy.types.MeshLoopTriangle):
+            if triangle.material_index >= material_count:
                 return 0
-            return material_map[polygon.material_index]
+            return material_map[triangle.material_index]
 
         polygon_mapping = [(
-            polygon.index,
-            get_group_index(polygon),
-            get_layer_index(polygon),
-            get_material_index(polygon)
-        ) for polygon in model_set.evaluated_mesh.polygons]
+            triangle.loops,
+            get_group_index(triangle),
+            get_layer_index(triangle),
+            get_material_index(triangle)
+        ) for triangle in model_set.evaluated_mesh.loop_triangles]
         polygon_mapping.sort(key=lambda x: (x[1], x[2], x[3]))
 
         return group_names, layer_names, materials, polygon_mapping
@@ -477,38 +480,47 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
 
         return result
 
-    def _convert_uv_directions(self, mesh: bpy.types.Mesh, loop_order: list[bpy.types.MeshLoop]):
+    def _convert_directions(self, mesh: bpy.types.Mesh, loop_order: list[bpy.types.MeshLoop]):
+        normals = [loop.normal.copy() for loop in loop_order]
+
+        up_vec = Vector((0, 0, 1))
+        fallback_tangent = Vector((1, 0, 0))
+        def generate_uv_direction(normal: Vector):
+            tangent = normal.cross(up_vec)
+
+            if tangent.length_squared < 0.0001:
+                tangent = fallback_tangent
+
+            binormal = normal.cross(tangent).normalized()
+            tangent = normal.cross(binormal).normalized()
+            return (tangent, binormal)
+
         if len(mesh.uv_layers) == 0:
+            return normals, [generate_uv_direction(n) for n in normals], None
 
-            loop_normals: list[Vector] = [x.vector.copy()
-                                          for x in mesh.vertex_normals]
-            for loop in mesh.loops:
-                loop_normals[loop.vertex_index] = loop.normal
+        def get_uv_directions(name):
+            mesh.calc_tangents(uvmap=name)
 
-            up_vec = Vector((0, 0, 1))
+            result = []
+            for loop, normal in zip(loop_order, normals):
+                tangent = loop.tangent
+                bitangent_sign = loop.bitangent_sign
+                
+                # if tangent broken (always (1,0,0))
+                if tangent.dot(fallback_tangent) == 1.0 and abs(tangent.dot(normal)) > 0.0001:
+                    result.append(generate_uv_direction(normal))
+                else:
+                    bitangent = bitangent_sign * normal.cross(tangent)
+                    result.append((tangent.normalized(), bitangent.normalized()))
 
-            uv_directions = []
-            for n in loop_normals:
-                tangent = n.cross(up_vec).normalized()
-                binormal = n.cross(tangent).normalized()
-                tangent = n.cross(binormal).normalized()
-                uv_directions.append((tangent, binormal))
+            mesh.free_tangents() 
 
-            return [uv_directions[l.vertex_index] for l in loop_order], None
+            return result
 
-        mesh.calc_tangents(uvmap=mesh.uv_layers[0].name)
-        uv_directions = [(l.tangent.normalized(), l.bitangent.normalized())
-                         for l in loop_order]
-        mesh.free_tangents()
+        uv_directions = get_uv_directions(mesh.uv_layers[0].name)
+        uv_directions2 = get_uv_directions(mesh.uv_layers[1].name) if len(mesh.uv_layers) > 1 else None
 
-        uv_directions2 = None
-        if len(mesh.uv_layers) > 1:
-            mesh.calc_tangents(uvmap=mesh.uv_layers[1].name)
-            uv_directions2 = [(l.tangent.normalized(), l.bitangent.normalized())
-                              for l in loop_order]
-            mesh.free_tangents()
-
-        return uv_directions, uv_directions2
+        return normals, uv_directions, uv_directions2
 
     def _convert_model_set(self, model_set: o_modelset.ModelSet):
         mesh = model_set.evaluated_mesh
@@ -527,13 +539,16 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
         loop_order: list[bpy.types.MeshLoop] = [
             mesh.loops[loop]
             for polygon_map in polygon_mapping
-            for loop in mesh.polygons[polygon_map[0]].loop_indices
+            for loop in polygon_map[0]
         ]
 
         raw_meshdata.triangle_indices = [l.vertex_index for l in loop_order]
 
-        raw_meshdata.polygon_uv_directions, raw_meshdata.polygon_uv_directions2 = self._convert_uv_directions(
-            mesh, loop_order)
+        ( 
+            raw_meshdata.polygon_normals, 
+            raw_meshdata.polygon_uv_directions,
+            raw_meshdata.polygon_uv_directions2 
+        ) = self._convert_directions(mesh, loop_order)
 
         raw_meshdata.texture_coordinates = self._convert_uv_maps(
             mesh, loop_order)

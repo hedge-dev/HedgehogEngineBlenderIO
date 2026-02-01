@@ -10,8 +10,6 @@ class ModelSet:
 
     _viewport_modifier_states: dict[bpy.types.Modifier, bool]
     _armature_modifier: bpy.types.ArmatureModifier | None
-    _edge_split_modifier: bpy.types.EdgeSplitModifier | None
-    _triangulate_modifier: bpy.types.TriangulateModifier | None
 
     evaluated_object: bpy.types.Object | None
     evaluated_mesh: bpy.types.Mesh | None
@@ -25,8 +23,6 @@ class ModelSet:
 
         self._viewport_modifier_states = {}
         self._armature_modifier = None
-        self._edge_split_modifier = None
-        self._triangulate_modifier = None
 
         self.evaluated_object = None
         self.evaluated_mesh = None
@@ -55,26 +51,6 @@ class ModelSet:
                         if "HEIO_EXPORT_IGNORE" in socket.description.split(";"):
                             modifier.show_viewport = False
                         break
-
-
-
-
-        # add edge split modifier
-        self._edge_split_modifier = self.obj.modifiers.new(
-            "ExportEdgeSplit",
-            'EDGE_SPLIT')
-
-        self._edge_split_modifier.use_edge_angle = False
-        self._edge_split_modifier.use_edge_sharp = True
-
-        # add triangulate modifier
-        self._triangulate_modifier = self.obj.modifiers.new(
-            "ExportTriangulate",
-            'TRIANGULATE')
-        self._triangulate_modifier.quad_method = 'FIXED'
-        self._triangulate_modifier.ngon_method = 'CLIP'
-        self._triangulate_modifier.min_vertices = 4
-        self._triangulate_modifier.keep_custom_normals = True
 
     def _evaluate_shapekeys(self, depsgraph: bpy.types.Depsgraph, eval_shapekeys: bool):
 
@@ -107,10 +83,6 @@ class ModelSet:
             depsgraph=depsgraph)
 
     def cleanup_modifiers(self):
-        self.obj.modifiers.remove(self._triangulate_modifier)
-        if self._edge_split_modifier is not None:
-            self.obj.modifiers.remove(self._edge_split_modifier)
-
         for modifier in self.obj.modifiers:
             modifier.show_viewport = self._viewport_modifier_states[modifier]
 

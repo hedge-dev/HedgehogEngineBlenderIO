@@ -10,14 +10,16 @@ namespace HEIO.NET.Internal.Modeling.ConvertTo
     internal readonly struct ProcessTriangleCorner
     {
         public readonly int vertexIndex;
+        public readonly Vector3? normal;
         public readonly UVDirection uvDirection;
         public readonly UVDirection uvDirection2;
         public readonly Vector2[] textureCoordinates;
         public readonly Vector4[] colors;
 
-        public ProcessTriangleCorner(int vertexIndex, UVDirection uvDirection, UVDirection uvDirection2, Vector2[] textureCoordinates, Vector4[] colors)
+        public ProcessTriangleCorner(int vertexIndex, Vector3? normal, UVDirection uvDirection, UVDirection uvDirection2, Vector2[] textureCoordinates, Vector4[] colors)
         {
             this.vertexIndex = vertexIndex;
+            this.normal = normal;
             this.uvDirection = uvDirection;
             this.uvDirection2 = uvDirection2;
             this.textureCoordinates = textureCoordinates;
@@ -52,6 +54,7 @@ namespace HEIO.NET.Internal.Modeling.ConvertTo
 
             return new(
                 vertexIndex,
+                data.PolygonNormals?[faceIndex],
                 uvDirection,
                 multiTangent && data.PolygonUVDirections2 != null ? data.PolygonUVDirections2[faceIndex] : uvDirection,
                 textureCoordinates,
@@ -76,7 +79,7 @@ namespace HEIO.NET.Internal.Modeling.ConvertTo
                 GPUVertex gpuVertex = new(vertex.MorphPositions?.Length, texcoordSets, colorSets, weightCount)
                 {
                     Position = vertex.Position,
-                    Normal = vertex.Normal,
+                    Normal = corner.normal ?? vertex.Normal,
                     UVDirection = corner.uvDirection,
                     UVDirection2 = corner.uvDirection2,
                 };

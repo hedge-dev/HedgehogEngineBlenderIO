@@ -36,7 +36,7 @@ namespace HEIO.NET.Internal.Modeling.ConvertFrom
                 ? FlipTriangles(mesh.Faces)
                 : ExpandStrip(mesh.Faces)];
 
-            GPUVertex[] vertices = ReadVertexData(mesh, texcoordSets, colorSets, weightCount, useByteColors);
+            GPUVertex[] vertices = ReadVertexData(mesh, texcoordSets, colorSets, weightCount);
 
             bool blendIndex16 = mesh.Elements.Any(x => x.Type == VertexType.BlendIndices && x.Format == VertexFormat.Ushort4);
             bool multiTangent = mesh.Elements.Any(x => x.Type == VertexType.Tangent && x.UsageIndex == 1);
@@ -111,7 +111,7 @@ namespace HEIO.NET.Internal.Modeling.ConvertFrom
             }
         }
 
-        private static GPUVertex[] ReadVertexData(Mesh mesh, int texcoordSets, int colorSets, int weightCount, bool useByteColors)
+        private static GPUVertex[] ReadVertexData(Mesh mesh, int texcoordSets, int colorSets, int weightCount)
         {
             using MemoryStream stream = new(mesh.Vertices);
             using BinaryObjectReader reader = new(stream, StreamOwnership.Retain, Endianness.Little);
