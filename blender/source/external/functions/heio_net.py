@@ -9,6 +9,13 @@ FUNCTIONS = {
         None,
         "NO ERROR CHECK",
     ),
+    "set_wchar_size": (
+        (
+            ctypes.c_int,
+        ),
+        None,
+        "NO ERROR CHECK",
+    ),
     "error_get": (
         None,
         ctypes.c_wchar_p,

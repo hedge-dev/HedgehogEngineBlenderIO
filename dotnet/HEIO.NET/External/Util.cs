@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -12,8 +13,6 @@ namespace HEIO.NET.External
 
     internal static unsafe class Util
     {
-        public static bool IsWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
-
         public static T[]? ToArray<T>(T* values, int valuesSize) where T : unmanaged
         {
             if(values == null)
@@ -22,7 +21,7 @@ namespace HEIO.NET.External
             }
 
             T[] result = new T[valuesSize];
-            new Span<T>(values, (int)valuesSize).CopyTo(new Span<T>(result, 0, (int)valuesSize));
+            new Span<T>(values, valuesSize).CopyTo(new Span<T>(result, 0, valuesSize));
             return result;
         }
 
@@ -56,11 +55,11 @@ namespace HEIO.NET.External
 
         public static string? ToString(char* pointer)
         {
-            if(IsWindows)
+            if(Allocate.WCharSize == sizeof(char))
             {
                 return Marshal.PtrToStringUni((nint)pointer);
             }
-            else
+            else if(Allocate.WCharSize == 4)
             {
                 int* utf32 = (int*)pointer;
                 int length = 0;
@@ -71,6 +70,10 @@ namespace HEIO.NET.External
                 }
 
                 return Encoding.UTF32.GetString((byte*)pointer, length * 4);
+            }
+            else
+            {
+                throw new NotSupportedException($"Unsupported character size: {Allocate.WCharSize}");
             }
         }
 

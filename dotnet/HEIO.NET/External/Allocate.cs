@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -9,6 +10,7 @@ namespace HEIO.NET.External
     public static unsafe class Allocate
     {
         private static readonly List<nint> _allocations = [];
+        public static int WCharSize = sizeof(char);
 
         [UnmanagedCallersOnly(EntryPoint = "free_all")]
         public static void FreeAll()
@@ -21,8 +23,14 @@ namespace HEIO.NET.External
             _allocations.Clear();
         }
 
+        [UnmanagedCallersOnly(EntryPoint = "set_wchar_size")]
+        public static void SetWCharSize(int size)
+        {
+            WCharSize = size;
+        }
 
-        public static T* Alloc<T>(nint count = 1) where T : unmanaged
+
+        public static T* Alloc<T>(int count = 1) where T : unmanaged
         {
             if (count == 0)
             {
@@ -158,14 +166,18 @@ namespace HEIO.NET.External
 
             char* result;
 
-            if (Util.IsWindows)
+            if (WCharSize == sizeof(char))
             {
                 result = (char*)Marshal.StringToHGlobalUni(value);
                 _allocations.Add((nint)result);
             }
-            else
+            else if(WCharSize == 4)
             {
                 result = (char*)AllocFromArray(Encoding.UTF32.GetBytes(value + '\0'));
+            }
+            else
+            {
+                throw new NotSupportedException($"Unsupported character size: {WCharSize}");
             }
 
             return result;

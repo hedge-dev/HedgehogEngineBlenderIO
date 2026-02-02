@@ -1,4 +1,4 @@
-from ctypes import POINTER, pointer, byref, cast, c_wchar_p, c_bool, c_uint
+from ctypes import POINTER, pointer, byref, cast, sizeof, c_wchar, c_wchar_p, c_bool, c_int, c_uint
 from typing import Iterable
 
 from . import util
@@ -30,6 +30,13 @@ class HEIONET(ExternalLibrary):
     def _get_library_function_args(cls):
         return FUNCTIONS
     
+    @classmethod
+    def _setup(cls):
+        super()._setup()
+
+        size = c_int(sizeof(c_wchar))
+        cls._lib().set_wchar_size(size)
+
     @classmethod
     def _check_error(cls, result, func, arguments):
         error = cls._LIBRARY.error_get()
