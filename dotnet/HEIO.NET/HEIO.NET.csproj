@@ -15,10 +15,7 @@
 		<PackageReference Include="J113D.Common" Version="1.1.0" />
 		<PackageReference Include="J113D.Strippify" Version="1.1.0" />
 		<PackageReference Include="MIConvexHull" Version="1.1.19.1019" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<ProjectReference Include="..\..\..\SharpNeedle\Source\SharpNeedle\SharpNeedle.csproj" />
+		<PackageReference Include="SharpNeedle" Version="0.1.43" />
 	</ItemGroup>
 
 </Project>
