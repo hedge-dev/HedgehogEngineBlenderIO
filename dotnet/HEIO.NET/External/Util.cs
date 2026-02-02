@@ -61,6 +61,11 @@ namespace HEIO.NET.External
             }
             else if(Allocate.WCharSize == 4)
             {
+                if (pointer == null)
+                {
+                    return null;
+                }
+
                 int* utf32 = (int*)pointer;
                 int length = 0;
 

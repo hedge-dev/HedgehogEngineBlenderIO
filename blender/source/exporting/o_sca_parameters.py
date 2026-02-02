@@ -1,5 +1,5 @@
 from ctypes import pointer
-from ..external import TPointer, CSampleChunkNode
+from ..external import CSampleChunkNode
 from ..register.property_groups.material_properties import HEIO_SCA_Parameters
 
 def append_children_to_node(c_parent: CSampleChunkNode, children: list[CSampleChunkNode]):
