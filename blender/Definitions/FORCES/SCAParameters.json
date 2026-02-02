@@ -1,0 +1,59 @@
+{
+  "Material": {
+    "MaxAniso": {
+      "Type": "Integer",
+      "Description": "Maximum anisotropy filtering level"
+    },
+    "TrnsType": {
+      "Type": "Boolean",
+      "Description": "Transparency type (?)"
+    },
+    "TrnsPrio": {
+      "Type": "Integer",
+      "Description": "Transparency rendering priority. Used to adjusted drawing order."
+    },
+    "MipBias": {
+      "Type": "Float",
+      "Description": "Mipmap selection bias"
+    },
+    "UsePrior": {
+      "Type": "Boolean",
+      "Description": "Use Prior (?)"
+    },
+    "UseGrass": {
+      "Type": "Integer",
+      "Description": "Render grass on material (?)"
+    }
+  },
+  "Model": {
+    "ShadowCa": {
+      "Type": "Boolean",
+      "Description": "Mesh can cast shadow when enabled"
+    },
+    "ShadowRe": {
+      "Type": "Boolean",
+      "Description": "Mesh can receive shadow when enabled"
+    },
+    "DisableC": {
+      "Type": "Boolean",
+      "Description": "If enabled, mesh does not render (but can still cast shadows)"
+    },
+    "RenderCa": {
+      "Type": "Integer",
+      "Description": "Unknown; Values of 1, 2 and 5 were found"
+    },
+    "Occluder": {
+      "Type": "Boolean",
+      "Description": "Unknown"
+    },
+    "UsageCPU": {
+      "Type": "Boolean",
+      "Description": "Unknown"
+    }
+  },
+  "Defaults": {
+    "Material":{},
+    "Model": {},
+    "TerrainModel": {}
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "Name": "Sonic Forces",
+  "Description": "Sonic Forces",
+  "ReleaseYear": 2017,
+  "HedgehogEngine": 2,
+  "UsesNTSP": false,
+  "BoneOrientation": "XZ",
+  "SupportsTopology": false,
+  "DataVersions": {
+    "SampleChunk": 2,
+    "Material": 3,
+    "BulletMesh": null,
+    "PointCloud": null
+  },
+  "DefaultTextureModes": {
+    "diffuse": "sRGB",
+    "transparency": "Linear",
+    "emission": "Linear",
+    "reflection": "Linear",
+    "specular": "Linear",
+    "normal": "Normal"
+  }
+}

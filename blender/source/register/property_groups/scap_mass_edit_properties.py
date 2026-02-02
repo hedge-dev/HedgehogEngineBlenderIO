@@ -1,0 +1,149 @@
+import bpy
+from bpy.props import (
+    StringProperty,
+    IntProperty,
+    FloatProperty,
+    BoolProperty,
+    EnumProperty,
+    PointerProperty
+)
+
+from .. import definitions
+from .sca_parameter_properties import (
+    _get_float_value,
+	_set_float_value,
+	_get_boolean_value,
+	_set_booleam_value
+)
+
+FALLBACK_SCA_PARAMETER_ITEMS = [("ERROR_FALLBACK", "No Presets", "")]
+
+
+def _get_sca_parameter_def(properties, context: bpy.types.Context):
+    target_def = definitions.get_target_definition(context)
+    if target_def is None or target_def.sca_parameters is None:
+        return None
+
+    if properties.mode == 'MATERIAL':
+        result = target_def.sca_parameters.material
+    elif properties.mode == 'MODEL':
+        result = target_def.sca_parameters.model
+    else:
+        return None
+
+    return result
+
+
+def _get_sca_parameter_items(properties, context: bpy.types.Context):
+    param_def = _get_sca_parameter_def(properties, context)
+
+    if param_def is not None:
+        return param_def.items
+
+    return FALLBACK_SCA_PARAMETER_ITEMS
+
+
+def _get_sca_parameter_value_name_enum(properties):
+    param_def = _get_sca_parameter_def(properties, bpy.context)
+
+    if param_def is None or properties.value_name not in param_def.infos:
+        return 0
+
+    param_info = param_def.infos.get(properties.value_name, None)
+    if param_info is None:
+        return 0
+
+    return param_info.index
+
+
+def _set_sca_parameter_value_name_enum(properties, enum_index):
+    if not properties.use_preset:
+        return
+
+    param_def = _get_sca_parameter_def(properties, bpy.context)
+    if param_def is None:
+        return
+
+    properties.value_name = param_def.items[enum_index][0]
+
+
+def _update_sca_parameter_type(properties, context):
+    if not properties.use_preset:
+        return
+
+    param_def = _get_sca_parameter_def(properties, context)
+    if param_def is None:
+        return
+
+    if properties.value_name not in param_def.infos:
+        properties.value_name = param_def.items[0][0]
+
+    param_info = param_def.infos.get(properties.value_name, None)
+    if param_info is None:
+        return
+
+    if properties.value_type != param_info.parameter_type.name:
+        properties.value_type = param_info.parameter_type.name
+
+
+class HEIO_SCAP_MassEdit(bpy.types.PropertyGroup):
+
+    mode: EnumProperty(
+        name="Mode",
+        items=(
+            ('MODEL', "Model", ""),
+            ('MATERIAL', "Material", "")
+        ),
+        default='MODEL',
+        update=_update_sca_parameter_type
+    )
+
+    use_preset: BoolProperty(
+        name="Use Preset",
+        update=_update_sca_parameter_type
+    )
+
+    value_name: StringProperty(
+        name="Name",
+        maxlen=8
+    )
+
+    value_name_enum: EnumProperty(
+        name="Preset",
+        items=_get_sca_parameter_items,
+        get=_get_sca_parameter_value_name_enum,
+        set=_set_sca_parameter_value_name_enum,
+        update=_update_sca_parameter_type
+    )
+
+    value_type: EnumProperty(
+        name="Type",
+        items=(
+            ('INTEGER', "Integer", ""),
+            ('FLOAT', "Float", ""),
+            ('BOOLEAN', "Boolean", ""),
+        ),
+        update=_update_sca_parameter_type,
+        default='INTEGER'
+    )
+
+    value: IntProperty(
+        name="Value"
+    )
+
+    float_value: FloatProperty(
+        name="Value",
+        precision=3,
+        get=_get_float_value,
+        set=_set_float_value
+    )
+
+    boolean_value: BoolProperty(
+        name="Value",
+        get=_get_boolean_value,
+        set=_set_booleam_value
+    )
+
+    @classmethod
+    def register(cls):
+        bpy.types.Scene.heio_scap_massedit = PointerProperty(type=cls)

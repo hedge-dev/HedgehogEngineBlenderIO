@@ -1,0 +1,23 @@
+{
+  "Name": "Sonic Generations",
+  "Description": "Sonic Generations (2011)",
+  "ReleaseYear": 2011,
+  "HedgehogEngine": 1,
+  "UsesNTSP": false,
+  "BoneOrientation": "XY",
+  "SupportsTopology": false,
+  "DataVersions": {
+    "SampleChunk": 1,
+    "Material": 3,
+    "BulletMesh": null,
+    "PointCloud": null
+  },
+  "DefaultTextureModes": {
+    "diffuse": "sRGB",
+    "opacity": "Linear",
+    "reflection": "sRGB",
+    "specular": "sRGB",
+    "gloss": "Linear",
+    "normal": "Normal"
+  }
+}

@@ -3,7 +3,7 @@ import bpy
 from bpy.props import EnumProperty, StringProperty, BoolProperty
 from bpy.types import Context, Event
 
-from ...exceptions import UserException
+from ...exceptions import HEIOUserException
 
 
 class HEIOBaseOperator(bpy.types.Operator):
@@ -14,7 +14,7 @@ class HEIOBaseOperator(bpy.types.Operator):
     def invoke(self, context: Context, event: Event):
         try:
             return self._invoke(context, event)
-        except UserException as e:
+        except HEIOUserException as e:
             self.report({'ERROR'}, e.message)
             return {'CANCELLED'}
 
@@ -24,9 +24,26 @@ class HEIOBaseOperator(bpy.types.Operator):
     def execute(self, context):
         try:
             return self._execute(context)
-        except UserException as e:
+        except HEIOUserException as e:
             self.report({'ERROR'}, e.message)
             return {'CANCELLED'}
+
+
+class HEIOBaseModalOperator(HEIOBaseOperator):
+
+    def _modal(self, context, event):
+        self._execute(context)
+        return {'RUNNING_MODAL'}
+
+    def modal(self, context, event):
+        try:
+            return self._modal(context, event)
+        except HEIOUserException as e:
+            self.report({'ERROR'}, e.message)
+            return {'CANCELLED'}
+
+    def _invoke(self, context, event):
+        return {'RUNNING_MODAL'}
 
 
 class HEIOBasePopupOperator(HEIOBaseOperator):
@@ -42,16 +59,56 @@ class HEIOBaseFileLoadOperator(HEIOBaseOperator):
         description="Filepath used for importing the file",
         maxlen=1024,
         subtype='FILE_PATH',
+        options={'HIDDEN'},
     )
 
+    directory: StringProperty(
+        name="Directory",
+        description="Directory path used for importing the file(s)",
+        maxlen=1024,
+        subtype='DIR_PATH',
+        options={'HIDDEN'},
+    )
+
+    directory_mode: BoolProperty(
+        name="Directory mode",
+        description="Choose a directory to save in, instead of a file",
+        default=False,
+        options={'HIDDEN'}
+    )
+
+    def correct_filepath(self, context: bpy.types.Context):
+        if not self.directory_mode:
+            return False
+
+        if self.directory:
+            filepath = self.directory + os.sep
+        elif context.blend_data.filepath:
+            filepath = os.path.dirname(context.blend_data.filepath) + os.sep
+        else:
+            return False
+
+        changed = filepath != self.filepath
+        self.filepath = filepath
+        return changed
+
     def _invoke(self, context, event):
+        self.correct_filepath(context)
         context.window_manager.fileselect_add(self)
         return {'RUNNING_MODAL'}
+
+    def check(self, context: Context) -> bool:
+        return self.correct_filepath(context)
 
     def draw(self, context: Context):
         layout = self.layout
         layout.use_property_split = True
         layout.use_property_decorate = False  # No animation.
+
+    def get_files(self):
+        if len(os.path.basename(self.filepath)) == 0:
+            raise HEIOUserException("No file selected!")
+        return [os.path.join(self.directory, file.name) for file in self.files]
 
 
 class HEIOBaseFileSaveOperator(HEIOBaseOperator):
@@ -64,6 +121,14 @@ class HEIOBaseFileSaveOperator(HEIOBaseOperator):
         options={'HIDDEN'},
     )
 
+    directory: StringProperty(
+        name="Directory",
+        description="Directory path used for exporting the file(s)",
+        maxlen=1024,
+        subtype='DIR_PATH',
+        options={'HIDDEN'},
+    )
+
     check_existing: BoolProperty(
         name="Check Existing",
         description="Check and warn on overwriting existing files",
@@ -71,19 +136,36 @@ class HEIOBaseFileSaveOperator(HEIOBaseOperator):
         options={'HIDDEN'},
     )
 
-    def correct_filepath(self, context: bpy.types.Context):
-        filepath = self.filepath
-        if not filepath:
-            filepath = context.blend_data.filepath
-            if not filepath:
-                filepath = "untitled"
-            else:
-                filepath = os.path.splitext(filepath)[0]
+    directory_mode: BoolProperty(
+        name="Directory mode",
+        description="Choose a directory to save in, instead of a file",
+        default=False,
+        options={'HIDDEN'}
+    )
 
-        filepath = bpy.path.ensure_ext(
-            os.path.splitext(filepath)[0],
-            self.filename_ext,
-        )
+    def correct_filepath(self, context: bpy.types.Context):
+        if self.directory_mode:
+            if self.directory:
+                filepath = self.directory + os.sep
+            elif context.blend_data.filepath:
+                filepath = os.path.dirname(context.blend_data.filepath) + os.sep
+            else:
+                filepath = os.path.abspath("") + os.sep
+
+        else:
+            filepath = self.filepath
+            filename = os.path.basename(filepath)
+            if not filename:
+                filepath = context.blend_data.filepath
+                if not filepath:
+                    filepath = os.path.abspath("untitled")
+                else:
+                    filepath = os.path.splitext(filepath)[0]
+
+            filepath = bpy.path.ensure_ext(
+                os.path.splitext(filepath)[0],
+                self.filename_ext,
+            )
 
         changed = filepath != self.filepath
         self.filepath = filepath
@@ -112,7 +194,9 @@ class ListAdd:
 class ListRemove:
 
     def list_execute(self, context, target_list):  # pylint: disable=unused-argument
-        target_list.remove(target_list.active_index)
+        index = target_list.active_index
+        target_list.remove(index)
+        return index
 
 
 class ListMove:
@@ -129,7 +213,7 @@ class ListMove:
         old_index = target_list.active_index
 
         if old_index == -1:
-            return
+            return None, None
 
         new_index = (
             target_list.active_index
@@ -138,11 +222,13 @@ class ListMove:
         )
 
         if new_index < 0 or new_index >= len(target_list):
-            return
+            return None, None
 
         target_list.move(
             old_index,
             new_index)
+
+        return old_index, new_index
 
 
 class ListClear:

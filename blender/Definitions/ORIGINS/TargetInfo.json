@@ -1,0 +1,23 @@
+{
+  "Name": "Sonic Origins",
+  "Description": "Sonic Origins (Applicable to the 3D title menu)",
+  "ReleaseYear": 2022,
+  "HedgehogEngine": 2,
+  "UsesNTSP": false,
+  "BoneOrientation": "XZ",
+  "SupportsTopology": true,
+  "DataVersions": {
+    "SampleChunk": 2,
+    "Material": 3,
+    "BulletMesh": null,
+    "PointCloud": null
+  },
+  "DefaultTextureModes": {
+    "diffuse": "sRGB",
+    "transparency": "Linear",
+    "emission": "Linear",
+    "reflection": "Linear",
+    "specular": "Linear",
+    "normal": "Normal"
+  }
+}

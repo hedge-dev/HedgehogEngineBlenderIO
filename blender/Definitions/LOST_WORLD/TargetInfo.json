@@ -1,0 +1,23 @@
+{
+  "Name": "Sonic Lost World",
+  "Description": "Sonic Lost World",
+  "ReleaseYear": 2013,
+  "HedgehogEngine": 1,
+  "UsesNTSP": false,
+  "BoneOrientation": "XY",
+  "SupportsTopology": false,
+  "DataVersions": {
+    "SampleChunk": 2,
+    "Material": 3,
+    "BulletMesh": null,
+    "PointCloud": null
+  },
+  "DefaultTextureModes": {
+    "diffuse": "sRGB",
+    "opacity": "Linear",
+    "reflection": "sRGB",
+    "specular": "sRGB",
+    "gloss": "Linear",
+    "normal": "Normal"
+  }
+}

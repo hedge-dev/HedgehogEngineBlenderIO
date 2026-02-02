@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Hedgehog Engine Modding Server (Discord)
+    url: https://discord.gg/DV3aSurdzE
+    about: A discord server revolving around all things HE modding
+  - name: HedgeServer (discord)
+    url: https://discord.gg/yMz9nZTqVE
+    about: A discord server dedicated to the more help oriented & coding side of modding.
+  - name: Justin113D
+    url: https://justin113d.com/
+    about: Contact options to Justin113D, main author of the addon (tho most of the time, a github issue should suffice)

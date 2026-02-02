@@ -1,47 +1,36 @@
 import os
 import bpy
+import platform
+import struct
+import sys
 
 from os.path import dirname
+
 ADDON_DIR = dirname(dirname(dirname(os.path.realpath(__file__))))
 ADDON_NAME = os.path.basename(ADDON_DIR)
+PACKAGE_NAME = '.'.join(__package__.split('.')[:3])
+ICON_DIR = os.path.join(ADDON_DIR, "icons")
+
+def is_arm():
+    return 'arm' in platform.machine().lower()
+
+def is_x64():
+    return struct.calcsize("P") == 8
+
+def get_addon_preferences(context: bpy.types.Context | None):
+    if context is None:
+        context = bpy.context
+    return context.preferences.addons[PACKAGE_NAME].preferences
 
 
-def get_path():
-    return ADDON_DIR
+def predict_data_name(data, name):
+    if name not in data:
+        return name
 
+    number = 1
+    number_name = f"{name}.{number:03}"
+    while number_name in data:
+        number += 1
+        number_name = f"{name}.{number:03}"
 
-def get_name():
-    return ADDON_NAME
-
-
-def get_template_path():
-    return os.path.join(get_path(), "HEIOTemplates.blend")
-
-
-def compare_path(a: str, b: str):
-    absolute = bpy.path.abspath(b)
-    absolute = os.path.abspath(absolute)
-    return a == absolute
-
-
-def load_template_blend(context: bpy.types.Context):
-    lib_path = get_template_path()
-
-    found = False
-    for library in bpy.data.libraries:
-        if compare_path(lib_path, library.filepath):
-            found = True
-            break
-
-    if not found:
-        bpy.ops.wm.link(
-            filename="HEIO Templates",
-            directory=f"{lib_path}{os.path.sep}Scene{os.path.sep}"
-        )
-
-
-def is_from_template(data):
-    template_path = get_template_path()
-    return (
-        data.library is not None
-        and compare_path(template_path, data.library.filepath))
+    return number_name

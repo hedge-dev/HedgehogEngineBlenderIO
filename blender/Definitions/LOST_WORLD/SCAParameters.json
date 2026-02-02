@@ -1,0 +1,43 @@
+{
+  "Material": {
+    "MaxAniso": {
+      "Type": "Integer",
+      "Description": "Maximum anisotropy filtering level"
+    },
+    "TrnsType": {
+      "Type": "Boolean",
+      "Description": "Transparency type (?)"
+    },
+    "TrnsPrio": {
+      "Type": "Integer",
+      "Description": "Transparency rendering priority. Used to adjusted drawing order."
+    },
+    "MipBias": {
+      "Type": "Float",
+      "Description": "Mipmap selection bias"
+    },
+    "UsePrior": {
+      "Type": "Boolean",
+      "Description": "Use Prior (?)"
+    },
+    "UseGrass": {
+      "Type": "Integer",
+      "Description": "Render grass on material (?)"
+    }
+  },
+  "Model": {
+    "CullType": {
+      "Type": "Integer",
+      "Description": "Culling type(?); Values from 1 to 3 found"
+    },
+    "Peepable": {
+      "Type": "Boolean",
+      "Description": "Characters are visible behind the mesh"
+    }
+  },
+  "Defaults": {
+    "Material":{},
+    "Model": {},
+    "TerrainModel": {}
+  }
+}

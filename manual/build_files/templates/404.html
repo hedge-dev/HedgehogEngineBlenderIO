@@ -1,0 +1,44 @@
+{%- extends "!page.html" %}
+{%- set title = _('Not Found (404)') %}
+{%- set ROOT = "https://hedge-dev.github.io/HedgehogEngineBlenderIO/" %}
+{%- block htmltitle %}
+{{ super() }}
+<base href="{{ ROOT }}" />
+{% endblock %}
+{% block content %}
+<h1>{% trans %}Not Found (404){% endtrans %}</h1>
+<p>{% trans %}It seems the page you are trying to find has been either moved or deleted.{% endtrans %}<br>
+	{% trans %}You can try one of the following things:{% endtrans %}</p>
+
+<div class="search404 centered">
+  <form class="sidebar-search-container" method="get" action="{{ pathto('search') }}" role="search">
+    <input class="sidebar-search" placeholder="{{ _("Search") }}" name="q" aria-label="{{ _("Search" ) }}">
+    <input type="hidden" name="check_keywords" value="yes">
+    <input type="hidden" name="area" value="default">
+  </form>
+  <div id="searchbox"></div>
+</div>
+
+{%- endblock %}
+{%- block scripts -%}
+
+<noscript>
+	<a href="{{ ROOT + 'index.html' }}" class="btn btn-neutral"
+		title="{{ _('Return Home') }}">
+		<span class="fa fa-home"></span> {{ _('Return Home') }}</a>
+
+	<span style="font-style: italic">The search functionality needs JavaScript activated in order to work.</span>
+</noscript>
+
+<script>
+	function init() {
+		const searchforms = document.getElementsByTagName("FORM");
+		for (let searchform of searchforms) {
+			searchform.setAttribute("action", ["", "search.html"].join("/"));
+			let searchtext = searchform.querySelector("input[name=\"q\"]");
+			searchtext.setAttribute("placeholder", "Search Docs");
+		}
+	}
+	window.onload = init();
+</script>
+{%- endblock %}

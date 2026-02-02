@@ -5,13 +5,14 @@ if "register" in locals():
     reload_package(locals())
 
 from .source.register import register, unregister
+from .source.register.definitions import register_definition
 
 bl_info = {
     "name": "Hedgehog Engine I/O DEV BUILD",
     "author": "Justin113D, hedge-dev",
-    "description": "Import/Exporter for Hedgehog Engine Model-, Animation- and other Formats.",
-    "version": (0, 1, 0),
-    "blender": (4, 2, 3),
+    "description": "Import/Exporter for Hedgehog Engine 3D related formats",
+    "version": (0, 1, 130),
+    "blender": (4, 2, 0),
     "doc_url": "https://hedge-dev.github.io/HedgehogEngineBlenderIO/",
     "tracker_url": "https://github.com/hedge-dev/HedgehogEngineBlenderIO/issues/new",
     "category": "Import-Export"

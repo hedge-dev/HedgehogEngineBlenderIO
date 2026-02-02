@@ -1,0 +1,59 @@
+{
+  "Material": {
+    "MaxAniso": {
+      "Type": "Integer",
+      "Description": "Maximum anisotropy filtering level"
+    },
+    "TrnsType": {
+      "Type": "Boolean",
+      "Description": "Transparency type (?)"
+    },
+    "TrnsPrio": {
+      "Type": "Integer",
+      "Description": "Transparency rendering priority. Used to adjusted drawing order."
+    },
+    "MipBias": {
+      "Type": "Float",
+      "Description": "Mipmap selection bias"
+    }
+  },
+  "Model": {
+    "ShadowCa": {
+      "Type": "Boolean",
+      "Description": "Mesh can cast shadow when enabled"
+    },
+    "ShadowRe": {
+      "Type": "Boolean",
+      "Description": "Mesh can receive shadow when enabled"
+    },
+    "RenderPa": {
+      "Type": "Integer",
+      "Description": "Render pass to use(?); Values from 1 to 6 were found"
+    },
+    "GIOcclus": {
+      "Type": "Boolean",
+      "Description": "Enable for global illumination occlusion (?)"
+    },
+    "TerrainB": {
+      "Type": "Boolean",
+      "Description": "Unknown"
+    },
+    "ColorMas": {
+      "Type": "Boolean",
+      "Description": "Color mask(?)"
+    }
+  },
+  "Defaults": {
+    "Material":{},
+    "Model": {
+      "GIOcclus": true,
+      "TerrainB": false,
+      "ColorMas": false
+    },
+    "TerrainModel": {
+      "GIOcclus": true,
+      "TerrainB": false,
+      "ColorMas": false
+    }
+  }
+}

@@ -1,0 +1,353 @@
+{
+	"Layers": [
+		{
+			"Name": "None",
+			"Description": ""
+		},
+		{
+			"Name": "Solid",
+			"Description": ""
+		},
+		{
+			"Name": "Liquid",
+			"Description": ""
+		},
+		{
+			"Name": "Through",
+			"Description": ""
+		},
+		{
+			"Name": "Camera",
+			"Description": ""
+		},
+		{
+			"Name": "Solid oneway",
+			"Description": ""
+		},
+		{
+			"Name": "Solid through",
+			"Description": ""
+		},
+		{
+			"Name": "Solid tiny",
+			"Description": ""
+		},
+		{
+			"Name": "Solid detail",
+			"Description": ""
+		},
+		{
+			"Name": "Solid mesh",
+			"Description": ""
+		},
+		{
+			"Name": "Land",
+			"Description": ""
+		},
+		{
+			"Name": "Rayblock",
+			"Description": ""
+		},
+		{
+			"Name": "Event",
+			"Description": ""
+		},
+		{
+			"Name": "Rayblock enemy",
+			"Description": ""
+		},
+		{
+			"Name": "Enemy body",
+			"Description": ""
+		},
+		{
+			"Name": "Player",
+			"Description": ""
+		},
+		{
+			"Name": "Enemy",
+			"Description": ""
+		},
+		{
+			"Name": "Object body",
+			"Description": ""
+		},
+		{
+			"Name": "Gimmick",
+			"Description": ""
+		},
+		{
+			"Name": "Dynamics",
+			"Description": ""
+		},
+		{
+			"Name": "Ring",
+			"Description": ""
+		},
+		{
+			"Name": "Character control",
+			"Description": ""
+		},
+		{
+			"Name": "Player only",
+			"Description": ""
+		},
+		{
+			"Name": "Dynamics through",
+			"Description": ""
+		},
+		{
+			"Name": "Enemy only",
+			"Description": ""
+		},
+		{
+			"Name": "Sensor player",
+			"Description": ""
+		},
+		{
+			"Name": "Sensor ring",
+			"Description": ""
+		},
+		{
+			"Name": "Sensor gimmick",
+			"Description": ""
+		},
+		{
+			"Name": "Sensor land",
+			"Description": ""
+		},
+		{
+			"Name": "Sensor all",
+			"Description": ""
+		},
+		{
+			"Name": "Sensor player enemy",
+			"Description": ""
+		},
+		{
+			"Name": "Reserved 31",
+			"Description": ""
+		}
+	],
+	"Types": [
+		{
+			"Name": "None",
+			"Description": ""
+		},
+		{
+			"Name": "Stone",
+			"Description": ""
+		},
+		{
+			"Name": "Earth",
+			"Description": ""
+		},
+		{
+			"Name": "Wood",
+			"Description": ""
+		},
+		{
+			"Name": "Grass",
+			"Description": ""
+		},
+		{
+			"Name": "Iron",
+			"Description": ""
+		},
+		{
+			"Name": "Sand",
+			"Description": ""
+		},
+		{
+			"Name": "Lava",
+			"Description": ""
+		},
+		{
+			"Name": "Glass",
+			"Description": ""
+		},
+		{
+			"Name": "Snow",
+			"Description": ""
+		},
+		{
+			"Name": "No entry",
+			"Description": ""
+		},
+		{
+			"Name": "Ice",
+			"Description": ""
+		},
+		{
+			"Name": "Water",
+			"Description": ""
+		},
+		{
+			"Name": "Sea",
+			"Description": ""
+		},
+		{
+			"Name": "Damage",
+			"Description": ""
+		},
+		{
+			"Name": "Dead",
+			"Description": ""
+		},
+		{
+			"Name": "Flower 0",
+			"Description": ""
+		},
+		{
+			"Name": "Flower 1",
+			"Description": ""
+		},
+		{
+			"Name": "Flower 2",
+			"Description": ""
+		},
+		{
+			"Name": "Air",
+			"Description": ""
+		},
+		{
+			"Name": "Deadleaves",
+			"Description": ""
+		},
+		{
+			"Name": "Wiremesh",
+			"Description": ""
+		},
+		{
+			"Name": "Dead anydir",
+			"Description": ""
+		},
+		{
+			"Name": "Damage through",
+			"Description": ""
+		},
+		{
+			"Name": "Dry grass",
+			"Description": ""
+		},
+		{
+			"Name": "Relic",
+			"Description": ""
+		},
+		{
+			"Name": "Giant",
+			"Description": ""
+		},
+		{
+			"Name": "Gravel",
+			"Description": ""
+		},
+		{
+			"Name": "Mud water",
+			"Description": ""
+		},
+		{
+			"Name": "Wet 3",
+			"Description": ""
+		},
+		{
+			"Name": "Wet 4",
+			"Description": ""
+		},
+		{
+			"Name": "Wet 1",
+			"Description": ""
+		},
+		{
+			"Name": "Wet 2",
+			"Description": ""
+		}
+	],
+	"Flags": [
+		{
+			"Name": "Not stand",
+			"Description": ""
+		},
+		{
+			"Name": "Breakable",
+			"Description": ""
+		},
+		{
+			"Name": "Slider",
+			"Description": ""
+		},
+		{
+			"Name": "Unsupported",
+			"Description": ""
+		},
+		{
+			"Name": "Reflect laser",
+			"Description": ""
+		},
+		{
+			"Name": "Loop",
+			"Description": ""
+		},
+		{
+			"Name": "Wall",
+			"Description": ""
+		},
+		{
+			"Name": "Slide",
+			"Description": ""
+		},
+		{
+			"Name": "Parkour",
+			"Description": ""
+		},
+		{
+			"Name": "Decelerate",
+			"Description": ""
+		},
+		{
+			"Name": "Movable",
+			"Description": ""
+		},
+		{
+			"Name": "Amoeba",
+			"Description": ""
+		},
+		{
+			"Name": "Press dead",
+			"Description": ""
+		},
+		{
+			"Name": "Rayblock",
+			"Description": ""
+		},
+		{
+			"Name": "Walljump",
+			"Description": ""
+		},
+		{
+			"Name": "Push box",
+			"Description": ""
+		},
+		{
+			"Name": "Strider floor",
+			"Description": ""
+		},
+		{
+			"Name": "Giant tower",
+			"Description": ""
+		},
+		{
+			"Name": "Localjump",
+			"Description": ""
+		},
+		null,
+		{
+			"Name": "Test grass",
+			"Description": ""
+		},
+		{
+			"Name": "Test water",
+			"Description": ""
+		}
+	]
+}

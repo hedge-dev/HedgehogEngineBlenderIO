@@ -1,4 +1,5 @@
-class UserException(Exception):
+
+class HEIOException(Exception):
 
     message: str
 
@@ -7,7 +8,13 @@ class UserException(Exception):
         super().__init__(message, *args)
 
 
-class HEIOException(Exception):
+class HEIODevException(HEIOException):
 
-    def __init__(self, *args: object) -> None:
-        super().__init__(*args)
+    def __init__(self, message: str, *args: object):
+        super().__init__("Developer error, please report:\n" + message, *args)
+
+
+class HEIOUserException(HEIOException):
+
+    def __init__(self, message: str, *args: object):
+        super().__init__(message, *args)

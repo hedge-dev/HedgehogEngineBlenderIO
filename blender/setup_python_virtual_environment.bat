@@ -16,8 +16,9 @@ IF EXIST %python% (
 	python.exe -m pip install --upgrade pip
 
 	rem now install the packages
-	pip.exe install pythonnet
 	pip.exe install fake-bpy-module
+	pip.exe install numpy
+	pip.exe install colorama
 
 	echo set up!
 

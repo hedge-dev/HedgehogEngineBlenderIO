@@ -1,0 +1,92 @@
+﻿using SharpNeedle.Framework.HedgehogEngine.Mirage.MaterialData;
+using SharpNeedle.Structs;
+using System.Numerics;
+
+namespace HEIO.NET.External.Structs
+{
+    public unsafe struct CMaterial
+    {
+        public char* name;
+        public uint dataVersion;
+        public char* filePath;
+        public CSampleChunkNode* rootNode;
+
+        public char* shaderName;
+        public byte alphaThreshold;
+        public bool noBackFaceCulling;
+        public byte blendMode;
+
+        public CFloatMaterialParameter* floatParameters;
+        public int floatParametersSize;
+
+        public CIntegerMaterialParameter* integerParameters;
+        public int integerParametersSize;
+
+        public CBoolMaterialParameter* boolParameters;
+        public int boolParametersSize;
+
+        public char* texturesName;
+        public CTexture* textures;
+        public int texturesSize;
+
+        public static CMaterial FromInternal(Material material)
+        {
+            return new()
+            {
+                name = material.Name.AllocString(),
+                dataVersion = material.DataVersion,
+                filePath = (material.BaseFile?.Path).AllocString(),
+                rootNode = CSampleChunkNode.FromSampleChunkNodeTree(material.Root),
+
+                shaderName = material.ShaderName.AllocString(),
+                alphaThreshold = material.AlphaThreshold,
+                noBackFaceCulling = material.NoBackFaceCulling,
+                blendMode = (byte)material.BlendMode,
+
+                floatParametersSize = material.FloatParameters.Count,
+                floatParameters = IMaterialParameter<Vector4>.FromInternalParameters<CFloatMaterialParameter>(material.FloatParameters),
+
+                integerParametersSize = material.IntParameters.Count,
+                integerParameters = IMaterialParameter<Vector4Int>.FromInternalParameters<CIntegerMaterialParameter>(material.IntParameters),
+
+                boolParametersSize = material.BoolParameters.Count,
+                boolParameters = IMaterialParameter<bool>.FromInternalParameters<CBoolMaterialParameter>(material.BoolParameters),
+
+                texturesName = material.Texset.Name.AllocString(),
+                texturesSize = material.Texset.Textures.Count,
+                textures = Allocate.AllocFromArray(material.Texset.Textures, CTexture.FromInternal),
+            };
+        }
+
+        public readonly Material ToMaterial()
+        {
+            Material result = new()
+            {
+                Name = Util.ToString(name)!,
+                DataVersion = dataVersion,
+
+                ShaderName = Util.ToString(shaderName)!,
+                AlphaThreshold = alphaThreshold,
+                BlendMode = (MaterialBlendMode)blendMode,
+                NoBackFaceCulling = noBackFaceCulling
+            };
+
+            if (rootNode != null)
+            {
+                result.Root = rootNode->ToSampleChunkNodeTree(result);
+            }
+
+            IMaterialParameter<Vector4>.ToInternalParameters(floatParameters, floatParametersSize, result.FloatParameters);
+            IMaterialParameter<Vector4Int>.ToInternalParameters(integerParameters, integerParametersSize, result.IntParameters);
+            IMaterialParameter<bool>.ToInternalParameters(boolParameters, boolParametersSize, result.BoolParameters);
+
+            result.Texset = new()
+            {
+                Name = Util.ToString(texturesName)!,
+                Textures = [.. Util.ToArray<CTexture, Texture>(textures, texturesSize) ?? []]
+            };
+
+            return result;
+        }
+    }
+}
