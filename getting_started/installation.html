@@ -18,7 +18,7 @@
         <link rel="prefetch" href="../_static/heio-logo.svg" as="image">
 
     <link rel="shortcut icon" href="../_static/favicon.png"><!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
-        <title>Installing HEIO - HEIO 0.1.125 Manual</title>
+        <title>Installing HEIO - HEIO 1.0.0 Manual</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
@@ -177,7 +177,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">HEIO 0.1.125 Manual</div></a>
+      <a href="../index.html"><div class="brand">HEIO 1.0.0 Manual</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -201,7 +201,7 @@
     <img class="sidebar-logo" src="../_static/heio-logo.svg" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">HEIO 0.1.125 Manual</span>
+  <span class="sidebar-brand-text">HEIO 1.0.0 Manual</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -342,11 +342,6 @@
 </section>
 <section id="installing-the-addon">
 <h2>Installing the Addon<a class="headerlink" href="#installing-the-addon" title="Link to this heading">¶</a></h2>
-<div class="admonition attention">
-<p class="admonition-title">Attention</p>
-<p>As of now, there is no release version, only a dev version!</p>
-<p>As such, the instructions below are for the dev version.</p>
-</div>
 <p>This addon utilizes the blender extension system. Yet, due to various reasons, we cannot host the
 addon on the <a class="reference external" href="https://extensions.blender.org/">official blender extension repository</a>.
 That is why we have set up our own repository under <code class="docutils literal notranslate"><span class="pre">https://Justin113D.com/blender/dev/</span></code>,
@@ -358,18 +353,30 @@ which will always host the newest release of this addon.</p>
 <li><p>Open the preferences and open the <code class="docutils literal notranslate"><span class="pre">Get</span> <span class="pre">Extensions</span></code> tab</p></li>
 <li><p>Expand <code class="docutils literal notranslate"><span class="pre">Repositories</span></code> on the top right</p></li>
 <li><p>Click the <code class="docutils literal notranslate"><span class="pre">+</span></code> on the top right and select <code class="docutils literal notranslate"><span class="pre">Add</span> <span class="pre">remote</span> <span class="pre">Repository</span></code></p></li>
-<li><p>Enter <code class="docutils literal notranslate"><span class="pre">https://justin113d.com/blender/dev/index.json</span></code> for the URL and check <code class="docutils literal notranslate"><span class="pre">Check</span> <span class="pre">for</span> <span class="pre">Updates</span> <span class="pre">on</span> <span class="pre">Startup</span></code></p></li>
+<li><p>Enter <code class="docutils literal notranslate"><span class="pre">https://justin113d.com/blender/release/index.json</span></code> for the URL and check <code class="docutils literal notranslate"><span class="pre">Check</span> <span class="pre">for</span> <span class="pre">Updates</span> <span class="pre">on</span> <span class="pre">Startup</span></code></p></li>
 <li><p>Confirm</p></li>
-<li><p>Rename the newly added list entry from <code class="docutils literal notranslate"><span class="pre">Justin113D.com</span></code> to <code class="docutils literal notranslate"><span class="pre">Sonic</span> <span class="pre">I/O</span> <span class="pre">Dev</span></code></p></li>
-<li><p>Select the list entry, expand the <code class="docutils literal notranslate"><span class="pre">advanced</span></code> section and change the module from <code class="docutils literal notranslate"><span class="pre">justin113d_com</span></code> to <code class="docutils literal notranslate"><span class="pre">sonic_io_dev</span></code></p></li>
+<li><p>Rename the newly added list entry from <code class="docutils literal notranslate"><span class="pre">Justin113D.com</span></code> to <code class="docutils literal notranslate"><span class="pre">Sonic</span> <span class="pre">I/O</span></code></p></li>
+<li><p>Select the list entry, expand the <code class="docutils literal notranslate"><span class="pre">advanced</span></code> section and change the module from <code class="docutils literal notranslate"><span class="pre">justin113d_com</span></code> to <code class="docutils literal notranslate"><span class="pre">sonic_io</span></code></p></li>
 <li><p>Press the 🔄 button in the top right to refresh the module</p></li>
-<li><p>Search for <code class="docutils literal notranslate"><span class="pre">Hedgehog</span></code> in the search bar and install the <code class="docutils literal notranslate"><span class="pre">Hedgehog</span> <span class="pre">Engine</span> <span class="pre">Blender</span> <span class="pre">I/O</span> <span class="pre">DEV</span> <span class="pre">BUILD</span></code> addon</p></li>
+<li><p>Search for <code class="docutils literal notranslate"><span class="pre">Hedgehog</span></code> in the search bar and install the <code class="docutils literal notranslate"><span class="pre">Hedgehog</span> <span class="pre">Engine</span> <span class="pre">Blender</span> <span class="pre">I/O</span></code> addon</p></li>
 </ol>
 </div></blockquote>
 <p>Congratulations! You have successfuly installed the addon!</p>
-<section id="updating-the-addon">
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">WIP Dev version</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">If you are interested in testing the WIP dev version, you have to repeat these steps for the developer repository:</p>
+<ul class="simple">
+<li><p class="sd-card-text">In step <strong>5.</strong> enter <code class="docutils literal notranslate"><span class="pre">https://justin113d.com/blender/dev/index.json</span></code> for the URL</p></li>
+<li><p class="sd-card-text">In step <strong>7.</strong> change the entry to <code class="docutils literal notranslate"><span class="pre">Sonic</span> <span class="pre">I/O</span> <span class="pre">Dev</span></code></p></li>
+<li><p class="sd-card-text">In step <strong>8.</strong> change the module to <code class="docutils literal notranslate"><span class="pre">sonic_io_dev</span></code></p></li>
+<li><p class="sd-card-text">In step <strong>10.</strong> install <code class="docutils literal notranslate"><span class="pre">Hedgehog</span> <span class="pre">Engine</span> <span class="pre">Blender</span> <span class="pre">I/O</span> <span class="pre">DEV</span> <span class="pre">BUILD</span></code> instead</p></li>
+</ul>
+</div>
+</details><section id="updating-the-addon">
 <h3>Updating the addon<a class="headerlink" href="#updating-the-addon" title="Link to this heading">¶</a></h3>
 <ol class="arabic simple">
+<li><p><strong>Restart blender!!</strong> The install will fail if you used any import or export features before updating!</p></li>
 <li><p>Repeat steps 1-3 from the installation</p></li>
 <li><p>Click the <code class="docutils literal notranslate"><span class="pre">v</span></code> button in the top right</p></li>
 <li><p>Press the 🔄 button</p></li>
@@ -421,7 +428,7 @@ which will always host the newest release of this addon.</p>
             Made with 
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2026-01-31</div>
+              Last updated on 2026-02-02</div>
           </div>
           <div class="right-details">
             
@@ -470,7 +477,7 @@ which will always host the newest release of this addon.</p>
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=5726ef28"></script>
+</div><script src="../_static/documentation_options.js?v=a12e3537"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>
