@@ -20,8 +20,7 @@ sys.setrecursionlimit(2000)
 
 # -- Local Vars --------------------------------------------------------------
 
-heio_version = "0.1.125"
-
+heio_version = "1.0.0"
 
 # -- Project information -----------------------------------------------------
 
@@ -29,8 +28,7 @@ project = f'Hedgehog Engine Blender I/O {heio_version}'
 author = 'Justin113D, hedge-dev'
 
 version = heio_version
-release = " ".join((heio_version, "DEV"))
-# release = heio_version
+release = heio_version
 
 
 # -- General configuration ---------------------------------------------------
