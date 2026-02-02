@@ -323,6 +323,9 @@ class CollisionMeshProcessor(o_mesh.BaseMeshProcessor):
     @staticmethod
     def generate_bvh_tree(shape: CBulletShape):
 
+        if not shape.faces or shape.faces_size == 0 or shape.vertices_size == 0:
+            return
+
         x_min = float("inf")
         y_min = float("inf")
         z_min = float("inf")
