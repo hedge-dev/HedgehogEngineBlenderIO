@@ -5,7 +5,7 @@ namespace HEIO.NET.External
 {
     public static unsafe class ErrorHandler
     {
-        private static char* _errorMessage;
+        public static char* ErrorMessage;
 
         public static void HandleError(Exception exception)
         {
@@ -16,13 +16,13 @@ namespace HEIO.NET.External
             Console.WriteLine(exception.StackTrace);
             Console.WriteLine();
 
-            _errorMessage = exception.Message.AllocString();
+            ErrorMessage = exception.Message.AllocString();
         }
 
         [UnmanagedCallersOnly(EntryPoint = "error_get")]
         public static char* GetError()
         {
-            return _errorMessage;
+            return ErrorMessage;
         }
     }
 }

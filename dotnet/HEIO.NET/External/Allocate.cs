@@ -21,6 +21,7 @@ namespace HEIO.NET.External
             }
 
             _allocations.Clear();
+            ErrorHandler.ErrorMessage = null;
         }
 
         [UnmanagedCallersOnly(EntryPoint = "set_wchar_size")]
