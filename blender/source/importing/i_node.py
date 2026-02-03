@@ -142,7 +142,7 @@ class NodeConverter:
             return
 
         c_node = HEIONET.sample_chunk_node_find(model_info.c_mesh_data_set.sample_chunk_node_root, "NodesExt")
-        if c_node is None:
+        if not c_node:
             return
         
         current_child = c_node.contents.child
