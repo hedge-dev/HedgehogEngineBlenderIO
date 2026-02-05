@@ -31,7 +31,7 @@ Part 0: The tools
 Before we begin, you should make sure you have all the tools needed:
 
 - :doc:`Installing HEIO </getting_started/installation>` for... well, HEIO
-- `HedgeArcPack <https://hedgedocs.com/tools/hedgehog-engine/common/files/>`_ for unpacking and packing archive files
+- `HedgeArcPack <https://hedgedocs.com/index.php/HedgeArcPack>`_ for unpacking and packing archive files
 - `HedgeModManager <https://github.com/thesupersonic16/HedgeModManager>`_ for running the mod
 - `Sonic X Shadow Generations <https://store.steampowered.com/app/2513280>`_ (should be obvious why)
 
@@ -73,7 +73,7 @@ there. Inside that directory, you are met with many more directories and ``.pac`
 of them are named after the actual stage names! what now?
 
 Sonic Team organizes the stage by the zone and act (or challenge) numbers, which are documented
-`here <https://hedgedocs.com/docs/hedgehog-engine/miller/levels/ids/>`_. Going by that list,
+`here <https://hedgedocs.com/index.php/Shadow_Generations_Stage_IDs>`_. Going by that list,
 Kingdom Valley Act 1 should be stored under ``w03a10``.
 
 Inside that directory you will find more ``.pac`` files, which is exactly what we are looking for!
