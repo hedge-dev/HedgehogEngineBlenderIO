@@ -48,8 +48,8 @@ class CollisionMeshConverter:
                 group.is_convex_collision = True
                 group.convex_type.value = mesh_group.convex_type
 
-                for i in range(mesh_group.convex_flag_values_size):
-                    group.convex_flags.new(value=mesh_group.convex_flag_values[i])
+                for j in range(mesh_group.convex_flag_values_size):
+                    group.convex_flags.new(value=mesh_group.convex_flag_values[j])
 
             set_slot_indices.extend([i] * mesh_group.size)
 
@@ -99,9 +99,9 @@ class CollisionMeshConverter:
             primitive.collision_type.value = c_primitive.surface_type
 
             flags = c_primitive.surface_flags
-            for i in range(32):
+            for j in range(32):
                 if (flags & 1) != 0:
-                    primitive.collision_flags.new(value=i)
+                    primitive.collision_flags.new(value=j)
                 flags >> 1
 
     def _convert_mesh(self, collision_mesh_data: CCollisionMeshData):
