@@ -282,12 +282,6 @@ class ExportBaseMeshDataOperator(ExportObjectSelectionOperator):
         default=True
     )
 
-    use_multicore_processing: BoolProperty(
-        name="Use multicore processing",
-        description="Uses all CPU cores (threads) to speed up exporting model data",
-        default=True
-    )
-
     def check(self, context):
         force = self._get_force_directory_mode()
         if force is not None:
@@ -357,7 +351,7 @@ class ExportBaseMeshDataOperator(ExportObjectSelectionOperator):
                 None, self.object_manager.base_objects, name)
 
         directory = os.path.dirname(self.filepath)
-        processor.compile_output_to_files(self.use_multicore_processing, directory)
+        processor.compile_output_to_files(directory)
 
 
 class ExportModelBaseOperator(ExportMaterialOperator, ExportBaseMeshDataOperator):
@@ -425,7 +419,6 @@ class ExportModelBaseOperator(ExportMaterialOperator, ExportBaseMeshDataOperator
             return
 
         body.use_property_split = False
-        body.prop(self, "use_multicore_processing")
 
         if target_def is None or target_def.hedgehog_engine_version == 1:
             body.prop(self, "use_model_version_4")
@@ -592,7 +585,6 @@ class ExportPointCloudOperator(ExportObjectSelectionOperator):
         )
 
         self.pointcloud_processor.compile_resources_to_files(
-            self.use_multicore_processing,
             os.path.dirname(self.filepath)
         )
 
@@ -630,4 +622,4 @@ class ExportPointCloudsOperator(ExportPointCloudOperator):
                 object_trees
             )
 
-        self.pointcloud_processor.compile_resources_to_files(self.use_multicore_processing, directory)
+        self.pointcloud_processor.compile_resources_to_files(directory)

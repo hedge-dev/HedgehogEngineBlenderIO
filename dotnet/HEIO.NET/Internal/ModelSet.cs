@@ -58,7 +58,7 @@ namespace HEIO.NET.Internal
             }
         }
 
-        public static ModelBase[] CompileMeshData(MeshDataSet[] compileData, ModelVersionMode versionMode, Topology topology, bool compressedVertexData, bool multithreading)
+        public static ModelBase[] CompileMeshData(MeshDataSet[] compileData, ModelVersionMode versionMode, Topology topology, bool compressedVertexData, int multithreading)
         {
             return Modeling.ConvertTo.ModelConverter.CompileMeshData(
                 compileData,

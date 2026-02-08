@@ -403,7 +403,7 @@ class CollisionMeshProcessor(o_mesh.BaseMeshProcessor):
             filepath
         )
 
-    def compile_output_to_files(self, use_multicore_processing: bool, directory: str):
+    def compile_output_to_files(self, directory: str):
         # TODO: compile with multithreading in c#, maybe
         progress_console.start("Compiling & writing collision meshes", len(self._output_queue))
         for i, output in enumerate(self._output_queue):

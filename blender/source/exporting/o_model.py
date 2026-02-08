@@ -28,7 +28,7 @@ from ..external import (
 from ..register.definitions import TargetDefinition
 from ..register.property_groups.mesh_properties import MESH_DATA_TYPES
 from ..exceptions import HEIOUserException
-from ..utility import progress_console
+from ..utility import progress_console, general
 
 LAYER_TYPE_NAMES = [
     "opaque",
@@ -905,15 +905,17 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
         
     ##################################################
 
-    def compile_output_to_files(self, use_multicore_processing: bool, directory: str):
+    def compile_output_to_files(self, directory: str):
         progress_console.start("Compiling & writing meshes", len(self._output_queue))
+
+        addon_prefs = general.get_addon_preferences()
 
         HEIONET.model_compile_to_files(
             self._output_queue,
             self._model_version_mode,
             self._topology,
             self._compressed_vertex_data,
-            use_multicore_processing,
+            addon_prefs.dotnet_max_parallelism,
             directory
         )
 

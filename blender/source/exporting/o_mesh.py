@@ -127,5 +127,5 @@ class BaseMeshProcessor:
 
         return name
 
-    def compile_output_to_files(self, use_multicore_processing: bool, directory: str):
+    def compile_output_to_files(self, directory: str):
         raise NotImplementedError()

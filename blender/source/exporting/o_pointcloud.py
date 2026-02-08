@@ -92,6 +92,6 @@ class PointCloudProcessor:
 
         progress_console.end()
 
-    def compile_resources_to_files(self, use_multicore_processing: bool, directory: str):
+    def compile_resources_to_files(self, directory: str):
         if self.write_resources:
-            self.mesh_processor.compile_output_to_files(use_multicore_processing, directory)
+            self.mesh_processor.compile_output_to_files(directory)
