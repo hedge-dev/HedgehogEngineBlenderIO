@@ -30,7 +30,8 @@ TYPE_PAGE_MAP = {
     "HEIO_MaterialTextureList": "object/material_textures",
     "HEIO_Material": "object/material",
     # "HEIO_Image": "", # internal data only, nothing to document
-    "HEIO_View3DOverlay_CollisionPrimitive": "tools/collision_primitive_overlay"
+    "HEIO_View3DOverlay_CollisionPrimitive": "tools/collision_primitive_overlay",
+    "HEIO_AddonPreferences": "preferences"
 }
 
 OPS_PAGE_MAP = {
@@ -113,7 +114,7 @@ def get_mapping(classes):
         if issubclass(cls, bpy.types.Operator):
             path = "bpy.ops." + cls.bl_idname
             page_mapping = OPS_PAGE_MAP.get(cls.bl_idname, None)
-        elif issubclass(cls, bpy.types.PropertyGroup):
+        elif issubclass(cls, (bpy.types.PropertyGroup, bpy.types.AddonPreferences)):
             path = "bpy.types." + cls.__name__
             page_mapping = TYPE_PAGE_MAP.get(cls.__name__, None)
         else:

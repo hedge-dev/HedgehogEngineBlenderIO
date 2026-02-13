@@ -454,7 +454,7 @@ namespace HEIO.NET.External
             int versionMode,
             int topology,
             bool compressVertexData,
-            bool multithreading,
+            int multithreading,
             char* directory)
         {
             try

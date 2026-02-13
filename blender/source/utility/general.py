@@ -2,7 +2,6 @@ import os
 import bpy
 import platform
 import struct
-import sys
 
 from os.path import dirname
 
@@ -17,7 +16,7 @@ def is_arm():
 def is_x64():
     return struct.calcsize("P") == 8
 
-def get_addon_preferences(context: bpy.types.Context | None):
+def get_addon_preferences(context: bpy.types.Context | None = None):
     if context is None:
         context = bpy.context
     return context.preferences.addons[PACKAGE_NAME].preferences

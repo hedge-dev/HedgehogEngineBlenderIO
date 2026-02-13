@@ -7,7 +7,7 @@
 Configuring the addon
 #####################
 
-Before doing anything, you may want to take a look at the addon preferences.
+Before doing anything, you may want to take a look at the :ref:`addon preferences <bpy.types.HEIO_AddonPreferences>`.
 
 
 You can find the addon preferences under :menuselection:`Edit --> Preferences --> Add-ons --> Hedgehog Engine I/O`

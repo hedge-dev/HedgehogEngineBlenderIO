@@ -156,7 +156,7 @@ FUNCTIONS = {
             ctypes.c_int,
             ctypes.c_int,
             ctypes.c_bool,
-            ctypes.c_bool,
+            ctypes.c_int,
             ctypes.c_wchar_p,
         ),
         None,
