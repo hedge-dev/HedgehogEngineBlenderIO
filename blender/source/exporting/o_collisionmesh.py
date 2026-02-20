@@ -1,6 +1,7 @@
 import os
 from mathutils import Vector, Quaternion, Matrix
 from ctypes import c_uint, c_ubyte, cast, POINTER
+import bpy
 
 from . import o_mesh, o_modelset, o_transform, o_object_manager
 from ..external import HEIONET, Bullet, util, enums, CBulletPrimitive, CCollisionMeshData, CCollisionMeshDataGroup, CVector3, CBulletShape
@@ -179,36 +180,37 @@ class CollisionMeshProcessor(o_mesh.BaseMeshProcessor):
         triangle_order = []
 
         if not heio_mesh.groups.initialized or heio_mesh.groups.attribute_invalid:
-            triangle_order = list(range(len(model_set.evaluated_mesh.polygons)))
+            triangle_order = [x.polygon_index for x in model_set.evaluated_mesh.loop_triangles]
 
             raw_meshdata.triangle_indices = [
                 vertex 
-                for polygon in model_set.evaluated_mesh.polygons 
+                for polygon in model_set.evaluated_mesh.loop_triangles 
                 for vertex in polygon.vertices
             ]
 
             raw_meshdata.groups.append(
                 RawCollisionMeshDataGroup(
-                    len(model_set.evaluated_mesh.polygons),
+                    len(triangle_order),
                     0, False
                 )
             )
 
         else:
             layer_max = len(heio_mesh.groups) - 1
-            triangles = [list() for _ in heio_mesh.groups]
+            triangles: list[list[bpy.types.MeshLoopTriangle]] = [list() for _ in heio_mesh.groups]
             invalid_triangles = []
 
             attribute = model_set.evaluated_mesh.attributes.get(heio_mesh.groups.attribute_name, None)
 
             if attribute is not None:
-                for group, polygon in zip(attribute.data, model_set.evaluated_mesh.polygons):
+                for triangle in model_set.evaluated_mesh.loop_triangles:
+                    group = attribute.data[triangle.polygon_index]
                     if group.value > layer_max:
-                        invalid_triangles.append(polygon)
+                        invalid_triangles.append(triangle)
                     else:
-                        triangles[group.value].append(polygon)
+                        triangles[group.value].append(triangle)
             else:
-                triangles[0] = list(model_set.evaluated_mesh.polygons)
+                triangles[0] = list(model_set.evaluated_mesh.loop_triangles)
 
             for i, group in enumerate(heio_mesh.groups):
                 layer_triangles = triangles[i]
@@ -217,7 +219,7 @@ class CollisionMeshProcessor(o_mesh.BaseMeshProcessor):
 
                 for triangle in layer_triangles:
                     raw_meshdata.triangle_indices.extend(triangle.vertices)
-                    triangle_order.append(triangle.index)
+                    triangle_order.append(triangle.polygon_index)
 
                 collision_group = RawCollisionMeshDataGroup(
                     len(layer_triangles),
@@ -234,9 +236,9 @@ class CollisionMeshProcessor(o_mesh.BaseMeshProcessor):
                 raw_meshdata.groups.append(collision_group)
 
             if len(invalid_triangles) > 0:
-                for triangle in layer_triangles:
+                for triangle in invalid_triangles:
                     raw_meshdata.triangle_indices.extend(triangle.vertices)
-                    triangle_order.append(triangle.index)
+                    triangle_order.append(triangle.polygon_index)
 
                 raw_meshdata.groups.append(
                     RawCollisionMeshDataGroup(
