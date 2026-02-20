@@ -236,7 +236,7 @@ class CollisionMeshProcessor(o_mesh.BaseMeshProcessor):
                 raw_meshdata.groups.append(collision_group)
 
             if len(invalid_triangles) > 0:
-                for triangle in layer_triangles:
+                for triangle in invalid_triangles:
                     raw_meshdata.triangle_indices.extend(triangle.vertices)
                     triangle_order.append(triangle.polygon_index)
 
