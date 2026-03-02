@@ -58,7 +58,7 @@ namespace HEIO.NET.Internal.Modeling.ConvertFrom
                     gpuMesh.MultiTangent ? vertex.UVDirection2 : vertex.UVDirection,
                     [.. vertex.Weights
                         .Where(x => x.Weight != 0)
-                        .Select(x => new VertexWeight(gpuMesh.BoneIndices[x.Index], x.Weight))
+                        .Select(x => new VertexWeight(x.Index < gpuMesh.BoneIndices.Count ? gpuMesh.BoneIndices[x.Index] : (short)0, x.Weight)) // fallback to 0 when undefined behavior
                         .OrderBy(x => x.Index)]
                 );
             }

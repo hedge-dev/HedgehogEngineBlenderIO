@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Numerics;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -110,7 +111,21 @@ namespace HEIO.NET.Internal
                 else if (baseModel is Model model)
                 {
                     meshes = MeshData.FromHEMeshGroups(model, settings);
-                    nodes = [.. model.Nodes];
+
+                    if(model.Nodes.Count == 0)
+                    {
+                        // shouldn't be able to happen, but just in case
+                        nodes = [new()
+                        {
+                            Name = "Root",
+                            ParentIndex = -1,
+                            Transform = Matrix4x4.Identity
+                        }];
+                    }
+                    else
+                    {
+                        nodes = [.. model.Nodes];
+                    }
 
                     if (model.Morphs != null)
                     {
