@@ -122,8 +122,6 @@ class HEIO_GGT_CollisionPrimitive_Transform(BaseCollisionPrimitiveSelectGizmoGro
 
         matrix = obj.matrix_world.normalized()
 
-        self.move_gizmo.matrix_basis = Matrix.Translation(
-            matrix.to_translation())
         self.move_gizmo.position = matrix.to_quaternion() @ Vector(primitive.position)
 
         # Rotation and scales
@@ -131,7 +129,7 @@ class HEIO_GGT_CollisionPrimitive_Transform(BaseCollisionPrimitiveSelectGizmoGro
         matrix = matrix @ Matrix.LocRotScale(
             primitive.position, primitive.rotation, None).normalized()
 
-        for gizmo in self.transform_gizmos[1:]:
+        for gizmo in self.transform_gizmos:
             gizmo.matrix_basis = matrix
 
         width = primitive.dimensions[0]
