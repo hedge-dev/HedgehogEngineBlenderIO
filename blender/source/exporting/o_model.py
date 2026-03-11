@@ -588,8 +588,9 @@ class ModelProcessor(o_mesh.BaseMeshProcessor):
                 model_set.obj.data.heio_mesh.force_enable_multi_tangent, "enable_multi_tangent_space")
 
             layer_name: str = layer_names[current_layer]
-            layer_type = LAYER_TYPE_NAMES.index(layer_name.lower())
-            if layer_type < 0:
+            try:
+                layer_type = LAYER_TYPE_NAMES.index(layer_name.lower())
+            except:
                 layer_type = 3
 
             raw_meshdata.mesh_sets.append(
