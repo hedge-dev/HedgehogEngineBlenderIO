@@ -144,7 +144,7 @@ namespace HEIO.NET.External
             for (int i = 0; i < values.Count; i++)
             {
                 outValues[i] = currentValues;
-                currentValues += values.Count;
+                currentValues += values[i].Count;
             }
         }
 
