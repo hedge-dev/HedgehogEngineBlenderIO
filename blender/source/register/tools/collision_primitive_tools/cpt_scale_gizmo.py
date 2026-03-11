@@ -55,7 +55,7 @@ class HEIO_GT_CollisionPrimitive_Scale(bpy.types.Gizmo):
 
         color = (
             *self._axis_color,
-            1 if self.is_highlight or self.is_modal else min(1, max(0, alpha))
+            1 if self.is_highlight or self.is_modal else min(0.5, max(0, alpha))
         )
 
         self.matrix_offset = Matrix.LocRotScale(
@@ -122,8 +122,8 @@ class HEIO_GT_CollisionPrimitive_Scale(bpy.types.Gizmo):
             cube_mesh.vertices[i] = vert + offset
 
         cls.shape_cube = cube_mesh.to_custom_shape()
-        cls.shape_line = cls.new_custom_shape(
-            'LINES', [(0, 0, 0), (0, 0, 1 - size * 2)])
+        cls.shape_line = cls.new_custom_shape('LINES', [(0, 0, 0), (0, 0, 1 - size * 2)])
+        cls.shape_line[0].program_set(cls.shape_line[1])
 
 
 class HEIO_OT_CollisionPrimitive_Scale(BaseTransformOperator):

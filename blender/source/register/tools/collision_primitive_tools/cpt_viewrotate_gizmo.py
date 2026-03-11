@@ -97,6 +97,7 @@ class HEIO_GT_CollisionPrimitive_ViewRotate(bpy.types.Gizmo):
     def register(cls):
         cls.shape_circle = mesh_generators.circle_lines(32).to_custom_shape()
         cls.shape_line = cls.new_custom_shape('LINES', [(0, 0, 0), (0, -1, 0)])
+        cls.shape_line[0].program_set(cls.shape_line[1])
 
 
 class HEIO_OT_CollisionPrimitive_ViewRotate(BaseRotateOperator):
