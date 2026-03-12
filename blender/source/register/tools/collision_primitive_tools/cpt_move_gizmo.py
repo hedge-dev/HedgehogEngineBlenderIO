@@ -20,15 +20,16 @@ class HEIO_GT_CollisionPrimitive_Move(bpy.types.Gizmo):
 
     def _draw(self, context: bpy.types.Context, select_id):
 
-        rot = context.region_data.view_rotation.normalized()
-        matrix = Matrix.LocRotScale(None, rot, None)
+        rot = context.region_data.view_rotation.normalized().to_matrix().to_4x4()
+        inverted_basis_rotation = self.matrix_basis.to_3x3().inverted().to_4x4()
+
+        matrix = inverted_basis_rotation @ rot
 
         if select_id is not None:
             gpu.select.load_id(select_id)
 
         if self._invoke_position is not None:
-            matrix_transparent = Matrix.LocRotScale(
-                self._invoke_position - self.position, rot, None)
+            matrix_transparent = (inverted_basis_rotation @ Matrix.Translation(self._invoke_position - self.position)) @ rot
             matrix_opaque = matrix
 
         elif self.is_highlight:
